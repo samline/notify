@@ -1,0 +1,49 @@
+:root{
+  --sileo-bg: #0f1724;
+  --sileo-foreground: #ffffff;
+  --sileo-success: #16a34a;
+  --sileo-error: #ef4444;
+  --sileo-info: #2563eb;
+  --sileo-warning: #f59e0b;
+  --sileo-gap: 12px;
+}
+
+.sileo-toaster{
+  position: fixed;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sileo-gap);
+  pointer-events: none;
+}
+
+.sileo-toaster[data-position="top-right"]{ top: 16px; right: 16px; align-items:flex-end; }
+.sileo-toaster[data-position="top-left"]{ top: 16px; left: 16px; align-items:flex-start; }
+.sileo-toaster[data-position="bottom-right"]{ bottom: 16px; right: 16px; align-items:flex-end; }
+.sileo-toaster[data-position="bottom-left"]{ bottom: 16px; left: 16px; align-items:flex-start; }
+
+.sileo-toast{
+  pointer-events: auto;
+  min-width: 220px;
+  max-width: 360px;
+  background: var(--sileo-bg);
+  color: var(--sileo-foreground);
+  padding: 12px 14px;
+  border-radius: 10px;
+  box-shadow: 0 6px 18px rgba(2,6,23,0.6);
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.sileo-toast[data-type="success"]{ border-left: 4px solid var(--sileo-success); }
+.sileo-toast[data-type="error"]{ border-left: 4px solid var(--sileo-error); }
+.sileo-toast[data-type="info"]{ border-left: 4px solid var(--sileo-info); }
+.sileo-toast[data-type="warning"]{ border-left: 4px solid var(--sileo-warning); }
+
+.sileo-toast-header{ font-weight: 600; font-size: 14px; }
+.sileo-toast-desc{ font-size: 13px; opacity: 0.85; margin-top: 4px; }
+.sileo-toast-btn{ margin-left: 8px; background: transparent; color: inherit; border: 1px solid rgba(255,255,255,0.08); padding: 6px 8px; border-radius: 6px; cursor: pointer; }
+.sileo-toast-close{ position: absolute; right: 8px; top: 6px; background: transparent; border: none; color: inherit; font-size: 16px; cursor: pointer; }
