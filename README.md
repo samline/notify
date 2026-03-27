@@ -47,8 +47,8 @@ CDN / Browser
 Use the browser build when your project loads scripts directly and cannot compile npm modules (Shopify, WordPress, plain HTML). Example CDN usage (replace version):
 
 ```html
-<script src="https://unpkg.com/@samline/notify@latest/dist/notify.umd.js"></script>
-<link rel="stylesheet" href="https://unpkg.com/@samline/notify@latest/dist/styles.css">
+<script src="https://unpkg.com/@samline/notify@0.1.7/dist/notify.umd.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/@samline/notify@0.1.7/dist/styles.css">
 ```
 
 Entry Points
@@ -59,7 +59,7 @@ Choose the entrypoint matching your stack so you only import what you need.
 | --- | --- | --- |
 | Vanilla JS | `import { default as notifications } from '@samline/notify'` | [docs/vanilla.md](docs/vanilla.md) |
 | Vanilla explicit subpath | `import { sileo } from '@samline/notify/vanilla'` | [docs/vanilla.md](docs/vanilla.md) |
-| Browser / CDN | `<script src="https://unpkg.com/@samline/notify@latest/dist/notify.umd.js"></script>` | [docs/browser.md](docs/browser.md) |
+| Browser / CDN | `<script src="https://unpkg.com/@samline/notify@0.1.7/dist/notify.umd.js"></script>` | [docs/browser.md](docs/browser.md) |
 | React | `import { Toaster } from '@samline/notify/react'` | [docs/react.md](docs/react.md) |
 | Vue | `import Notifications from '@samline/notify/vue'` | [docs/vue.md](docs/vue.md) |
 | Svelte | `import Toaster from '@samline/notify/svelte'` | [docs/svelte.md](docs/svelte.md) |
@@ -69,8 +69,8 @@ Quick Start
 Vanilla example (UMD / modules):
 
 ```html
-<script src="https://unpkg.com/@samline/notify@latest/dist/notify.umd.js"></script>
-<link rel="stylesheet" href="https://unpkg.com/@samline/notify@latest/dist/styles.css">
+<script src="https://unpkg.com/@samline/notify@0.1.7/dist/notify.umd.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/@samline/notify@0.1.7/dist/styles.css">
 <script>
   const api = window.notify || window.notifications;
   api.initToasters(document.body, ['top-right']);

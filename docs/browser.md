@@ -5,8 +5,8 @@ Quick start
 Include the UMD bundle and stylesheet in a static page:
 
 ```html
-<link rel="stylesheet" href="https://unpkg.com/@samline/notify@latest/dist/styles.css">
-<script src="https://unpkg.com/@samline/notify@latest/dist/notify.umd.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/@samline/notify@0.1.7/dist/styles.css">
+<script src="https://unpkg.com/@samline/notify@0.1.7/dist/notify.umd.js"></script>
 <script>
   const api = window.notify || window.notifications;
   api.initToasters(document.body, ['top-right']);
@@ -27,8 +27,8 @@ Use the browser build when your project loads scripts directly in the page and c
 Example using the UMD build (replace path/version as needed):
 
 ```html
-<link rel="stylesheet" href="https://unpkg.com/@samline/notify@latest/dist/styles.css">
-<script src="https://unpkg.com/@samline/notify@latest/dist/notify.umd.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/@samline/notify@0.1.7/dist/styles.css">
+<script src="https://unpkg.com/@samline/notify@0.1.7/dist/notify.umd.js"></script>
 <script>
   document.addEventListener('DOMContentLoaded', () => {
     const api = window.notify || window.notifications;
