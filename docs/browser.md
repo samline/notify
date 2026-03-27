@@ -2,7 +2,7 @@
 
 Quick start
 
-Incluye el UMD bundle y la hoja de estilos en una página estática:
+Include the UMD bundle and stylesheet in a static page:
 
 ```html
 <link rel="stylesheet" href="/path/to/dist/styles.css">
@@ -10,15 +10,16 @@ Incluye el UMD bundle y la hoja de estilos en una página estática:
 <script>
   const api = window.notify || window.notifications;
   api.initToasters(document.body, ['top-right']);
-  // alias: api.notify
-  api.notify({ title: 'Hola', description: 'Uso sin bundler', type: 'info' });
+  // convenience: api.notify
+  api.notify({ title: 'Hello', description: 'No-bundler usage', type: 'info' });
 </script>
 ```
 
 Notes
 
-- El bundle UMD expone `window.notify` (preferido). Para compatibilidad también se expone `window.notifications` con la forma previa.
-- Asegúrate de cargar `dist/styles.css` para obtener estilos y animaciones.
+- The UMD bundle exposes `window.notify` (preferred). For compatibility it also exposes `window.notifications` with the previous API shape.
+- Make sure to load `dist/styles.css` for styles and animations.
+
 ## CDN / Browser
 
 Use the browser build when your project loads scripts directly in the page and cannot compile npm modules (Shopify, WordPress, plain HTML templates).
@@ -32,12 +33,12 @@ Example using the UMD build (replace path/version as needed):
   document.addEventListener('DOMContentLoaded', () => {
     const api = window.notify || window.notifications;
     api.initToasters(document.body, ['top-right']);
-    api.notify({ title: 'Hola', description: 'Uso sin bundler', type: 'info' });
+    api.notify({ title: 'Hello', description: 'No-bundler usage', type: 'info' });
   });
 </script>
 ```
 
 ### Notes
 
-The browser bundle exposes `window.notify` (preferred) and for compatibility also exposes `window.notifications` with the previous shape; if these globals conflict with other scripts use the module builds instead.
+The browser bundle exposes `window.notify` (preferred) and for compatibility also exposes `window.notifications`; if these globals conflict with other scripts use the module builds instead.
 Include `dist/styles.css` for styles and animations when using the UMD/browser bundle.

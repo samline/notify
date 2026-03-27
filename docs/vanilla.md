@@ -1,26 +1,32 @@
 # Vanilla
+
 ## Quick Start
 
-Importa y inicializa el renderer vanilla (DOM):
+Import and initialize the vanilla (DOM) renderer:
 
 ```ts
 import { notify, sileo, initToasters } from '@samline/notify/vanilla';
 
-// monta el contenedor (por defecto document.body)
+// Mount the containers (defaults to document.body)
 initToasters(document.body, ['top-right']);
 
-// muestra una notificación (usar `notify(...)` es la forma recomendada)
-notify({ title: 'Guardado', description: 'Tus cambios fueron guardados', type: 'success' });
+// Show a notification (use `notify(...)` as the recommended API)
+notify({ title: 'Saved', description: 'Your changes have been saved', type: 'success' });
 ```
 
 ## API
 
 ```ts
-// core controller (principal: `notify`, alias: `sileo`)
+// Core controller (primary: `notify`, compatibility alias: `sileo`)
 notify.show(options)
+notify.success(options)
+notify.error(options)
+notify.info(options)
+notify.warning(options)
+notify.action(options)
+notify.promise(promise, { loading, success, error })
 notify.dismiss(id)
 notify.clear()
-notify.promise(promise, { loading, success, error })
 ```
 
 ### Parameters
@@ -41,7 +47,7 @@ notify.promise(promise, { loading, success, error })
 | `description` | `string` | — | Optional body text |
 | `type` | `info\|success\|error\|warning` | `info` | Visual intent |
 | `position` | `string` | `top-right` | Container position |
-| `duration` | `number` | `4000` | Auto-dismiss timeout in ms (0 = persistent) |
+| `duration` | `number` | `4000` | Auto-dismiss timeout in ms (`null` = sticky) |
 | `button` | `{ title, onClick }` | — | Optional action button |
 
 ## Examples
@@ -58,16 +64,16 @@ notify.success({ title: 'Saved' });
 
 ```ts
 notify.promise(fetch('/api/save'), {
-	loading: { title: 'Guardando...' },
-	success: { title: 'Listo', type: 'success' },
-	error: { title: 'Error', type: 'error' }
+	loading: { title: 'Saving...' },
+	success: { title: 'Done', type: 'success' },
+	error: { title: 'Failed', type: 'error' }
 });
 ```
 
 ## When to use
 
-Use the vanilla entry when you work directly with DOM nodes or need a framework-agnostic API.
+Use the vanilla entry when you interact directly with DOM nodes or need a framework-agnostic API.
 
 ## Accessibility
 
-Toaster containers use `role="status"` and `aria-live="polite"` by default.
+Toaster containers use `role="status"` and `aria-live="polite"` by default. Respect `prefers-reduced-motion` in your UI.

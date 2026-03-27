@@ -1,12 +1,12 @@
 # React
 
-Instalación
+Installation
 
 ```bash
 npm install @samline/notify react react-dom
 ```
 
-Uso básico
+Basic usage
 
 ```tsx
 import React from 'react';
@@ -17,16 +17,16 @@ function App(){
   return (
     <>
       <Toaster />
-      <button onClick={() => notify.show({ title: 'Hecho', type: 'success' })}>Mostrar</button>
+      <button onClick={() => notify.show({ title: 'Done', type: 'success' })}>Show</button>
     </>
   )
 }
 ```
 
-Notas
+Notes
 
-- El componente `Toaster` se suscribe al `sileo` controller y renderiza toasts.
-- Puedes personalizar posiciones y estilos importando `dist/styles.css`.
+- The `Toaster` component subscribes to the core controller and renders toasts.
+- You can customize positions and styles by importing `dist/styles.css`.
 
 ## Quick start
 
@@ -47,7 +47,7 @@ export function App(){
   return (
     <div>
       <Toaster />
-      <button onClick={() => notify.show({ title: 'Hecho', type: 'success' })}>Mostrar</button>
+      <button onClick={() => notify.show({ title: 'Done', type: 'success' })}>Show</button>
     </div>
   );
 }
@@ -61,4 +61,4 @@ export function App(){
 ## Notes
 
 - The React adapter renders toasts in a React-friendly way and is SSR-safe when used with client-only mounting.
-- To customize styles, import `dist/styles.css` or override CSS variables defined in the stylesheet.
+- To customize styles, import `dist/styles.css` or override the CSS variables defined in the stylesheet.

@@ -1,14 +1,15 @@
 # Svelte
 
 Quick start
+# Svelte
+
+Quick start
 
 ```bash
 npm install @samline/notify svelte
 ```
 
-Uso
-
-El paquete incluye un componente `Toaster.svelte` y un store `initSileoStore()`:
+Usage
 
 ```svelte
 <script>
@@ -18,12 +19,12 @@ El paquete incluye un componente `Toaster.svelte` y un store `initSileoStore()`:
 
 <Toaster />
 
-<button on:click={() => import('@samline/notify').then(m => m.notify.show({ title: 'Svelte' }))}>Mostrar</button>
+<button on:click={() => import('@samline/notify').then(m => m.notify.show({ title: 'Svelte' }))}>Show</button>
 ```
 
 TypeScript
 
-Si usas TypeScript, ejecuta `npm run typecheck` y `npx svelte-check` durante el desarrollo.
+If you use TypeScript, run `npm run typecheck` and `npx svelte-check` during development.
 
 ## API
 
@@ -40,7 +41,7 @@ Si usas TypeScript, ejecuta `npm run typecheck` y `npx svelte-check` durante el 
 </script>
 
 <Toaster />
-<button on:click={show}>Mostrar</button>
+<button on:click={show}>Show</button>
 ```
 
 ## Notes

@@ -12,21 +12,21 @@ app.use(Notifications);
 app.mount('#app');
 ```
 
-Uso
+Usage
 
-- El plugin registra un componente `Toaster` y un `useSileo()` composable para interactuar con el controller.
+- The plugin registers a `Toaster` component and provides a `useSileo()` composable to access the controller.
 
-Ejemplo en plantilla:
+Example in a single-file component:
 
 ```vue
 <template>
   <Toaster />
-  <button @click="show">Mostrar</button>
+  <button @click="show">Show</button>
 </template>
 
 <script setup>
 import { notify, sileo } from '@samline/notify';
-function show(){ notify.show({ title: 'Hola desde Vue' }); }
+function show(){ notify.show({ title: 'Hello from Vue' }); }
 </script>
  
 ## API
@@ -36,6 +36,6 @@ function show(){ notify.show({ title: 'Hola desde Vue' }); }
 
 ## Notes
 
-- The Vue adapter integrates with the Vue lifecycle and is compatible with Vue 3's Composition API.
-- To customize appearance, import `dist/styles.css` or override CSS variables.
+- The Vue adapter integrates with the Vue lifecycle and works with Vue 3's Composition API.
+- To customize appearance, import `dist/styles.css` or override the CSS variables.
 ```
