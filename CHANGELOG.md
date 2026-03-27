@@ -7,3 +7,7 @@
 - UMD build changed to `dist/notify.umd.js` and exposes `window.notify` (compat `window.notifications`).
 - Updated docs, examples and tests to reflect the rename.
 - Copied styles to `dist/styles.css` as part of build.
+
+## 0.1.1 - Republish
+
+- Republished after registry conflict on 0.1.0. No functional changes.
