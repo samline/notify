@@ -17,7 +17,7 @@ Incluye el UMD bundle y la hoja de estilos en una página estática:
 
 Notes
 
-- El bundle UMD expone `notifications` en `window`. También se ofrece el alias `window.notifications.notify` por compatibilidad si `window.notifications` choca con otro script.
+- El bundle UMD expone `window.notify` (preferido). Para compatibilidad también se expone `window.notifications` con la forma previa.
 - Asegúrate de cargar `dist/styles.css` para obtener estilos y animaciones.
 ## CDN / Browser
 
@@ -40,4 +40,4 @@ Example using the UMD build (replace path/version as needed):
 ### Notes
 
 The browser bundle exposes `window.notify` (preferred) and for compatibility also exposes `window.notifications` with the previous shape; if these globals conflict with other scripts use the module builds instead.
-- Include `dist/styles.css` for styles and animations when using the UMD/browser bundle.
+Include `dist/styles.css` for styles and animations when using the UMD/browser bundle.

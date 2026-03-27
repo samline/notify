@@ -86,19 +86,19 @@ Documentation Guides
 
 Shared API Summary
 
-The package exposes a framework-agnostic core controller (`notify`) with the following shape (a `sileo` alias is provided for compatibility):
+The package exposes a framework-agnostic core controller (`notify`) with the following shape (a `sileo` alias is provided for compatibility). Use `notify` as the primary API in examples and code.
 
 ```ts
 // core controller
-sileo.show(options)
-sileo.success(options)
-sileo.error(options)
-sileo.info(options)
-sileo.warning(options)
-sileo.action(options)
-sileo.promise(promise, messages)
-sileo.dismiss(id)
-sileo.clear()
+notify.show(options)
+notify.success(options)
+notify.error(options)
+notify.info(options)
+notify.warning(options)
+notify.action(options)
+notify.promise(promise, messages)
+notify.dismiss(id)
+notify.clear()
 ```
 
 When using the UMD/browser bundle the global is exposed as `window.notify` (preferred). For compatibility the API object also exposes `window.notifications` which maintains the previous shape.

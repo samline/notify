@@ -4,23 +4,23 @@
 Importa y inicializa el renderer vanilla (DOM):
 
 ```ts
-import { sileo, initToasters } from '@samline/notify/vanilla';
+import { notify, sileo, initToasters } from '@samline/notify/vanilla';
 
 // monta el contenedor (por defecto document.body)
 initToasters(document.body, ['top-right']);
 
-// muestra una notificación
-sileo.show({ title: 'Guardado', description: 'Tus cambios fueron guardados', type: 'success' });
+// muestra una notificación (usar `notify(...)` es la forma recomendada)
+notify({ title: 'Guardado', description: 'Tus cambios fueron guardados', type: 'success' });
 ```
 
 ## API
 
 ```ts
-// core controller
-sileo.show(options)
-sileo.dismiss(id)
-sileo.clear()
-sileo.promise(promise, { loading, success, error })
+// core controller (principal: `notify`, alias: `sileo`)
+notify.show(options)
+notify.dismiss(id)
+notify.clear()
+notify.promise(promise, { loading, success, error })
 ```
 
 ### Parameters
@@ -49,15 +49,15 @@ sileo.promise(promise, { loading, success, error })
 ### Basic
 
 ```ts
-import { sileo, initToasters } from '@samline/notify/vanilla';
+import { notify, initToasters } from '@samline/notify/vanilla';
 initToasters();
-sileo.success({ title: 'Saved' });
+notify.success({ title: 'Saved' });
 ```
 
 ### Promise flow
 
 ```ts
-sileo.promise(fetch('/api/save'), {
+notify.promise(fetch('/api/save'), {
 	loading: { title: 'Guardando...' },
 	success: { title: 'Listo', type: 'success' },
 	error: { title: 'Error', type: 'error' }

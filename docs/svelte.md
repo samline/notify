@@ -18,7 +18,7 @@ El paquete incluye un componente `Toaster.svelte` y un store `initSileoStore()`:
 
 <Toaster />
 
-<button on:click={() => import('@samline/notify').then(m => m.sileo.show({ title: 'Svelte' }))}>Mostrar</button>
+<button on:click={() => import('@samline/notify').then(m => m.notify.show({ title: 'Svelte' }))}>Mostrar</button>
 ```
 
 TypeScript
@@ -27,8 +27,8 @@ Si usas TypeScript, ejecuta `npm run typecheck` y `npx svelte-check` durante el 
 
 ## API
 
-- `Toaster.svelte` — component that renders toasts and subscribes to the core `sileo` store (compat alias).
-- `initSileoStore()` — helper to wire the core `sileo`/`notify` controller to a Svelte store.
+- `Toaster.svelte` — component that renders toasts and subscribes to the core controller.
+- `initSileoStore()` — helper to wire the core `notify`/`sileo` controller to a Svelte store.
 
 ## Examples
 
@@ -36,7 +36,7 @@ Si usas TypeScript, ejecuta `npm run typecheck` y `npx svelte-check` durante el 
 <script>
   import Toaster, { initSileoStore } from '@samline/notify/svelte';
   initSileoStore();
-  function show(){ import('@samline/notify').then(m => m.sileo.show({ title: 'From Svelte' })); }
+  function show(){ import('@samline/notify').then(m => m.notify.show({ title: 'From Svelte' })); }
 </script>
 
 <Toaster />

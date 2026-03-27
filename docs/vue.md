@@ -25,8 +25,8 @@ Ejemplo en plantilla:
 </template>
 
 <script setup>
-import { sileo } from '@samline/notify';
-function show(){ sileo.show({ title: 'Hola desde Vue' }); }
+import { notify, sileo } from '@samline/notify';
+function show(){ notify.show({ title: 'Hola desde Vue' }); }
 </script>
  
 ## API
