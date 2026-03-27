@@ -1,0 +1,15 @@
+src/
+test/
+examples/
+.github/
+.vscode/
+node_modules/
+*.ts
+*.map
+*.log
+.DS_Store
+coverage/
+.idea/
+package-lock.json
+tsconfig.json
+svelte.config.*

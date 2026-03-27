@@ -1,6 +1,6 @@
 {
   "name": "@samline/notify",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Notifications engine inspired by Sileo, with adapters for vanilla, React, Vue and Svelte.",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",

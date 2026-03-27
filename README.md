@@ -1,5 +1,7 @@
 ## @samline/notify
-A Sileo-inspired notifications engine with a framework-agnostic core and adapters for Vanilla, React, Vue and Svelte.
+A Sileo-inspired notifications engine providing a framework-agnostic core and lightweight adapters for Vanilla JS, React, Vue and Svelte.
+
+Inspired by Sileo — see the original project: https://github.com/hiaaryan/sileo
 
 Table of Contents
 
