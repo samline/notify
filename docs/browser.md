@@ -8,8 +8,8 @@ Use this package directly in the browser when you cannot use npm modules or a bu
 Add the stylesheet and UMD bundle to your HTML:
 
 ```html
-<link rel="stylesheet" href="https://unpkg.com/@samline/notify@0.1.13/dist/styles.css">
-<script src="https://unpkg.com/@samline/notify@0.1.13/dist/notify.umd.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/@samline/notify@0.1.14/dist/styles.css">
+<script src="https://unpkg.com/@samline/notify@0.1.14/dist/notify.umd.js"></script>
 <script>
   document.addEventListener('DOMContentLoaded', () => {
     const api = window.notify; // or window.notifications for legacy

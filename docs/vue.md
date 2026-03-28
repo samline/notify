@@ -51,7 +51,7 @@ function show(){ notify.show({ title: 'Hello from Vue' }); }
 
 > **Note:**
 > Import `@samline/notify/dist/styles.css` in your main entrypoint or HTML for correct appearance.
-> CDN: `<link rel="stylesheet" href="https://unpkg.com/@samline/notify@0.1.13/dist/styles.css">`
+> CDN: `<link rel="stylesheet" href="https://unpkg.com/@samline/notify@0.1.14/dist/styles.css">`
 
 
 ## API
