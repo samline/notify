@@ -48,10 +48,10 @@ CDN / Browser
 Use the browser build when your project loads scripts directly and cannot compile npm modules (Shopify, WordPress, plain HTML). Example CDN usage (replace version):
 
 ```html
-<script src="https://unpkg.com/@samline/notify@0.1.14/dist/notify.umd.js"></script>
+<script src="https://unpkg.com/@samline/notify@0.1.15/dist/notify.umd.js"></script>
 <link
   rel="stylesheet" 
-  href="https://unpkg.com/@samline/notify@0.1.14/dist/styles.css"
+  href="https://unpkg.com/@samline/notify@0.1.15/dist/styles.css"
 />
 
 <script>

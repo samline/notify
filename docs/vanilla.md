@@ -13,8 +13,8 @@ notify({ title: 'Saved', description: 'Your changes have been saved', type: 'suc
 ## Quick start (CDN / UMD)
 
 ```html
-<link rel="stylesheet" href="https://unpkg.com/@samline/notify@0.1.14/dist/styles.css">
-<script src="https://unpkg.com/@samline/notify@0.1.14/dist/notify.umd.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/@samline/notify@0.1.15/dist/styles.css">
+<script src="https://unpkg.com/@samline/notify@0.1.15/dist/notify.umd.js"></script>
 <script>
 	document.addEventListener('DOMContentLoaded', () => {
 		const api = window.notify;
