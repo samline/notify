@@ -32,11 +32,11 @@ export interface ToastItem {
 type Listener = (items: ToastItem[]) => void;
 
 class NotifyController {
-  private toasts: ToastItem[] = [];
-  private listeners = new Set<Listener>();
-  private idCounter = 1;
+  public toasts: ToastItem[] = [];
+  public listeners = new Set<Listener>();
+  public idCounter = 1;
 
-  private nextId() {
+  public nextId() {
     return `notify_${Date.now()}_${this.idCounter++}`;
   }
 
@@ -46,7 +46,7 @@ class NotifyController {
     return () => this.listeners.delete(fn);
   }
 
-  private notify() {
+  public notify() {
     const snapshot = this.toasts.slice();
     this.listeners.forEach((l) => l(snapshot));
   }
