@@ -47,8 +47,8 @@ CDN / Browser
 Use the browser build when your project loads scripts directly and cannot compile npm modules (Shopify, WordPress, plain HTML). Example CDN usage (replace version):
 
 ```html
-<script src="https://unpkg.com/@samline/notify@0.1.9/dist/notify.umd.js"></script>
-<link rel="stylesheet" href="https://unpkg.com/@samline/notify@0.1.9/dist/styles.css">
+<script src="https://unpkg.com/@samline/notify@0.1.10/dist/notify.umd.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/@samline/notify@0.1.10/dist/styles.css">
 ```
 
 Entry Points
@@ -69,8 +69,8 @@ Quick Start
 Vanilla example (UMD / modules):
 
 ```html
-<script src="https://unpkg.com/@samline/notify@0.1.9/dist/notify.umd.js"></script>
-<link rel="stylesheet" href="https://unpkg.com/@samline/notify@0.1.9/dist/styles.css">
+<script src="https://unpkg.com/@samline/notify@0.1.10/dist/notify.umd.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/@samline/notify@0.1.10/dist/styles.css">
 <script>
   const api = window.notify || window.notifications;
   api.initToasters(document.body, ['top-right']);

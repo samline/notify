@@ -37,12 +37,20 @@ export default [
       exports: 'named',
       name: 'notify'
     },
-    plugins: [resolve(), commonjs(), typescript({ tsconfig: './tsconfig.json' }),
+    plugins: [
+      replace({
+        'process.env.NODE_ENV': JSON.stringify('production'),
+        preventAssignment: true
+      }),
+      resolve(),
+      commonjs(),
+      typescript({ tsconfig: './tsconfig.json' }),
       copy({
         targets: [
           { src: 'src/styles/sileo.css', dest: 'dist', rename: 'styles.css' }
         ],
         verbose: true
-      })]
+      })
+    ]
   }
 ];
