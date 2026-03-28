@@ -1,44 +1,31 @@
-# Browser (UMD / no-bundler)
 
-Quick start
+# Browser / CDN usage
 
-Include the UMD bundle and stylesheet in a static page:
+Use this package directly in the browser when you cannot use npm modules or a bundler (e.g. Shopify, WordPress, static HTML).
 
-```html
-<link rel="stylesheet" href="https://unpkg.com/@samline/notify@0.1.9/dist/styles.css">
-<script src="https://unpkg.com/@samline/notify@0.1.9/dist/notify.umd.js"></script>
-<script>
-  const api = window.notify || window.notifications;
-  api.initToasters(document.body, ['top-right']);
-  // convenience: api.notify
-  api.notify({ title: 'Hello', description: 'No-bundler usage', type: 'info' });
-</script>
-```
+## Quick start
 
-Notes
-
-- The UMD bundle exposes `window.notify` (preferred). For compatibility it also exposes `window.notifications` with the previous API shape.
-- Make sure to load `dist/styles.css` for styles and animations.
-
-## CDN / Browser
-
-Use the browser build when your project loads scripts directly in the page and cannot compile npm modules (Shopify, WordPress, plain HTML templates).
-
-Example using the UMD build (replace path/version as needed):
+Add the stylesheet and UMD bundle to your HTML:
 
 ```html
-<link rel="stylesheet" href="https://unpkg.com/@samline/notify@0.1.9/dist/styles.css">
-<script src="https://unpkg.com/@samline/notify@0.1.9/dist/notify.umd.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/@samline/notify@0.1.12/dist/styles.css">
+<script src="https://unpkg.com/@samline/notify@0.1.12/dist/notify.umd.js"></script>
 <script>
   document.addEventListener('DOMContentLoaded', () => {
-    const api = window.notify || window.notifications;
+    const api = window.notify; // or window.notifications for legacy
     api.initToasters(document.body, ['top-right']);
     api.notify({ title: 'Hello', description: 'No-bundler usage', type: 'info' });
   });
 </script>
 ```
 
-### Notes
+## API
 
-The browser bundle exposes `window.notify` (preferred) and for compatibility also exposes `window.notifications`; if these globals conflict with other scripts use the module builds instead.
-Include `dist/styles.css` for styles and animations when using the UMD/browser bundle.
+- The UMD bundle exposes `window.notify` (recommended) and `window.notifications` (legacy/compatibility).
+- Always include `dist/styles.css` for correct appearance and animations.
+- Use `api.initToasters(container, positions)` to mount containers (usually `document.body`).
+- Use `api.notify({...})` to show a notification.
+
+## Notes
+
+- If you need more control or want to avoid global variables, use the ESM/CJS builds with a bundler.

@@ -1,17 +1,27 @@
-# Vanilla
+# Vanilla JS
 
-## Quick Start
+Use the vanilla adapter for plain JavaScript projects, either with modules or directly via CDN.
 
-Import and initialize the vanilla (DOM) renderer:
+## Quick start (ESM / npm)
 
 ```ts
-import { notify, sileo, initToasters } from '@samline/notify/vanilla';
-
-// Mount the containers (defaults to document.body)
+import { notify, initToasters } from '@samline/notify/vanilla';
 initToasters(document.body, ['top-right']);
-
-// Show a notification (use `notify(...)` as the recommended API)
 notify({ title: 'Saved', description: 'Your changes have been saved', type: 'success' });
+```
+
+## Quick start (CDN / UMD)
+
+```html
+<link rel="stylesheet" href="https://unpkg.com/@samline/notify@0.1.12/dist/styles.css">
+<script src="https://unpkg.com/@samline/notify@0.1.12/dist/notify.umd.js"></script>
+<script>
+	document.addEventListener('DOMContentLoaded', () => {
+		const api = window.notify;
+		api.initToasters(document.body, ['top-right']);
+		api.notify({ title: 'Saved', description: 'Your changes have been saved', type: 'success' });
+	});
+</script>
 ```
 
 ## API
@@ -50,14 +60,10 @@ notify.clear()
 | `duration` | `number` | `4000` | Auto-dismiss timeout in ms (`null` = sticky) |
 | `button` | `{ title, onClick }` | — | Optional action button |
 
-## Examples
+## Tips
 
-### Basic
-
-```ts
-import { notify, initToasters } from '@samline/notify/vanilla';
-initToasters();
-notify.success({ title: 'Saved' });
+- Always include the stylesheet for correct appearance.
+- Use the ESM build for modern projects, or the UMD build for legacy/static sites.
 ```
 
 ### Promise flow
@@ -67,7 +73,7 @@ notify.promise(fetch('/api/save'), {
 	loading: { title: 'Saving...' },
 	success: { title: 'Done', type: 'success' },
 	error: { title: 'Failed', type: 'error' }
-});
+import { notify, initToasters } from '@samline/notify/vanilla'; // Import from '@samline/notify/vanilla'
 ```
 
 ## When to use

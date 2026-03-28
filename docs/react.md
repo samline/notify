@@ -1,57 +1,68 @@
+
 # React
 
-Installation
+## Quick start
+
+Install the package and peer dependencies:
 
 ```bash
 npm install @samline/notify react react-dom
 ```
 
-Basic usage
+Import and render the `Toaster` component in your app root:
 
 ```tsx
 import React from 'react';
-import { notify, sileo } from '@samline/notify';
-import { Toaster } from '@samline/notify/react';
 
-function App(){
+import { Toaster, notify } from '@samline/notify/react';
+
+export function App() {
   return (
     <>
       <Toaster />
       <button onClick={() => notify.show({ title: 'Done', type: 'success' })}>Show</button>
     </>
-  )
-}
-```
-
-Notes
-
-- The `Toaster` component subscribes to the core controller and renders toasts.
-- You can customize positions and styles by importing `dist/styles.css`.
-
-## Quick start
-
-Install:
-
-```bash
-npm install @samline/notify react react-dom
-```
-
-Import and render the React `Toaster` in your app:
-
-```tsx
-import React from 'react';
-import { Toaster } from '@samline/notify/react';
-import { notify, sileo } from '@samline/notify';
-
-export function App(){
-  return (
-    <div>
-      <Toaster />
-      <button onClick={() => notify.show({ title: 'Done', type: 'success' })}>Show</button>
-    </div>
   );
 }
 ```
+
+> **Note:**
+> Import `@samline/notify/dist/styles.css` in your main entrypoint or include it in your HTML for correct appearance.
+
+
+## API
+
+- `<Toaster />` subscribes to the notification controller and renders toasts.
+- Use `notify.show({...})` or shortcut methods (`notify.success`, `notify.error`, `notify.info`, `notify.warning`, `notify.action`, `notify.promise`, `notify.dismiss`, `notify.clear`) to trigger notifications. Import from `@samline/notify/react`.
+
+### Methods
+
+```ts
+notify.show(options)
+notify.success(options)
+notify.error(options)
+notify.info(options)
+notify.warning(options)
+notify.action(options)
+notify.promise(promise, { loading, success, error })
+notify.dismiss(id)
+notify.clear()
+```
+
+### Options
+
+| Property      | Type                                   | Default     | Description                                 |
+| ------------- | -------------------------------------- | ----------- | ------------------------------------------- |
+| `title`       | string                                 | —           | Toast title                                 |
+| `description` | string                                 | —           | Optional body text                          |
+| `type`        | `info\|success\|error\|warning`        | `info`      | Visual intent                               |
+| `position`    | string                                 | `top-right` | One of toast positions                      |
+| `duration`    | number                                 | `4000`      | Auto-dismiss timeout in ms (0 = persistent) |
+| `button`      | { title: string, onClick: () => void } | —           | Optional action button                      |
+
+## Tips
+
+- You can customize positions and styles by overriding CSS variables or importing the stylesheet in your preferred way.
 
 ## API
 

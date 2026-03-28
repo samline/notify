@@ -1,4 +1,5 @@
 ## @samline/notify
+
 A Sileo-inspired notifications engine providing a framework-agnostic core and lightweight adapters for Vanilla JS, React, Vue and Svelte.
 
 Inspired by Sileo — see the original project: https://github.com/hiaaryan/sileo
@@ -47,36 +48,30 @@ CDN / Browser
 Use the browser build when your project loads scripts directly and cannot compile npm modules (Shopify, WordPress, plain HTML). Example CDN usage (replace version):
 
 ```html
-<script src="https://unpkg.com/@samline/notify@0.1.10/dist/notify.umd.js"></script>
-<link rel="stylesheet" href="https://unpkg.com/@samline/notify@0.1.10/dist/styles.css">
+<script src="https://unpkg.com/@samline/notify@0.1.11/dist/notify.umd.js"></script>
+<link
+  rel="stylesheet" 
+  href="https://unpkg.com/@samline/notify@0.1.12/dist/styles.css"
+/>
+
+<script>
+  const api = window.notify || window.notifications
+  api.initToasters(document.body, ['top-right'])
+  api.notify({ title: 'Saved', description: 'Changes saved', type: 'success' })
+</script>
 ```
 
 Entry Points
 
 Choose the entrypoint matching your stack so you only import what you need.
 
-| Use case | Import | Guide |
-| --- | --- | --- |
-| Vanilla JS | `import { default as notifications } from '@samline/notify'` | [docs/vanilla.md](docs/vanilla.md) |
-| Vanilla explicit subpath | `import { sileo } from '@samline/notify/vanilla'` | [docs/vanilla.md](docs/vanilla.md) |
-| Browser / CDN | `<script src="https://unpkg.com/@samline/notify@0.1.9/dist/notify.umd.js"></script>` | [docs/browser.md](docs/browser.md) |
-| React | `import { Toaster } from '@samline/notify/react'` | [docs/react.md](docs/react.md) |
-| Vue | `import Notifications from '@samline/notify/vue'` | [docs/vue.md](docs/vue.md) |
-| Svelte | `import Toaster from '@samline/notify/svelte'` | [docs/svelte.md](docs/svelte.md) |
-
-Quick Start
-
-Vanilla example (UMD / modules):
-
-```html
-<script src="https://unpkg.com/@samline/notify@0.1.10/dist/notify.umd.js"></script>
-<link rel="stylesheet" href="https://unpkg.com/@samline/notify@0.1.10/dist/styles.css">
-<script>
-  const api = window.notify || window.notifications;
-  api.initToasters(document.body, ['top-right']);
-  api.notify({ title: 'Saved', description: 'Changes saved', type: 'success' });
-</script>
-```
+| Use case      | Import                                                                                                                                        | Guide                              |
+| ------------- | --------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------- |
+| Vanilla JS    | `import { notify, initToasters } from '@samline/notify/vanilla'`                                                                              | [docs/vanilla.md](docs/vanilla.md) |
+| Browser / CDN | `<script src="https://unpkg.com/@samline/notify@0.1.12/dist/notify.umd.js"></script>`<br/>`const api = window.notify; api.initToasters(...);` | [docs/browser.md](docs/browser.md) |
+| React         | `import { Toaster, notify } from '@samline/notify/react'`                                                                                      | [docs/react.md](docs/react.md)     |
+| Vue           | `import { Toaster, notify } from '@samline/notify/vue'`                                                                                        | [docs/vue.md](docs/vue.md)         |
+| Svelte        | `import Toaster, { notify } from '@samline/notify/svelte'`                                                                                     | [docs/svelte.md](docs/svelte.md)   |
 
 Documentation Guides
 
@@ -109,14 +104,14 @@ Shared Options
 
 Common `options` across entrypoints:
 
-| Property | Type | Default | Description |
-| --- | --- | --- | --- |
-| `title` | string | — | Toast title |
-| `description` | string | — | Optional body text |
-| `type` | `info\|success\|error\|warning` | `info` | Visual intent |
-| `position` | string | `top-right` | One of toast positions |
-| `duration` | number | `4000` | Auto-dismiss timeout in ms (0 = persistent) |
-| `button` | { title: string, onClick: () => void } | — | Optional action button |
+| Property      | Type                                   | Default     | Description                                 |
+| ------------- | -------------------------------------- | ----------- | ------------------------------------------- |
+| `title`       | string                                 | —           | Toast title                                 |
+| `description` | string                                 | —           | Optional body text                          |
+| `type`        | `info\|success\|error\|warning`        | `info`      | Visual intent                               |
+| `position`    | string                                 | `top-right` | One of toast positions                      |
+| `duration`    | number                                 | `4000`      | Auto-dismiss timeout in ms (0 = persistent) |
+| `button`      | { title: string, onClick: () => void } | —           | Optional action button                      |
 
 Notes
 
@@ -127,4 +122,3 @@ Notes
 License
 
 MIT
-
