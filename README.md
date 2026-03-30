@@ -50,8 +50,8 @@ Use the browser build when your project loads scripts directly and cannot compil
 
 
 ```html
-<script src="https://unpkg.com/@samline/notify@0.2.3/dist/notify.umd.js"></script>
-<link rel="stylesheet" href="https://unpkg.com/@samline/notify@0.2.3/dist/styles.css" />
+<script src="https://unpkg.com/@samline/notify@0.2.4/dist/notify.umd.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/@samline/notify@0.2.4/dist/styles.css" />
 
 <script>
   // Always use an array of strings as the second argument
@@ -81,7 +81,7 @@ Choose the entrypoint matching your stack so you only import what you need.
 | Use case      | Import                                                                                                                                        | Guide                              |
 | ------------- | --------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------- |
 | Vanilla JS    | `import { notify, initToasters } from '@samline/notify/vanilla'`                                                                              | [docs/vanilla.md](docs/vanilla.md) |
-| Browser / CDN | `<script src="https://unpkg.com/@samline/notify@0.2.3/dist/notify.umd.js"></script>`<br/>`const api = window.notify; api.initToasters(...);` | [docs/browser.md](docs/browser.md) |
+| Browser / CDN | `<script src="https://unpkg.com/@samline/notify@0.2.4/dist/notify.umd.js"></script>`<br/>`const api = window.notify; api.initToasters(...);` | [docs/browser.md](docs/browser.md) |
 | React         | `import { Toaster, notify } from '@samline/notify/react'`                                                                                      | [docs/react.md](docs/react.md)     |
 | Vue           | `import { Toaster, notify } from '@samline/notify/vue'`                                                                                        | [docs/vue.md](docs/vue.md)         |
 | Svelte        | `import Toaster, { notify } from '@samline/notify/svelte'`                                                                                     | [docs/svelte.md](docs/svelte.md)   |

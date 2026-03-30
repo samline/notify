@@ -43,13 +43,16 @@
   background: var(--sileo-bg);
   color: var(--sileo-foreground);
   padding: 0.75rem 0.875rem;
-  border-radius: 0.625rem;
+  border-radius: var(--sileo-roundness, 1rem);
   box-shadow: 0 0.375rem 1.125rem rgba(2,6,23,0.6);
   display: flex;
   gap: 0.5rem;
   align-items: center;
   position: relative;
   overflow: hidden;
+  /* Efecto gooey visual */
+  backdrop-filter: blur(6px) saturate(1.2);
+  filter: url(#sileo-gooey);
 }
 
 .sileo-toast[data-type="success"]{ border-left: 0.25rem solid var(--sileo-success); }
@@ -58,6 +61,29 @@
 .sileo-toast[data-type="warning"]{ border-left: 0.25rem solid var(--sileo-warning); }
 
 .sileo-toast-header{ font-weight: 600; font-size: 0.875rem; }
+
+/* Badge circular con blur y animación */
+.sileo-toast-badge {
+  width: 2.25rem;
+  height: 2.25rem;
+  min-width: 2.25rem;
+  min-height: 2.25rem;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 0.5rem;
+  box-shadow: 0 0 0.5rem 0.1rem rgba(0,0,0,0.10);
+  backdrop-filter: blur(2.5px);
+  animation: sileo-badge-pop 0.38s cubic-bezier(.22,1,.36,1) both;
+}
+
+@keyframes sileo-badge-pop {
+  0% { transform: scale(0.7); opacity: 0; }
+  60% { transform: scale(1.15); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
 .sileo-toast-desc{ font-size: 0.8125rem; opacity: 0.85; margin-top: 0.25rem; }
 .sileo-toast-btn{ margin-left: 0.5rem; background: transparent; color: inherit; border: 1px solid rgba(255,255,255,0.08); padding: 0.375rem 0.5rem; border-radius: 0.375rem; cursor: pointer; }
 .sileo-toast-close{ position: absolute; right: 0.5rem; top: 0.375rem; background: transparent; border: none; color: inherit; font-size: 1rem; cursor: pointer; }

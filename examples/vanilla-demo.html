@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Demo Vanilla Notify</title>
+  <link rel="stylesheet" href="../dist/styles.css">
+  <script src="../dist/notify.umd.js"></script>
+</head>
+<body>
+  <button id="btn-toast">Mostrar toast Vanilla</button>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const api = window.notify;
+      api.initToasters(document.body, ['top-right']);
+      document.getElementById('btn-toast').onclick = () => {
+        api.notify({
+          title: '¡Éxito!',
+          description: 'Animación gooey en Vanilla',
+          fill: '#171717',
+          roundness: 24,
+          styles: {
+            title: 'text-white!',
+            badge: 'bg-white/20!',
+            button: 'bg-white/10!',
+          },
+          autopilot: true,
+        });
+      };
+    });
+  </script>
+</body>
+</html>
