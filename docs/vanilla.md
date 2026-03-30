@@ -178,8 +178,8 @@ notify.success({
 If you are not using a bundler, use the [Browser guide](./browser.md) for CDN usage. Example:
 
 ```html
-<link rel="stylesheet" href="https://unpkg.com/@samline/notify@0.2.0/dist/styles.css">
-<script src="https://unpkg.com/@samline/notify@0.2.0/dist/notify.umd.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/@samline/notify@0.2.4/dist/styles.css">
+<script src="https://unpkg.com/@samline/notify@0.2.4/dist/notify.umd.js"></script>
 <script>
 	document.addEventListener('DOMContentLoaded', () => {
 		const api = window.notify;
