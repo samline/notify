@@ -12,12 +12,24 @@ const POSITIONS = [
 
 export type Position = typeof POSITIONS[number];
 
-function createContainer(position: string, root: HTMLElement) {
+function createContainer(position: string, root: HTMLElement, opts?: { offset?: number | string | { top?: number; right?: number; bottom?: number; left?: number }, theme?: string, options?: any }) {
   const c = document.createElement('div');
   c.className = 'sileo-toaster';
   c.setAttribute('data-position', position);
   c.setAttribute('role', 'status');
   c.setAttribute('aria-live', 'polite');
+  if (opts?.theme) c.setAttribute('data-theme', opts.theme);
+  // offset
+  if (opts?.offset !== undefined) {
+    if (typeof opts.offset === 'number' || typeof opts.offset === 'string') {
+      c.style.margin = typeof opts.offset === 'number' ? `${opts.offset}px` : opts.offset;
+    } else if (typeof opts.offset === 'object') {
+      if (opts.offset.top !== undefined) c.style.marginTop = `${opts.offset.top}px`;
+      if (opts.offset.right !== undefined) c.style.marginRight = `${opts.offset.right}px`;
+      if (opts.offset.bottom !== undefined) c.style.marginBottom = `${opts.offset.bottom}px`;
+      if (opts.offset.left !== undefined) c.style.marginLeft = `${opts.offset.left}px`;
+    }
+  }
   return c;
 }
 
@@ -79,14 +91,16 @@ function renderToast(item: ToastItem) {
   return el;
 }
 
-export function initToasters(root: HTMLElement = document.body, positions: Position[] = ['top-right']) {
+export function initToasters(root: HTMLElement = document.body, positions: Position[] = ['top-right'], opts?: { offset?: number | string | { top?: number; right?: number; bottom?: number; left?: number }, theme?: string, options?: any }) {
   const containers: Record<string, HTMLElement> = {};
 
   positions.forEach((pos) => {
-    const c = createContainer(pos, root);
+    const c = createContainer(pos, root, opts);
     root.appendChild(c);
     containers[pos] = c;
   });
+  if (opts?.options) (window as any).sileo._globalOptions = opts.options;
+  if (opts?.theme) (window as any).sileo._theme = opts.theme;
 
   function rerender(items: ToastItem[]) {
     positions.forEach((pos) => {

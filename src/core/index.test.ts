@@ -23,4 +23,32 @@ describe('sileo core', () => {
     // success toast should be present
     expect(items.some((t) => t.options.title === 'done')).toBe(true);
   });
+  it('supports icon, fill, styles, roundness, autopilot', () => {
+    const id = sileo.success({
+      title: 'icon',
+      icon: '<svg></svg>',
+      fill: '#123456',
+      styles: { title: 'custom-title', badge: 'custom-badge' },
+      roundness: 12,
+      autopilot: true
+    });
+    const toast = sileo.getToasts().find((i) => i.id === id);
+    expect(toast?.options.icon).toBe('<svg></svg>');
+    expect(toast?.options.fill).toBe('#123456');
+    expect(toast?.options.styles?.title).toBe('custom-title');
+    expect(toast?.options.roundness).toBe(12);
+    expect(toast?.options.autopilot).toBe(true);
+    sileo.dismiss(id);
+  });
+
+  it('promise supports action', async () => {
+    let actionCalled = false;
+    const p = Promise.resolve('ok');
+    await sileo.promise(p, {
+      loading: { title: 'loading' },
+      action: () => ({ title: 'action', button: { title: 'Do', onClick: () => { actionCalled = true; } } })
+    });
+    const items = sileo.getToasts();
+    expect(items.some((t) => t.options.title === 'action')).toBe(true);
+  });
 });

@@ -4,12 +4,19 @@ import type { ToastItem } from '../core/index';
 import { animate } from 'motion';
 
 export const Toaster = defineComponent({
-  props: { position: { type: String, default: 'top-right' } },
+  props: {
+    position: { type: String, default: 'top-right' },
+    offset: { type: [Number, String, Object], default: 0 },
+    options: { type: Object, default: () => ({}) },
+    theme: { type: String, default: undefined },
+  },
   setup(props) {
     const toasts = ref<ToastItem[]>([]);
     let unsub: (() => void) | null = null;
     onMounted(() => {
       unsub = sileo.subscribe((items) => { toasts.value = items.filter((t) => (t.options.position || 'top-right') === props.position); });
+      if (props.options) (sileo as any)._globalOptions = props.options;
+      if (props.theme) (sileo as any)._theme = props.theme;
     });
     const handleDismiss = async (id: string) => {
       const el = document.querySelector(`[data-id="${id}"]`) as HTMLElement | null;
@@ -40,13 +47,42 @@ export const Toaster = defineComponent({
         lastIds.value = ids;
       }, { deep: true });
     }).catch(() => {});
-    return () => h('div', { class: 'sileo-toaster', 'data-position': props.position }, toasts.value.map((t) => h('div', { key: t.id, class: 'sileo-toast', 'data-type': t.options.type }, [
+
+    // Calcular offset CSS
+    function offsetStyle() {
+      const o = props.offset;
+      if (typeof o === 'number' || typeof o === 'string') {
+        return { margin: typeof o === 'number' ? `${o}px` : o };
+      } else if (typeof o === 'object') {
+        const s: any = {};
+        if (o.top !== undefined) s.marginTop = `${o.top}px`;
+        if (o.right !== undefined) s.marginRight = `${o.right}px`;
+        if (o.bottom !== undefined) s.marginBottom = `${o.bottom}px`;
+        if (o.left !== undefined) s.marginLeft = `${o.left}px`;
+        return s;
+      }
+      return {};
+    }
+
+    return () => h('div', {
+      class: 'sileo-toaster',
+      'data-position': props.position,
+      'data-theme': props.theme,
+      style: offsetStyle()
+    }, toasts.value.map((t) => h('div', { key: t.id, class: 'sileo-toast', 'data-type': t.options.type, 'data-id': t.id }, [
+      t.options.icon ? h('span', {
+        class: t.options.styles?.badge ? `sileo-toast-badge ${t.options.styles.badge}` : 'sileo-toast-badge',
+        style: t.options.fill ? { background: t.options.fill } : {}
+      }, [typeof t.options.icon === 'string' ? h('span', { innerHTML: t.options.icon }) : t.options.icon]) : null,
       h('div', { style: { flex: '1' } }, [
-        h('div', { class: 'sileo-toast-header' }, t.options.title),
-        t.options.description ? h('div', { class: 'sileo-toast-desc' }, t.options.description) : null
+        h('div', { class: t.options.styles?.title ? `sileo-toast-header ${t.options.styles.title}` : 'sileo-toast-header' }, t.options.title),
+        t.options.description ? h('div', { class: t.options.styles?.description ? `sileo-toast-desc ${t.options.styles.description}` : 'sileo-toast-desc' }, t.options.description) : null
       ]),
-      t.options.button ? h('button', { class: 'sileo-toast-btn', onClick: (e: Event) => { e.stopPropagation(); t.options.button!.onClick(); handleDismiss(t.id); } }, t.options.button.title) : null,
-      h('button', { class: 'sileo-toast-close', onClick: () => handleDismiss(t.id) }, '×')
+      t.options.button ? h('button', {
+        class: t.options.styles?.button ? `sileo-toast-btn ${t.options.styles.button}` : 'sileo-toast-btn',
+        onClick: (e: Event) => { e.stopPropagation(); t.options.button!.onClick(); handleDismiss(t.id); }
+      }, t.options.button.title) : null,
+      h('button', { class: 'sileo-toast-close', onClick: () => handleDismiss(t.id) }, '\u00d7')
     ])));
   }
 });

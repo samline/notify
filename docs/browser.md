@@ -19,12 +19,60 @@ Add the stylesheet and UMD bundle to your HTML:
 </script>
 ```
 
+
 ## API
 
 - The UMD bundle exposes `window.notify` (recommended) and `window.notifications` (legacy/compatibility).
 - Always include `dist/styles.css` for correct appearance and animations.
-- Use `api.initToasters(container, positions)` to mount containers (usually `document.body`).
+- Use `api.initToasters(container, positions, { offset, options, theme })` to mount containers (usually `document.body`).
 - Use `api.notify({...})` to show a notification.
+
+### Advanced Options
+
+All notification methods accept advanced options:
+
+| Property      | Type                                   | Default     | Description                                 |
+| ------------- | -------------------------------------- | ----------- | ------------------------------------------- |
+| `title`       | string                                 | —           | Toast title                                 |
+| `description` | string                                 | —           | Optional body text (HTML or string)         |
+| `type`        | `info\|success\|error\|warning\|action`| `info`      | Visual intent                               |
+| `position`    | string                                 | `top-right` | One of toast positions                      |
+| `duration`    | number \| null                         | `4000`      | Auto-dismiss timeout in ms (null = sticky)  |
+| `button`      | { title: string, onClick: () => void } | —           | Optional action button                      |
+| `icon`        | string                                 | —           | Custom icon (SVG or HTML)                   |
+| `fill`        | string                                 | —           | Custom background color (SVG or badge)      |
+| `styles`      | { title, description, badge, button }  | —           | Custom class overrides for sub-elements     |
+| `roundness`   | number                                 | 16          | Border radius in pixels                     |
+| `autopilot`   | boolean \| object                      | true        | Auto expand/collapse timing                 |
+
+#### Example: Advanced Toast
+
+```js
+api.success({
+  title: "Styled!",
+  fill: "#222",
+  icon: '<svg>...</svg>',
+  styles: {
+    title: "text-white!",
+    badge: "bg-white/20!",
+    button: "bg-white/10!"
+  },
+  roundness: 24,
+  autopilot: false
+});
+```
+
+### Toaster Options
+
+You can pass advanced options to `initToasters`:
+
+```js
+api.initToasters(document.body, ['top-right'], {
+  offset: { top: 32, right: 16 },
+  options: { fill: '#222', roundness: 20 },
+  theme: 'dark'
+});
+```
 
 ## Notes
 

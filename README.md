@@ -1,8 +1,9 @@
+
 ## @samline/notify
 
-A Sileo-inspired notifications engine providing a framework-agnostic core and lightweight adapters for Vanilla JS, React, Vue and Svelte.
+A universal toast notification library powered by Sileo, designed to bring the same beautiful, animated experience to React, Vue, Svelte, and Vanilla JS. Built for teams who need Sileo’s quality and API, but require seamless integration across multiple frameworks.
 
-Inspired by Sileo — see the original project: https://github.com/hiaaryan/sileo
+Powered by Sileo — see the original project: https://github.com/hiaaryan/sileo
 
 Table of Contents
 
@@ -100,18 +101,67 @@ notify.clear()
 
 When using the UMD/browser bundle the global is exposed as `window.notify` (preferred). For compatibility the API object also exposes `window.notifications` which maintains the previous shape.
 
-Shared Options
 
-Common `options` across entrypoints:
+Shared Options (All Entrypoints)
+
+All notification methods accept a rich set of options for full customization:
 
 | Property      | Type                                   | Default     | Description                                 |
 | ------------- | -------------------------------------- | ----------- | ------------------------------------------- |
 | `title`       | string                                 | —           | Toast title                                 |
-| `description` | string                                 | —           | Optional body text                          |
-| `type`        | `info\|success\|error\|warning`        | `info`      | Visual intent                               |
+| `description` | string \| ReactNode \| SvelteNode      | —           | Optional body text (JSX, HTML, or string)   |
+| `type`        | `info\|success\|error\|warning\|action`| `info`      | Visual intent                               |
 | `position`    | string                                 | `top-right` | One of toast positions                      |
-| `duration`    | number                                 | `4000`      | Auto-dismiss timeout in ms (0 = persistent) |
+| `duration`    | number \| null                         | `4000`      | Auto-dismiss timeout in ms (null = sticky)  |
 | `button`      | { title: string, onClick: () => void } | —           | Optional action button                      |
+| `icon`        | string \| ReactNode \| SvelteNode      | —           | Custom icon (SVG, JSX, or node)             |
+| `fill`        | string                                 | —           | Custom background color (SVG or badge)      |
+| `styles`      | { title, description, badge, button }  | —           | Custom class overrides for sub-elements     |
+| `roundness`   | number                                 | 16          | Border radius in pixels                     |
+| `autopilot`   | boolean \| object                      | true        | Auto expand/collapse timing                 |
+
+#### Example: Advanced Toast
+
+```js
+notify.success({
+  title: "Styled!",
+  fill: "#222",
+  icon: '<svg>...</svg>',
+  styles: {
+    title: "text-white!",
+    badge: "bg-white/20!",
+    button: "bg-white/10!"
+  },
+  roundness: 24,
+  autopilot: false
+});
+```
+
+#### SileoPromiseOptions
+
+The `promise` method supports advanced flows:
+
+```js
+notify.promise(fetchData(), {
+  loading: { title: "Loading..." },
+  success: (data) => ({ title: `Loaded ${data.name}` }),
+  error: (err) => ({ title: "Error", description: err.message }),
+  action: (data) => ({ title: "Action required", button: { title: "Retry", onClick: () => retry() } })
+});
+```
+
+#### Toaster Component Props (React, Svelte, Vue, Vanilla)
+
+All Toaster components accept the following props for global control:
+
+| Prop      | Type                                      | Default      | Description                                 |
+| --------- | ----------------------------------------- | ------------ | ------------------------------------------- |
+| `position`| string                                    | top-right    | Default toast position                      |
+| `offset`  | number \| string \| {top,right,bottom,left}| 0            | Distance from viewport edges                |
+| `options` | Partial<Options>                          | —            | Default options for all toasts              |
+| `theme`   | "light" \| "dark" \| "system"            | system       | Color scheme (auto, light, dark)            |
+
+See framework-specific guides for more examples.
 
 Notes
 

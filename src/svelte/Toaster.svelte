@@ -1,37 +1,35 @@
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
   import { toasts, initSileoStore } from './store';
-  import type { ToastItem } from '../core/index';
+  import type { ToastItem, SileoOptions } from '../core/index';
   import { sileo } from '../core/index';
   import { animate } from 'motion';
+
+  export let position: string = 'top-right';
+  export let offset: number | string | { top?: number; right?: number; bottom?: number; left?: number } = 0;
+  export let options: Partial<SileoOptions> = {};
+  export let theme: 'light' | 'dark' | 'system' | undefined = undefined;
 
   let unsubscribe: () => void;
   let items: ToastItem[] = [];
 
   onMount(() => {
-    // subscribe local items to avoid $store auto-subscription issues
-    unsubscribe = toasts.subscribe((v) => (items = v));
-    // also initialize sileo store subscription helper if present
-    try {
-      initSileoStore();
-    } catch (e) {
-      // no-op
-    }
+    unsubscribe = toasts.subscribe((v) => (items = v.filter((t) => (t.options.position || 'top-right') === position)));
+    try { initSileoStore(); } catch (e) {}
+    if (options) (sileo as any)._globalOptions = options;
+    if (theme) (sileo as any)._theme = theme;
+    return () => {
+      if (options) delete (sileo as any)._globalOptions;
+      if (theme) delete (sileo as any)._theme;
+    };
   });
-
   onDestroy(() => { unsubscribe && unsubscribe(); });
 
   export function animateIn(node: HTMLElement) {
     try {
       const a = animate(node, { opacity: [0, 1], transform: ['translateY(-8px)', 'translateY(0px)'] }, { duration: 0.2 });
-      return {
-        destroy() {
-          // no-op
-        }
-      };
-    } catch (e) {
       return { destroy() {} };
-    }
+    } catch (e) { return { destroy() {} }; }
   }
 
   async function handleDismiss(id: string, ev: Event) {
@@ -45,25 +43,47 @@
     }
     sileo.dismiss(id);
   }
+
+  $: offsetStyle = (() => {
+    if (typeof offset === 'number' || typeof offset === 'string') {
+      return `margin: ${typeof offset === 'number' ? offset + 'px' : offset}`;
+    } else if (typeof offset === 'object') {
+      let s = '';
+      if (offset.top !== undefined) s += `margin-top: ${offset.top}px;`;
+      if (offset.right !== undefined) s += `margin-right: ${offset.right}px;`;
+      if (offset.bottom !== undefined) s += `margin-bottom: ${offset.bottom}px;`;
+      if (offset.left !== undefined) s += `margin-left: ${offset.left}px;`;
+      return s;
+    }
+    return '';
+  })();
 </script>
 
 <style>
   /* rely on global sileo styles */
 </style>
 
-{#if items && items.length}
-  {#each items as t (t.id)}
-    <div class="sileo-toast" data-type={t.options.type} data-id={t.id} use:animateIn>
-      <div style="flex:1">
-        <div class="sileo-toast-header">{t.options.title}</div>
-        {#if t.options.description}
-          <div class="sileo-toast-desc">{t.options.description}</div>
+<div class="sileo-toaster" data-position={position} data-theme={theme} style={offsetStyle}>
+  {#if items && items.length}
+    {#each items as t (t.id)}
+      <div class="sileo-toast" data-type={t.options.type} data-id={t.id} use:animateIn>
+        {#if t.options.icon}
+          <span class={t.options.styles?.badge ? `sileo-toast-badge ${t.options.styles.badge}` : 'sileo-toast-badge'} style={t.options.fill ? `background:${t.options.fill}` : ''}>
+            {@html typeof t.options.icon === 'string' ? t.options.icon : ''}
+            {#if typeof t.options.icon !== 'string'}{t.options.icon}{/if}
+          </span>
         {/if}
+        <div style="flex:1">
+          <div class={t.options.styles?.title ? `sileo-toast-header ${t.options.styles.title}` : 'sileo-toast-header'}>{t.options.title}</div>
+          {#if t.options.description}
+            <div class={t.options.styles?.description ? `sileo-toast-desc ${t.options.styles.description}` : 'sileo-toast-desc'}>{t.options.description}</div>
+          {/if}
+        </div>
+        {#if t.options.button}
+          <button class={t.options.styles?.button ? `sileo-toast-btn ${t.options.styles.button}` : 'sileo-toast-btn'} on:click|stopPropagation={(e) => { t.options.button && typeof t.options.button.onClick === 'function' ? t.options.button.onClick() : undefined; handleDismiss(t.id, e); }}>{t.options.button.title}</button>
+        {/if}
+        <button class="sileo-toast-close" on:click={(e) => handleDismiss(t.id, e)}>7</button>
       </div>
-      {#if t.options.button}
-        <button class="sileo-toast-btn" on:click|stopPropagation={(e) => { t.options.button && typeof t.options.button.onClick === 'function' ? t.options.button.onClick() : undefined; handleDismiss(t.id, e); }}>{t.options.button.title}</button>
-      {/if}
-      <button class="sileo-toast-close" on:click={(e) => handleDismiss(t.id, e)}>×</button>
-    </div>
-  {/each}
-{/if}
+    {/each}
+  {/if}
+</div>

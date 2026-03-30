@@ -8,20 +8,49 @@ export type Position =
 
 export type ToastType = 'success' | 'error' | 'info' | 'warning' | 'loading' | 'action';
 
-export interface ToastButton {
+
+// SileoButton
+export interface SileoButton {
   title: string;
   onClick: () => void;
 }
 
-export interface ToastOptions {
+// SileoStyles
+export interface SileoStyles {
   title?: string;
   description?: string;
+  badge?: string;
+  button?: string;
+}
+
+// ToastOptions/SileoOptions
+export interface SileoOptions {
+  title?: string;
+  description?: any; // ReactNode | string | unknown framework node
   position?: Position;
-  duration?: number | null; // ms, null = sticky
+  duration?: number | null;
   type?: ToastType;
-  button?: ToastButton;
+  button?: SileoButton;
+  icon?: any; // ReactNode | SvelteComponent | VueComponent | string (SVG)
+  fill?: string;
+  styles?: SileoStyles;
+  roundness?: number;
+  autopilot?: boolean | object;
   [key: string]: any;
 }
+
+// SileoPromiseOptions
+export interface SileoPromiseOptions<T = unknown> {
+  loading: SileoOptions;
+  success: SileoOptions | ((data: T) => SileoOptions);
+  error: SileoOptions | ((err: unknown) => SileoOptions);
+  action?: SileoOptions | ((data: T) => SileoOptions);
+  position?: Position;
+}
+
+// Alias para compatibilidad
+export type ToastButton = SileoButton;
+export type ToastOptions = SileoOptions;
 
 export interface ToastItem {
   id: string;
@@ -56,8 +85,28 @@ class NotifyController {
   }
 
   show(opts: ToastOptions): string {
+    // Normalizar props avanzadas
+    const {
+      icon,
+      fill,
+      styles,
+      roundness,
+      autopilot,
+      ...rest
+    } = opts;
     const id = this.nextId();
-    const item: ToastItem = { id, options: { ...opts }, createdAt: Date.now() };
+    const item: ToastItem = {
+      id,
+      options: {
+        ...rest,
+        ...(icon !== undefined ? { icon } : {}),
+        ...(fill !== undefined ? { fill } : {}),
+        ...(styles !== undefined ? { styles } : {}),
+        ...(roundness !== undefined ? { roundness } : {}),
+        ...(autopilot !== undefined ? { autopilot } : {}),
+      },
+      createdAt: Date.now(),
+    };
     this.toasts.push(item);
     this.notify();
     return id;
@@ -100,10 +149,26 @@ class NotifyController {
     this.notify();
   }
 
-  promise<T = any>(p: Promise<T>, opts: { loading: ToastOptions; success?: ToastOptions | ((r: T) => ToastOptions); error?: ToastOptions | ((e: any) => ToastOptions); position?: Position; }) {
+  promise<T = any>(
+    p: Promise<T>,
+    opts: {
+      loading: ToastOptions;
+      success?: ToastOptions | ((r: T) => ToastOptions);
+      error?: ToastOptions | ((e: any) => ToastOptions);
+      action?: ToastOptions | ((r: T) => ToastOptions);
+      position?: Position;
+    }
+  ) {
     const loadingId = this.show({ ...(opts.loading || {}), type: 'loading', position: opts.position });
     p.then((res) => {
       this.dismiss(loadingId);
+      if (opts.action) {
+        const actionOpt = typeof opts.action === 'function' ? (opts.action as any)(res) : opts.action;
+        if (actionOpt) {
+          this.show({ ...(actionOpt || {}), type: 'action', position: opts.position });
+          return;
+        }
+      }
       const successOpt = typeof opts.success === 'function' ? (opts.success as any)(res) : opts.success;
       if (successOpt) this.show({ ...(successOpt || {}), type: 'success', position: opts.position });
     }).catch((err) => {
