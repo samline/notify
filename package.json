@@ -37,6 +37,7 @@
     "@types/node": "^20.0.0",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
+    "jsdom": "^29.0.1",
     "rollup": "^3.0.0",
     "rollup-plugin-copy": "^3.4.0",
     "svelte-check": "^3.3.0",

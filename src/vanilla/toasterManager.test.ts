@@ -1,4 +1,7 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+/**
+ * @vitest-environment jsdom
+ */
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { initToasters, notify } from '../vanilla/index';
 
 describe('initToasters posiciones y fallback', () => {

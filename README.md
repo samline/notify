@@ -121,7 +121,7 @@ All notification methods accept a rich set of options for full customization. **
 
 - If you initialize only one position with `initToasters`, toasts without an explicit `position` will go there (dynamic fallback).
 - If you initialize multiple positions, the fallback will be `'top-right'`.
-- If you notify to a position that was not initialized, you will see a warning in the console and the toast will not be shown.
+- If you notify to a position that was not initialized, a warning will appear in the console and the toast will not be shown. This warning is now always triggered, incluso si la posición no existe en el DOM.
 
 Example:
 

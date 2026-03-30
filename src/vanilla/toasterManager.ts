@@ -106,6 +106,14 @@ export function initToasters(root: HTMLElement = document.body, positions: Posit
   const fallbackPosition = positions.length === 1 ? positions[0] : 'top-right';
 
   function rerender(items: ToastItem[]) {
+    // Lanzar advertencia para todos los toasts con posición no inicializada
+    items.forEach((t) => {
+      if (t.options.position && !containers[t.options.position]) {
+        console.warn(
+          `[sileo] Toast con posición "${t.options.position}" pero no se inicializó ningún contenedor para esa posición. Inicializa con initToasters(..., ['${t.options.position}']) para mostrarlo.`
+        );
+      }
+    });
     positions.forEach((pos) => {
       const container = containers[pos];
       // fallback dinámico
@@ -126,12 +134,6 @@ export function initToasters(root: HTMLElement = document.body, positions: Posit
       // Añadir nuevos toasts
       visible.forEach((t) => {
         if (!container.querySelector(`[data-id="${t.id}"]`)) {
-          // Advertir si la posición no está inicializada
-          if (t.options.position && !containers[t.options.position]) {
-            console.warn(
-              `[sileo] Toast con posición "${t.options.position}" pero no se inicializó ningún contenedor para esa posición. Inicializa con initToasters(..., ['${t.options.position}']) para mostrarlo.`
-            );
-          }
           const node = renderToast(t);
           container.appendChild(node);
           // animar entrada
