@@ -7,7 +7,8 @@ Use the vanilla adapter for plain JavaScript projects with a bundler (Vite, Webp
 
 ```js
 import { notify, initToasters } from '@samline/notify/vanilla';
-initToasters(document.body, ['top-right']);
+// Always use an array of strings as the second argument
+initToasters(document.body, ['top-left']);
 notify.success({ title: 'Saved', description: 'Your changes have been saved' });
 ```
 
@@ -60,7 +61,8 @@ notify.clear('top-right');
 You can pass advanced options to `initToasters`:
 
 ```js
-initToasters(document.body, ['top-right'], {
+// Correct example with one position (dynamic fallback)
+initToasters(document.body, ['bottom-left'], {
 	offset: { top: 32, right: 16 },
 	options: { fill: '#222', roundness: 20 },
 	theme: 'dark'
@@ -70,18 +72,30 @@ initToasters(document.body, ['top-right'], {
 ### Example: Multiple positions and custom offset
 
 ```js
+// Correct example with multiple positions (classic fallback)
 initToasters(document.body, ['top-right', 'bottom-left'], {
 	offset: { top: 24, right: 24, bottom: 24, left: 24 },
 	theme: 'light',
 	options: { fill: '#0f1724', roundness: 18 }
 });
-```
-
-## API
 
 ```js
-notify.show(options)
-notify.success(options)
+// Custom position (make sure you initialized that position)
+notify.success({
+	title: 'Bottom left',
+	position: 'bottom-left'
+});
+```
+
+---
+
+## ⚠️ Warnings and Best Practices
+
+- The second argument to `initToasters` **must be an array of strings** (e.g. `['top-left']`).
+- **Do not use** `document.body['top-left']` (this is `undefined` and will not work).
+- If you initialize only one position, toasts without an explicit position will go there automatically (dynamic fallback).
+- If you initialize multiple positions, toasts without an explicit position will go to `'top-right'` by default.
+- If you notify to a position that was not initialized, you will see a warning in the console and the toast will not be shown.
 notify.error(options)
 notify.info(options)
 notify.warning(options)

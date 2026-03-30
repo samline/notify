@@ -13,11 +13,14 @@ Add the stylesheet and UMD bundle to your HTML:
 <script>
   document.addEventListener('DOMContentLoaded', () => {
     const api = window.notify; // or window.notifications for legacy
-    api.initToasters(document.body, ['top-right']);
+    // Always use an array of strings as the second argument
+    // Correct usage:
+    api.initToasters(document.body, ['top-left']);
     api.notify({ title: 'Hello', description: 'No-bundler usage', type: 'info' });
   });
 </script>
 ```
+
 
 
 ## API
@@ -26,6 +29,14 @@ Add the stylesheet and UMD bundle to your HTML:
 - Always include `dist/styles.css` for correct appearance and animations.
 - Use `api.initToasters(container, positions, { offset, options, theme })` to mount containers (usually `document.body`).
 - Use `api.notify({...})` to show a notification.
+
+### ⚠️ Warnings and Best Practices
+
+- The second argument to `initToasters` **must be an array of strings** (e.g. `['top-left']`).
+- **Do not use** `document.body['top-left']` (this is `undefined` and will not work).
+- If you initialize only one position, toasts without an explicit position will go there automatically (dynamic fallback).
+- If you initialize multiple positions, toasts without an explicit position will go to `'top-right'` by default.
+- If you notify to a position that was not initialized, you will see a warning in the console and the toast will not be shown.
 
 ### Advanced Options
 
@@ -64,10 +75,12 @@ api.success({
 
 ### Toaster Options
 
+
 You can pass advanced options to `initToasters`:
 
 ```js
-api.initToasters(document.body, ['top-right'], {
+// Correct example with multiple positions
+api.initToasters(document.body, ['top-right', 'bottom-left'], {
   offset: { top: 32, right: 16 },
   options: { fill: '#222', roundness: 20 },
   theme: 'dark'

@@ -102,29 +102,39 @@ export function initToasters(root: HTMLElement = document.body, positions: Posit
   if (opts?.options) (window as any).sileo._globalOptions = opts.options;
   if (opts?.theme) (window as any).sileo._theme = opts.theme;
 
+  // fallback dinámico: si solo hay una posición, usarla como default
+  const fallbackPosition = positions.length === 1 ? positions[0] : 'top-right';
+
   function rerender(items: ToastItem[]) {
     positions.forEach((pos) => {
       const container = containers[pos];
-      const visible = items.filter((t) => (t.options.position || 'top-right') === pos);
+      // fallback dinámico
+      const visible = items.filter((t) => (t.options.position || fallbackPosition) === pos);
 
-      // Diff existing children and animate out removed toasts
+      // Diff existing children y animar salida de toasts removidos
       const visibleIds = new Set(visible.map((v) => v.id));
       const existing = Array.from(container.children) as HTMLElement[];
 
       existing.forEach((child) => {
         const id = child.dataset.id;
         if (!id || !visibleIds.has(id)) {
-          // animate out then remove
+          // animar salida y luego remover
           animate(child, { opacity: 0, y: -8 }, { duration: 0.18 }).finished.then(() => child.remove());
         }
       });
 
-      // Add new items
+      // Añadir nuevos toasts
       visible.forEach((t) => {
         if (!container.querySelector(`[data-id="${t.id}"]`)) {
+          // Advertir si la posición no está inicializada
+          if (t.options.position && !containers[t.options.position]) {
+            console.warn(
+              `[sileo] Toast con posición "${t.options.position}" pero no se inicializó ningún contenedor para esa posición. Inicializa con initToasters(..., ['${t.options.position}']) para mostrarlo.`
+            );
+          }
           const node = renderToast(t);
           container.appendChild(node);
-          // animate in
+          // animar entrada
           requestAnimationFrame(() => {
             animate(node, { opacity: [0, 1], y: [-6, 0] }, { duration: 0.24 });
           });

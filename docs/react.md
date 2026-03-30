@@ -103,7 +103,7 @@ All notification methods accept advanced options:
 | `title`       | string                                 | —           | Toast title                                 |
 | `description` | string \| ReactNode                    | —           | Optional body text (JSX or string)          |
 | `type`        | `info\|success\|error\|warning\|action`| `info`      | Visual intent                               |
-| `position`    | string                                 | `top-right` | One of toast positions                      |
+| `position`    | string                                 | `top-right` | One of the valid positions. If you only initialize one position with `<Toaster position="..." />`, toasts without an explicit position will go there (dynamic fallback). If you initialize multiple, the fallback is `top-right`. |
 | `duration`    | number \| null                         | `4000`      | Auto-dismiss timeout in ms (null = sticky)  |
 | `button`      | { title: string, onClick: () => void } | —           | Optional action button                      |
 | `icon`        | string \| ReactNode                    | —           | Custom icon (SVG or JSX)                    |
@@ -155,11 +155,18 @@ notify.info({
   duration: null
 });
 
-// Custom position
+// Custom position (make sure you initialized that position with <Toaster position="bottom-left" />)
 notify.success({
   title: 'Bottom left',
   position: 'bottom-left'
 });
+---
+
+## ⚠️ Warnings and Best Practices
+
+- If you only use one `<Toaster position="..." />`, toasts without an explicit position will go there automatically (dynamic fallback).
+- If you use multiple `<Toaster position="..." />`, the fallback will be `top-right`.
+- If you notify to a position that was not initialized, you will see a warning in the console and the toast will not be shown.
 
 // Description as ReactNode
 notify.info({

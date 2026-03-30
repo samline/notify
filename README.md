@@ -1,5 +1,5 @@
 
-## @samline/notify
+# Notify
 
 A universal toast notification library powered by Sileo, designed to bring the same beautiful, animated experience to React, Vue, Svelte, and Vanilla JS. Built for teams who need Sileo’s quality and API, but require seamless integration across multiple frameworks.
 
@@ -48,19 +48,31 @@ CDN / Browser
 
 Use the browser build when your project loads scripts directly and cannot compile npm modules (Shopify, WordPress, plain HTML). Example CDN usage (replace version):
 
+
 ```html
 <script src="https://unpkg.com/@samline/notify@0.2.0/dist/notify.umd.js"></script>
-<link
-  rel="stylesheet" 
-  href="https://unpkg.com/@samline/notify@0.2.0/dist/styles.css"
-/>
+<link rel="stylesheet" href="https://unpkg.com/@samline/notify@0.2.0/dist/styles.css" />
 
 <script>
-  const api = window.notify || window.notifications
-  api.initToasters(document.body, ['top-right'])
-  api.notify({ title: 'Saved', description: 'Changes saved', type: 'success' })
+  // Always use an array of strings as the second argument
+  // Correct usage:
+  const api = window.notify || window.notifications;
+  api.initToasters(document.body, ['top-left']);
+  api.notify({
+    title: 'Saved',
+    description: 'Changes saved',
+    type: 'success'
+    // You can omit position if you only initialized one position
+  });
 </script>
 ```
+
+
+> ⚠️ **Important:**
+> - The second argument to `initToasters` **must be an array of strings** with the positions (e.g. `['top-left']`).
+> - **Do not use** `document.body['top-left']` (this is `undefined` and will not work).
+> - If you initialize only one position, toasts without an explicit position will go there automatically (dynamic fallback).
+> - If you initialize multiple positions, toasts without an explicit position will go to `'top-right'` by default.
 
 Entry Points
 
@@ -102,9 +114,31 @@ notify.clear()
 When using the UMD/browser bundle the global is exposed as `window.notify` (preferred). For compatibility the API object also exposes `window.notifications` which maintains the previous shape.
 
 
+
 Shared Options (All Entrypoints)
 
-All notification methods accept a rich set of options for full customization:
+All notification methods accept a rich set of options for full customization. **Position fallback note:**
+
+- If you initialize only one position with `initToasters`, toasts without an explicit `position` will go there (dynamic fallback).
+- If you initialize multiple positions, the fallback will be `'top-right'`.
+- If you notify to a position that was not initialized, you will see a warning in the console and the toast will not be shown.
+
+Example:
+
+```js
+// Only one position (dynamic fallback)
+api.initToasters(document.body, ['bottom-left']);
+api.notify({ title: 'Will go to bottom-left' });
+
+// Multiple positions (classic fallback)
+api.initToasters(document.body, ['top-right', 'bottom-left']);
+api.notify({ title: 'Will go to top-right' });
+api.notify({ title: 'Will go to bottom-left', position: 'bottom-left' });
+```
+
+---
+
+All options:
 
 | Property      | Type                                   | Default     | Description                                 |
 | ------------- | -------------------------------------- | ----------- | ------------------------------------------- |
