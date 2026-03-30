@@ -72,7 +72,7 @@ notify.clear('top-right');
 
 > **Note:**
 > Import `@samline/notify/dist/styles.css` in your main entrypoint or include it in your HTML for correct appearance.
-> CDN: `<link rel="stylesheet" href="https://unpkg.com/@samline/notify@0.1.15/dist/styles.css">`
+
 
 
 ## API
