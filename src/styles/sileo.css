@@ -22,6 +22,20 @@
 .sileo-toaster[data-position="bottom-right"]{ bottom: 16px; right: 16px; align-items:flex-end; }
 .sileo-toaster[data-position="bottom-left"]{ bottom: 16px; left: 16px; align-items:flex-start; }
 
+/* Soporte para posiciones centradas */
+.sileo-toaster[data-position="top-center"] {
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  align-items: center;
+}
+.sileo-toaster[data-position="bottom-center"] {
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  align-items: center;
+}
+
 .sileo-toast{
   pointer-events: auto;
   min-width: 220px;
