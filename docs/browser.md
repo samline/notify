@@ -8,8 +8,8 @@ Use this package directly in the browser when you cannot use npm modules or a bu
 Add the stylesheet and UMD bundle to your HTML:
 
 ```html
-<link rel="stylesheet" href="https://unpkg.com/@samline/notify@0.2.4/dist/styles.css">
-<script src="https://unpkg.com/@samline/notify@0.2.4/dist/notify.umd.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/@samline/notify@0.2.5/dist/styles.css">
+<script src="https://unpkg.com/@samline/notify@0.2.5/dist/notify.umd.js"></script>
 <script>
   document.addEventListener('DOMContentLoaded', () => {
     const api = window.notify; // or window.notifications for legacy
@@ -40,8 +40,8 @@ Add the stylesheet and UMD bundle to your HTML:
 
 ### Advanced Options
 
-<link rel="stylesheet" href="https://unpkg.com/@samline/notify@0.2.4/dist/styles.css">
-<script src="https://unpkg.com/@samline/notify@0.2.4/dist/notify.umd.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/@samline/notify@0.2.5/dist/styles.css">
+<script src="https://unpkg.com/@samline/notify@0.2.5/dist/notify.umd.js"></script>
 | Property      | Type                                   | Default     | Description                                 |
 | ------------- | -------------------------------------- | ----------- | ------------------------------------------- |
 | `title`       | string                                 | —           | Toast title                                 |
@@ -55,8 +55,8 @@ Add the stylesheet and UMD bundle to your HTML:
 | `styles`      | { title, description, badge, button }  | —           | Custom class overrides for sub-elements     |
 | `roundness`   | number                                 | 16          | Border radius in pixels                     |
 | `autopilot`   | boolean \| object                      | true        | Auto expand/collapse timing                 |
-    <script src="https://unpkg.com/@samline/notify@0.2.4/dist/notify.umd.js"></script>
-    <link rel="stylesheet" href="https://unpkg.com/@samline/notify@0.2.4/dist/styles.css" />
+    <script src="https://unpkg.com/@samline/notify@0.2.5/dist/notify.umd.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/@samline/notify@0.2.5/dist/styles.css" />
 
 ```js
 api.success({
