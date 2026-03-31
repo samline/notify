@@ -1,16 +1,8 @@
-<div align="center">
-  <h1>Sileo</h1>
-  <p><b>Agnostic, physics-based toast notifications for any JS framework or browser.</b></p>
-  <p>Unify the toast notification experience in React, Vue, Svelte, VanillaJS, and Browser/CDN with a single API.</p>
-</div>
+# Notify
 
----
+A toast notification library powered by Sileo, designed to bring the same beautiful, animated experience to React, Vue, Svelte, and Vanilla JS. Built for teams who need Sileo’s quality and API, but require seamless integration across multiple frameworks.
 
-![npm](https://img.shields.io/npm/v/@samline/notify)
-![Types](https://img.shields.io/badge/types-included-blue)
-![License](https://img.shields.io/npm/l/@samline/notify)
-
----
+## Sileo project: [text](https://github.com/hiaaryan/sileo)
 
 ## Table of Contents
 
@@ -59,32 +51,32 @@ Include the generated UMD file (`dist/browser-sileo.js`) in your HTML:
 
 ## Entrypoints
 
-| Entrypoint                         | Descripción                       |
-| ---------------------------------- | --------------------------------- |
-| @samline/notify                    | API VanillaJS (puerta de entrada) |
-| @samline/notify/react              | API React (hooks y helpers)       |
-| @samline/notify/vue                | API Vue (composable)              |
-| @samline/notify/svelte             | API Svelte (store)                |
-| @samline/notify/dist/browser-sileo | Global para Browser/CDN           |
+| Entrypoint                         | Description                        |
+| ---------------------------------- | ----------------------------------- |
+| @samline/notify                    | VanillaJS API                      |
+| @samline/notify/react              | React API (hooks and helpers)      |
+| @samline/notify/vue                | Vue API (composable)               |
+| @samline/notify/svelte             | Svelte API (store)                 |
+| @samline/notify/dist/browser-sileo | Global for Browser/CDN             |
 
 ---
 
 ## Quick Start
 
-### Importación por framework
+### Import by framework
 
-**VanillaJS (por defecto):**
+**VanillaJS (default):**
 
 ```js
 import { showSileoToast } from '@samline/notify'
-showSileoToast({ title: '¡Hola mundo!', type: 'success' })
+showSileoToast({ title: 'Hello world!', type: 'success' })
 ```
 
 **React:**
 
 ```js
 import { showSileoToast } from '@samline/notify/react'
-showSileoToast({ title: '¡Hola desde React!', type: 'success' })
+showSileoToast({ title: 'Hello from React!', type: 'success' })
 ```
 
 **Vue:**
