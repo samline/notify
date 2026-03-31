@@ -1,72 +1,83 @@
 <div align="center">
   <h1>Sileo</h1>
-  <p>An opinionated, physics-based toast component for React.</p>
-  <p><a href="https://sileo.aaryan.design">Try Out</a> &nbsp; / &nbsp; <a href="https://sileo.aaryan.design/docs">Docs</a></p>
-  <video src="https://github.com/user-attachments/assets/a292d310-9189-490a-9f9d-d0a1d09defce"></video>
+  <p><b>Agnostic, physics-based toast notifications for any JS framework or plain browser.</b></p>
+  <p>Use Sileo in VanillaJS, Vue, Svelte, or directly in the browser via CDN. One API, all platforms.</p>
 </div>
-
-### Installation
-
-```bash
-npm i sileo
-```
-
-### Getting Started
-
-```tsx
-import { sileo, Toaster } from "sileo";
-
-export default function App() {
-  return (
-    <>
-      <Toaster position="top-right" />
-      <YourApp />
-    </>
-  );
-}
-```
-
-For detailed docs, click here: https://sileo.aaryan.design
 
 ---
 
-## Documentación por framework
+## Documentation
 
 - [VanillaJS](docs/vanillajs.md)
 - [Vue 3](docs/vue.md)
 - [Svelte](docs/svelte.md)
-- [Browser/CDN](docs/browser.md)
+- [Browser / CDN](docs/browser.md)
+- [General API Reference](docs/api.md)
 
 ---
 
-## API General
+## General API
 
-La API de Sileo es agnóstica y funciona igual en todos los entornos. Las opciones principales para mostrar un toast son:
+Sileo exposes a unified API for all environments. All options and methods are available in every integration. No hidden features.
+
+### Toast Options
+
+| Option      | Type                                                                                            | Description                  |
+| ----------- | ----------------------------------------------------------------------------------------------- | ---------------------------- |
+| title       | string                                                                                          | Toast title                  |
+| description | string                                                                                          | Optional description         |
+| type        | 'success' \| 'loading' \| 'error' \| 'warning' \| 'info' \| 'action'                            | Toast type                   |
+| duration    | number                                                                                          | Duration in milliseconds     |
+| position    | 'top-left' \| 'top-center' \| 'top-right' \| 'bottom-left' \| 'bottom-center' \| 'bottom-right' | Screen position              |
+| styles      | { title, description, badge, button }                                                           | Custom CSS classes           |
+| fill        | string                                                                                          | Background color             |
+| roundness   | number                                                                                          | Border radius                |
+| autopilot   | boolean \| { expand, collapse }                                                                 | Auto expand/collapse control |
+| button      | { title: string, onClick: () => void }                                                          | Action button                |
+
+### Main Methods
+
+- `showSileoToast(options)` — Show a toast (VanillaJS, Vue, Svelte, Browser)
+- `onSileoToastsChange(fn)` — Subscribe to toast changes (VanillaJS)
+- `useSileoToasts()` — Vue composable
+- `sileoToasts` — Svelte store
+
+#### Example
 
 ```js
-{
-  title: string, // Título del toast
-  description?: string, // Descripción opcional
-  type?: 'success' | 'loading' | 'error' | 'warning' | 'info' | 'action',
-  duration?: number, // Duración en ms
-  position?: 'top-left' | 'top-center' | 'top-right' | 'bottom-left' | 'bottom-center' | 'bottom-right',
-  styles?: { title?: string, description?: string, badge?: string, button?: string },
-  fill?: string, // Color de fondo
-  roundness?: number, // Radio de borde
-  autopilot?: boolean | { expand?: number, collapse?: number },
-  button?: { title: string, onClick: () => void }
-}
+showSileoToast({
+  title: 'Action required',
+  description: 'Click the button to continue',
+  type: 'action',
+  button: {
+    title: 'Continue',
+    onClick: () => alert('You continued!'),
+  },
+  styles: {
+    title: 'my-title',
+    button: 'my-button',
+  },
+  fill: '#fffae0',
+  roundness: 24,
+  duration: 5000,
+})
 ```
 
-### Métodos principales
+---
 
-- `showSileoToast(options)` — Muestra un toast (en VanillaJS, Vue, Svelte)
-- `onSileoToastsChange(fn)` — Suscríbete a cambios de toasts (VanillaJS)
-- `useSileoToasts()` — Composable para Vue
-- `sileoToasts` — Store para Svelte
+## Quickstart
 
-### Opciones dedicadas
+Choose your environment and follow the documentation:
 
-Cada framework puede tener utilidades o helpers específicos para su ecosistema. Consulta la documentación de cada uno para ver ejemplos y detalles de integración visual.
+- [VanillaJS Quickstart](docs/vanillajs.md)
+- [Vue 3 Quickstart](docs/vue.md)
+- [Svelte Quickstart](docs/svelte.md)
+- [Browser / CDN Quickstart](docs/browser.md)
 
 ---
+
+## About
+
+Sileo is a fully documented, framework-agnostic toast notification library. All features and options are available in every integration. For framework-specific helpers or advanced usage, see the documentation for your environment.
+
+If you find any missing option or undocumented feature, please open an issue.
