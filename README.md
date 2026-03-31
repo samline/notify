@@ -1,7 +1,7 @@
 <div align="center">
   <h1>Sileo</h1>
   <p><b>Agnostic, physics-based toast notifications for any JS framework or browser.</b></p>
-  <p>Unifica la experiencia de notificaciones tipo toast en React, Vue, Svelte, VanillaJS y Browser/CDN con una sola API.</p>
+  <p>Unify the toast notification experience in React, Vue, Svelte, VanillaJS, and Browser/CDN with a single API.</p>
 </div>
 
 ---
@@ -12,31 +12,22 @@
 
 ---
 
-## Tabla de Contenidos
+## Table of Contents
 
-- [Instalación](#instalación)
+- [Installation](#installation)
 - [CDN / Browser](#cdn--browser)
 - [Entrypoints](#entrypoints)
 - [Quick Start](#quick-start)
-- [¿Qué puedes hacer?](#qué-puedes-hacer)
-- [API General](#api-general)
-- [Ejemplo mínimo](#ejemplo-mínimo)
-- [Documentación por framework](#documentación-por-framework)
-- [Licencia](#licencia)
+- [What can you do?](#what-can-you-do)
+- [General API](#general-api)
+- [Minimal Example](#minimal-example)
+- [Framework Documentation](#framework-documentation)
+- [License](#license)
 
 ---
 
-## Instalación
+## Installation
 
-```bash
-npm install @samline/notify
-# React
-npm install @samline/notify/react
-# Vue
-npm install @samline/notify/vue
-# Svelte
-npm install @samline/notify/svelte
-```
 ```bash
 npm install @samline/notify
 # React
@@ -51,13 +42,13 @@ npm install @samline/notify/svelte
 
 ## CDN / Browser
 
-Incluye el archivo UMD generado (`dist/browser-sileo.js`) en tu HTML:
+Include the generated UMD file (`dist/browser-sileo.js`) in your HTML:
 
 ```html
 <script src="dist/browser-sileo.js"></script>
 <script>
   Sileo.show({
-    title: 'Hola desde el navegador',
+    title: 'Hello from the browser',
     type: 'success',
     duration: 2000,
   })
@@ -68,45 +59,50 @@ Incluye el archivo UMD generado (`dist/browser-sileo.js`) en tu HTML:
 
 ## Entrypoints
 
-| Entrypoint                | Descripción                        |
-| ------------------------- | ---------------------------------- |
-| @samline/notify            | API VanillaJS (puerta de entrada)  |
-| @samline/notify/react      | API React (hooks y helpers)         |
-| @samline/notify/vue        | API Vue (composable)                |
-| @samline/notify/svelte     | API Svelte (store)                  |
-| @samline/notify/dist/browser-sileo | Global para Browser/CDN         |
+| Entrypoint                         | Descripción                       |
+| ---------------------------------- | --------------------------------- |
+| @samline/notify                    | API VanillaJS (puerta de entrada) |
+| @samline/notify/react              | API React (hooks y helpers)       |
+| @samline/notify/vue                | API Vue (composable)              |
+| @samline/notify/svelte             | API Svelte (store)                |
+| @samline/notify/dist/browser-sileo | Global para Browser/CDN           |
 
 ---
 
 ## Quick Start
 
-
 ### Importación por framework
 
 **VanillaJS (por defecto):**
+
 ```js
 import { showSileoToast } from '@samline/notify'
 showSileoToast({ title: '¡Hola mundo!', type: 'success' })
 ```
+
 **React:**
+
 ```js
 import { showSileoToast } from '@samline/notify/react'
 showSileoToast({ title: '¡Hola desde React!', type: 'success' })
 ```
+
 **Vue:**
+
 ```js
 import { showSileoToast, useSileoToasts } from '@samline/notify/vue'
 showSileoToast({ title: '¡Hola desde Vue!', type: 'success' })
 ```
+
 **Svelte:**
+
 ```js
 import { showSileoToast, sileoToasts } from '@samline/notify/svelte'
 showSileoToast({ title: '¡Hola desde Svelte!', type: 'success' })
 ```
 
-
-
 **Svelte:**
+
 ```js
 import { showSileoToast, sileoToasts } from 'notify/svelte'
 showSileoToast({ title: '¡Hola desde Svelte!', type: 'success' })

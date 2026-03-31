@@ -1,49 +1,51 @@
+npm install @samline/notify/react
 
 # Notify - React
 
-npm install @samline/notify/react
-## Instalación
+## Installation
 
 ```bash
 npm install @samline/notify/react
 ```
-import { Toaster, showSileoToast } from '@samline/notify/react';
 
-## Uso básico
+## Basic usage
 
 ```jsx
-import { Toaster, showSileoToast } from '@samline/notify/react';
+import { Toaster, showSileoToast } from '@samline/notify/react'
 
 function App() {
   return (
     <>
-      <Toaster position="top-right" />
-      <button onClick={() => showSileoToast({ title: 'Hola React', type: 'success' })}>
-        Mostrar Toast
+      <Toaster position='top-right' />
+      <button
+        onClick={() =>
+          showSileoToast({ title: 'Hello React', type: 'success' })
+        }
+      >
+        Show Toast
       </button>
     </>
-  );
+  )
+}
 ```
 
+## Available options
 
-## Opciones disponibles
+- `title`, `type`, `description`, `duration`, `position`, `styles`, `fill`, `roundness`, `autopilot`, `button` (see [General API](../README.md#general-api))
 
-- `title`, `type`, `description`, `duration`, `position`, `styles`, `fill`, `roundness`, `autopilot`, `button` (ver [General API](../README.md#general-api))
-
-
-## Ejemplo avanzado
+## Advanced example
 
 ```jsx
 showSileoToast({
-  title: 'Acción',
-  description: 'Haz clic en el botón',
+  title: 'Action',
+  description: 'Click the button',
   type: 'action',
   button: {
-    title: 'Aceptar',
-    onClick: () => alert('¡Aceptado!')
+    title: 'Accept',
+    onClick: () => alert('Accepted!'),
   },
   fill: '#e0f7fa',
   roundness: 20,
-  duration: 4000
-});
+  duration: 4000,
+})
 ```

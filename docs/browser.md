@@ -1,4 +1,3 @@
-
 # Sileo - Browser (CDN)
 
 ## Installation
@@ -13,7 +12,11 @@ Include the generated UMD file (`dist/browser-sileo.js`) in your HTML:
 
 ```html
 <script>
-  Sileo.show({ title: 'Hello from Browser/CDN', type: 'success', duration: 2000 });
+  Sileo.show({
+    title: 'Hello from Browser/CDN',
+    type: 'success',
+    duration: 2000,
+  })
 </script>
 ```
 
@@ -31,11 +34,13 @@ Include the generated UMD file (`dist/browser-sileo.js`) in your HTML:
     type: 'action',
     button: {
       title: 'Accept',
-      onClick: function() { alert('Accepted!'); }
+      onClick: function () {
+        alert('Accepted!')
+      },
     },
     fill: '#e0ffe0',
     roundness: 22,
-    duration: 5000
-  });
+    duration: 5000,
+  })
 </script>
 ```

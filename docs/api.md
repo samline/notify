@@ -1,4 +1,3 @@
-
 # Sileo General API
 
 The Sileo API is common for all environments and frameworks. Here you will find all available options and methods.
@@ -34,16 +33,16 @@ showSileoToast({
   type: 'action',
   button: {
     title: 'Continue',
-    onClick: () => alert('You continued!')
+    onClick: () => alert('You continued!'),
   },
   styles: {
     title: 'my-title',
-    button: 'my-button'
+    button: 'my-button',
   },
   fill: '#fffae0',
   roundness: 24,
-  duration: 5000
-});
+  duration: 5000,
+})
 ```
 
 Para detalles y ejemplos visuales, consulta la documentación específica de cada framework.
