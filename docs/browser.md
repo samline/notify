@@ -1,6 +1,9 @@
 
 # Browser / CDN usage
 
+```html
+<link rel="stylesheet" href="https://unpkg.com/@samline/notify@0.3.0/dist/styles.css">
+<script src="https://unpkg.com/@samline/notify@0.3.0/dist/notify.umd.js"></script>
 Use this package directly in the browser when you cannot use npm modules or a bundler (e.g. Shopify, WordPress, static HTML).
 
 ## Quick start
@@ -16,11 +19,15 @@ Add the stylesheet and UMD bundle to your HTML:
     // Always use an array of strings as the second argument
     // Correct usage:
     api.initToasters(document.body, ['top-left']);
+<link rel="stylesheet" href="https://unpkg.com/@samline/notify@0.3.0/dist/styles.css">
+<script src="https://unpkg.com/@samline/notify@0.3.0/dist/notify.umd.js"></script>
     api.notify({ title: 'Hello', description: 'No-bundler usage', type: 'info' });
   });
 </script>
 ```
 
+    <script src="https://unpkg.com/@samline/notify@0.3.0/dist/notify.umd.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/@samline/notify@0.3.0/dist/styles.css" />
 
 
 ## API

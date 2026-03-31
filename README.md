@@ -50,8 +50,8 @@ Use the browser build when your project loads scripts directly and cannot compil
 
 
 ```html
-<script src="https://unpkg.com/@samline/notify@0.2.3/dist/notify.umd.js"></script>
-<link rel="stylesheet" href="https://unpkg.com/@samline/notify@0.2.3/dist/styles.css" />
+<script src="https://unpkg.com/@samline/notify@0.3.0/dist/notify.umd.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/@samline/notify@0.3.0/dist/styles.css" />
 
 <script>
   // Always use an array of strings as the second argument
