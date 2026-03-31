@@ -1,4 +1,4 @@
-// Agnostic Sileo logic (no React dependencies)
+// Notify logic (no React dependencies)
 // Provides toast management and utilities for VanillaJS, Vue, Svelte, etc.
 
 export type SileoState =

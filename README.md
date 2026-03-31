@@ -6,9 +6,9 @@
 
 ---
 
-![npm](https://img.shields.io/npm/v/agnostic-sileo)
+![npm](https://img.shields.io/npm/v/notify)
 ![Types](https://img.shields.io/badge/types-included-blue)
-![License](https://img.shields.io/npm/l/agnostic-sileo)
+![License](https://img.shields.io/npm/l/notify)
 
 ---
 
@@ -29,13 +29,13 @@
 ## Instalación
 
 ```bash
-npm install agnostic-sileo
+npm install notify
 # o
-yarn add agnostic-sileo
+yarn add notify
 # o
-pnpm add agnostic-sileo
+pnpm add notify
 # o
-bun add agnostic-sileo
+bun add notify
 ```
 
 ---
@@ -61,11 +61,11 @@ Incluye el archivo UMD generado (`dist/browser-sileo.js`) en tu HTML:
 
 | Entrypoint                | Descripción                        |
 | ------------------------- | ---------------------------------- |
-| agnostic-sileo            | API VanillaJS (puerta de entrada)  |
-| agnostic-sileo/react      | API React (hooks y helpers)         |
-| agnostic-sileo/vue        | API Vue (composable)                |
-| agnostic-sileo/svelte     | API Svelte (store)                  |
-| agnostic-sileo/dist/browser-sileo | Global para Browser/CDN         |
+| notify            | API VanillaJS (puerta de entrada)  |
+| notify/react      | API React (hooks y helpers)         |
+| notify/vue        | API Vue (composable)                |
+| notify/svelte     | API Svelte (store)                  |
+| notify/dist/browser-sileo | Global para Browser/CDN         |
 
 ---
 
@@ -76,25 +76,25 @@ Incluye el archivo UMD generado (`dist/browser-sileo.js`) en tu HTML:
 
 **VanillaJS (por defecto):**
 ```js
-import { showSileoToast } from 'agnostic-sileo'
+import { showSileoToast } from 'notify'
 showSileoToast({ title: '¡Hola mundo!', type: 'success' })
 ```
 
 **React:**
 ```js
-import { showSileoToast } from 'agnostic-sileo/react'
+import { showSileoToast } from 'notify/react'
 showSileoToast({ title: '¡Hola desde React!', type: 'success' })
 ```
 
 **Vue:**
 ```js
-import { showSileoToast, useSileoToasts } from 'agnostic-sileo/vue'
+import { showSileoToast, useSileoToasts } from 'notify/vue'
 showSileoToast({ title: '¡Hola desde Vue!', type: 'success' })
 ```
 
 **Svelte:**
 ```js
-import { showSileoToast, sileoToasts } from 'agnostic-sileo/svelte'
+import { showSileoToast, sileoToasts } from 'notify/svelte'
 showSileoToast({ title: '¡Hola desde Svelte!', type: 'success' })
 ```
 

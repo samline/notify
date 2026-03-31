@@ -3,13 +3,13 @@
 ## Instalación
 
 ```bash
-npm install agnostic-sileo
+npm install notify
 ```
 
 ## Uso básico
 
 ```jsx
-import { Toaster, showSileoToast } from 'agnostic-sileo';
+import { Toaster, showSileoToast } from 'notify';
 
 function App() {
   return (

@@ -4,13 +4,13 @@
 ## Installation
 
 ```bash
-npm install agnostic-sileo
+npm install notify
 ```
 
 ## Basic Usage
 
 ```js
-import { showSileoToast, useSileoToasts } from 'agnostic-sileo/dist/agnostic-sileo';
+import { showSileoToast, useSileoToasts } from 'notify/dist/notify';
 
 showSileoToast({ title: 'Hello Vue', type: 'info' });
 
@@ -37,7 +37,7 @@ import SileoToasts from '../src/SileoToasts.vue';
   <div v-for="toast in toasts" :key="toast.id">{{ toast.title }}</div>
 </template>
 <script setup>
-import { useSileoToasts } from 'agnostic-sileo/dist/agnostic-sileo';
+import { useSileoToasts } from 'notify/dist/notify';
 const { toasts } = useSileoToasts();
 </script>
 ```

@@ -4,7 +4,7 @@
 ## Installation
 
 ```bash
-npm install agnostic-sileo
+npm install notify
 ```
 
 ## Basic Usage
@@ -23,7 +23,7 @@ npm install agnostic-sileo
 
 ```svelte
 <script>
-  import { sileoToasts, showSileoToast } from 'agnostic-sileo/dist/agnostic-sileo';
+  import { sileoToasts, showSileoToast } from 'notify/dist/notify';
   showSileoToast({ title: 'Hello Svelte', type: 'warning' });
 </script>
 
@@ -40,7 +40,7 @@ npm install agnostic-sileo
 
 ```svelte
 <script>
-  import { showSileoToast } from 'agnostic-sileo/dist/agnostic-sileo';
+  import { showSileoToast } from 'notify/dist/notify';
   showSileoToast({
     title: 'With action',
     description: 'Press the button',

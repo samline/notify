@@ -2,7 +2,7 @@ import { defineConfig } from 'bunchee';
 
 export default defineConfig({
   entries: [
-    './src/agnostic-sileo.ts',
+    './src/notify.ts',
     { input: './src/browser-sileo.js', format: 'umd', name: 'Sileo', outDir: 'dist' }
   ],
   outDir: 'dist',

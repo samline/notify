@@ -6,7 +6,7 @@
 Install the package from npm:
 
 ```bash
-npm install agnostic-sileo
+npm install notify
 ```
 
 Or using yarn:
@@ -33,7 +33,7 @@ showSileoToast({
 ### Manual
 
 ```js
-import { showSileoToast } from 'agnostic-sileo/dist/agnostic-sileo';
+import { showSileoToast } from 'notify/dist/notify';
 showSileoToast({
   title: 'Hello VanillaJS',
   type: 'success',
@@ -44,7 +44,7 @@ showSileoToast({
 ## Subscribe to changes
 
 ```js
-import { onSileoToastsChange } from 'agnostic-sileo/dist/agnostic-sileo';
+import { onSileoToastsChange } from 'notify/dist/notify';
 
 onSileoToastsChange((toasts) => {
   // Render toasts in your HTML
