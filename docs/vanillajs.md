@@ -1,84 +1,84 @@
 
-# Sileo - VanillaJS
 
-## Installation
+# Notify - VanillaJS
 
-Install the package from npm:
+
+## Instalación
+
+Instala el paquete desde npm:
 
 ```bash
 npm install notify
 ```
 
-Or using yarn:
-
-```bash
-
-```
-
 ## Basic Usage
+npm install @samline/notify
 
 
-### Plug-and-play UI
+### UI Plug-and-play
 
 ```js
-import { renderSileoToasts, showSileoToast } from '../src/render-sileo-toasts.js';
+import { renderSileoToasts, showSileoToast } from '@samline/notify';
 renderSileoToasts();
 showSileoToast({
-  title: 'Hello VanillaJS',
+  title: 'Hola VanillaJS',
   type: 'success',
   duration: 2000
 });
 ```
 
-### Manual
+
+### Uso manual
 
 ```js
-import { showSileoToast } from 'notify/dist/notify';
+import { showSileoToast } from '@samline/notify';
 showSileoToast({
-  title: 'Hello VanillaJS',
+  title: 'Hola VanillaJS',
   type: 'success',
   duration: 2000
 });
 ```
-
-## Subscribe to changes
-
-```js
-import { onSileoToastsChange } from 'notify/dist/notify';
 
 onSileoToastsChange((toasts) => {
-  // Render toasts in your HTML
+
+## Suscribirse a cambios
+```js
+import { onSileoToastsChange } from '@samline/notify';
+onSileoToastsChange((toasts) => {
+  // Renderiza los toasts en tu HTML
   console.log(toasts);
 });
 ```
 
-## Available Options
+
+## Opciones disponibles
 
 - `title`: string
 - `type`: 'success' | 'loading' | 'error' | 'warning' | 'info' | 'action'
 - `description`: string
-- `duration`: number in ms
+- `duration`: número en ms
 - `position`: 'top-left', 'top-center', 'top-right', 'bottom-left', 'bottom-center', 'bottom-right'
-- `styles`: CSS classes object
-- `fill`: background color
+- `styles`: objeto de clases CSS
+- `fill`: color de fondo
 - `roundness`: border radius
-- `autopilot`: boolean or object `{ expand, collapse }`
-- `button`: object `{ title, onClick }`
+- `autopilot`: booleano u objeto `{ expand, collapse }`
+- `button`: objeto `{ title, onClick }`
 
-## Advanced Example
+
+## Ejemplo avanzado
 
 ```js
 showSileoToast({
-  title: 'Action required',
-  description: 'Click the button to continue',
+  title: 'Acción requerida',
+  description: 'Haz clic en el botón para continuar',
   type: 'action',
   button: {
-    title: 'Continue',
-    onClick: () => alert('You continued!')
+    title: 'Continuar',
+    onClick: () => alert('¡Continuaste!')
   },
   styles: {
-    title: 'my-title',
-    button: 'my-button'
+    title: 'mi-titulo',
+    button: 'mi-boton'
   },
   fill: '#fffae0',
   roundness: 24,

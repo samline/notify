@@ -6,9 +6,9 @@
 
 ---
 
-![npm](https://img.shields.io/npm/v/notify)
+![npm](https://img.shields.io/npm/v/@samline/notify)
 ![Types](https://img.shields.io/badge/types-included-blue)
-![License](https://img.shields.io/npm/l/notify)
+![License](https://img.shields.io/npm/l/@samline/notify)
 
 ---
 
@@ -29,13 +29,22 @@
 ## Instalación
 
 ```bash
-npm install notify
-# o
-yarn add notify
-# o
-pnpm add notify
-# o
-bun add notify
+npm install @samline/notify
+# React
+npm install @samline/notify/react
+# Vue
+npm install @samline/notify/vue
+# Svelte
+npm install @samline/notify/svelte
+```
+```bash
+npm install @samline/notify
+# React
+npm install @samline/notify/react
+# Vue
+npm install @samline/notify/vue
+# Svelte
+npm install @samline/notify/svelte
 ```
 
 ---
@@ -61,11 +70,11 @@ Incluye el archivo UMD generado (`dist/browser-sileo.js`) en tu HTML:
 
 | Entrypoint                | Descripción                        |
 | ------------------------- | ---------------------------------- |
-| notify            | API VanillaJS (puerta de entrada)  |
-| notify/react      | API React (hooks y helpers)         |
-| notify/vue        | API Vue (composable)                |
-| notify/svelte     | API Svelte (store)                  |
-| notify/dist/browser-sileo | Global para Browser/CDN         |
+| @samline/notify            | API VanillaJS (puerta de entrada)  |
+| @samline/notify/react      | API React (hooks y helpers)         |
+| @samline/notify/vue        | API Vue (composable)                |
+| @samline/notify/svelte     | API Svelte (store)                  |
+| @samline/notify/dist/browser-sileo | Global para Browser/CDN         |
 
 ---
 
@@ -76,21 +85,26 @@ Incluye el archivo UMD generado (`dist/browser-sileo.js`) en tu HTML:
 
 **VanillaJS (por defecto):**
 ```js
-import { showSileoToast } from 'notify'
+import { showSileoToast } from '@samline/notify'
 showSileoToast({ title: '¡Hola mundo!', type: 'success' })
 ```
-
 **React:**
 ```js
-import { showSileoToast } from 'notify/react'
+import { showSileoToast } from '@samline/notify/react'
 showSileoToast({ title: '¡Hola desde React!', type: 'success' })
 ```
-
 **Vue:**
 ```js
-import { showSileoToast, useSileoToasts } from 'notify/vue'
+import { showSileoToast, useSileoToasts } from '@samline/notify/vue'
 showSileoToast({ title: '¡Hola desde Vue!', type: 'success' })
 ```
+**Svelte:**
+```js
+import { showSileoToast, sileoToasts } from '@samline/notify/svelte'
+showSileoToast({ title: '¡Hola desde Svelte!', type: 'success' })
+```
+
+
 
 **Svelte:**
 ```js

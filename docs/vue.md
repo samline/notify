@@ -1,61 +1,67 @@
 
-# Sileo - Vue 3
 
-## Installation
+# Notify - Vue 3
+
+
+## Instalación
 
 ```bash
-npm install notify
+npm install @samline/notify/vue
 ```
 
-## Basic Usage
 
-```js
-import { showSileoToast, useSileoToasts } from 'notify/dist/notify';
+## Uso básico
 
-showSileoToast({ title: 'Hello Vue', type: 'info' });
+import { showSileoToast, useSileoToasts } from '@samline/notify/vue';
 
-// In a component:
+showSileoToast({ title: 'Hola Vue', type: 'info' });
+
+// En un componente:
 const { toasts } = useSileoToasts();
 ```
 
 
-### Plug-and-play UI
+
+### UI Plug-and-play
 
 ```vue
 <template>
   <SileoToasts />
 </template>
 <script setup>
-import SileoToasts from '../src/SileoToasts.vue';
+import SileoToasts from '@samline/notify/vue';
 </script>
 ```
 
-### Manual (composable)
+
+### Uso manual (composable)
 
 ```vue
 <template>
   <div v-for="toast in toasts" :key="toast.id">{{ toast.title }}</div>
 </template>
 <script setup>
-import { useSileoToasts } from 'notify/dist/notify';
+import { useSileoToasts } from '@samline/notify/vue';
 const { toasts } = useSileoToasts();
 </script>
 ```
 
-## Available Options
 
-- `title`, `type`, `description`, `duration`, `position`, `styles`, `fill`, `roundness`, `autopilot`, `button` (see [General API](../README.md#general-api))
+## Opciones disponibles
 
-## Advanced Example
+- `title`, `type`, `description`, `duration`, `position`, `styles`, `fill`, `roundness`, `autopilot`, `button` (ver [General API](../README.md#general-api))
+
+
+## Ejemplo avanzado
 
 ```js
 showSileoToast({
-  title: 'Action',
-  description: 'Click the button',
+  title: 'Acción',
+  description: 'Haz clic en el botón',
   type: 'action',
   button: {
-    title: 'Accept',
-    onClick: () => alert('Accepted!')
+    title: 'Aceptar',
+    onClick: () => alert('¡Aceptado!')
   },
   fill: '#e0f7fa',
   roundness: 20,

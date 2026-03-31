@@ -1,15 +1,18 @@
-# Sileo - React
 
+# Notify - React
+
+npm install @samline/notify/react
 ## Instalación
 
 ```bash
-npm install notify
+npm install @samline/notify/react
 ```
+import { Toaster, showSileoToast } from '@samline/notify/react';
 
 ## Uso básico
 
 ```jsx
-import { Toaster, showSileoToast } from 'notify';
+import { Toaster, showSileoToast } from '@samline/notify/react';
 
 function App() {
   return (
@@ -20,12 +23,13 @@ function App() {
       </button>
     </>
   );
-}
 ```
+
 
 ## Opciones disponibles
 
 - `title`, `type`, `description`, `duration`, `position`, `styles`, `fill`, `roundness`, `autopilot`, `button` (ver [General API](../README.md#general-api))
+
 
 ## Ejemplo avanzado
 

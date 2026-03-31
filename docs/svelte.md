@@ -1,53 +1,55 @@
 
-# Sileo - Svelte
 
-## Installation
+# Notify - Svelte
 
-```bash
-npm install notify
-```
+
+npm install @samline/notify/svelte
+
+
 
 ## Basic Usage
 
 
-### Plug-and-play UI
+
+### UI Plug-and-play
 
 ```svelte
 <script>
-  import SileoToasts from '../src/SileoToasts.svelte';
+  import SileoToasts, { sileoToasts, showSileoToast } from '@samline/notify/svelte';
 </script>
 <SileoToasts />
-```
 
-### Manual (store)
+
+### Uso manual (store)
 
 ```svelte
 <script>
-  import { sileoToasts, showSileoToast } from 'notify/dist/notify';
-  showSileoToast({ title: 'Hello Svelte', type: 'warning' });
+  import { sileoToasts, showSileoToast } from '@samline/notify/svelte';
+  showSileoToast({ title: 'Hola Svelte', type: 'warning' });
 </script>
 
 {#each $sileoToasts as toast}
   <div>{toast.title}</div>
-{/each}
 ```
 
-## Available Options
 
-- `title`, `type`, `description`, `duration`, `position`, `styles`, `fill`, `roundness`, `autopilot`, `button` (see [General API](../README.md#general-api))
+## Opciones disponibles
 
-## Advanced Example
+- `title`, `type`, `description`, `duration`, `position`, `styles`, `fill`, `roundness`, `autopilot`, `button` (ver [General API](../README.md#general-api))
+
+
+## Ejemplo avanzado
 
 ```svelte
 <script>
-  import { showSileoToast } from 'notify/dist/notify';
+  import { showSileoToast } from '@samline/notify/svelte';
   showSileoToast({
-    title: 'With action',
-    description: 'Press the button',
+    title: 'Con acción',
+    description: 'Presiona el botón',
     type: 'action',
     button: {
       title: 'OK',
-      onClick: () => alert('OK!')
+      onClick: () => alert('¡OK!')
     },
     fill: '#ffe0e0',
     roundness: 18,
