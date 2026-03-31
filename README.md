@@ -27,3 +27,46 @@ export default function App() {
 ```
 
 For detailed docs, click here: https://sileo.aaryan.design
+
+---
+
+## Documentación por framework
+
+- [VanillaJS](docs/vanillajs.md)
+- [Vue 3](docs/vue.md)
+- [Svelte](docs/svelte.md)
+- [Browser/CDN](docs/browser.md)
+
+---
+
+## API General
+
+La API de Sileo es agnóstica y funciona igual en todos los entornos. Las opciones principales para mostrar un toast son:
+
+```js
+{
+  title: string, // Título del toast
+  description?: string, // Descripción opcional
+  type?: 'success' | 'loading' | 'error' | 'warning' | 'info' | 'action',
+  duration?: number, // Duración en ms
+  position?: 'top-left' | 'top-center' | 'top-right' | 'bottom-left' | 'bottom-center' | 'bottom-right',
+  styles?: { title?: string, description?: string, badge?: string, button?: string },
+  fill?: string, // Color de fondo
+  roundness?: number, // Radio de borde
+  autopilot?: boolean | { expand?: number, collapse?: number },
+  button?: { title: string, onClick: () => void }
+}
+```
+
+### Métodos principales
+
+- `showSileoToast(options)` — Muestra un toast (en VanillaJS, Vue, Svelte)
+- `onSileoToastsChange(fn)` — Suscríbete a cambios de toasts (VanillaJS)
+- `useSileoToasts()` — Composable para Vue
+- `sileoToasts` — Store para Svelte
+
+### Opciones dedicadas
+
+Cada framework puede tener utilidades o helpers específicos para su ecosistema. Consulta la documentación de cada uno para ver ejemplos y detalles de integración visual.
+
+---
