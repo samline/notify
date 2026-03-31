@@ -14,11 +14,4 @@ export function showSileoToast(options: SileoOptions) {
   return sileoCore.show(options);
 }
 
-// Example Vue component (logic only, UI to be defined by the user)
-// <template>
-//   <div v-for="toast in toasts" :key="toast.id">{{ toast.title }}</div>
-// </template>
-// <script setup>
-// import { useSileoToasts } from './vue-sileo';
-// const { toasts } = useSileoToasts();
-// </script>
+

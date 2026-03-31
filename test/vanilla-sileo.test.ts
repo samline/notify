@@ -1,4 +1,3 @@
-import { sileoCore } from '../src/core/sileo-core';
 
 import { sileoCore } from '../src/core/sileo-core';
 

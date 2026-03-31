@@ -1,11 +1,11 @@
 import { sileoCore, SileoOptions } from '../src/core/sileo-core';
 
 describe('SileoCore', () => {
-  beforeEach((done) => {
+  beforeEach(async () => {
     // Dismiss all toasts before each test and wait for exit
     const ids = sileoCore.getToasts().map(t => t.id);
     ids.forEach(id => sileoCore.dismiss(id));
-    setTimeout(done, 650);
+    await new Promise(resolve => setTimeout(resolve, 650));
   });
 
   it('should show a toast with required options', () => {

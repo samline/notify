@@ -7,13 +7,62 @@
 
 ---
 
+
+
 ## Documentation
 
+- [React](docs/react.md)
 - [VanillaJS](docs/vanillajs.md)
 - [Vue 3](docs/vue.md)
 - [Svelte](docs/svelte.md)
 - [Browser / CDN](docs/browser.md)
 - [General API Reference](docs/api.md)
+
+---
+
+
+## Plug-and-play UI Components
+
+### React
+```jsx
+import { Toaster, showSileoToast } from 'agnostic-sileo';
+
+function App() {
+  return (
+    <>
+      <Toaster position="top-right" />
+      <button onClick={() => showSileoToast({ title: 'Hola React', type: 'success' })}>
+        Mostrar Toast
+      </button>
+    </>
+  );
+}
+```
+
+### Vue
+```vue
+<template>
+  <SileoToasts />
+</template>
+<script setup>
+import SileoToasts from './SileoToasts.vue';
+</script>
+```
+
+### Svelte
+```svelte
+<script>
+  import SileoToasts from './SileoToasts.svelte';
+</script>
+<SileoToasts />
+```
+
+### VanillaJS
+```js
+import { renderSileoToasts, showSileoToast } from './render-sileo-toasts.js';
+renderSileoToasts();
+showSileoToast({ title: 'Hola' });
+```
 
 ---
 
@@ -66,10 +115,12 @@ showSileoToast({
 
 ---
 
+
 ## Quickstart
 
 Choose your environment and follow the documentation:
 
+- [React Quickstart](docs/react.md)
 - [VanillaJS Quickstart](docs/vanillajs.md)
 - [Vue 3 Quickstart](docs/vue.md)
 - [Svelte Quickstart](docs/svelte.md)

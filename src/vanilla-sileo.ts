@@ -1,12 +1,8 @@
-// Wrapper VanillaJS para Sileo
-// Permite mostrar toasts usando solo JS puro y manipulación de DOM
-import { sileoCore, SileoOptions } from "./core/sileo-core";
+import { sileoCore } from "./core/sileo-core";
+import type { SileoOptions, SileoItem } from "./core/sileo-core";
 
-export function showSileoToast(options) {
+export function showSileoToast(options: SileoOptions): string {
   const id = sileoCore.show(options);
-  // Renderizar el toast en el DOM (ejemplo básico)
-  // Aquí deberías crear el HTML y estilos necesarios
-  // Este es solo un placeholder para la integración real
   const toast = document.createElement("div");
   toast.className = "sileo-toast";
   toast.innerText = options.title || options.type || "Toast";
@@ -18,7 +14,6 @@ export function showSileoToast(options) {
   return id;
 }
 
-// Suscripción para escuchar cambios (opcional)
-export function onSileoToastsChange(fn) {
+export function onSileoToastsChange(fn: (toasts: SileoItem[]) => void): () => void {
   return sileoCore.subscribe(fn);
 }

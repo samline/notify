@@ -18,6 +18,20 @@ showSileoToast({ title: 'Hello Vue', type: 'info' });
 const { toasts } = useSileoToasts();
 ```
 
+
+### Plug-and-play UI
+
+```vue
+<template>
+  <SileoToasts />
+</template>
+<script setup>
+import SileoToasts from '../src/SileoToasts.vue';
+</script>
+```
+
+### Manual (composable)
+
 ```vue
 <template>
   <div v-for="toast in toasts" :key="toast.id">{{ toast.title }}</div>

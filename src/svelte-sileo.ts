@@ -11,13 +11,4 @@ export function showSileoToast(options: SileoOptions) {
   return sileoCore.show(options);
 }
 
-// Automatic cleanup (optional, if using module context)
-// onDestroy(() => unsub());
 
-// Example usage in Svelte:
-// <script>
-//   import { sileoToasts, showSileoToast } from './svelte-sileo';
-// </script>
-// {#each $sileoToasts as toast}
-//   <div>{toast.title}</div>
-// {/each}

@@ -17,9 +17,23 @@ Or using yarn:
 
 ## Basic Usage
 
+
+### Plug-and-play UI
+
+```js
+import { renderSileoToasts, showSileoToast } from '../src/render-sileo-toasts.js';
+renderSileoToasts();
+showSileoToast({
+  title: 'Hello VanillaJS',
+  type: 'success',
+  duration: 2000
+});
+```
+
+### Manual
+
 ```js
 import { showSileoToast } from 'agnostic-sileo/dist/agnostic-sileo';
-
 showSileoToast({
   title: 'Hello VanillaJS',
   type: 'success',

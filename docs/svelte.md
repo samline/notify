@@ -9,6 +9,18 @@ npm install agnostic-sileo
 
 ## Basic Usage
 
+
+### Plug-and-play UI
+
+```svelte
+<script>
+  import SileoToasts from '../src/SileoToasts.svelte';
+</script>
+<SileoToasts />
+```
+
+### Manual (store)
+
 ```svelte
 <script>
   import { sileoToasts, showSileoToast } from 'agnostic-sileo/dist/agnostic-sileo';
