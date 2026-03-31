@@ -35,7 +35,9 @@
 		"react-dom": ">=18"
 	},
 	"devDependencies": {
-		"bunchee": "^6.9.4"
+		"bunchee": "^6.9.4",
+		"svelte": "^5.55.1",
+		"vue": "^3.5.31"
 	},
 	"dependencies": {
 		"motion": "^12.34.0"

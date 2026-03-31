@@ -1,17 +1,18 @@
+
 # Sileo - Svelte
 
-## Instalación
+## Installation
 
 ```bash
 npm install agnostic-sileo
 ```
 
-## Uso básico
+## Basic Usage
 
 ```svelte
 <script>
   import { sileoToasts, showSileoToast } from 'agnostic-sileo/dist/agnostic-sileo';
-  showSileoToast({ title: 'Hola Svelte', type: 'warning' });
+  showSileoToast({ title: 'Hello Svelte', type: 'warning' });
 </script>
 
 {#each $sileoToasts as toast}
@@ -19,22 +20,22 @@ npm install agnostic-sileo
 {/each}
 ```
 
-## Opciones disponibles
+## Available Options
 
-- `title`, `type`, `description`, `duration`, `position`, `styles`, `fill`, `roundness`, `autopilot`, `button` (ver [API general](../README.md#api-general))
+- `title`, `type`, `description`, `duration`, `position`, `styles`, `fill`, `roundness`, `autopilot`, `button` (see [General API](../README.md#general-api))
 
-## Ejemplo avanzado
+## Advanced Example
 
 ```svelte
 <script>
   import { showSileoToast } from 'agnostic-sileo/dist/agnostic-sileo';
   showSileoToast({
-    title: 'Con acción',
-    description: 'Presiona el botón',
+    title: 'With action',
+    description: 'Press the button',
     type: 'action',
     button: {
       title: 'OK',
-      onClick: () => alert('¡OK!')
+      onClick: () => alert('OK!')
     },
     fill: '#ffe0e0',
     roundness: 18,

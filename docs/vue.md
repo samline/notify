@@ -1,19 +1,20 @@
+
 # Sileo - Vue 3
 
-## Instalación
+## Installation
 
 ```bash
 npm install agnostic-sileo
 ```
 
-## Uso básico
+## Basic Usage
 
 ```js
 import { showSileoToast, useSileoToasts } from 'agnostic-sileo/dist/agnostic-sileo';
 
-showSileoToast({ title: 'Hola Vue', type: 'info' });
+showSileoToast({ title: 'Hello Vue', type: 'info' });
 
-// En un componente:
+// In a component:
 const { toasts } = useSileoToasts();
 ```
 
@@ -27,20 +28,20 @@ const { toasts } = useSileoToasts();
 </script>
 ```
 
-## Opciones disponibles
+## Available Options
 
-- `title`, `type`, `description`, `duration`, `position`, `styles`, `fill`, `roundness`, `autopilot`, `button` (ver [API general](../README.md#api-general))
+- `title`, `type`, `description`, `duration`, `position`, `styles`, `fill`, `roundness`, `autopilot`, `button` (see [General API](../README.md#general-api))
 
-## Ejemplo avanzado
+## Advanced Example
 
 ```js
 showSileoToast({
-  title: 'Acción',
-  description: 'Haz clic en el botón',
+  title: 'Action',
+  description: 'Click the button',
   type: 'action',
   button: {
-    title: 'Aceptar',
-    onClick: () => alert('¡Aceptado!')
+    title: 'Accept',
+    onClick: () => alert('Accepted!')
   },
   fill: '#e0f7fa',
   roundness: 20,

@@ -1,5 +1,5 @@
-// Lógica agnóstica de Sileo (sin dependencias de React)
-// Permite gestión de toasts y utilidades para VanillaJS, Vue, Svelte, etc.
+// Agnostic Sileo logic (no React dependencies)
+// Provides toast management and utilities for VanillaJS, Vue, Svelte, etc.
 
 export type SileoState =
   | "success"
@@ -90,15 +90,24 @@ export class SileoCore {
   }
 
   show(opts: SileoOptions) {
-    const id = opts.id ?? "sileo-default";
-    const instanceId = this.generateId();
+    // Use a unique identifier based on options (e.g., the title or a generated key)
+    // If not provided, use a default one
+    const id = opts.title ? `sileo-${opts.title}` : "sileo-default";
+    const prevItem = this.toasts.find((t) => t.id === id);
+    const instanceId = prevItem?.instanceId ?? this.generateId();
+    // Set the state correctly
+    const state = opts.type ?? prevItem?.type ?? "success";
     const item: SileoItem = {
+      ...prevItem,
       ...opts,
       id,
       instanceId,
-      state: opts.type ?? "success",
+      type: state,
     } as SileoItem;
-    this.update((prev) => [...prev.filter((t) => t.id !== id), item]);
+    this.update((prev) => {
+      const filtered = prev.filter((t) => t.id !== id);
+      return [...filtered, item];
+    });
     return id;
   }
 
@@ -107,5 +116,5 @@ export class SileoCore {
   }
 }
 
-// Instancia global para uso multiplataforma
+// Global instance for multiplatform usage
 export const sileoCore = new SileoCore();

@@ -1,5 +1,5 @@
-// Wrapper Svelte para Sileo
-// Provee un store y función para mostrar toasts en Svelte
+// Svelte wrapper for Sileo
+// Provides a store and function to show toasts in Svelte
 import { writable } from "svelte/store";
 import { sileoCore, SileoOptions } from "./core/sileo-core";
 
@@ -7,14 +7,14 @@ export const sileoToasts = writable(sileoCore.getToasts());
 
 const unsub = sileoCore.subscribe((t) => sileoToasts.set(t));
 
-export function showSileoToast(options) {
+export function showSileoToast(options: SileoOptions) {
   return sileoCore.show(options);
 }
 
-// Limpieza automática (opcional, si usas module context)
+// Automatic cleanup (optional, if using module context)
 // onDestroy(() => unsub());
 
-// Ejemplo de uso en Svelte:
+// Example usage in Svelte:
 // <script>
 //   import { sileoToasts, showSileoToast } from './svelte-sileo';
 // </script>

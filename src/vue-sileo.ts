@@ -1,5 +1,5 @@
-// Wrapper Vue para Sileo
-// Provee un composable y componente básico para Vue 3
+// Vue wrapper for Sileo
+// Provides a composable and basic component for Vue 3
 import { ref, onUnmounted } from "vue";
 import { sileoCore, SileoOptions } from "./core/sileo-core";
 
@@ -10,11 +10,11 @@ export function useSileoToasts() {
   return { toasts };
 }
 
-export function showSileoToast(options) {
+export function showSileoToast(options: SileoOptions) {
   return sileoCore.show(options);
 }
 
-// Ejemplo de componente Vue (solo lógica, UI a definir por el usuario)
+// Example Vue component (logic only, UI to be defined by the user)
 // <template>
 //   <div v-for="toast in toasts" :key="toast.id">{{ toast.title }}</div>
 // </template>

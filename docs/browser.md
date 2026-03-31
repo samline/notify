@@ -1,36 +1,37 @@
+
 # Sileo - Browser (CDN)
 
-## Instalación
+## Installation
 
-Incluye el archivo UMD generado (`dist/browser-sileo.js`) en tu HTML:
+Include the generated UMD file (`dist/browser-sileo.js`) in your HTML:
 
 ```html
 <script src="dist/browser-sileo.js"></script>
 ```
 
-## Uso básico
+## Basic Usage
 
 ```html
 <script>
-  Sileo.show({ title: 'Hola desde Browser/CDN', type: 'success', duration: 2000 });
+  Sileo.show({ title: 'Hello from Browser/CDN', type: 'success', duration: 2000 });
 </script>
 ```
 
-## Opciones disponibles
+## Available Options
 
-- `title`, `type`, `description`, `duration`, `position`, `styles`, `fill`, `roundness`, `autopilot`, `button` (ver [API general](../README.md#api-general))
+- `title`, `type`, `description`, `duration`, `position`, `styles`, `fill`, `roundness`, `autopilot`, `button` (see [General API](../README.md#general-api))
 
-## Ejemplo avanzado
+## Advanced Example
 
 ```html
 <script>
   Sileo.show({
-    title: 'Acción',
-    description: 'Haz clic en el botón',
+    title: 'Action',
+    description: 'Click the button',
     type: 'action',
     button: {
-      title: 'Aceptar',
-      onClick: function() { alert('¡Aceptado!'); }
+      title: 'Accept',
+      onClick: function() { alert('Accepted!'); }
     },
     fill: '#e0ffe0',
     roundness: 22,

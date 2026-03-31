@@ -1,69 +1,70 @@
+
 # Sileo - VanillaJS
 
-## Instalación
+## Installation
 
-Instala el paquete desde npm:
+Install the package from npm:
 
 ```bash
 npm install agnostic-sileo
 ```
 
-O usando yarn:
+Or using yarn:
 
 ```bash
-yarn add agnostic-sileo
+
 ```
 
-## Uso básico
+## Basic Usage
 
 ```js
 import { showSileoToast } from 'agnostic-sileo/dist/agnostic-sileo';
 
 showSileoToast({
-  title: 'Hola VanillaJS',
+  title: 'Hello VanillaJS',
   type: 'success',
   duration: 2000
 });
 ```
 
-## Suscripción a cambios
+## Subscribe to changes
 
 ```js
 import { onSileoToastsChange } from 'agnostic-sileo/dist/agnostic-sileo';
 
 onSileoToastsChange((toasts) => {
-  // Renderiza los toasts en tu HTML
+  // Render toasts in your HTML
   console.log(toasts);
 });
 ```
 
-## Opciones disponibles
+## Available Options
 
 - `title`: string
 - `type`: 'success' | 'loading' | 'error' | 'warning' | 'info' | 'action'
 - `description`: string
-- `duration`: número en ms
+- `duration`: number in ms
 - `position`: 'top-left', 'top-center', 'top-right', 'bottom-left', 'bottom-center', 'bottom-right'
-- `styles`: objeto de clases CSS
-- `fill`: color de fondo
-- `roundness`: radio de borde
-- `autopilot`: booleano u objeto `{ expand, collapse }`
-- `button`: objeto `{ title, onClick }`
+- `styles`: CSS classes object
+- `fill`: background color
+- `roundness`: border radius
+- `autopilot`: boolean or object `{ expand, collapse }`
+- `button`: object `{ title, onClick }`
 
-## Ejemplo avanzado
+## Advanced Example
 
 ```js
 showSileoToast({
-  title: 'Acción requerida',
-  description: 'Haz clic en el botón para continuar',
+  title: 'Action required',
+  description: 'Click the button to continue',
   type: 'action',
   button: {
-    title: 'Continuar',
-    onClick: () => alert('¡Continuaste!')
+    title: 'Continue',
+    onClick: () => alert('You continued!')
   },
   styles: {
-    title: 'mi-titulo',
-    button: 'mi-boton'
+    title: 'my-title',
+    button: 'my-button'
   },
   fill: '#fffae0',
   roundness: 24,
