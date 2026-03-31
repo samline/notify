@@ -214,6 +214,11 @@ export const sileo = {
 
 /* ------------------------------ Toaster Component ------------------------- */
 
+// API para mostrar toast en React (similar a vanilla/vue/svelte)
+export function showSileoToast(options: SileoOptions): string {
+	return sileo.show(options);
+}
+
 const THEME_FILLS = {
 	light: "#1a1a1a",
 	dark: "#f2f2f2",

@@ -2,7 +2,7 @@
 
 import "./styles.css";
 
-export { sileo, Toaster } from "./toast";
+export { sileo, Toaster, showSileoToast } from "./toast";
 export type {
 	SileoButton,
 	SileoOptions,

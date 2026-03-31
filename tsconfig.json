@@ -12,8 +12,9 @@
 		"sourceMap": true,
 		"outDir": "dist",
 		"skipLibCheck": true,
-		"isolatedModules": true
+		"isolatedModules": true,
+		"types": ["vitest/globals"]
 	},
-	"include": ["src"],
+	"include": ["src", "test"],
 	"exclude": ["node_modules", "dist"]
 }

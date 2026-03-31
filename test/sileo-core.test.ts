@@ -1,14 +1,14 @@
-import { sileoCore, SileoOptions } from '../src/core/sileo-core';
+import { sileoCore } from '../src/core/sileo-core';
 
 describe('SileoCore', () => {
   beforeEach(async () => {
-    // Dismiss all toasts before each test and wait for exit
+    // Limpiar todos los toasts antes de cada test
     const ids = sileoCore.getToasts().map(t => t.id);
     ids.forEach(id => sileoCore.dismiss(id));
-    await new Promise(resolve => setTimeout(resolve, 650));
+    await new Promise(res => setTimeout(res, 650));
   });
 
-  it('should show a toast with required options', () => {
+  it('muestra un toast con opciones mínimas', () => {
     const id = sileoCore.show({ title: 'Test Toast', type: 'success' });
     const toasts = sileoCore.getToasts();
     expect(toasts.length).toBe(1);
@@ -17,16 +17,14 @@ describe('SileoCore', () => {
     expect(toasts[0].type).toBe('success');
   });
 
-  it('should dismiss a toast', () => {
+  it('descarta un toast', async () => {
     const id = sileoCore.show({ title: 'Dismiss Toast', type: 'info' });
     sileoCore.dismiss(id);
-    // Wait for exit animation (600ms)
-    return new Promise(resolve => setTimeout(resolve, 650)).then(() => {
-      expect(sileoCore.getToasts().find(t => t.id === id)).toBeUndefined();
-    });
+    await new Promise(res => setTimeout(res, 650));
+    expect(sileoCore.getToasts().find(t => t.id === id)).toBeUndefined();
   });
 
-  it('should update an existing toast with the same title', () => {
+  it('actualiza un toast existente con el mismo título', () => {
     const id1 = sileoCore.show({ title: 'Unique', type: 'success' });
     const id2 = sileoCore.show({ title: 'Unique', type: 'error' });
     expect(id1).toBe(id2);
@@ -35,7 +33,7 @@ describe('SileoCore', () => {
     expect(toasts[0].type).toBe('error');
   });
 
-  it('should handle multiple toasts with different titles', () => {
+  it('maneja múltiples toasts con títulos diferentes', () => {
     sileoCore.show({ title: 'Toast 1', type: 'success' });
     sileoCore.show({ title: 'Toast 2', type: 'error' });
     const toasts = sileoCore.getToasts();
@@ -44,7 +42,7 @@ describe('SileoCore', () => {
     expect(toasts.some(t => t.title === 'Toast 2')).toBe(true);
   });
 
-  it('should use default values if not provided', () => {
+  it('usa valores por defecto si no se proveen', () => {
     const id = sileoCore.show({});
     const toast = sileoCore.getToasts().find(t => t.id === id);
     expect(toast).toBeDefined();
