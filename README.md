@@ -59,22 +59,46 @@ Incluye el archivo UMD generado (`dist/browser-sileo.js`) en tu HTML:
 
 ## Entrypoints
 
-| Entrypoint                        | Descripción             |
-| --------------------------------- | ----------------------- |
-| agnostic-sileo                    | API principal agnóstica |
-| agnostic-sileo/dist/vanilla-sileo | API VanillaJS           |
-| agnostic-sileo/dist/vue-sileo     | Composable Vue          |
-| agnostic-sileo/dist/svelte-sileo  | Store Svelte            |
-| agnostic-sileo/dist/browser-sileo | Global para Browser/CDN |
+| Entrypoint                | Descripción                        |
+| ------------------------- | ---------------------------------- |
+| agnostic-sileo            | API VanillaJS (puerta de entrada)  |
+| agnostic-sileo/react      | API React (hooks y helpers)         |
+| agnostic-sileo/vue        | API Vue (composable)                |
+| agnostic-sileo/svelte     | API Svelte (store)                  |
+| agnostic-sileo/dist/browser-sileo | Global para Browser/CDN         |
 
 ---
 
 ## Quick Start
 
+
+### Importación por framework
+
+**VanillaJS (por defecto):**
 ```js
 import { showSileoToast } from 'agnostic-sileo'
 showSileoToast({ title: '¡Hola mundo!', type: 'success' })
 ```
+
+**React:**
+```js
+import { showSileoToast } from 'agnostic-sileo/react'
+showSileoToast({ title: '¡Hola desde React!', type: 'success' })
+```
+
+**Vue:**
+```js
+import { showSileoToast, useSileoToasts } from 'agnostic-sileo/vue'
+showSileoToast({ title: '¡Hola desde Vue!', type: 'success' })
+```
+
+**Svelte:**
+```js
+import { showSileoToast, sileoToasts } from 'agnostic-sileo/svelte'
+showSileoToast({ title: '¡Hola desde Svelte!', type: 'success' })
+```
+
+Cada framework importa desde su propio contexto, asegurando integración óptima y tipos correctos. Consulta la documentación específica para ejemplos avanzados.
 
 Para ejemplos completos y UI plug-and-play, consulta la documentación de tu framework:
 

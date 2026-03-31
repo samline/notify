@@ -10,14 +10,47 @@
 	"exports": {
 		".": {
 			"import": {
-				"types": "./dist/index.d.mts",
-				"default": "./dist/index.mjs"
+				"types": "./dist/agnostic-sileo.d.mts",
+				"default": "./dist/agnostic-sileo.mjs"
 			},
 			"require": {
-				"types": "./dist/index.d.ts",
-				"default": "./dist/index.js"
+				"types": "./dist/agnostic-sileo.d.ts",
+				"default": "./dist/agnostic-sileo.js"
 			},
-			"default": "./dist/index.js"
+			"default": "./dist/agnostic-sileo.js"
+		},
+		"./react": {
+			"import": {
+				"types": "./dist/react-sileo.d.mts",
+				"default": "./dist/react-sileo.mjs"
+			},
+			"require": {
+				"types": "./dist/react-sileo.d.ts",
+				"default": "./dist/react-sileo.js"
+			},
+			"default": "./dist/react-sileo.js"
+		},
+		"./vue": {
+			"import": {
+				"types": "./dist/vue-sileo.d.mts",
+				"default": "./dist/vue-sileo.mjs"
+			},
+			"require": {
+				"types": "./dist/vue-sileo.d.ts",
+				"default": "./dist/vue-sileo.js"
+			},
+			"default": "./dist/vue-sileo.js"
+		},
+		"./svelte": {
+			"import": {
+				"types": "./dist/svelte-sileo.d.mts",
+				"default": "./dist/svelte-sileo.mjs"
+			},
+			"require": {
+				"types": "./dist/svelte-sileo.d.ts",
+				"default": "./dist/svelte-sileo.js"
+			},
+			"default": "./dist/svelte-sileo.js"
 		},
 		"./styles.css": "./dist/styles.css"
 	},
