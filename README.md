@@ -48,7 +48,7 @@ Include the CSS and UMD bundle via unpkg or jsDelivr:
 
 ```html
 <script>
-  window.Notify.show({
+  window.notify.show({
     title: 'Hello from the browser',
     type: 'success',
     duration: 2000,
@@ -77,7 +77,11 @@ Include the CSS and UMD bundle via unpkg or jsDelivr:
 **VanillaJS (default):**
 
 ```js
-import { showNotifyToast } from '@samline/notify'
+import { showNotifyToast, onNotifyToastsChange } from '@samline/notify'
+
+// Subscribe first — the library manages state, rendering is up to you
+onNotifyToastsChange((toasts) => { /* render toasts in your DOM */ })
+
 showNotifyToast({ title: 'Hello world!', type: 'success' })
 ```
 

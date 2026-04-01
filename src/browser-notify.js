@@ -11,5 +11,4 @@ const notifyApi = {
 	subscribe: (listener) => notifyCore.subscribe(listener),
 };
 
-window.Notify = notifyApi;
-window.Sileo = notifyApi;
+window.notify = notifyApi;

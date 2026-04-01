@@ -10,8 +10,24 @@ npm install @samline/notify
 
 ## Basic Usage
 
+The library manages toast state — **you must subscribe to the queue and render the toasts yourself**. There is no UI injected automatically.
+
 ```js
-import { showNotifyToast } from '@samline/notify'
+import { showNotifyToast, onNotifyToastsChange } from '@samline/notify'
+
+// 1. Subscribe and render
+onNotifyToastsChange(function (toasts) {
+  // Render the toasts however you like — example with a simple container:
+  const container = document.getElementById('toasts')
+  container.innerHTML = ''
+  toasts.forEach(function (toast) {
+    const el = document.createElement('div')
+    el.textContent = toast.title
+    container.appendChild(el)
+  })
+})
+
+// 2. Show a toast
 showNotifyToast({
   title: 'Hello VanillaJS',
   type: 'success',
@@ -21,12 +37,17 @@ showNotifyToast({
 
 ## Subscribe to changes
 
+`onNotifyToastsChange` is called immediately with the current toasts and again every time the list changes. It returns an unsubscribe function.
+
 ```js
 import { onNotifyToastsChange } from '@samline/notify'
-onNotifyToastsChange((toasts) => {
-  // Render the toasts in your HTML
-  console.log(toasts)
+
+const unsubscribe = onNotifyToastsChange((toasts) => {
+  console.log(toasts) // Array of active toast objects
 })
+
+// To stop listening:
+// unsubscribe()
 ```
 
 ## Available options
