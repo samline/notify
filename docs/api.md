@@ -1,6 +1,6 @@
-# Sileo General API
+# Notify General API
 
-The Sileo API is common for all environments and frameworks. Here you will find all available options and methods.
+The Notify API is common for all environments and frameworks. Here you will find all available options and methods.
 
 ## Toast Options
 
@@ -19,15 +19,15 @@ The Sileo API is common for all environments and frameworks. Here you will find 
 
 ## Main Methods
 
-- `showSileoToast(options)` — Show a toast (VanillaJS, Vue, Svelte)
-- `onSileoToastsChange(fn)` — Subscribe to toast changes (VanillaJS)
-- `useSileoToasts()` — Vue composable
-- `sileoToasts` — Svelte store
+- `showNotifyToast(options)` — Show a toast (VanillaJS, Vue, Svelte)
+- `onNotifyToastsChange(fn)` — Subscribe to toast changes (VanillaJS)
+- `useNotifyToasts()` — Vue composable
+- `notifyToasts` — Svelte store
 
 ## Full Example
 
 ```js
-showSileoToast({
+showNotifyToast({
   title: 'Action required',
   description: 'Click the button to continue',
   type: 'action',

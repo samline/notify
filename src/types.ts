@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 
-export type SileoState =
+export type NotifyState =
 	| "success"
 	| "loading"
 	| "error"
@@ -8,19 +8,19 @@ export type SileoState =
 	| "info"
 	| "action";
 
-export interface SileoStyles {
+export interface NotifyStyles {
 	title?: string;
 	description?: string;
 	badge?: string;
 	button?: string;
 }
 
-export interface SileoButton {
+export interface NotifyButton {
 	title: string;
 	onClick: () => void;
 }
 
-export const SILEO_POSITIONS = [
+export const NOTIFY_POSITIONS = [
 	"top-left",
 	"top-center",
 	"top-right",
@@ -29,18 +29,18 @@ export const SILEO_POSITIONS = [
 	"bottom-right",
 ] as const;
 
-export type SileoPosition = (typeof SILEO_POSITIONS)[number];
+export type NotifyPosition = (typeof NOTIFY_POSITIONS)[number];
 
-export interface SileoOptions {
+export interface NotifyOptions {
 	title?: string;
-	description?: ReactNode | string;
-	type?: SileoState;
-	position?: SileoPosition;
+	description?: string;
+	type?: NotifyState;
+	position?: NotifyPosition;
 	duration?: number | null;
-	icon?: ReactNode | null;
-	styles?: SileoStyles;
+	icon?: any;
+	styles?: NotifyStyles;
 	fill?: string;
 	roundness?: number;
 	autopilot?: boolean | { expand?: number; collapse?: number };
-	button?: SileoButton;
+	button?: NotifyButton;
 }

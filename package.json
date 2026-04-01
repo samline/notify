@@ -1,7 +1,7 @@
 {
 	"name": "notify",
 	"version": "0.1.5",
-	"description": "A toast notification library powered by Sileo, designed to bring the same beautiful, animated experience to React, Vue, Svelte, and Vanilla JS. Built for teams who need Sileo’s quality and API, but require seamless integration across multiple frameworks.",
+	"description": "A toast notification library designed to bring beautiful, animated notifications to React, Vue, Svelte, and Vanilla JS. Seamless integration across multiple frameworks.",
 	"license": "MIT",
 	"repository": {
 		"type": "git",
@@ -21,36 +21,36 @@
 		},
 		"./react": {
 			"import": {
-				"types": "./dist/react-sileo.d.mts",
-				"default": "./dist/react-sileo.mjs"
+				"types": "./dist/react-notify.d.mts",
+				"default": "./dist/react-notify.mjs"
 			},
 			"require": {
-				"types": "./dist/react-sileo.d.ts",
-				"default": "./dist/react-sileo.js"
+				"types": "./dist/react-notify.d.ts",
+				"default": "./dist/react-notify.js"
 			},
-			"default": "./dist/react-sileo.js"
+			"default": "./dist/react-notify.js"
 		},
 		"./vue": {
 			"import": {
-				"types": "./dist/vue-sileo.d.mts",
-				"default": "./dist/vue-sileo.mjs"
+				"types": "./dist/vue-notify.d.mts",
+				"default": "./dist/vue-notify.mjs"
 			},
 			"require": {
-				"types": "./dist/vue-sileo.d.ts",
-				"default": "./dist/vue-sileo.js"
+				"types": "./dist/vue-notify.d.ts",
+				"default": "./dist/vue-notify.js"
 			},
-			"default": "./dist/vue-sileo.js"
+			"default": "./dist/vue-notify.js"
 		},
 		"./svelte": {
 			"import": {
-				"types": "./dist/svelte-sileo.d.mts",
-				"default": "./dist/svelte-sileo.mjs"
+				"types": "./dist/svelte-notify.d.mts",
+				"default": "./dist/svelte-notify.mjs"
 			},
 			"require": {
-				"types": "./dist/svelte-sileo.d.ts",
-				"default": "./dist/svelte-sileo.js"
+				"types": "./dist/svelte-notify.d.ts",
+				"default": "./dist/svelte-notify.js"
 			},
-			"default": "./dist/svelte-sileo.js"
+			"default": "./dist/svelte-notify.js"
 		},
 		"./styles.css": "./dist/styles.css"
 	},

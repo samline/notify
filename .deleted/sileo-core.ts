@@ -1,7 +1,6 @@
 // Notify logic (no React dependencies)
 // Provides toast management and utilities for VanillaJS, Vue, Svelte, etc.
 
-export type SileoState =
   | "success"
   | "loading"
   | "error"
@@ -9,19 +8,16 @@ export type SileoState =
   | "info"
   | "action";
 
-export interface SileoStyles {
   title?: string;
   description?: string;
   badge?: string;
   button?: string;
 }
 
-export interface SileoButton {
   title: string;
   onClick: () => void;
 }
 
-export const SILEO_POSITIONS = [
   "top-left",
   "top-center",
   "top-right",
@@ -30,23 +26,21 @@ export const SILEO_POSITIONS = [
   "bottom-right",
 ] as const;
 
-export type SileoPosition = (typeof SILEO_POSITIONS)[number];
+export type NotifyPosition = (typeof SILEO_POSITIONS)[number];
 
-export interface SileoOptions {
   title?: string;
   description?: string;
-  type?: SileoState;
-  position?: SileoPosition;
+  type?: NotifyState;
+  position?: NotifyPosition;
   duration?: number | null;
   icon?: any;
-  styles?: SileoStyles;
+  styles?: NotifyStyles;
   fill?: string;
   roundness?: number;
   autopilot?: boolean | { expand?: number; collapse?: number };
-  button?: SileoButton;
+  button?: NotifyButton;
 }
 
-export interface SileoItem extends SileoOptions {
   id: string;
   instanceId: string;
   exiting?: boolean;
@@ -54,20 +48,19 @@ export interface SileoItem extends SileoOptions {
   autoCollapseDelayMs?: number;
 }
 
-type SileoListener = (toasts: SileoItem[]) => void;
+type NotifyListener = (toasts: NotifyItem[]) => void;
 
-export class SileoCore {
-  private toasts: SileoItem[] = [];
-  private listeners: Set<SileoListener> = new Set();
-  private position: SileoPosition = "top-right";
-  private options: Partial<SileoOptions> | undefined = undefined;
+  private toasts: NotifyItem[] = [];
+  private listeners: Set<NotifyListener> = new Set();
+  private position: NotifyPosition = "top-right";
+  private options: Partial<NotifyOptions> | undefined = undefined;
   private idCounter = 0;
 
   private generateId() {
     return `${++this.idCounter}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
   }
 
-  subscribe(fn: SileoListener) {
+  subscribe(fn: NotifyListener) {
     this.listeners.add(fn);
     fn(this.toasts);
     return () => this.listeners.delete(fn);
@@ -77,7 +70,7 @@ export class SileoCore {
     for (const fn of this.listeners) fn(this.toasts);
   }
 
-  private update(fn: (prev: SileoItem[]) => SileoItem[]) {
+  private update(fn: (prev: NotifyItem[]) => NotifyItem[]) {
     this.toasts = fn(this.toasts);
     this.emit();
   }
@@ -89,21 +82,21 @@ export class SileoCore {
     setTimeout(() => this.update((prev) => prev.filter((t) => t.id !== id)), 600);
   }
 
-  show(opts: SileoOptions) {
+  show(opts: NotifyOptions) {
     // Use a unique identifier based on options (e.g., the title or a generated key)
     // If not provided, use a default one
-    const id = opts.title ? `sileo-${opts.title}` : "sileo-default";
+    const id = opts.title ? `notify-${opts.title}` : "notify-default";
     const prevItem = this.toasts.find((t) => t.id === id);
     const instanceId = prevItem?.instanceId ?? this.generateId();
     // Set the state correctly
     const state = opts.type ?? prevItem?.type ?? "success";
-    const item: SileoItem = {
+    const item: NotifyItem = {
       ...prevItem,
       ...opts,
       id,
       instanceId,
       type: state,
-    } as SileoItem;
+    } as NotifyItem;
     this.update((prev) => {
       const filtered = prev.filter((t) => t.id !== id);
       return [...filtered, item];
@@ -117,4 +110,4 @@ export class SileoCore {
 }
 
 // Global instance for multiplatform usage
-export const sileoCore = new SileoCore();
+export const notifyCore = new NotifyCore();

@@ -1,13 +1,13 @@
 // Renderizador plug-and-play para VanillaJS
 // Permite mostrar todos los toasts activos en el DOM automáticamente
-import { sileoCore } from "./core/sileo-core";
+import { notifyCore } from "./core/notify-core";
 
 let container = null;
 
-export function renderSileoToasts() {
+export function renderNotifyToasts() {
   if (!container) {
     container = document.createElement("div");
-    container.className = "sileo-toasts";
+    container.className = "notify-toasts";
     Object.assign(container.style, {
       position: "fixed",
       top: "1rem",
@@ -20,7 +20,7 @@ export function renderSileoToasts() {
     container.innerHTML = "";
     toasts.forEach((toast) => {
       const el = document.createElement("div");
-      el.className = `sileo-toast ${toast.type || ''}`;
+      el.className = `notify-toast ${toast.type || ''}`;
       el.style.background = "#fff";
       el.style.borderRadius = "8px";
       el.style.boxShadow = "0 2px 8px rgba(0,0,0,0.1)";
@@ -32,13 +32,13 @@ export function renderSileoToasts() {
       el.style.flexDirection = "column";
       el.style.gap = "0.5rem";
       const title = document.createElement("div");
-      title.className = "sileo-toast-title";
+      title.className = "notify-toast-title";
       title.style.fontWeight = "bold";
       title.textContent = toast.title;
       el.appendChild(title);
       if (toast.description) {
         const desc = document.createElement("div");
-        desc.className = "sileo-toast-description";
+        desc.className = "notify-toast-description";
         desc.style.fontSize = "0.95em";
         desc.style.color = "#555";
         desc.textContent = toast.description;
@@ -49,23 +49,23 @@ export function renderSileoToasts() {
         btn.textContent = toast.button.label;
         btn.onclick = () => {
           if (typeof toast.button.onClick === "function") toast.button.onClick();
-          sileoCore.dismiss(toast.id);
+          notifyCore.dismiss(toast.id);
         };
         el.appendChild(btn);
       }
       const close = document.createElement("button");
-      close.className = "sileo-toast-close";
+      close.className = "notify-toast-close";
       close.textContent = "×";
       close.style.alignSelf = "flex-end";
       close.style.background = "none";
       close.style.border = "none";
       close.style.fontSize = "1.2em";
       close.style.cursor = "pointer";
-      close.onclick = () => sileoCore.dismiss(toast.id);
+      close.onclick = () => notifyCore.dismiss(toast.id);
       el.appendChild(close);
       container.appendChild(el);
     });
   }
-  render(sileoCore.getToasts());
-  return sileoCore.subscribe(render);
+  render(notifyCore.getToasts());
+  return notifyCore.subscribe(render);
 }

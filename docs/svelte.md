@@ -14,20 +14,20 @@ npm install @samline/notify/svelte
 
 ```svelte
 <script>
-  import SileoToasts, { sileoToasts, showSileoToast } from '@samline/notify/svelte';
+  import NotifyToasts, { notifyToasts, showNotifyToast } from '@samline/notify/svelte';
 </script>
-<SileoToasts />
+<NotifyToasts />
 ```
 
 ### Manual usage (store)
 
 ```svelte
 <script>
-  import { sileoToasts, showSileoToast } from '@samline/notify/svelte';
-  showSileoToast({ title: 'Hello Svelte', type: 'warning' });
+  import { notifyToasts, showNotifyToast } from '@samline/notify/svelte';
+  showNotifyToast({ title: 'Hello Svelte', type: 'warning' });
 </script>
 
-{#each $sileoToasts as toast}
+{#each $notifyToasts as toast}
   <div>{toast.title}</div>
 ```
 
@@ -39,8 +39,8 @@ npm install @samline/notify/svelte
 
 ```svelte
 <script>
-  import { showSileoToast } from '@samline/notify/svelte';
-  showSileoToast({
+  import { showNotifyToast } from '@samline/notify/svelte';
+  showNotifyToast({
     title: 'With action',
     description: 'Press the button',
     type: 'action',

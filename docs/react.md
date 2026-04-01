@@ -11,7 +11,7 @@ npm install @samline/notify/react
 ## Basic usage
 
 ```jsx
-import { Toaster, showSileoToast } from '@samline/notify/react'
+import { Toaster, showNotifyToast } from '@samline/notify/react'
 
 function App() {
   return (
@@ -19,7 +19,7 @@ function App() {
       <Toaster position='top-right' />
       <button
         onClick={() =>
-          showSileoToast({ title: 'Hello React', type: 'success' })
+          showNotifyToast({ title: 'Hello React', type: 'success' })
         }
       >
         Show Toast
@@ -36,7 +36,7 @@ function App() {
 ## Advanced example
 
 ```jsx
-showSileoToast({
+showNotifyToast({
   title: 'Action',
   description: 'Click the button',
   type: 'action',

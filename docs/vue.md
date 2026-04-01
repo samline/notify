@@ -9,22 +9,22 @@ npm install @samline/notify/vue
 ## Basic usage
 
 ```js
-import { showSileoToast, useSileoToasts } from '@samline/notify/vue'
+import { showNotifyToast, useNotifyToasts } from '@samline/notify/vue'
 
-showSileoToast({ title: 'Hello Vue', type: 'info' })
+showNotifyToast({ title: 'Hello Vue', type: 'info' })
 
 // In a component:
-const { toasts } = useSileoToasts()
+const { toasts } = useNotifyToasts()
 ```
 
 ### UI Plug-and-play
 
 ```vue
 <template>
-  <SileoToasts />
+  <NotifyToasts />
 </template>
 <script setup>
-import SileoToasts from '@samline/notify/vue'
+import NotifyToasts from '@samline/notify/vue'
 </script>
 ```
 
@@ -35,8 +35,8 @@ import SileoToasts from '@samline/notify/vue'
   <div v-for="toast in toasts" :key="toast.id">{{ toast.title }}</div>
 </template>
 <script setup>
-import { useSileoToasts } from '@samline/notify/vue'
-const { toasts } = useSileoToasts()
+import { useNotifyToasts } from '@samline/notify/vue'
+const { toasts } = useNotifyToasts()
 </script>
 ```
 
@@ -47,7 +47,7 @@ const { toasts } = useSileoToasts()
 ## Advanced example
 
 ```js
-showSileoToast({
+showNotifyToast({
   title: 'Action',
   description: 'Click the button',
   type: 'action',

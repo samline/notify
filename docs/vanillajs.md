@@ -13,9 +13,9 @@ npm install @samline/notify
 ### UI Plug-and-play
 
 ```js
-import { renderSileoToasts, showSileoToast } from '@samline/notify'
-renderSileoToasts()
-showSileoToast({
+import { renderNotifyToasts, showNotifyToast } from '@samline/notify'
+renderNotifyToasts()
+showNotifyToast({
   title: 'Hello VanillaJS',
   type: 'success',
   duration: 2000,
@@ -25,8 +25,8 @@ showSileoToast({
 ### Manual usage
 
 ```js
-import { showSileoToast } from '@samline/notify'
-showSileoToast({
+import { showNotifyToast } from '@samline/notify'
+showNotifyToast({
   title: 'Hello VanillaJS',
   type: 'success',
   duration: 2000,
@@ -36,8 +36,8 @@ showSileoToast({
 ## Subscribe to changes
 
 ```js
-import { onSileoToastsChange } from '@samline/notify'
-onSileoToastsChange((toasts) => {
+import { onNotifyToastsChange } from '@samline/notify'
+onNotifyToastsChange((toasts) => {
   // Render the toasts in your HTML
   console.log(toasts)
 })
@@ -59,7 +59,7 @@ onSileoToastsChange((toasts) => {
 ## Advanced example
 
 ```js
-showSileoToast({
+showNotifyToast({
   title: 'Action required',
   description: 'Click the button to continue',
   type: 'action',

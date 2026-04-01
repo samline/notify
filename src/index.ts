@@ -2,11 +2,11 @@
 
 import "./styles.css";
 
-export { sileo, Toaster, showSileoToast } from "./toast";
+export { notify, Toaster, showNotifyToast } from "./toast";
 export type {
-	SileoButton,
-	SileoOptions,
-	SileoPosition,
-	SileoState,
-	SileoStyles,
+	NotifyButton,
+	NotifyOptions,
+	NotifyPosition,
+	NotifyState,
+	NotifyStyles,
 } from "./types";

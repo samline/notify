@@ -1,18 +1,18 @@
-# Sileo - Browser (CDN)
+# Notify - Browser (CDN)
 
 ## Installation
 
-Include the generated UMD file (`dist/browser-sileo.js`) in your HTML:
+Include the generated UMD file (`dist/browser-notify.js`) in your HTML:
 
 ```html
-<script src="dist/browser-sileo.js"></script>
+<script src="dist/browser-notify.js"></script>
 ```
 
 ## Basic Usage
 
 ```html
 <script>
-  Sileo.show({
+  Notify.show({
     title: 'Hello from Browser/CDN',
     type: 'success',
     duration: 2000,
@@ -28,7 +28,7 @@ Include the generated UMD file (`dist/browser-sileo.js`) in your HTML:
 
 ```html
 <script>
-  Sileo.show({
+  Notify.show({
     title: 'Action',
     description: 'Click the button',
     type: 'action',

@@ -32,21 +32,21 @@ import {
 	X,
 } from "./icons";
 import "./styles.css";
-import type { SileoButton, SileoState, SileoStyles } from "./types";
+import type { NotifyButton, NotifyState, NotifyStyles } from "./types";
 
-type State = SileoState;
+type State = NotifyState;
 
 interface View {
 	title?: string;
 	description?: ReactNode | string;
 	state: State;
 	icon?: ReactNode | null;
-	styles?: SileoStyles;
-	button?: SileoButton;
+	styles?: NotifyStyles;
+	button?: NotifyButton;
 	fill: string;
 }
 
-interface SileoProps {
+interface NotifyProps {
 	id: string;
 	fill?: string;
 	state?: State;
@@ -56,8 +56,8 @@ interface SileoProps {
 	expand?: "top" | "bottom";
 	className?: string;
 	icon?: ReactNode | null;
-	styles?: SileoStyles;
-	button?: SileoButton;
+	styles?: NotifyStyles;
+	button?: NotifyButton;
 	roundness?: number;
 	exiting?: boolean;
 	autoExpandDelayMs?: number;
@@ -74,7 +74,7 @@ interface SileoProps {
 
 const STATE_ICON: Record<State, ReactNode> = {
 	success: <Check />,
-	loading: <LoaderCircle data-sileo-icon="spin" aria-hidden="true" />,
+	loading: <LoaderCircle data-notify-icon="spin" aria-hidden="true" />,
 	error: <X />,
 	warning: <CircleAlert />,
 	info: <LifeBuoy />,
@@ -114,7 +114,7 @@ const GooeyDefs = memo(function GooeyDefs({
 
 /* ------------------------------- Component -------------------------------- */
 
-export const Sileo = memo(function Sileo({
+export const Notify = memo(function Notify({
 	id,
 	fill = "#FFFFFF",
 	state = "success",
@@ -136,7 +136,7 @@ export const Sileo = memo(function Sileo({
 	onMouseEnter,
 	onMouseLeave,
 	onDismiss,
-}: SileoProps) {
+}: NotifyProps) {
 	const next: View = useMemo(
 		() => ({ title, description, state, icon, styles, button, fill }),
 		[title, description, state, icon, styles, button, fill],
@@ -156,7 +156,7 @@ export const Sileo = memo(function Sileo({
 		: (canExpand ?? (!interruptKey || interruptKey === id));
 
 	const headerKey = `${view.state}-${view.title}`;
-	const filterId = `sileo-gooey-${id}`;
+	const filterId = `notify-gooey-${id}`;
 	const resolvedRoundness = Math.max(0, roundness ?? DEFAULT_ROUNDNESS);
 	const blur = resolvedRoundness * BLUR_RATIO;
 
@@ -547,7 +547,7 @@ export const Sileo = memo(function Sileo({
 		(e: React.PointerEvent<HTMLButtonElement>) => {
 			if (exiting || !onDismiss) return;
 			const target = e.target as HTMLElement;
-			if (target.closest("[data-sileo-button]")) return;
+			if (target.closest("[data-notify-button]")) return;
 			pointerStartRef.current = e.clientY;
 			e.currentTarget.setPointerCapture(e.pointerId);
 			const el = buttonRef.current;
@@ -566,7 +566,7 @@ export const Sileo = memo(function Sileo({
 		<button
 			ref={buttonRef}
 			type="button"
-			data-sileo-toast
+			data-notify-toast
 			data-ready={ready}
 			data-expanded={open}
 			data-exiting={exiting}
@@ -580,12 +580,12 @@ export const Sileo = memo(function Sileo({
 			onTransitionEnd={handleTransitionEnd}
 			onPointerDown={handlePointerDown}
 		>
-			<div data-sileo-canvas data-edge={expand} style={canvasStyle}>
-				<svg data-sileo-svg width={WIDTH} height={svgHeight} viewBox={viewBox}>
-					<title>Sileo Notification</title>
+			<div data-notify-canvas data-edge={expand} style={canvasStyle}>
+				<svg data-notify-svg width={WIDTH} height={svgHeight} viewBox={viewBox}>
+					<title>Notify Notification</title>
 					<GooeyDefs filterId={filterId} blur={blur} />
 					<motion.rect
-						data-sileo-pill
+						data-notify-pill
 						rx={resolvedRoundness}
 						ry={resolvedRoundness}
 						fill={view.fill}
@@ -594,7 +594,7 @@ export const Sileo = memo(function Sileo({
 						transition={pillTransition}
 					/>
 					<motion.rect
-						data-sileo-body
+						data-notify-body
 						y={HEIGHT}
 						width={WIDTH}
 						rx={resolvedRoundness}
@@ -607,16 +607,16 @@ export const Sileo = memo(function Sileo({
 				</svg>
 			</div>
 
-			<div ref={headerRef} data-sileo-header data-edge={expand}>
-				<div data-sileo-header-stack>
+			<div ref={headerRef} data-notify-header data-edge={expand}>
+				<div data-notify-header-stack>
 					<div
 						ref={innerRef}
 						key={headerLayer.current.key}
-						data-sileo-header-inner
+						data-notify-header-inner
 						data-layer="current"
 					>
 						<div
-							data-sileo-badge
+							data-notify-badge
 							data-state={headerLayer.current.view.state}
 							className={headerLayer.current.view.styles?.badge}
 						>
@@ -624,7 +624,7 @@ export const Sileo = memo(function Sileo({
 								STATE_ICON[headerLayer.current.view.state]}
 						</div>
 						<span
-							data-sileo-title
+							data-notify-title
 							data-state={headerLayer.current.view.state}
 							className={headerLayer.current.view.styles?.title}
 						>
@@ -634,12 +634,12 @@ export const Sileo = memo(function Sileo({
 					{headerLayer.prev && (
 						<div
 							key={headerLayer.prev.key}
-							data-sileo-header-inner
+							data-notify-header-inner
 							data-layer="prev"
 							data-exiting="true"
 						>
 							<div
-								data-sileo-badge
+								data-notify-badge
 								data-state={headerLayer.prev.view.state}
 								className={headerLayer.prev.view.styles?.badge}
 							>
@@ -647,7 +647,7 @@ export const Sileo = memo(function Sileo({
 									STATE_ICON[headerLayer.prev.view.state]}
 							</div>
 							<span
-								data-sileo-title
+								data-notify-title
 								data-state={headerLayer.prev.view.state}
 								className={headerLayer.prev.view.styles?.title}
 							>
@@ -659,10 +659,10 @@ export const Sileo = memo(function Sileo({
 			</div>
 
 			{hasDesc && (
-				<div data-sileo-content data-edge={expand} data-visible={open}>
+				<div data-notify-content data-edge={expand} data-visible={open}>
 					<div
 						ref={contentRef}
-						data-sileo-description
+						data-notify-description
 						className={view.styles?.description}
 					>
 						{view.description}
@@ -671,7 +671,7 @@ export const Sileo = memo(function Sileo({
 							<a
 								href="#"
 								type="button"
-								data-sileo-button
+								data-notify-button
 								data-state={view.state}
 								className={view.styles?.button}
 								onClick={handleButtonClick}

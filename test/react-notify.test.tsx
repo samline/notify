@@ -1,6 +1,6 @@
 import { render, fireEvent, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { Toaster, showSileoToast } from '../src/toast';
+import { Toaster, showNotifyToast } from '../src/toast';
 
 // Mocks para window.matchMedia y window.ResizeObserver en entorno jsdom
 beforeAll(() => {
@@ -24,11 +24,11 @@ beforeAll(() => {
   };
 });
 
-describe('React Sileo integration', () => {
+describe('React Notify integration', () => {
   it('debe renderizar Toaster y mostrar un toast', async () => {
     render(<>
       <Toaster position="top-right" />
-      <button onClick={() => showSileoToast({ title: 'Toast React', type: 'success' })}>
+      <button onClick={() => showNotifyToast({ title: 'Toast React', type: 'success' })}>
         Mostrar Toast
       </button>
     </>);
