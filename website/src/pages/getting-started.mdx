@@ -1,9 +1,9 @@
-import { Tab, Tabs, Cards, Card, Steps } from 'nextra-theme-docs';
+import { Tab, Tabs, Steps } from 'nextra-theme-docs';
 import { toast } from '@samline/sonner/react';
 
 # Getting Started
 
-Sonner is an opinionated toast component for React. You can read more about why and how it was built [here](https://emilkowal.ski/ui/building-a-toast-component).
+Samline Sonner is a shared toast runtime for React, Vue, Svelte, vanilla JS and browser/CDN usage.
 
 <Steps>
 ### Install
@@ -11,28 +11,98 @@ Sonner is an opinionated toast component for React. You can read more about why 
 <Tabs items={['pnpm', 'npm', 'yarn', 'bun']}>
   <Tab>
     ```bash
-    pnpm i sonner
+    pnpm i @samline/sonner
     ```
 
   </Tab>
   <Tab>
     ```bash
-    npm i sonner
+    npm i @samline/sonner
     ```
   </Tab>
   <Tab>
     ```bash
-    yarn add sonner
+    yarn add @samline/sonner
     ```
   </Tab>
     <Tab>
     ```bash
-    bun add sonner
+    bun add @samline/sonner
     ```
   </Tab>
 </Tabs>
 
-### Add Toaster to your app
+### Choose a runtime
+
+<Tabs items={['Vanilla', 'React', 'Vue', 'Svelte', 'Browser']}>
+  <Tab>
+    ```ts
+    import { createToaster, toast } from '@samline/sonner';
+
+    createToaster({ position: 'bottom-right' });
+
+    document.querySelector('button')?.addEventListener('click', () => {
+      toast('Hello from vanilla');
+    });
+    ```
+  </Tab>
+  <Tab>
+    ```tsx
+    import { Toaster, toast } from '@samline/sonner/react';
+
+    export default function App() {
+      return (
+        <>
+          <Toaster />
+          <button onClick={() => toast('Hello from React')}>Toast</button>
+        </>
+      );
+    }
+    ```
+  </Tab>
+  <Tab>
+    ```ts
+    import { createApp } from 'vue';
+    import { SonnerPlugin, Toaster, toast } from '@samline/sonner/vue';
+
+    const app = createApp({
+      components: { Toaster },
+      template: `<><Toaster /><button @click="notify">Toast</button></>`,
+      methods: {
+        notify() {
+          toast('Hello from Vue');
+        },
+      },
+    });
+
+    app.use(SonnerPlugin);
+    app.mount('#app');
+    ```
+  </Tab>
+  <Tab>
+    ```svelte
+    <script lang="ts">
+      import { toaster, toast } from '@samline/sonner/svelte';
+
+      const options = { position: 'bottom-right' };
+    </script>
+
+    <span use:toaster={options} hidden aria-hidden="true"></span>
+    <button on:click={() => toast('Hello from Svelte')}>Toast</button>
+    ```
+  </Tab>
+  <Tab>
+    ```html
+    <script type="module">
+      import '@samline/sonner/browser';
+
+      window.Sonner.toast('Hello from browser');
+    </script>
+    ```
+  </Tab>
+</Tabs>
+
+### React Toaster
 
 It can be placed anywhere, even in server components such as `layout.tsx`.
 
