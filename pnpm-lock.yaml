@@ -8,9 +8,6 @@ importers:
 
   .:
     devDependencies:
-      '@playwright/test':
-        specifier: ^1.49.1
-        version: 1.53.2
       '@types/node':
         specifier: ^18.11.13
         version: 18.15.0
@@ -29,47 +26,8 @@ importers:
       react-dom:
         specifier: ^18.2.0
         version: 18.3.1(react@18.3.1)
-      turbo:
-        specifier: '1.6'
-        version: 1.6.3
       typescript:
         specifier: ^4.8.4
-        version: 4.9.5
-
-  test:
-    dependencies:
-      '@types/node':
-        specifier: 18.15.0
-        version: 18.15.0
-      '@types/react':
-        specifier: 18.0.28
-        version: 18.0.28
-      '@types/react-dom':
-        specifier: 18.0.11
-        version: 18.0.11
-      ai:
-        specifier: ^3.4.9
-        version: 3.4.33(react@18.3.1)(svelte@5.35.1)(vue@3.5.17)(zod@3.25.71)
-      eslint:
-        specifier: 8.35.0
-        version: 8.35.0
-      eslint-config-next:
-        specifier: 13.2.4
-        version: 13.2.4(eslint@8.35.0)(typescript@4.9.5)
-      next:
-        specifier: 14.2.15
-        version: 14.2.15(@playwright/test@1.53.2)(react-dom@18.3.1)(react@18.3.1)
-      react:
-        specifier: 18.3.1
-        version: 18.3.1
-      react-dom:
-        specifier: 18.3.1
-        version: 18.3.1(react@18.3.1)
-      '@samline/sonner':
-        specifier: workspace:*
-        version: link:..
-      typescript:
-        specifier: 4.9.5
         version: 4.9.5
 
 packages:

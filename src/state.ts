@@ -255,14 +255,10 @@ export const ToastState = new Observer();
 
 // bind this to the toast function
 const toastFunction = (message: titleT, data?: ExternalToast) => {
-  const id = data?.id || toastsCounter++;
-
-  ToastState.addToast({
-    title: message,
+  return ToastState.create({
     ...data,
-    id,
+    message,
   });
-  return id;
 };
 
 const isHttpResponse = (data: any): data is Response => {
@@ -297,3 +293,10 @@ export const toast = Object.assign(
   },
   { getHistory, getToasts },
 );
+
+export function resetToastState() {
+  ToastState.subscribers = [];
+  ToastState.toasts = [];
+  ToastState.dismissedToasts = new Set();
+  toastsCounter = 1;
+}
