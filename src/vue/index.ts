@@ -1,0 +1,90 @@
+import { defineComponent, h, onBeforeUnmount, onMounted, watch } from 'vue';
+import type { PropType, Plugin } from 'vue';
+
+import { createToaster, destroyToaster, getToaster, toast } from '../index';
+import type { CommonToasterOptions } from '../core';
+import type { Position } from '../types';
+
+const toasterProps = {
+  id: String,
+  theme: String as PropType<CommonToasterOptions['theme']>,
+  position: String as PropType<Position>,
+  expand: Boolean,
+  duration: Number,
+  gap: Number,
+  visibleToasts: Number,
+  closeButton: Boolean,
+  className: String,
+  offset: [Object, String, Number] as PropType<CommonToasterOptions['offset']>,
+  mobileOffset: [Object, String, Number] as PropType<CommonToasterOptions['mobileOffset']>,
+  dir: String as PropType<CommonToasterOptions['dir']>,
+  richColors: Boolean,
+  customAriaLabel: String,
+  containerAriaLabel: String,
+};
+
+function cleanOptions(options: Record<string, unknown>): CommonToasterOptions {
+  return Object.fromEntries(Object.entries(options).filter(([, value]) => value !== undefined)) as CommonToasterOptions;
+}
+
+export const Toaster = defineComponent({
+  name: 'SonnerToaster',
+  props: toasterProps,
+  setup(props) {
+    let mounted = false;
+
+    const sync = () => {
+      const options = cleanOptions({
+        id: props.id,
+        theme: props.theme,
+        position: props.position,
+        expand: props.expand,
+        duration: props.duration,
+        gap: props.gap,
+        visibleToasts: props.visibleToasts,
+        closeButton: props.closeButton,
+        className: props.className,
+        offset: props.offset,
+        mobileOffset: props.mobileOffset,
+        dir: props.dir,
+        richColors: props.richColors,
+        customAriaLabel: props.customAriaLabel,
+        containerAriaLabel: props.containerAriaLabel,
+      });
+
+      createToaster(options);
+    };
+
+    onMounted(() => {
+      mounted = true;
+      sync();
+    });
+
+    watch(
+      () => ({ ...props }),
+      () => {
+        if (!mounted) return;
+        sync();
+      },
+      { deep: true },
+    );
+
+    onBeforeUnmount(() => {
+      destroyToaster();
+      mounted = false;
+    });
+
+    return () => h('span', { 'data-sonner-vue-toaster': '', hidden: true, 'aria-hidden': 'true' });
+  },
+});
+
+export const SonnerPlugin: Plugin = {
+  install(app) {
+    app.component('SonnerToaster', Toaster);
+    app.config.globalProperties.$toast = toast;
+    app.provide('sonner:toast', toast);
+  },
+};
+
+export { createToaster, destroyToaster, getToaster, toast };
+export type { CommonToasterOptions };
