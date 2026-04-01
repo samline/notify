@@ -1,6 +1,6 @@
 // Notify logic (no React dependencies)
 // Provides toast management and utilities for VanillaJS, Vue, Svelte, etc.
-import type { NotifyOptions } from "../types";
+import type { NotifyOptions, NotifyPosition } from "../types";
 export type {
 	NotifyButton,
 	NotifyPosition,
