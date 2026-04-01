@@ -78,12 +78,12 @@
     "dist"
   ],
   "scripts": {
-    "dev": "bunchee --watch",
-    "build": "bunchee && cp src/styles.css dist/styles.css",
-    "type-check": "tsc --noEmit",
-    "format": "prettier --write .",
-    "test": "vitest run tests/runtime.test.ts tests/state.test.ts --environment node --globals",
-    "test:watch": "vitest tests/runtime.test.ts tests/state.test.ts --environment node --globals"
+    "dev": "bun scripts/build.mjs --watch",
+    "build": "bun scripts/build.mjs",
+    "type-check": "bunx tsc --noEmit",
+    "format": "bunx prettier --write .",
+    "test": "bunx vitest run tests/runtime.test.ts tests/state.test.ts --environment node --globals",
+    "test:watch": "bunx vitest tests/runtime.test.ts tests/state.test.ts --environment node --globals"
   },
   "keywords": [
     "react",
@@ -136,5 +136,5 @@
       "optional": true
     }
   },
-  "packageManager": "pnpm@9.15.9"
+  "packageManager": "bun@1.1.29"
 }
