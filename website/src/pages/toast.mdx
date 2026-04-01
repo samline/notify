@@ -1,4 +1,4 @@
-import { toast } from 'sonner';
+import { toast } from '@samline/sonner/react';
 
 # Toast()
 
@@ -9,7 +9,7 @@ Use it to render a toast. You can call it from anywhere, even outside of React.
 You can call it with just a string.
 
 ```jsx
-import { toast } from 'sonner';
+import { toast } from '@samline/sonner/react';
 
 toast('Hello World!');
 ```
@@ -17,7 +17,7 @@ toast('Hello World!');
 Or provide an object as the second argument with more options. They will overwrite the options passed to [`<Toaster />`](/toaster) if you have provided any.
 
 ```jsx
-import { toast } from 'sonner';
+import { toast } from '@samline/sonner/react';
 
 toast('My toast', {
   className: 'my-classname',

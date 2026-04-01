@@ -5,7 +5,7 @@ export const Usage = () => {
     <div>
       <h2>Usage</h2>
       <p>Render the toaster in the root of your app.</p>
-      <CodeBlock initialHeight={270}>{`import { Toaster, toast } from 'sonner'
+      <CodeBlock initialHeight={270}>{`import { Toaster, toast } from '@samline/sonner/react'
 
 // ...
 

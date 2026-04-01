@@ -1,4 +1,4 @@
-import { toast } from 'sonner';
+import { toast } from '@samline/sonner/react';
 
 import styles from './hero.module.css';
 import Link from 'next/link';

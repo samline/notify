@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { toast } from 'sonner';
+import { toast } from '@samline/sonner/react';
 
 test.beforeEach(async ({ page }) => {
   await page.goto('/');

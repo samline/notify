@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Toaster, toast } from 'sonner';
+import { Toaster, toast } from '@samline/sonner/react';
 import { action } from '@/app/action';
 
 const promise = () => new Promise((resolve) => setTimeout(resolve, 2000));

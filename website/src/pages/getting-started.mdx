@@ -1,5 +1,5 @@
 import { Tab, Tabs, Cards, Card, Steps } from 'nextra-theme-docs';
-import { toast } from 'sonner';
+import { toast } from '@samline/sonner/react';
 
 # Getting Started
 
@@ -37,7 +37,7 @@ Sonner is an opinionated toast component for React. You can read more about why 
 It can be placed anywhere, even in server components such as `layout.tsx`.
 
 ```tsx
-import { Toaster } from 'sonner';
+import { Toaster } from '@samline/sonner/react';
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -54,7 +54,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 ### Render a toast
 
 ```tsx
-import { toast } from 'sonner';
+import { toast } from '@samline/sonner/react';
 
 function MyToast() {
   return <button onClick={() => toast('This is a sonner toast')}>Render my toast</button>;

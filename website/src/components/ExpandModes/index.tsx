@@ -1,4 +1,4 @@
-import { toast } from 'sonner';
+import { toast } from '@samline/sonner/react';
 import { CodeBlock } from '../CodeBlock';
 
 export const ExpandModes = ({

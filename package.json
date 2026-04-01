@@ -1,5 +1,5 @@
 {
-  "name": "sonner",
+  "name": "@samline/sonner",
   "version": "2.0.7",
   "description": "An opinionated toast component for React.",
   "exports": {
@@ -13,6 +13,28 @@
         "default": "./dist/index.js"
       },
       "default": "./dist/index.js"
+    },
+    "./react": {
+      "import": {
+        "types": "./dist/react/index.d.mts",
+        "default": "./dist/react/index.mjs"
+      },
+      "require": {
+        "types": "./dist/react/index.d.ts",
+        "default": "./dist/react/index.js"
+      },
+      "default": "./dist/react/index.js"
+    },
+    "./core": {
+      "import": {
+        "types": "./dist/core/index.d.mts",
+        "default": "./dist/core/index.mjs"
+      },
+      "require": {
+        "types": "./dist/core/index.d.ts",
+        "default": "./dist/core/index.js"
+      },
+      "default": "./dist/core/index.js"
     },
     "./dist/styles.css": "./dist/styles.css"
   },

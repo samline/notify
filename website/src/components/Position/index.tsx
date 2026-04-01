@@ -1,4 +1,4 @@
-import { toast, useSonner } from 'sonner';
+import { toast, useSonner } from '@samline/sonner/react';
 import { CodeBlock } from '../CodeBlock';
 import React from 'react';
 
