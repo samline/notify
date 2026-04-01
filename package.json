@@ -1,7 +1,7 @@
 {
   "name": "@samline/sonner",
   "version": "2.0.7",
-  "description": "An opinionated toast component for React.",
+  "description": "A toast package inspired by Sonner for React, Vue, Svelte, vanilla JS, and browser/CDN usage.",
   "exports": {
     ".": {
       "import": {

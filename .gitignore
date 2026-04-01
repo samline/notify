@@ -7,6 +7,9 @@ node_modules
 .pnp
 .pnp.js
 
+# build helpers
+.bunchee-build-*
+
 # testing
 coverage
 
@@ -30,8 +33,3 @@ yarn-error.log*
 .env.test.local
 .env.production.local
 
-# turbo
-.turbo
-/test-results/
-/playwright-report/
-/playwright/.cache/
