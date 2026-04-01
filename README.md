@@ -1,5 +1,7 @@
 # Notify
 
+A universal toast notification library. Built for teams who need Sonner quality and API, but require seamless integration across multiple frameworks.
+
 Notify is a toast package inspired by [Sonner](https://github.com/emilkowalski/sonner). The intention is to complement that work and experiment with a shared runtime for React, Vue, Svelte, vanilla JS, and browser/CDN usage.
 
 ## Table of Contents
