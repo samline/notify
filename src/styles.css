@@ -475,3 +475,84 @@
 [data-notify-viewport][data-theme="light"] [data-notify-description] {
 	color: rgba(255, 255, 255, 0.5);
 }
+
+/* -------- Browser / CDN card renderer (render-notify-toasts.js) ---------- */
+/*
+ * When a [data-notify-card] is present (VanillaJS renderer), we override the
+ * SVG-based layout from the React component and use a plain HTML card instead.
+ */
+
+[data-notify-toast]:has([data-notify-card]) {
+	width: auto;
+	height: auto;
+	background: transparent;
+}
+
+[data-notify-card] {
+	background: #ffffff;
+	border-radius: 20px;
+	box-shadow:
+		0 4px 24px rgba(0, 0, 0, 0.1),
+		0 1px 4px rgba(0, 0, 0, 0.06);
+	width: var(--notify-width);
+	overflow: hidden;
+}
+
+/* Header row: icon badge + title */
+[data-notify-card] [data-notify-header] {
+	position: relative;
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 0.5rem 0.75rem;
+	height: auto;
+	left: auto;
+	max-width: none;
+	transform: none;
+	overflow: visible;
+}
+
+/* Content area: description + optional button */
+[data-notify-card] [data-notify-content] {
+	position: relative;
+	opacity: 1;
+	pointer-events: auto;
+	content-visibility: visible;
+	border-top: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+/* State colors for the badge icon and title inside the card */
+[data-notify-card]
+	:is([data-notify-badge], [data-notify-title])[data-state] {
+	color: var(--notify-state-success);
+}
+
+[data-notify-card]
+	:is([data-notify-badge], [data-notify-title])[data-state="error"] {
+	color: var(--notify-state-error);
+}
+
+[data-notify-card]
+	:is([data-notify-badge], [data-notify-title])[data-state="warning"] {
+	color: var(--notify-state-warning);
+}
+
+[data-notify-card]
+	:is([data-notify-badge], [data-notify-title])[data-state="info"] {
+	color: var(--notify-state-info);
+}
+
+[data-notify-card]
+	:is([data-notify-badge], [data-notify-title])[data-state="loading"] {
+	color: var(--notify-state-loading);
+}
+
+[data-notify-card]
+	:is([data-notify-badge], [data-notify-title])[data-state="action"] {
+	color: var(--notify-state-action);
+}
+
+/* Description text */
+[data-notify-card] [data-notify-description] {
+	color: rgba(0, 0, 0, 0.6);
+}

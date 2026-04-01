@@ -14,6 +14,12 @@ try {
     cwd: process.cwd() 
   });
 
+  console.log('🌐 Building browser renderer bundle...');
+  execSync('bun build ./src/render-notify-toasts.js --format=iife --outfile ./dist/render-notify-toasts.js', {
+    stdio: 'inherit',
+    cwd: process.cwd()
+  });
+
   console.log('📋 Copying styles...');
   const src = path.join(process.cwd(), 'src', 'styles.css');
   const dest = path.join(process.cwd(), 'dist', 'styles.css');

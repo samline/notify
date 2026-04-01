@@ -1,71 +1,149 @@
-// Renderizador plug-and-play para VanillaJS
-// Permite mostrar todos los toasts activos en el DOM automáticamente
+// Renderizador plug-and-play para VanillaJS / CDN
+// Genera la misma estructura DOM y data-attributes que styles.css espera
 import { notifyCore } from "./core/notify-core";
 
-let container = null;
+const ICONS = {
+  success: `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>`,
+  error: `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>`,
+  warning: `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`,
+  info: `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 4.24 4.24"/><path d="m14.83 9.17 4.24-4.24"/><path d="m14.83 14.83 4.24 4.24"/><path d="m9.17 14.83-4.24 4.24"/><circle cx="12" cy="12" r="4"/></svg>`,
+  loading: `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" data-notify-icon="spin" aria-hidden="true"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>`,
+  action: `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>`,
+};
 
-export function renderNotifyToasts() {
-  if (!container) {
-    container = document.createElement("div");
-    container.className = "notify-toasts";
-    Object.assign(container.style, {
-      position: "fixed",
-      top: "1rem",
-      right: "1rem",
-      zIndex: 9999,
-    });
-    document.body.appendChild(container);
+function capitalize(s) {
+  return s ? s.charAt(0).toUpperCase() + s.slice(1) : "";
+}
+
+let viewport = null;
+const toastEls = new Map();
+
+function getOrCreateViewport(position) {
+  if (!viewport) {
+    viewport = document.createElement("div");
+    viewport.setAttribute("data-notify-viewport", "");
+    viewport.setAttribute("data-position", position);
+    viewport.setAttribute("data-theme", "light");
+    document.body.appendChild(viewport);
   }
-  function render(toasts) {
-    container.innerHTML = "";
-    toasts.forEach((toast) => {
-      const el = document.createElement("div");
-      el.className = `notify-toast ${toast.type || ''}`;
-      el.style.background = "#fff";
-      el.style.borderRadius = "8px";
-      el.style.boxShadow = "0 2px 8px rgba(0,0,0,0.1)";
-      el.style.marginBottom = "1rem";
-      el.style.padding = "1rem 1.5rem";
-      el.style.minWidth = "220px";
-      el.style.maxWidth = "320px";
-      el.style.display = "flex";
-      el.style.flexDirection = "column";
-      el.style.gap = "0.5rem";
-      const title = document.createElement("div");
-      title.className = "notify-toast-title";
-      title.style.fontWeight = "bold";
-      title.textContent = toast.title;
-      el.appendChild(title);
-      if (toast.description) {
-        const desc = document.createElement("div");
-        desc.className = "notify-toast-description";
-        desc.style.fontSize = "0.95em";
-        desc.style.color = "#555";
-        desc.textContent = toast.description;
-        el.appendChild(desc);
-      }
-      if (toast.button) {
-        const btn = document.createElement("button");
-        btn.textContent = toast.button.title;
-        btn.onclick = () => {
-          if (typeof toast.button.onClick === "function") toast.button.onClick();
-          notifyCore.dismiss(toast.id);
-        };
-        el.appendChild(btn);
-      }
-      const close = document.createElement("button");
-      close.className = "notify-toast-close";
-      close.textContent = "×";
-      close.style.alignSelf = "flex-end";
-      close.style.background = "none";
-      close.style.border = "none";
-      close.style.fontSize = "1.2em";
-      close.style.cursor = "pointer";
-      close.onclick = () => notifyCore.dismiss(toast.id);
-      el.appendChild(close);
-      container.appendChild(el);
-    });
+  return viewport;
+}
+
+function buildToastEl(toast) {
+  const state = toast.type || "success";
+
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.setAttribute("data-notify-toast", "");
+  btn.setAttribute("data-state", state);
+  btn.setAttribute("data-ready", "false");
+  btn.setAttribute("data-exiting", "false");
+
+  // Visual card wrapper (provides the white rounded card background)
+  const card = document.createElement("div");
+  card.setAttribute("data-notify-card", "");
+
+  // Pill header row: icon badge + title
+  const header = document.createElement("div");
+  header.setAttribute("data-notify-header", "");
+
+  const badge = document.createElement("div");
+  badge.setAttribute("data-notify-badge", "");
+  badge.setAttribute("data-state", state);
+  badge.innerHTML = ICONS[state] || ICONS.success;
+
+  const titleEl = document.createElement("span");
+  titleEl.setAttribute("data-notify-title", "");
+  titleEl.setAttribute("data-state", state);
+  titleEl.textContent = toast.title || capitalize(state);
+
+  header.appendChild(badge);
+  header.appendChild(titleEl);
+  card.appendChild(header);
+
+  // Content area: description + optional action button
+  if (toast.description || toast.button) {
+    const content = document.createElement("div");
+    content.setAttribute("data-notify-content", "");
+    content.setAttribute("data-visible", "true");
+
+    if (toast.description) {
+      const desc = document.createElement("div");
+      desc.setAttribute("data-notify-description", "");
+      desc.textContent = toast.description;
+      content.appendChild(desc);
+    }
+
+    if (toast.button) {
+      const actionBtn = document.createElement("button");
+      actionBtn.setAttribute("data-notify-button", "");
+      actionBtn.setAttribute("data-state", state);
+      actionBtn.textContent = toast.button.title;
+      actionBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        toast.button.onClick?.();
+        notifyCore.dismiss(toast.id);
+      });
+      content.appendChild(actionBtn);
+    }
+
+    card.appendChild(content);
   }
-  render(notifyCore.getToasts());
-  return notifyCore.subscribe(render);
+
+  btn.appendChild(card);
+  btn.addEventListener("click", () => notifyCore.dismiss(toast.id));
+
+  // Trigger entry animation on next frame
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      btn.setAttribute("data-ready", "true");
+    });
+  });
+
+  return btn;
+}
+
+function updateToastEl(el, toast) {
+  const state = toast.type || "success";
+  el.setAttribute("data-state", state);
+  if (toast.exiting) {
+    el.setAttribute("data-exiting", "true");
+  }
+}
+
+/**
+ * Mounts the notify viewport into the DOM and subscribes to toast changes.
+ * @param {object} [options]
+ * @param {"top-right"|"top-left"|"top-center"|"bottom-right"|"bottom-left"|"bottom-center"} [options.position]
+ * @returns {() => void} Unsubscribe function
+ */
+export function renderNotifyToasts(options = {}) {
+  const position = options.position ?? "top-right";
+  const vp = getOrCreateViewport(position);
+
+  return notifyCore.subscribe((toasts) => {
+    const liveIds = new Set(toasts.map((t) => t.id));
+
+    // Remove gone toasts with exit animation
+    for (const [id, el] of toastEls) {
+      if (!liveIds.has(id)) {
+        el.setAttribute("data-exiting", "true");
+        setTimeout(() => {
+          el.remove();
+          toastEls.delete(id);
+        }, 600);
+      }
+    }
+
+    // Add or update toasts in order
+    for (const toast of toasts) {
+      if (toastEls.has(toast.id)) {
+        updateToastEl(toastEls.get(toast.id), toast);
+      } else {
+        const el = buildToastEl(toast);
+        toastEls.set(toast.id, el);
+        vp.appendChild(el);
+      }
+    }
+  });
 }
