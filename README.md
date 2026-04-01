@@ -32,12 +32,23 @@ npm install @samline/notify
 
 ## CDN / Browser
 
-Include the generated UMD file (`dist/browser-notify.js`) in your HTML:
+Include the CSS and UMD bundle via unpkg or jsDelivr:
 
 ```html
-<script src="dist/browser-notify.js"></script>
+<!-- unpkg -->
+<link rel="stylesheet" href="https://unpkg.com/@samline/notify@1.0.0/dist/styles.css" />
+<script src="https://unpkg.com/@samline/notify@1.0.0/dist/browser-notify.js"></script>
+```
+
+```html
+<!-- jsDelivr -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@samline/notify@1.0.0/dist/styles.css" />
+<script src="https://cdn.jsdelivr.net/npm/@samline/notify@1.0.0/dist/browser-notify.js"></script>
+```
+
+```html
 <script>
-  Notify.show({
+  window.Notify.show({
     title: 'Hello from the browser',
     type: 'success',
     duration: 2000,

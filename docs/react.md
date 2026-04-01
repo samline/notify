@@ -1,5 +1,3 @@
-npm install @samline/notify/react
-
 # Notify - React
 
 ## Installation

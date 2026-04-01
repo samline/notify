@@ -10,20 +10,6 @@ npm install @samline/notify
 
 ## Basic Usage
 
-### UI Plug-and-play
-
-```js
-import { renderNotifyToasts, showNotifyToast } from '@samline/notify'
-renderNotifyToasts()
-showNotifyToast({
-  title: 'Hello VanillaJS',
-  type: 'success',
-  duration: 2000,
-})
-```
-
-### Manual usage
-
 ```js
 import { showNotifyToast } from '@samline/notify'
 showNotifyToast({

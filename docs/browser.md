@@ -18,11 +18,24 @@ Include the CSS and the browser bundle in your HTML via unpkg or jsDelivr:
 
 This exposes a global `Notify` object you can use immediately.
 
+## Available Methods
+
+| Method | Description |
+| ------ | ----------- |
+| `window.Notify.show(options)` | Show a toast |
+| `window.Notify.dismiss(id)` | Dismiss a toast by its id |
+| `window.Notify.clear()` | Dismiss all active toasts |
+| `window.Notify.subscribe(fn)` | Subscribe to toast changes — returns an unsubscribe function |
+
+## Toast Options
+
+- `title`, `type`, `description`, `duration`, `position`, `styles`, `fill`, `roundness`, `autopilot`, `button` (see [General API](../README.md#general-api))
+
 ## Basic Usage
 
 ```html
 <script>
-  Notify.show({
+  window.Notify.show({
     title: 'Hello from Browser/CDN',
     type: 'success',
     duration: 2000,
@@ -30,15 +43,26 @@ This exposes a global `Notify` object you can use immediately.
 </script>
 ```
 
-## Available Options
+## Subscribe to Changes
 
-- `title`, `type`, `description`, `duration`, `position`, `styles`, `fill`, `roundness`, `autopilot`, `button` (see [General API](../README.md#general-api))
+```html
+<script>
+  const unsubscribe = window.Notify.subscribe(function (toasts) {
+    console.log(toasts)
+  })
+
+  // Later:
+  // window.Notify.dismiss('toast-id')
+  // window.Notify.clear()
+  // unsubscribe()
+</script>
+```
 
 ## Advanced Example
 
 ```html
 <script>
-  Notify.show({
+  window.Notify.show({
     title: 'Action',
     description: 'Click the button',
     type: 'action',
