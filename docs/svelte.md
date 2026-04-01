@@ -12,7 +12,8 @@ npm install @samline/notify
 
 ```svelte
 <script>
-  import { notifyToasts, showNotifyToast } from '@samline/notify/svelte';
+  import { notifyToasts, showNotifyToast, renderNotifyToasts } from '@samline/notify/svelte';
+  renderNotifyToasts({ position: 'top-right' });
   showNotifyToast({ title: 'Hello Svelte', type: 'warning' });
 </script>
 
@@ -21,7 +22,8 @@ npm install @samline/notify
 {/each}
 ```
 
-The package currently exposes the Svelte store API. For a drop-in UI, render your own component from `$notifyToasts`.
+For a guaranteed shared visual style, use `renderNotifyToasts()`.
+If you prefer a custom UI, render your own component from `$notifyToasts`.
 
 ## Available options
 

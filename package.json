@@ -1,6 +1,6 @@
 {
 	"name": "@samline/notify",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"description": "A toast notification library designed to bring beautiful, animated notifications to React, Vue, Svelte, and Vanilla JS. Seamless integration across multiple frameworks.",
 	"keywords": [
 		"toast",

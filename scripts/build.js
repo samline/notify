@@ -6,7 +6,7 @@ const path = require('path');
 
 try {
   console.log('🔨 Building with bunchee...');
-  execSync('bunchee', { stdio: 'inherit', cwd: process.cwd() });
+  execSync('npx bunchee', { stdio: 'inherit', cwd: process.cwd() });
 
   console.log('🌐 Building browser bundle...');
   execSync('bun build ./src/browser-notify.js --format=iife --global-name=Notify --outfile ./dist/browser-notify.js', { 
@@ -15,7 +15,7 @@ try {
   });
 
   console.log('🌐 Building browser renderer bundle...');
-  execSync('bun build ./src/render-notify-toasts.js --format=iife --outfile ./dist/render-notify-toasts.js', {
+  execSync('bun build ./src/render-notify-toasts.ts --format=iife --outfile ./dist/render-notify-toasts.js', {
     stdio: 'inherit',
     cwd: process.cwd()
   });

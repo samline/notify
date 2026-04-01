@@ -9,8 +9,9 @@ npm install @samline/notify
 ## Basic usage
 
 ```js
-import { showNotifyToast, useNotifyToasts } from '@samline/notify/vue'
+import { showNotifyToast, useNotifyToasts, renderNotifyToasts } from '@samline/notify/vue'
 
+renderNotifyToasts({ position: 'top-right' })
 showNotifyToast({ title: 'Hello Vue', type: 'info' })
 
 // In a component:
@@ -29,7 +30,8 @@ const { toasts } = useNotifyToasts()
 </script>
 ```
 
-The package currently exposes the Vue composable API. If you want a drop-in visual component, use your own Vue template and map over `toasts`.
+For a guaranteed shared visual style, use `renderNotifyToasts()`.
+If you prefer a custom template, map over `toasts` manually.
 
 ## Available options
 
