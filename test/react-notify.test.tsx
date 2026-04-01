@@ -1,6 +1,6 @@
 import { render, fireEvent, screen } from '@testing-library/react';
-import '@testing-library/jest-dom';
-import { Toaster, showNotifyToast } from '../src/toast';
+import '@testing-library/jest-dom/vitest';
+import { Toaster, showNotifyToast } from '../src/react-notify';
 
 // Mocks para window.matchMedia y window.ResizeObserver en entorno jsdom
 beforeAll(() => {

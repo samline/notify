@@ -1,7 +1,12 @@
 {
-	"name": "notify",
+	"name": "@samline/notify",
 	"version": "0.1.5",
 	"description": "A toast notification library designed to bring beautiful, animated notifications to React, Vue, Svelte, and Vanilla JS. Seamless integration across multiple frameworks.",
+	"keywords": ["toast", "notification", "react", "vue", "svelte", "vanilla"],
+	"homepage": "https://github.com/samline/notify",
+	"bugs": {
+		"url": "https://github.com/samline/notify/issues"
+	},
 	"license": "MIT",
 	"repository": {
 		"type": "git",
@@ -21,47 +26,47 @@
 		},
 		"./react": {
 			"import": {
-				"types": "./dist/react-notify.d.mts",
-				"default": "./dist/react-notify.mjs"
+				"types": "./dist/react.d.mts",
+				"default": "./dist/react.mjs"
 			},
 			"require": {
-				"types": "./dist/react-notify.d.ts",
-				"default": "./dist/react-notify.js"
+				"types": "./dist/react.d.ts",
+				"default": "./dist/react.js"
 			},
-			"default": "./dist/react-notify.js"
+			"default": "./dist/react.js"
 		},
 		"./vue": {
 			"import": {
-				"types": "./dist/vue-notify.d.mts",
-				"default": "./dist/vue-notify.mjs"
+				"types": "./dist/vue.d.mts",
+				"default": "./dist/vue.mjs"
 			},
 			"require": {
-				"types": "./dist/vue-notify.d.ts",
-				"default": "./dist/vue-notify.js"
+				"types": "./dist/vue.d.ts",
+				"default": "./dist/vue.js"
 			},
-			"default": "./dist/vue-notify.js"
+			"default": "./dist/vue.js"
 		},
 		"./svelte": {
 			"import": {
-				"types": "./dist/svelte-notify.d.mts",
-				"default": "./dist/svelte-notify.mjs"
+				"types": "./dist/svelte.d.mts",
+				"default": "./dist/svelte.mjs"
 			},
 			"require": {
-				"types": "./dist/svelte-notify.d.ts",
-				"default": "./dist/svelte-notify.js"
+				"types": "./dist/svelte.d.ts",
+				"default": "./dist/svelte.js"
 			},
-			"default": "./dist/svelte-notify.js"
-		},
-		"./styles.css": "./dist/styles.css"
+			"default": "./dist/svelte.js"
+		}
 	},
-	"main": "./dist/index.js",
-	"types": "./dist/index.d.ts",
+	"main": "./dist/notify.js",
+	"types": "./dist/notify.d.ts",
 	"files": [
 		"dist"
 	],
 	"scripts": {
-		"build": "rm -rf dist && bunchee && cp src/styles.css dist/styles.css",
-		"dev": "bunchee --watch"
+		"build": "node scripts/build.js",
+		"dev": "bunchee --watch",
+		"test": "vitest run"
 	},
 	"peerDependencies": {
 		"react": ">=18",

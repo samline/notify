@@ -1,8 +1,6 @@
-"use client";
-
 import "./styles.css";
 
-export { notify, Toaster, showNotifyToast } from "./toast";
+export { showNotifyToast, onNotifyToastsChange } from "./vanilla-notify";
 export type {
 	NotifyButton,
 	NotifyOptions,

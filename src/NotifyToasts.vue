@@ -8,7 +8,7 @@
     >
       <div class="notify-toast-title">{{ toast.title }}</div>
       <div v-if="toast.description" class="notify-toast-description">{{ toast.description }}</div>
-      <button v-if="toast.button" @click="handleButton(toast)">{{ toast.button.label }}</button>
+      <button v-if="toast.button" @click="handleButton(toast)">{{ toast.button.title }}</button>
       <button class="notify-toast-close" @click="dismiss(toast.id)">×</button>
     </div>
   </div>

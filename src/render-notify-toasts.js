@@ -46,7 +46,7 @@ export function renderNotifyToasts() {
       }
       if (toast.button) {
         const btn = document.createElement("button");
-        btn.textContent = toast.button.label;
+        btn.textContent = toast.button.title;
         btn.onclick = () => {
           if (typeof toast.button.onClick === "function") toast.button.onClick();
           notifyCore.dismiss(toast.id);

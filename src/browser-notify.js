@@ -1,2 +1,15 @@
 import { notifyCore } from "./core/notify-core";
-window.Notify = notifyCore;
+
+const notifyApi = {
+	show: (options) => notifyCore.show(options),
+	dismiss: (id) => notifyCore.dismiss(id),
+	clear: () => {
+		for (const toast of notifyCore.getToasts()) {
+			notifyCore.dismiss(toast.id);
+		}
+	},
+	subscribe: (listener) => notifyCore.subscribe(listener),
+};
+
+window.Notify = notifyApi;
+window.Sileo = notifyApi;

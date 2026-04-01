@@ -5,7 +5,7 @@ npm install @samline/notify/react
 ## Installation
 
 ```bash
-npm install @samline/notify/react
+npm install @samline/notify
 ```
 
 ## Basic usage

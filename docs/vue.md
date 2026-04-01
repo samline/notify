@@ -3,7 +3,7 @@
 ## Installation
 
 ```bash
-npm install @samline/notify/vue
+npm install @samline/notify
 ```
 
 ## Basic usage
@@ -17,17 +17,6 @@ showNotifyToast({ title: 'Hello Vue', type: 'info' })
 const { toasts } = useNotifyToasts()
 ```
 
-### UI Plug-and-play
-
-```vue
-<template>
-  <NotifyToasts />
-</template>
-<script setup>
-import NotifyToasts from '@samline/notify/vue'
-</script>
-```
-
 ### Manual usage (composable)
 
 ```vue
@@ -39,6 +28,8 @@ import { useNotifyToasts } from '@samline/notify/vue'
 const { toasts } = useNotifyToasts()
 </script>
 ```
+
+The package currently exposes the Vue composable API. If you want a drop-in visual component, use your own Vue template and map over `toasts`.
 
 ## Available options
 

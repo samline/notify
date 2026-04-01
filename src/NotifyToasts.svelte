@@ -71,7 +71,7 @@
         <div class="notify-toast-description">{toast.description}</div>
       {/if}
       {#if toast.button}
-        <button on:click={() => handleButton(toast)}>{toast.button.label}</button>
+        <button on:click={() => handleButton(toast)}>{toast.button.title}</button>
       {/if}
       <button class="notify-toast-close" on:click={() => dismiss(toast.id)}>&times;</button>
     </div>

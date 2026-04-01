@@ -1,10 +1,10 @@
 # Notify
 
-A toast notification library powered by Sileo, designed to bring the same beautiful, animated experience to React, Vue, Svelte, and Vanilla JS. Built for teams who need Sileo’s quality and API, but require seamless integration across multiple frameworks.
+A toast notification library designed to bring a beautiful animated experience to React, Vue, Svelte, and Vanilla JS.
 
 ---
 
-## Sileo project: [text](https://github.com/hiaaryan/sileo)
+## Inspired by Sileo: [text](https://github.com/hiaaryan/sileo)
 
 ---
 
@@ -26,24 +26,18 @@ A toast notification library powered by Sileo, designed to bring the same beauti
 
 ```bash
 npm install @samline/notify
-# React
-npm install @samline/notify/react
-# Vue
-npm install @samline/notify/vue
-# Svelte
-npm install @samline/notify/svelte
 ```
 
 ---
 
 ## CDN / Browser
 
-Include the generated UMD file (`dist/browser-sileo.js`) in your HTML:
+Include the generated UMD file (`dist/browser-notify.js`) in your HTML:
 
 ```html
-<script src="dist/browser-sileo.js"></script>
+<script src="dist/browser-notify.js"></script>
 <script>
-  Sileo.show({
+  Notify.show({
     title: 'Hello from the browser',
     type: 'success',
     duration: 2000,
@@ -61,7 +55,7 @@ Include the generated UMD file (`dist/browser-sileo.js`) in your HTML:
 | @samline/notify/react              | React API (hooks and helpers) |
 | @samline/notify/vue                | Vue API (composable)          |
 | @samline/notify/svelte             | Svelte API (store)            |
-| @samline/notify/dist/browser-sileo | Global for Browser/CDN        |
+| @samline/notify/dist/browser-notify | Global for Browser/CDN      |
 
 ---
 
@@ -72,29 +66,29 @@ Include the generated UMD file (`dist/browser-sileo.js`) in your HTML:
 **VanillaJS (default):**
 
 ```js
-import { showSileoToast } from '@samline/notify'
-showSileoToast({ title: 'Hello world!', type: 'success' })
+import { showNotifyToast } from '@samline/notify'
+showNotifyToast({ title: 'Hello world!', type: 'success' })
 ```
 
 **React:**
 
 ```js
-import { showSileoToast } from '@samline/notify/react'
-showSileoToast({ title: 'Hello from React!', type: 'success' })
+import { showNotifyToast } from '@samline/notify/react'
+showNotifyToast({ title: 'Hello from React!', type: 'success' })
 ```
 
 **Vue:**
 
 ```js
-import { showSileoToast, useSileoToasts } from '@samline/notify/vue'
-showSileoToast({ title: 'Hello from Vue!', type: 'success' })
+import { showNotifyToast, useNotifyToasts } from '@samline/notify/vue'
+showNotifyToast({ title: 'Hello from Vue!', type: 'success' })
 ```
 
 **Svelte:**
 
 ```js
-import { showSileoToast, sileoToasts } from '@samline/notify/svelte'
-showSileoToast({ title: 'Hello from Svelte!', type: 'success' })
+import { showNotifyToast, notifyToasts } from '@samline/notify/svelte'
+showNotifyToast({ title: 'Hello from Svelte!', type: 'success' })
 ```
 
 Each framework imports from its own context, ensuring optimal integration and correct types. See the specific documentation for advanced examples.
@@ -122,7 +116,7 @@ For complete examples and plug-and-play UI, see your framework's documentation:
 
 ## General API
 
-Sileo exposes a unified API for all environments. All options and methods are available in each integration.
+Notify exposes a unified API for all environments. All options and methods are available in each integration.
 
 ### Toast Options
 
@@ -141,17 +135,17 @@ Sileo exposes a unified API for all environments. All options and methods are av
 
 ### Main Methods
 
-- `showSileoToast(options)` — Show a toast (in all environments)
-- `onSileoToastsChange(fn)` — Subscribe to changes (VanillaJS)
-- `useSileoToasts()` — Vue composable
-- `sileoToasts` — Svelte store
+- `showNotifyToast(options)` — Show a toast (in all environments)
+- `onNotifyToastsChange(fn)` — Subscribe to changes (VanillaJS)
+- `useNotifyToasts()` — Vue composable
+- `notifyToasts` — Svelte store
 
 ---
 
 ## Minimal Example
 
 ```js
-showSileoToast({
+showNotifyToast({
   title: 'Action required',
   description: 'Click the button to continue',
   type: 'action',

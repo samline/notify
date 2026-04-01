@@ -1,23 +1,12 @@
-npm install @samline/notify/svelte
-
 # Notify - Svelte
 
 ## Installation
 
 ```bash
-npm install @samline/notify/svelte
+npm install @samline/notify
 ```
 
 ## Basic usage
-
-### UI Plug-and-play
-
-```svelte
-<script>
-  import NotifyToasts, { notifyToasts, showNotifyToast } from '@samline/notify/svelte';
-</script>
-<NotifyToasts />
-```
 
 ### Manual usage (store)
 
@@ -29,7 +18,10 @@ npm install @samline/notify/svelte
 
 {#each $notifyToasts as toast}
   <div>{toast.title}</div>
+{/each}
 ```
+
+The package currently exposes the Svelte store API. For a drop-in UI, render your own component from `$notifyToasts`.
 
 ## Available options
 
