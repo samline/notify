@@ -1,6 +1,6 @@
 {
   "name": "@samline/notify",
-  "version": "2.0.7",
+  "version": "2.0.0",
   "description": "A universal toast notification package for React, Vue, Svelte, vanilla JS, and browser/CDN usage.",
   "exports": {
     ".": {

@@ -10,7 +10,7 @@ Importing `@samline/notify/browser` attaches `window.Notify` and auto-mounts a t
 
 ```html
 <script type="module">
-  import 'https://unpkg.com/@samline/notify@2.0.7/dist/browser/index.js'
+  import 'https://unpkg.com/@samline/notify@2.0.0/dist/browser/index.js'
 
   window.Notify.configureToaster({
     position: 'bottom-right',
