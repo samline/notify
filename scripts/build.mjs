@@ -44,7 +44,7 @@ try {
       cwd: tempDir,
       stdout: 'inherit',
       stderr: 'inherit',
-      stdin: 'inherit',
+      stdin: 'inherit'
     })
 
     const exitCode = await processHandle.exited
@@ -54,7 +54,7 @@ try {
       cwd: tempDir,
       stdout: 'inherit',
       stderr: 'inherit',
-      stdin: 'inherit',
+      stdin: 'inherit'
     })
 
     if (buildProcess.exitCode !== 0) {
@@ -63,7 +63,7 @@ try {
       await Bun.spawn(['bun', copyScriptPath, tempDir, rootDir], {
         stdout: 'inherit',
         stderr: 'inherit',
-        stdin: 'inherit',
+        stdin: 'inherit'
       }).exited
     }
   }

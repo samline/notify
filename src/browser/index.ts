@@ -1,6 +1,6 @@
-import { configureToaster, createToaster, destroyToaster, getToaster, toast } from '../index';
+import { configureToaster, createToaster, destroyToaster, getToaster, toast } from '../index'
 
-export const Toaster = createToaster;
+export const Toaster = createToaster
 
 export const Notify = {
   toast,
@@ -8,18 +8,18 @@ export const Notify = {
   createToaster,
   configureToaster,
   getToaster,
-  destroyToaster,
-};
+  destroyToaster
+}
 
 declare global {
   interface Window {
-    Notify?: typeof Notify;
+    Notify?: typeof Notify
   }
 }
 
 if (typeof window !== 'undefined') {
-  window.Notify = Notify;
-  createToaster();
+  window.Notify = Notify
+  createToaster()
 }
 
-export { configureToaster, createToaster, destroyToaster, getToaster, toast };
+export { configureToaster, createToaster, destroyToaster, getToaster, toast }

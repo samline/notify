@@ -1,34 +1,34 @@
-import { createToaster, destroyToaster, getToaster, toast } from '../index';
-import type { CommonToasterOptions } from '../core';
+import { createToaster, destroyToaster, getToaster, toast } from '../index'
+import type { CommonToasterOptions } from '../core'
 
-export type SvelteToasterOptions = CommonToasterOptions;
+export type SvelteToasterOptions = CommonToasterOptions
 
 function syncToaster(options?: SvelteToasterOptions) {
-  createToaster(options ?? {});
+  createToaster(options ?? {})
 }
 
 export function toaster(node: HTMLElement, options?: SvelteToasterOptions) {
-  node.dataset.notifySvelteToaster = '';
-  node.hidden = true;
-  node.setAttribute('aria-hidden', 'true');
+  node.dataset.notifySvelteToaster = ''
+  node.hidden = true
+  node.setAttribute('aria-hidden', 'true')
 
-  syncToaster(options);
+  syncToaster(options)
 
   return {
     update(nextOptions?: SvelteToasterOptions) {
-      syncToaster(nextOptions);
+      syncToaster(nextOptions)
     },
     destroy() {
-      destroyToaster();
-    },
-  };
+      destroyToaster()
+    }
+  }
 }
 
-export const Toaster = toaster;
+export const Toaster = toaster
 
 export function mountToaster(options?: SvelteToasterOptions) {
-  syncToaster(options);
-  return getToaster();
+  syncToaster(options)
+  return getToaster()
 }
 
-export { createToaster, destroyToaster, getToaster, toast };
+export { createToaster, destroyToaster, getToaster, toast }
