@@ -1,7 +1,7 @@
 {
-  "name": "@samline/sonner",
+  "name": "@samline/notify",
   "version": "2.0.7",
-  "description": "A toast package inspired by Sonner for React, Vue, Svelte, vanilla JS, and browser/CDN usage.",
+  "description": "A universal toast notification package for React, Vue, Svelte, vanilla JS, and browser/CDN usage.",
   "exports": {
     ".": {
       "import": {
@@ -98,13 +98,13 @@
   ],
   "author": "Emil Kowalski <e@emilkowal.ski>",
   "license": "MIT",
-  "homepage": "https://sonner.emilkowal.ski/",
+  "homepage": "https://github.com/samline/notify",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/emilkowalski/sonner.git"
+    "url": "git+https://github.com/samline/notify.git"
   },
   "bugs": {
-    "url": "https://github.com/emilkowalski/sonner/issues"
+    "url": "https://github.com/samline/notify/issues"
   },
   "devDependencies": {
     "@types/node": "^18.11.13",

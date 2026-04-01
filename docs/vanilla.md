@@ -5,13 +5,13 @@ Use the root entry when you want the package without a framework.
 ## Install
 
 ```bash
-bun add @samline/sonner
+bun add @samline/notify
 ```
 
 ## Basic usage
 
 ```ts
-import { createToaster, toast } from '@samline/sonner'
+import { createToaster, toast } from '@samline/notify'
 
 createToaster({
   position: 'bottom-right',
@@ -31,7 +31,7 @@ document.querySelector('#save')?.addEventListener('click', () => {
 ```
 
 ```ts
-import { configureToaster, toast } from '@samline/sonner'
+import { configureToaster, toast } from '@samline/notify'
 
 const toaster = configureToaster({
   position: 'bottom-right',

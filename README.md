@@ -16,28 +16,28 @@ Notify is a toast package inspired by [Sonner](https://github.com/emilkowalski/s
 ## Installation
 
 ```bash
-npm install @samline/sonner
+npm install @samline/notify
 ```
 
 ```bash
-bun add @samline/sonner
+bun add @samline/notify
 ```
 
 ## Entrypoints
 
 | Entrypoint                   | Use                   |
 | ---------------------------- | --------------------- |
-| `@samline/sonner`            | Main vanilla API      |
-| `@samline/sonner/browser`    | Browser global bundle |
-| `@samline/sonner/react`      | React adapter         |
-| `@samline/sonner/vue`        | Vue adapter           |
-| `@samline/sonner/svelte`     | Svelte adapter        |
-| `@samline/sonner/styles.css` | Shared styles export  |
+| `@samline/notify`            | Main vanilla API      |
+| `@samline/notify/browser`    | Browser global bundle |
+| `@samline/notify/react`      | React adapter         |
+| `@samline/notify/vue`        | Vue adapter           |
+| `@samline/notify/svelte`     | Svelte adapter        |
+| `@samline/notify/styles.css` | Shared styles export  |
 
 ## Quick Start
 
 ```ts
-import { createToaster, toast } from '@samline/sonner';
+import { createToaster, toast } from '@samline/notify';
 
 createToaster({ position: 'bottom-right', richColors: true });
 

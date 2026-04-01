@@ -81,14 +81,14 @@ function getVanillaContainer() {
     return vanillaToasterElement;
   }
 
-  const existing = document.querySelector<HTMLElement>('[data-sonner-vanilla-root]');
+  const existing = document.querySelector<HTMLElement>('[data-notify-vanilla-root]');
   if (existing) {
     vanillaToasterElement = existing;
     return existing;
   }
 
   const element = document.createElement('div');
-  element.dataset.sonnerVanillaRoot = '';
+  element.dataset.notifyVanillaRoot = '';
   document.body.appendChild(element);
   vanillaToasterElement = element;
   return element;

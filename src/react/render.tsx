@@ -198,7 +198,7 @@ const Toast = (props: ToastProps) => {
     if (icons?.loading) {
       return (
         <div
-          className={cn(classNames?.loader, toast?.classNames?.loader, 'sonner-loader')}
+          className={cn(classNames?.loader, toast?.classNames?.loader, 'notify-loader')}
           data-visible={toastType === 'loading'}
         >
           {icons.loading}
@@ -224,7 +224,7 @@ const Toast = (props: ToastProps) => {
         classNames?.[toastType],
         toast?.classNames?.[toastType],
       )}
-      data-sonner-toast=""
+      data-notify-toast=""
       data-rich-colors={toast.richColors ?? defaultRichColors}
       data-styled={!Boolean(toast.jsx || toast.unstyled || unstyled)}
       data-mounted={mounted}
@@ -441,7 +441,7 @@ const Toast = (props: ToastProps) => {
   );
 };
 
-function useSonner() {
+function useNotify() {
   const [activeToasts, setActiveToasts] = React.useState<ToastT[]>([]);
 
   React.useEffect(() => {
@@ -664,8 +664,8 @@ const Toaster = React.forwardRef<HTMLElement, ToasterProps>(function Toaster(pro
             tabIndex={-1}
             ref={listRef}
             className={className}
-            data-sonner-toaster
-            data-sonner-theme={actualTheme}
+            data-notify-toaster
+            data-notify-theme={actualTheme}
             data-y-position={y}
             data-x-position={x}
             style={
@@ -754,4 +754,4 @@ const Toaster = React.forwardRef<HTMLElement, ToasterProps>(function Toaster(pro
   );
 });
 
-export { Toaster, useSonner };
+export { Toaster, useNotify };

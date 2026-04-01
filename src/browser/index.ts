@@ -2,7 +2,7 @@ import { configureToaster, createToaster, destroyToaster, getToaster, toast } fr
 
 export const Toaster = createToaster;
 
-export const Sonner = {
+export const Notify = {
   toast,
   Toaster,
   createToaster,
@@ -13,12 +13,12 @@ export const Sonner = {
 
 declare global {
   interface Window {
-    Sonner?: typeof Sonner;
+    Notify?: typeof Notify;
   }
 }
 
 if (typeof window !== 'undefined') {
-  window.Sonner = Sonner;
+  window.Notify = Notify;
   createToaster();
 }
 

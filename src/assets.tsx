@@ -25,10 +25,10 @@ const bars = Array(12).fill(0);
 
 export const Loader = ({ visible, className }: { visible: boolean; className?: string }) => {
   return (
-    <div className={['sonner-loading-wrapper', className].filter(Boolean).join(' ')} data-visible={visible}>
-      <div className="sonner-spinner">
+    <div className={['notify-loading-wrapper', className].filter(Boolean).join(' ')} data-visible={visible}>
+      <div className="notify-spinner">
         {bars.map((_, i) => (
-          <div className="sonner-loading-bar" key={`spinner-bar-${i}`} />
+          <div className="notify-loading-bar" key={`spinner-bar-${i}`} />
         ))}
       </div>
     </div>

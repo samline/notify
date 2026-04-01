@@ -5,13 +5,13 @@ Use the React entry when you want the full component model with the shared toast
 ## Install
 
 ```bash
-bun add @samline/sonner react react-dom
+bun add @samline/notify react react-dom
 ```
 
 ## Basic usage
 
 ```tsx
-import { Toaster, toast } from '@samline/sonner/react'
+import { Toaster, toast } from '@samline/notify/react'
 
 export function App() {
   return (
@@ -27,10 +27,10 @@ export function App() {
 
 ```tsx
 import React from 'react'
-import { Toaster, toast, useSonner } from '@samline/sonner/react'
+import { Toaster, toast, useNotify } from '@samline/notify/react'
 
 function SaveButton() {
-  const showToast = useSonner()
+  const showToast = useNotify()
 
   return (
     <button

@@ -5,7 +5,7 @@ Use the Vue entry when you want a component-first API with a shared runtime.
 ## Install
 
 ```bash
-bun add @samline/sonner vue
+bun add @samline/notify vue
 ```
 
 ## Basic usage
@@ -14,14 +14,14 @@ bun add @samline/sonner vue
 // main.ts
 import { createApp } from 'vue'
 import App from './App.vue'
-import { SonnerPlugin } from '@samline/sonner/vue'
+import { NotifyPlugin } from '@samline/notify/vue'
 
-createApp(App).use(SonnerPlugin).mount('#app')
+createApp(App).use(NotifyPlugin).mount('#app')
 ```
 
 ```vue
 <script setup lang="ts">
-import { Toaster, toast } from '@samline/sonner/vue'
+import { Toaster, toast } from '@samline/notify/vue'
 </script>
 
 <template>
@@ -35,7 +35,7 @@ import { Toaster, toast } from '@samline/sonner/vue'
 ```vue
 <script setup lang="ts">
 import { ref } from 'vue'
-import { Toaster, toast } from '@samline/sonner/vue'
+import { Toaster, toast } from '@samline/notify/vue'
 
 const saving = ref(false)
 
@@ -78,11 +78,11 @@ async function saveSettings() {
 
 ## Plugin behavior
 
-`SonnerPlugin` does three things:
+`NotifyPlugin` does three things:
 
-1. Registers the toaster component as `SonnerToaster`.
+1. Registers the toaster component as `NotifyToaster`.
 2. Exposes `toast` on `app.config.globalProperties.$toast`.
-3. Provides the toast function under the `sonner:toast` injection key.
+3. Provides the toast function under the `notify:toast` injection key.
 
 ## Customization
 

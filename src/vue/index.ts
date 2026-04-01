@@ -36,7 +36,7 @@ function cleanOptions(options: Record<string, unknown>): CommonToasterOptions {
 }
 
 export const Toaster = defineComponent({
-  name: 'SonnerToaster',
+  name: 'NotifyToaster',
   props: toasterProps,
   setup(props) {
     let mounted = false;
@@ -82,15 +82,15 @@ export const Toaster = defineComponent({
       mounted = false;
     });
 
-    return () => h('span', { 'data-sonner-vue-toaster': '', hidden: true, 'aria-hidden': 'true' });
+    return () => h('span', { 'data-notify-vue-toaster': '', hidden: true, 'aria-hidden': 'true' });
   },
 });
 
-export const SonnerPlugin: Plugin = {
+export const NotifyPlugin: Plugin = {
   install(app) {
-    app.component('SonnerToaster', Toaster);
+    app.component('NotifyToaster', Toaster);
     app.config.globalProperties.$toast = toast;
-    app.provide('sonner:toast', toast);
+    app.provide('notify:toast', toast);
   },
 };
 

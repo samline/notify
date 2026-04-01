@@ -4,22 +4,22 @@ Use the browser entry when you want the package to expose a global object.
 
 ## What it does
 
-Importing `@samline/sonner/browser` attaches `window.Sonner` and auto-mounts a toaster in the document.
+Importing `@samline/notify/browser` attaches `window.Notify` and auto-mounts a toaster in the document.
 
 ## Example
 
 ```html
 <script type="module">
-  import 'https://unpkg.com/@samline/sonner@2.0.7/dist/browser/index.js'
+  import 'https://unpkg.com/@samline/notify@2.0.7/dist/browser/index.js'
 
-  window.Sonner.configureToaster({
+  window.Notify.configureToaster({
     position: 'bottom-right',
     richColors: true,
   })
 
   window.addEventListener('DOMContentLoaded', () => {
     document.querySelector('#notify')?.addEventListener('click', () => {
-      window.Sonner.toast('Hello from the browser')
+      window.Notify.toast('Hello from the browser')
     })
   })
 </script>
@@ -28,12 +28,12 @@ Importing `@samline/sonner/browser` attaches `window.Sonner` and auto-mounts a t
 ## Manual control
 
 ```ts
-window.Sonner.createToaster({
+window.Notify.createToaster({
   position: 'top-center',
   duration: 3000,
 })
 
-const controller = window.Sonner.getToaster()
+const controller = window.Notify.getToaster()
 controller?.update({ closeButton: true })
 ```
 

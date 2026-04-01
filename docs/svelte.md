@@ -5,14 +5,14 @@ Use the Svelte entry when you want a simple action-based integration.
 ## Install
 
 ```bash
-bun add @samline/sonner svelte
+bun add @samline/notify svelte
 ```
 
 ## Basic usage
 
 ```svelte
 <script lang="ts">
-  import { toaster, toast } from '@samline/sonner/svelte'
+  import { toaster, toast } from '@samline/notify/svelte'
 
   const options = {
     position: 'bottom-right',
@@ -28,7 +28,7 @@ bun add @samline/sonner svelte
 
 ```svelte
 <script lang="ts">
-  import { toaster, toast } from '@samline/sonner/svelte'
+  import { toaster, toast } from '@samline/notify/svelte'
 
   const options = {
     position: 'bottom-right',

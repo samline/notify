@@ -1,17 +1,17 @@
 # API Reference
 
-`@samline/sonner` is a toast package inspired by [Sonner](https://github.com/emilkowalski/sonner). The goal here is to complement that idea and experiment with a shared runtime that works across React, Vue, Svelte, vanilla JS, and browser/CDN usage.
+`@samline/notify` is a shared toast runtime for React, Vue, Svelte, vanilla JS, and browser/CDN usage.
 
 ## Package Surface
 
 | Entry point | Purpose |
 | --- | --- |
-| `@samline/sonner` | Main vanilla/browser API |
-| `@samline/sonner/browser` | Browser global entry that exposes `window.Sonner` |
-| `@samline/sonner/react` | React adapter |
-| `@samline/sonner/vue` | Vue adapter |
-| `@samline/sonner/svelte` | Svelte adapter |
-| `@samline/sonner/styles.css` | Shared styles export |
+| `@samline/notify` | Main vanilla/browser API |
+| `@samline/notify/browser` | Browser global entry that exposes `window.Notify` |
+| `@samline/notify/react` | React adapter |
+| `@samline/notify/vue` | Vue adapter |
+| `@samline/notify/svelte` | Svelte adapter |
+| `@samline/notify/styles.css` | Shared styles export |
 
 ## Shared Concepts
 
@@ -176,7 +176,7 @@ createToaster({
 The React entry adds two things on top of the shared toast methods:
 
 - `Toaster` component
-- `useSonner` hook
+- `useNotify` hook
 
 ### `Toaster` props
 
@@ -201,13 +201,13 @@ Override the built-in icons for success, info, warning, error, loading, or close
 The Vue entry exports:
 
 - `Toaster`
-- `SonnerPlugin`
+- `NotifyPlugin`
 - `toast`
 - `createToaster`
 - `destroyToaster`
 - `getToaster`
 
-`SonnerPlugin` registers the toaster component and exposes `toast` through the app instance and dependency injection.
+`NotifyPlugin` registers the toaster component and exposes `toast` through the app instance and dependency injection.
 
 ## Svelte API
 
@@ -225,10 +225,10 @@ Use the action when you want the shared toaster mounted from a Svelte component.
 
 ## Browser Global API
 
-The browser entry exposes `window.Sonner` with this shape:
+The browser entry exposes `window.Notify` with this shape:
 
 ```ts
-window.Sonner = {
+window.Notify = {
   toast,
   Toaster,
   createToaster,

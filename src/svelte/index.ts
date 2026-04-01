@@ -8,7 +8,7 @@ function syncToaster(options?: SvelteToasterOptions) {
 }
 
 export function toaster(node: HTMLElement, options?: SvelteToasterOptions) {
-  node.dataset.sonnerSvelteToaster = '';
+  node.dataset.notifySvelteToaster = '';
   node.hidden = true;
   node.setAttribute('aria-hidden', 'true');
 
