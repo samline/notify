@@ -4,14 +4,13 @@ Use the browser entry when you want the package to expose a global object.
 
 ## What it does
 
-Importing `@samline/notify/browser` attaches `window.Notify` and auto-mounts a toaster in the document.
+Loading the CDN build attaches `window.Notify` and auto-mounts a toaster in the document.
 
 ## Example
 
 ```html
-<script type="module">
-  import 'https://unpkg.com/@samline/notify@2.0.0/dist/browser/index.js'
-
+<script src="https://unpkg.com/@samline/notify@2.0.0/dist/browser/index.js"></script>
+<script>
   window.Notify.configureToaster({
     position: 'bottom-right',
     richColors: true,
