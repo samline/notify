@@ -8,7 +8,7 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
-
+    # Permiso id-token es vital para Provenance (generar el certificado de autoría)
     permissions:
       contents: read
       id-token: write
@@ -21,53 +21,40 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          registry-url: https://registry.npmjs.org
-          cache: npm
+          registry-url: 'https://registry.npmjs.org'
+          cache: 'npm'
 
-      - name: Validate tag matches package version
+      - name: Validate version match
         run: |
           PACKAGE_VERSION=$(node -p "require('./package.json').version")
-          TAG_VERSION=${GITHUB_REF_NAME#v}
-          if [ "$PACKAGE_VERSION" != "$TAG_VERSION" ]; then
-            echo "Tag version $TAG_VERSION does not match package.json version $PACKAGE_VERSION"
+          if [ "v$PACKAGE_VERSION" != "${{ github.ref_name }}" ]; then
+            echo "Error: Tag ${{ github.ref_name }} no coincide con version $PACKAGE_VERSION en package.json"
             exit 1
           fi
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Build
-        run: npm run build
-
-      - name: Typecheck
-        run: npm run typecheck
-
-      - name: Test
-        run: npm test
-
-      - name: Check if version exists
-        id: version_check
+      - name: Quality Checks
         run: |
-          if npm view @samline/notify@$(node -p "require('./package.json').version") version >/dev/null 2>&1; then
+          npm run typecheck
+          npm test
+          npm run build
+
+      - name: Check if version exists on npm
+        id: check_exists
+        run: |
+          # Usamos || true para que no falle el job si la versión NO existe
+          CURRENT_VER=$(node -p "require('./package.json').version")
+          if npm view @samline/notify@$CURRENT_VER version >/dev/null 2>&1; then
             echo "exists=true" >> $GITHUB_OUTPUT
           else
             echo "exists=false" >> $GITHUB_OUTPUT
           fi
 
-      - name: Verify npm credentials
-        if: steps.version_check.outputs.exists == 'false'
-        run: |
-          if [ -z "$NODE_AUTH_TOKEN" ]; then
-            echo "NPM_TOKEN is missing. Add it to the repository secrets before publishing."
-            exit 1
-          fi
-
-          npm whoami
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Publish to npm
-        if: steps.version_check.outputs.exists == 'false'
-        run: npm publish --access public
+      - name: Publish
+        if: steps.check_exists.outputs.exists == 'false'
+        # --provenance genera el link verificado entre el paquete y este repo
+        run: npm publish --access public --provenance
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
