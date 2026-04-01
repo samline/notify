@@ -52,12 +52,11 @@
 - [x] Sin imports rotos
 
 ### Browser/CDN
-- [x] window.Notify.show() funciona
-- [x] window.Notify.dismiss() funciona
-- [x] window.Notify.clear() funciona
-- [x] window.Notify.subscribe() funciona
+- [x] window.notify.show() funciona
+- [x] window.notify.dismiss() funciona
+- [x] window.notify.clear() funciona
+- [x] window.notify.subscribe() funciona
 - [x] No expone clases internas
-- [x] window.Sileo mantiene compatibilidad
 
 ### Security & Quality
 - [x] No hay archivos stub vacíos
