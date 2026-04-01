@@ -6,14 +6,14 @@ Include the CSS and the browser bundle in your HTML via unpkg or jsDelivr:
 
 ```html
 <!-- unpkg -->
-<link rel="stylesheet" href="https://unpkg.com/@samline/notify@1.0.0/dist/styles.css" />
-<script src="https://unpkg.com/@samline/notify@1.0.0/dist/browser-notify.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/@samline/notify@1.0.1/dist/styles.css" />
+<script src="https://unpkg.com/@samline/notify@1.0.1/dist/browser-notify.js"></script>
 ```
 
 ```html
 <!-- jsDelivr -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@samline/notify@1.0.0/dist/styles.css" />
-<script src="https://cdn.jsdelivr.net/npm/@samline/notify@1.0.0/dist/browser-notify.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@samline/notify@1.0.1/dist/styles.css" />
+<script src="https://cdn.jsdelivr.net/npm/@samline/notify@1.0.1/dist/browser-notify.js"></script>
 ```
 
 This exposes a global `window.notify` object. The library manages toast state — **you are responsible for subscribing and rendering the toasts in your own HTML**. There is no built-in UI injected automatically.
@@ -39,12 +39,12 @@ You must subscribe to the toast queue and render the toasts yourself. Here is a 
 <!DOCTYPE html>
 <html>
 <head>
-  <link rel="stylesheet" href="https://unpkg.com/@samline/notify@1.0.0/dist/styles.css" />
+  <link rel="stylesheet" href="https://unpkg.com/@samline/notify@1.0.1/dist/styles.css" />
 </head>
 <body>
   <button onclick="window.notify.show({ title: 'Hello!', type: 'success', duration: 2000 })">Show toast</button>
 
-  <script src="https://unpkg.com/@samline/notify@1.0.0/dist/browser-notify.js"></script>
+  <script src="https://unpkg.com/@samline/notify@1.0.1/dist/browser-notify.js"></script>
   <script>
     var container = document.createElement('div')
     container.style.cssText = 'position:fixed;top:1rem;right:1rem;z-index:9999;display:flex;flex-direction:column;gap:0.5rem;'

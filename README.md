@@ -36,14 +36,14 @@ Include the CSS and UMD bundle via unpkg or jsDelivr:
 
 ```html
 <!-- unpkg -->
-<link rel="stylesheet" href="https://unpkg.com/@samline/notify@1.0.0/dist/styles.css" />
-<script src="https://unpkg.com/@samline/notify@1.0.0/dist/browser-notify.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/@samline/notify@1.0.1/dist/styles.css" />
+<script src="https://unpkg.com/@samline/notify@1.0.1/dist/browser-notify.js"></script>
 ```
 
 ```html
 <!-- jsDelivr -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@samline/notify@1.0.0/dist/styles.css" />
-<script src="https://cdn.jsdelivr.net/npm/@samline/notify@1.0.0/dist/browser-notify.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@samline/notify@1.0.1/dist/styles.css" />
+<script src="https://cdn.jsdelivr.net/npm/@samline/notify@1.0.1/dist/browser-notify.js"></script>
 ```
 
 ```html
