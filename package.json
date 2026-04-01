@@ -1,6 +1,6 @@
 {
   "name": "@samline/notify",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "A universal toast notification package for React, Vue, Svelte, vanilla JS, and browser/CDN usage.",
   "exports": {
     ".": {
@@ -43,9 +43,9 @@
       },
       "require": {
         "types": "./dist/browser/index.d.ts",
-        "default": "./dist/browser/index.js"
+        "default": "./dist/browser/index.cjs"
       },
-      "default": "./dist/browser/index.js"
+      "default": "./dist/browser/index.mjs"
     },
     "./vue": {
       "import": {
@@ -110,13 +110,14 @@
     "@types/node": "^18.11.13",
     "@types/react": "^18.0.26",
     "bunchee": "6.3.3",
+    "esbuild": "^0.27.4",
     "prettier": "^2.8.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "svelte": "^5.0.0",
-    "vue": "3.4.0",
     "typescript": "^4.8.4",
-    "vitest": "^2.1.8"
+    "vitest": "^2.1.8",
+    "vue": "3.4.0"
   },
   "peerDependencies": {
     "react": "^18.0.0 || ^19.0.0 || ^19.0.0-rc",

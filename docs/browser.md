@@ -9,7 +9,7 @@ Loading the CDN build attaches `window.Notify` and auto-mounts a toaster in the 
 ## Example
 
 ```html
-<script src="https://unpkg.com/@samline/notify@2.0.0/dist/browser/index.js"></script>
+<script src="https://unpkg.com/@samline/notify@2.0.1/dist/browser/index.js"></script>
 <script>
   window.Notify.configureToaster({
     position: 'bottom-right',
@@ -17,7 +17,9 @@ Loading the CDN build attaches `window.Notify` and auto-mounts a toaster in the 
   })
 
   window.addEventListener('DOMContentLoaded', () => {
-    document.querySelector('#notify')?.addEventListener('click', () => {
+    const button = document.querySelector('#notify')
+
+    button?.addEventListener('click', () => {
       window.Notify.toast('Hello from the browser')
     })
   })
