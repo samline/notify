@@ -24,7 +24,15 @@ const toasterProps = {
 };
 
 function cleanOptions(options: Record<string, unknown>): CommonToasterOptions {
-  return Object.fromEntries(Object.entries(options).filter(([, value]) => value !== undefined)) as CommonToasterOptions;
+  const nextOptions: Record<string, unknown> = {};
+
+  for (const key in options) {
+    if (Object.prototype.hasOwnProperty.call(options, key) && options[key] !== undefined) {
+      nextOptions[key] = options[key];
+    }
+  }
+
+  return nextOptions as CommonToasterOptions;
 }
 
 export const Toaster = defineComponent({

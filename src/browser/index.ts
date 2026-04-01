@@ -1,7 +1,10 @@
 import { configureToaster, createToaster, destroyToaster, getToaster, toast } from '../index';
 
+export const Toaster = createToaster;
+
 export const Sonner = {
   toast,
+  Toaster,
   createToaster,
   configureToaster,
   getToaster,

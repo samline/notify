@@ -24,6 +24,8 @@ export function toaster(node: HTMLElement, options?: SvelteToasterOptions) {
   };
 }
 
+export const Toaster = toaster;
+
 export function mountToaster(options?: SvelteToasterOptions) {
   syncToaster(options);
   return getToaster();

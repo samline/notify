@@ -13,7 +13,7 @@ import type {
   CommonToastAction,
   CommonToastOptions,
 } from './core';
-import { Toaster } from './react/render';
+import { Toaster as ReactToaster } from './react/render';
 import type { ExternalToast, ToasterProps } from './types';
 
 export interface VanillaToasterController {
@@ -102,7 +102,7 @@ function renderVanillaToaster() {
     vanillaToasterRoot = createRoot(container);
   }
 
-  vanillaToasterRoot.render(React.createElement(Toaster, vanillaToasterOptions as ToasterProps));
+  vanillaToasterRoot.render(React.createElement(ReactToaster, vanillaToasterOptions as ToasterProps));
   return container;
 }
 
@@ -134,6 +134,8 @@ export function createToaster(options: CommonToasterOptions = {}) {
 export function configureToaster(options: CommonToasterOptions = {}) {
   return createToaster(options);
 }
+
+export const Toaster = createToaster;
 
 export function getToaster() {
   if (!vanillaToasterElement || !vanillaToasterRoot) {
