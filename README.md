@@ -4,7 +4,7 @@ A toast notification library designed to bring a beautiful animated experience t
 
 ---
 
-## Inspired by Sileo: [text](https://github.com/hiaaryan/sileo)
+Inspired by Sileo: [https://github.com/hiaaryan/sileo](https://github.com/hiaaryan/sileo)
 
 ---
 
