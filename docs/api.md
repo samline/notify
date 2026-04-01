@@ -102,6 +102,25 @@ toast.promise(saveProfile(), {
   success: 'Profile saved',
   error: 'Could not save profile'
 })
+
+---
+
+const saveProfile = () =>
+  new Promise((resolve, reject) => {
+    setTimeout(() => {
+      if (Math.random() > 0.5) {
+        resolve()
+      } else {
+        reject()
+      }
+    }, 2000)
+  })
+
+toast.promise(saveProfile(), {
+  loading: 'Saving profile...',
+  success: 'Profile saved',
+  error: 'Could not save profile'
+})
 ```
 
 The `success`, `error`, and `description` fields can be values or callbacks that receive the resolved value or error data.
