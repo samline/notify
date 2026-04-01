@@ -16,7 +16,7 @@ import { Toaster, toast } from '@samline/notify/react'
 export function App() {
   return (
     <>
-      <Toaster position="bottom-right" richColors />
+      <Toaster position='bottom-right' richColors />
       <button onClick={() => toast.success('Saved')}>Save</button>
     </>
   )
@@ -37,18 +37,21 @@ function SaveButton() {
       onClick={() => {
         const id = showToast('Preparing upload...', {
           id: 'upload-status',
-          description: 'The same toast will be updated after the request finishes.',
+          description: 'The same toast will be updated after the request finishes.'
         })
 
-        void toast.promise(fetch('/api/upload').then((response) => response.json()), {
-          loading: 'Uploading files...',
-          success: (data) => ({
-            message: 'Upload complete',
-            description: data.count ? `${data.count} files uploaded` : 'No files were uploaded',
-            id,
-          }),
-          error: 'Upload failed',
-        })
+        void toast.promise(
+          fetch('/api/upload').then((response) => response.json()),
+          {
+            loading: 'Uploading files...',
+            success: (data) => ({
+              message: 'Upload complete',
+              description: data.count ? `${data.count} files uploaded` : 'No files were uploaded',
+              id
+            }),
+            error: 'Upload failed'
+          }
+        )
       }}
     >
       Upload
@@ -60,14 +63,14 @@ export function App() {
   return (
     <>
       <Toaster
-        position="bottom-right"
+        position='bottom-right'
         richColors
         expand
         duration={5000}
         hotkey={['altKey', 'KeyT']}
         toastOptions={{
           className: 'app-toast',
-          closeButton: true,
+          closeButton: true
         }}
       />
       <SaveButton />

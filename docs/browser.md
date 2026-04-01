@@ -13,16 +13,16 @@ Loading the CDN build attaches `window.Notify` and auto-mounts a toaster in the 
 <script>
   window.Notify.configureToaster({
     position: 'bottom-right',
-    richColors: true,
-  });
+    richColors: true
+  })
 
   window.addEventListener('DOMContentLoaded', () => {
-    const button = document.querySelector('#notify');
+    const button = document.querySelector('#notify')
 
     button?.addEventListener('click', () => {
-      window.Notify.toast('Hello from the browser');
-    });
-  });
+      window.Notify.toast('Hello from the browser')
+    })
+  })
 </script>
 ```
 
@@ -31,11 +31,11 @@ Loading the CDN build attaches `window.Notify` and auto-mounts a toaster in the 
 ```ts
 window.Notify.createToaster({
   position: 'top-center',
-  duration: 3000,
-});
+  duration: 3000
+})
 
-const controller = window.Notify.getToaster();
-controller?.update({ closeButton: true });
+const controller = window.Notify.getToaster()
+controller?.update({ closeButton: true })
 ```
 
 ## When to use it

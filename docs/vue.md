@@ -46,13 +46,13 @@ async function saveSettings() {
     await toast.promise(
       fetch('/api/settings', {
         method: 'POST',
-        body: JSON.stringify({ theme: 'dark' }),
+        body: JSON.stringify({ theme: 'dark' })
       }).then((response) => response.json()),
       {
         loading: 'Saving settings...',
         success: 'Settings saved',
-        error: 'Could not save settings',
-      },
+        error: 'Could not save settings'
+      }
     )
   } finally {
     saving.value = false
@@ -61,14 +61,7 @@ async function saveSettings() {
 </script>
 
 <template>
-  <Toaster
-    id="app-toaster"
-    position="bottom-right"
-    richColors
-    closeButton
-    :visibleToasts="4"
-    :offset="24"
-  />
+  <Toaster id="app-toaster" position="bottom-right" richColors closeButton :visibleToasts="4" :offset="24" />
 
   <button :disabled="saving" @click="saveSettings">
     {{ saving ? 'Saving...' : 'Save settings' }}
@@ -95,6 +88,6 @@ createToaster({
   position: 'top-right',
   theme: 'system',
   gap: 14,
-  visibleToasts: 4,
+  visibleToasts: 4
 })
 ```

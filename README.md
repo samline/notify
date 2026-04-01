@@ -37,11 +37,11 @@ bun add @samline/notify
 ## Quick Start
 
 ```ts
-import { createToaster, toast } from '@samline/notify';
+import { createToaster, toast } from '@samline/notify'
 
-createToaster({ position: 'bottom-right', richColors: true });
+createToaster({ position: 'bottom-right', richColors: true })
 
-toast.success('Saved');
+toast.success('Saved')
 ```
 
 ## Documentation

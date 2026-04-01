@@ -4,14 +4,14 @@
 
 ## Package Surface
 
-| Entry point | Purpose |
-| --- | --- |
-| `@samline/notify` | Main vanilla/browser API |
-| `@samline/notify/browser` | Browser global entry that exposes `window.Notify` |
-| `@samline/notify/react` | React adapter |
-| `@samline/notify/vue` | Vue adapter |
-| `@samline/notify/svelte` | Svelte adapter |
-| `@samline/notify/styles.css` | Shared styles export |
+| Entry point                  | Purpose                                           |
+| ---------------------------- | ------------------------------------------------- |
+| `@samline/notify`            | Main vanilla/browser API                          |
+| `@samline/notify/browser`    | Browser global entry that exposes `window.Notify` |
+| `@samline/notify/react`      | React adapter                                     |
+| `@samline/notify/vue`        | Vue adapter                                       |
+| `@samline/notify/svelte`     | Svelte adapter                                    |
+| `@samline/notify/styles.css` | Shared styles export                              |
 
 ## Shared Concepts
 
@@ -100,7 +100,7 @@ Shows a loading state and swaps it for a success or error message.
 toast.promise(saveProfile(), {
   loading: 'Saving profile...',
   success: 'Profile saved',
-  error: 'Could not save profile',
+  error: 'Could not save profile'
 })
 ```
 
@@ -141,23 +141,23 @@ Unmounts the shared toaster and removes the mounted container from the document.
 
 These options are accepted by the vanilla, browser, Vue, and Svelte entrypoints.
 
-| Option | Type | Purpose |
-| --- | --- | --- |
-| `id` | string | Optional toaster instance id |
-| `theme` | `light` / `dark` / `system` | Color mode |
-| `position` | top-left, top-right, bottom-left, bottom-right, top-center, bottom-center | Screen placement |
-| `expand` | boolean | Expand stacked toasts |
-| `duration` | number | Default auto-dismiss duration |
-| `gap` | number | Spacing between toasts |
-| `visibleToasts` | number | Maximum visible toasts |
-| `closeButton` | boolean | Show the close button |
-| `className` | string | Class applied to the toaster root |
-| `offset` | number, string, or object | Desktop offset |
-| `mobileOffset` | number, string, or object | Mobile offset |
-| `dir` | `rtl` / `ltr` / `auto` | Text direction |
-| `richColors` | boolean | Use saturated colors for status variants |
-| `customAriaLabel` | string | Accessible label for the wrapper |
-| `containerAriaLabel` | string | Accessible label for the container |
+| Option               | Type                                                                      | Purpose                                  |
+| -------------------- | ------------------------------------------------------------------------- | ---------------------------------------- |
+| `id`                 | string                                                                    | Optional toaster instance id             |
+| `theme`              | `light` / `dark` / `system`                                               | Color mode                               |
+| `position`           | top-left, top-right, bottom-left, bottom-right, top-center, bottom-center | Screen placement                         |
+| `expand`             | boolean                                                                   | Expand stacked toasts                    |
+| `duration`           | number                                                                    | Default auto-dismiss duration            |
+| `gap`                | number                                                                    | Spacing between toasts                   |
+| `visibleToasts`      | number                                                                    | Maximum visible toasts                   |
+| `closeButton`        | boolean                                                                   | Show the close button                    |
+| `className`          | string                                                                    | Class applied to the toaster root        |
+| `offset`             | number, string, or object                                                 | Desktop offset                           |
+| `mobileOffset`       | number, string, or object                                                 | Mobile offset                            |
+| `dir`                | `rtl` / `ltr` / `auto`                                                    | Text direction                           |
+| `richColors`         | boolean                                                                   | Use saturated colors for status variants |
+| `customAriaLabel`    | string                                                                    | Accessible label for the wrapper         |
+| `containerAriaLabel` | string                                                                    | Accessible label for the container       |
 
 ### Example
 
@@ -167,7 +167,7 @@ createToaster({
   duration: 4000,
   richColors: true,
   closeButton: true,
-  offset: 24,
+  offset: 24
 })
 ```
 
@@ -234,7 +234,7 @@ window.Notify = {
   createToaster,
   configureToaster,
   getToaster,
-  destroyToaster,
+  destroyToaster
 }
 ```
 

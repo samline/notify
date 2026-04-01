@@ -15,7 +15,7 @@ import { createToaster, toast } from '@samline/notify'
 
 createToaster({
   position: 'bottom-right',
-  richColors: true,
+  richColors: true
 })
 
 document.querySelector('#save')?.addEventListener('click', () => {
@@ -26,7 +26,7 @@ document.querySelector('#save')?.addEventListener('click', () => {
 ## Complete example
 
 ```html
-<button id="save">Save</button>
+<button id="save">Save</button> 
 <button id="load">Load profile</button>
 ```
 
@@ -37,32 +37,35 @@ const toaster = configureToaster({
   position: 'bottom-right',
   duration: 4500,
   closeButton: true,
-  richColors: true,
+  richColors: true
 })
 
 document.querySelector('#save')?.addEventListener('click', async () => {
   const id = toast.loading('Saving profile...', {
     description: 'This example updates the same toast by id.',
-    id: 'profile-save',
+    id: 'profile-save'
   })
 
   await new Promise((resolve) => setTimeout(resolve, 1200))
 
   toast.success('Profile saved', {
     id,
-    description: 'The loading toast was updated in place.',
+    description: 'The loading toast was updated in place.'
   })
 })
 
 document.querySelector('#load')?.addEventListener('click', () => {
-  toast.promise(fetch('/api/profile').then((response) => response.json()), {
-    loading: 'Loading profile...',
-    success: (data) => ({
-      message: 'Profile loaded',
-      description: `User: ${data.name}`,
-    }),
-    error: 'Could not load profile',
-  })
+  toast.promise(
+    fetch('/api/profile').then((response) => response.json()),
+    {
+      loading: 'Loading profile...',
+      success: (data) => ({
+        message: 'Profile loaded',
+        description: `User: ${data.name}`
+      }),
+      error: 'Could not load profile'
+    }
+  )
 })
 
 window.addEventListener('beforeunload', () => {
@@ -82,9 +85,9 @@ createToaster({
   theme: 'system',
   offset: {
     top: 16,
-    right: 16,
+    right: 16
   },
-  mobileOffset: 12,
+  mobileOffset: 12
 })
 ```
 
