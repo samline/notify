@@ -1,29 +1,29 @@
-# Browser
+---
+title: Browser global
+description: Use @samline/notify without a bundler via the window.Notify IIFE.
+template: doc
+sidebar:
+  order: 5
+---
 
 Use the browser build when you do not have a bundler and need to integrate the package directly into HTML, Shopify, WordPress, or any traditional template that does not run through a build step.
 
-For every other case (modern apps, bundlers, TypeScript projects), use the main vanilla entrypoint — see [docs/getting-started.md](getting-started.md).
-
----
+For every other case (modern apps, bundlers, TypeScript projects), use the main vanilla entrypoint — see [Getting started](/notify/getting-started/).
 
 ## Script tag
-
-```html
-<script src="https://unpkg.com/@samline/notify@2.0.0/dist/browser/global.global.js"></script>
-```
-
-> Pin the version in production. Replace `2.0.0` with the version you ship.
-
-The bundle is a single IIFE that registers a global object. Place the `<script>` tag in `<head>` with `defer`, or before the user script in `<body>`. The IIFE also auto-mounts a default toaster (when a DOM is available) so the first `Notify.toast(...)` call has somewhere to render.
-
-You also need the stylesheet. Either copy `dist/styles.css` to your static assets and link it, or load it from the CDN:
 
 ```html
 <link rel="stylesheet" href="https://unpkg.com/@samline/notify@2.0.0/dist/styles.css" />
 <script src="https://unpkg.com/@samline/notify@2.0.0/dist/browser/global.global.js" defer></script>
 ```
 
----
+:::caution[Pin the version in production]
+The CDN URL above uses `@2.0.0`. Replace the version with the one you ship.
+:::
+
+The bundle is a single IIFE that registers a global object. Place the `<script>` tag in `<head>` with `defer`, or before the user script in `<body>`. The IIFE also auto-mounts a default toaster (when a DOM is available) so the first `Notify.toast(...)` call has somewhere to render.
+
+You also need the stylesheet. Either copy `dist/styles.css` to your static assets and link it, or load it from the CDN (as in the example above).
 
 ## Global object
 
@@ -40,13 +40,11 @@ window.Notify = {
 }
 ```
 
-- `toast` is the same factory exported by `@samline/notify` — see [`docs/api/toast.md`](api/toast.md) for the full surface.
+- `toast` is the same factory exported by `@samline/notify` — see the [API reference](/notify/reference/api/#toastmessage-options) for the full surface.
 - `createToaster` is the same factory exported by `@samline/notify`. The IIFE auto-mounts a default toaster on load, so calling `createToaster()` later with new options updates the singleton in place via `toaster.update()`.
-- `getToaster` and `destroyToaster` are the inspector / lifecycle helpers. See [docs/api/get-toaster.md](api/get-toaster.md) and [docs/api/destroy-toaster.md](api/destroy-toaster.md).
+- `getToaster` and `destroyToaster` are the inspector / lifecycle helpers. See the [API reference](/notify/reference/api/#gettoaster) and the [API reference](/notify/reference/api/#destroytoaster).
 
-The factory returns a `ToasterController` with the same signatures, semantics, and behaviours as the main vanilla entrypoint — every per-method page in [docs/api/](api/index.md) applies.
-
----
+The factory returns a `ToasterController` with the same signatures, semantics, and behaviours as the main vanilla entrypoint — every per-method page in the [API reference](/notify/reference/api/) applies.
 
 ## Minimal example
 
@@ -63,8 +61,6 @@ The factory returns a `ToasterController` with the same signatures, semantics, a
 ```
 
 The IIFE mounted a default toaster on load. The click handler calls `Notify.toast.success('Saved')`, which renders a `<li data-notify-toast data-type="success">` inside the default toaster's `<ol data-notify-toaster>`. The toast auto-dismisses after 4 seconds.
-
----
 
 ## Custom toaster
 
@@ -93,8 +89,6 @@ The IIFE mounted a default toaster on load. The click handler calls `Notify.toas
 
 `Notify.configureToaster(options)` is an alias of `Notify.createToaster(options)` — kept for intent. Calling it twice with different options updates the singleton in place via `toaster.update(options)`. Calling it with `undefined` returns the existing controller without changes.
 
----
-
 ## Lifecycle helpers
 
 | Helper | Purpose |
@@ -106,20 +100,18 @@ The IIFE mounted a default toaster on load. The click handler calls `Notify.toas
 
 The toaster returned by `createToaster` is the singleton — every helper works on the same `<ol>`. Use `Notify.toast.*` to push toasts, `Notify.getToaster()` to inspect, and `Notify.destroyToaster()` to tear down.
 
----
-
 ## Surface reference
 
-The browser bundle ships the same surface as the main vanilla entrypoint, plus the IIFE auto-mount. Every method is documented under [docs/api/](api/index.md).
+The browser bundle ships the same surface as the main vanilla entrypoint, plus the IIFE auto-mount. Every method is documented under the [API reference](/notify/reference/api/).
 
 | Global | Purpose |
 | --- | --- |
-| `Notify.toast` | The factory and every variant. See [`toast`](api/toast.md). |
+| `Notify.toast` | The factory and every variant. See [`toast`](/notify/reference/api/#toastmessage-options). |
 | `Notify.Toaster(options?)` | Alias of `Notify.createToaster(options?)`. |
-| `Notify.createToaster(options?)` | Mount / update the singleton toaster. See [`createToaster`](api/create-toaster.md). |
-| `Notify.configureToaster(options?)` | Intent-revealing alias of `createToaster`. See [`configureToaster`](api/configure-toaster.md). |
-| `Notify.getToaster()` | Return the singleton controller, or `null`. See [`getToaster`](api/get-toaster.md). |
-| `Notify.destroyToaster()` | Unmount the singleton. See [`destroyToaster`](api/destroy-toaster.md). |
+| `Notify.createToaster(options?)` | Mount / update the singleton toaster. See [`createToaster`](/notify/reference/api/#createtoasteroptions). |
+| `Notify.configureToaster(options?)` | Intent-revealing alias of `createToaster`. See [`configureToaster`](/notify/reference/api/#configuretoasteroptions). |
+| `Notify.getToaster()` | Return the singleton controller, or `null`. See [`getToaster`](/notify/reference/api/#gettoaster). |
+| `Notify.destroyToaster()` | Unmount the singleton. See [`destroyToaster`](/notify/reference/api/#destroytoaster). |
 
 ### Controller methods
 
@@ -129,8 +121,6 @@ The controller returned by `createToaster` exposes:
 - `options` — the current merged `ToasterOptions` (live, updates on `update`).
 - `update(options?)` — re-applies options and re-renders.
 - `destroy()` — unmounts. The IIFE will then auto-remount a fresh default toaster on the next `Notify.toast` call (because `Notify.createToaster` will create a new one).
-
----
 
 ## TypeScript users
 
@@ -146,9 +136,7 @@ declare global {
 }
 ```
 
-See [`NotifyApi`](typescript.md#notifyapi) for the full shape.
-
----
+See [`NotifyApi`](/notify/reference/typescript/#notifyapi) for the full shape.
 
 ## Using the same shape from a bundler
 
@@ -179,13 +167,11 @@ left.destroy()
 right.destroy()
 ```
 
-See the [Browser registry helpers section](getting-started.md#browser-registry-helpers) in the getting-started guide for the full pattern.
-
----
+See the [Browser registry helpers section](/notify/getting-started/#browser-registry-helpers-bundler) in the getting-started guide for the full pattern.
 
 ## Common pitfalls
 
-- **Pin the version.** The CDN URL above is `2.0.0`. Replace it whenever you upgrade.
+- **Pin the version.** The CDN URL above is `@2.0.0`. Replace it whenever you upgrade.
 - **The script must be loaded before any code that uses `window.Notify`.** Place the `<script>` tag in `<head>` with `defer`, or before the user script in `<body>`.
 - **The stylesheet is not bundled into the IIFE.** Load `dist/styles.css` separately. The IIFE only sets data-attributes — without the stylesheet the toasts render as an unstyled list.
 - **No bundler means no tree-shaking.** The browser bundle includes the full runtime (~6 KB gzipped plus the stylesheet). That is by design — the alternative would defeat the purpose of a no-bundler setup.

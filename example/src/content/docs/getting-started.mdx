@@ -1,0 +1,170 @@
+---
+title: Getting started
+description: Install @samline/notify and show your first toast in under five minutes.
+template: doc
+sidebar:
+  order: 1
+---
+
+import { Card, CardGrid, Tabs, TabItem } from '@astrojs/starlight/components';
+
+This page walks you through installing `@samline/notify` and running a working example. By the end you'll have a mounted toaster, a stylesheet, and a few toast variants on the screen.
+
+## Prerequisites
+
+- **Node.js 20+** when bundling (the package is published as ESM + CJS and ships TypeScript types).
+- A package manager — `npm`, `pnpm`, `yarn` or `bun`.
+- A runtime target of **ES2020** in the browser.
+
+## Install
+
+<Tabs syncKey="package-manager">
+	<TabItem label="npm">
+
+		```bash
+		npm install @samline/notify
+		```
+
+	</TabItem>
+	<TabItem label="pnpm">
+
+		```bash
+		pnpm add @samline/notify
+		```
+
+	</TabItem>
+	<TabItem label="yarn">
+
+		```bash
+		yarn add @samline/notify
+		```
+
+	</TabItem>
+	<TabItem label="bun">
+
+		```bash
+		bun add @samline/notify
+		```
+
+	</TabItem>
+</Tabs>
+
+## First example
+
+Drop this in any modern bundler or TypeScript project:
+
+```ts title="app.ts"
+import { createToaster, toast } from '@samline/notify'
+import '@samline/notify/styles.css'
+
+createToaster({
+  position: 'bottom-right',
+  richColors: true,
+  theme: 'system'
+})
+
+toast.success('Saved')
+toast.error('Could not save', { description: 'Try again in a moment' })
+
+toast.promise(fetchProfile(), {
+  loading: 'Loading profile…',
+  success: (data) => `Hi ${data.name}`,
+  error: 'Could not load profile'
+})
+
+async function fetchProfile() {
+  const response = await fetch('/api/profile')
+  if (!response.ok) throw new Error(`HTTP ${response.status}`)
+  return response.json() as Promise<{ name: string }>
+}
+```
+
+What this does:
+
+- Mounts a singleton toaster (one per page) with the position, color treatment, and theme you asked for.
+- The stylesheet sets up the data-attribute-driven visual contract — no inline styles in JS, no shadow DOM.
+- The `toast.success` and `toast.error` calls render normal `<li>` children; `toast.promise` ties a loading → success/error transition to a real `Promise` and re-uses the same id so the DOM updates in place.
+- Auto-dismiss runs after 4 seconds (the default `duration`). Hover pauses the timer; moving out restarts it.
+
+## Browser global (no bundler)
+
+If you do not have a bundler, drop a single `<script>` (and the stylesheet) and use the `window.Notify` global:
+
+```html title="index.html"
+<button id="save">Save</button>
+
+<link rel="stylesheet" href="https://unpkg.com/@samline/notify@2.0.0/dist/styles.css" />
+<script src="https://unpkg.com/@samline/notify@2.0.0/dist/browser/global.global.js" defer></script>
+<script>
+  document.querySelector('#save').addEventListener('click', () => {
+    window.Notify.toast.success('Saved')
+  })
+</script>
+```
+
+:::caution[Pin the version in production]
+The CDN URL above uses `@2.0.0`. Replace the version with the one you ship.
+:::
+
+The IIFE auto-mounts a default toaster on load (when a DOM is available), so the first `Notify.toast(...)` call already has somewhere to render. If you want a custom position / theme / colors, call `window.Notify.configureToaster(options)` first.
+
+See the [Browser global reference](/notify/reference/browser/) for the full surface, including `Notify.createToaster`, `Notify.getToaster`, and `Notify.destroyToaster`.
+
+## Browser registry helpers (bundler)
+
+If you have a bundler and want the same `{ toast, Toaster, createToaster, configureToaster, getToaster, destroyToaster }` ergonomics as the IIFE — but without `window.Notify` auto-installed — import the `browser` singleton from the vanilla entrypoint:
+
+```ts title="bundler.ts"
+import { browser } from '@samline/notify'
+import '@samline/notify/styles.css'
+
+window.MyNotify = { ...browser }
+
+window.MyNotify.createToaster({ position: 'bottom-right' })
+window.MyNotify.toast.success('Saved')
+window.MyNotify.destroyToaster()
+```
+
+`browser` is an object you can spread into your own globals or use directly. Because it shares the same module-level `Observer` and the same toaster singleton as the named exports, every spread behaves the same — `window.MyNotify.createToaster({})` and `createToaster({})` end up calling the same factory and updating the same DOM container.
+
+If you need multiple independent singletons, use the `mountToaster(root, options?)` escape hatch and keep your own map of controllers:
+
+```ts
+import { mountToaster } from '@samline/notify'
+
+const left = mountToaster(document.body, { position: 'bottom-left' })
+const right = mountToaster(document.body, { position: 'bottom-right' })
+
+left.destroy()
+right.destroy()
+```
+
+`mountToaster` accepts the DOM `root` (the `<ol>` will be appended to it) and the `ToasterOptions`. The named exports (`createToaster`, `getToaster`, `destroyToaster`) are the right tool for the common case of one toaster per page.
+
+## What's next?
+
+<CardGrid>
+	<Card title="Configuration" icon="setting">
+		Every option, default, and rule type — `position`, `theme`, `duration`, `offset`, `richColors`, and more.
+
+		[Configuration →](/notify/reference/configuration/)
+	</Card>
+
+	<Card title="API reference" icon="open-book">
+		Function-by-function documentation with TypeScript signatures, return shapes, and behaviour tables.
+
+		[API reference →](/notify/reference/api/)
+	</Card>
+
+	<Card title="TypeScript" icon="seti:typescript">
+		Every exported type — `ToastT`, `ToasterController`, `ToastOptions`, `ToasterOptions`, `PromiseData`, callbacks, helpers.
+
+		[TypeScript reference →](/notify/reference/typescript/)
+	</Card>
+
+	<Card title="Examples" icon="puzzle">
+		End-to-end patterns: `toast.promise` with `fetch`, undo with action buttons, custom content, multi-toaster, live theme changes.
+
+		[Browse examples →](/notify/reference/examples/)
+	</Card>
+</CardGrid>

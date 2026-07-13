@@ -1,0 +1,315 @@
+---
+title: Examples
+description: End-to-end recipes for common real-world scenarios with @samline/notify.
+template: doc
+sidebar:
+  order: 7
+---
+
+import { Tabs, TabItem, Steps } from '@astrojs/starlight/components';
+
+These examples are deliberately copy-pasteable. Each one lives in a self-contained snippet so it's easy to drop into a project and adapt.
+
+<Tabs syncKey="runtime">
+	<TabItem label="Bundler / TS">
+
+		The standard entrypoint — `import { createToaster, toast } from '@samline/notify'`. Works with Vite, Webpack, Rollup, esbuild, Bun, and any modern bundler.
+
+		```ts
+		import { createToaster, toast } from '@samline/notify'
+		import '@samline/notify/styles.css'
+
+		createToaster({ position: 'bottom-right', richColors: true })
+
+		toast.success('Saved')
+		```
+
+	</TabItem>
+	<TabItem label="Browser global">
+
+		No bundler required. Drop the CDN script and stylesheet and use `window.Notify`.
+
+		```html
+		<link rel="stylesheet" href="https://unpkg.com/@samline/notify@2.0.0/dist/styles.css" />
+		<script src="https://unpkg.com/@samline/notify@2.0.0/dist/browser/global.global.js" defer></script>
+		<script>
+		  document.querySelector('#save').addEventListener('click', () => {
+		    window.Notify.toast.success('Saved')
+		  })
+		</script>
+		```
+
+	</TabItem>
+</Tabs>
+
+## Recipe: `toast.promise` with `fetch`
+
+```ts
+import { toast } from '@samline/notify'
+
+async function saveProfile(patch: object) {
+  const response = await fetch('/api/profile', {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(patch)
+  })
+
+  if (!response.ok) {
+    throw new Error(`Profile save failed: ${response.status}`)
+  }
+
+  return response.json()
+}
+
+toast.promise(saveProfile({ name: 'Sam' }), {
+  loading: 'Saving profile…',
+  success: (profile) => `Saved as ${profile.name}`,
+  error: 'Could not save your profile'
+})
+```
+
+The `loading` toast appears immediately, the same `<li data-notify-toast data-id="<id>">` updates in place to `data-type="success"` or `data-type="error"`. The id you get back from `toast.promise()` is the same id used for both phases. If the `Response` is not `ok`, the runtime routes to the `error` callback automatically.
+
+## Recipe: Undo with `action` and `cancel`
+
+```ts
+toast('Item deleted', {
+  type: 'action',
+  duration: 6000,
+  action: {
+    label: 'Undo',
+    onClick: () => restoreItem(item)
+  },
+  cancel: {
+    label: 'Dismiss',
+    onClick: () => {}
+  }
+})
+```
+
+The toast renders two trailing buttons: `cancel` first (lighter style), `action` second. Both default to closing the toast on click (`closeOnClick: true`). Set `closeOnClick: false` on either to keep the toast open while a follow-up action runs.
+
+## Recipe: Rich content with `toast.custom`
+
+```ts
+toast.custom((container) => {
+  const img = document.createElement('img')
+  img.src = '/avatars/sam.png'
+  img.alt = ''
+  img.width = 32
+  img.height = 32
+  img.style.borderRadius = '50%'
+
+  const text = document.createElement('div')
+  text.innerHTML = `
+    <div data-title>Sam liked your post</div>
+    <div data-description>5 minutes ago</div>
+  `
+
+  container.appendChild(img)
+  container.appendChild(text)
+})
+```
+
+The renderer creates a `<div data-custom>` for you and hands it to the callback. Append whatever DOM you own. Do **not** inject user-supplied HTML as `innerHTML` — the stylesheet scopes its visual treatment to `data-title` and `data-description` children, so wrapping your content in those attributes is enough to inherit the look.
+
+You can also pass a pre-built `HTMLElement`:
+
+```ts
+const widget = document.createElement('div')
+widget.textContent = 'Pre-built widget'
+
+toast.custom(widget, { duration: 8000 })
+```
+
+The renderer appends `widget` directly without any wrapping — the toast body shows whatever the element renders to.
+
+## Recipe: Same-id updates in place
+
+```ts
+const id = toast.loading('Uploading…', { id: 'upload-1' })
+
+await uploadFile(file)
+
+toast.success('Upload complete', { id: 'upload-1' })
+```
+
+The second `toast.success(..., { id: 'upload-1' })` updates the same `<li>` in place. The runtime fingerprints the content (type, title, description, action, cancel) and re-fills only when one of those fields changed. The auto-dismiss timer is also reset, so the toast stays visible for another 4 seconds after the success message replaces the loading message.
+
+This is the same mechanism `toast.promise` uses internally. You can do it manually when you want to drive the transition yourself.
+
+## Recipe: Live theme + position changes
+
+```ts
+import { createToaster, getToaster } from '@samline/notify'
+import '@samline/notify/styles.css'
+
+createToaster({ theme: 'light', position: 'bottom-right' })
+
+// User toggles dark mode.
+document.querySelector('#theme-toggle')?.addEventListener('click', () => {
+  getToaster()?.update({ theme: 'dark' })
+})
+
+// User resizes to mobile.
+window.addEventListener('resize', () => {
+  if (window.matchMedia('(max-width: 600px)').matches) {
+    getToaster()?.update({ position: 'bottom-center' })
+  }
+})
+```
+
+`toaster.update(options?)` re-applies the data-attributes and the CSS variables. The active timers are restarted at the new `duration` (if you changed it). Toasts in flight keep their `data-type` / `data-mounted` state — only the container's `data-notify-theme` and `data-{x,y}-position` flip.
+
+## Recipe: Mobile offsets
+
+```ts
+createToaster({
+  position: 'bottom-right',
+  offset: 24,
+  mobileOffset: 16
+})
+```
+
+The runtime applies the mobile offset under `@media (hover: none) and (pointer: coarse)`. Pass an object to customize each side:
+
+```ts
+createToaster({
+  offset: { top: 24, right: 24, bottom: 24, left: 24 },
+  mobileOffset: { bottom: 80 }  // account for an iOS bottom bar
+})
+```
+
+## Recipe: Multi-toaster UI
+
+```ts
+import { mountToaster } from '@samline/notify'
+import '@samline/notify/styles.css'
+
+const errors = mountToaster(document.body, {
+  position: 'top-right',
+  theme: 'dark',
+  richColors: true,
+  visibleToasts: 5
+})
+
+const banners = mountToaster(document.body, {
+  position: 'bottom-left',
+  duration: 6000
+})
+
+errors.element.dataset['notifyChannel'] = 'errors'
+banners.element.dataset['notifyChannel'] = 'banners'
+```
+
+`mountToaster` accepts a `root` (the `<ol>` is appended to it), a `ToasterOptions`, and an optional `state` parameter (for tests). The two toasters are independent: their timers, their cleanups, and their DOM containers are isolated. `createToaster` / `getToaster` / `destroyToaster` only see the first one, so use `mountToaster` directly for the second and keep a reference yourself.
+
+## Recipe: Per-toast custom testId
+
+```ts
+toast.success('Profile saved', { testId: 'profile-save-success' })
+```
+
+The runtime renders `data-testid="profile-save-success"` on the `<li>`. Pair this with your E2E selector to assert on specific toasts:
+
+```ts
+expect(screen.getByTestId('profile-save-success')).toHaveAttribute('data-type', 'success')
+```
+
+## Recipe: Persist a toast log
+
+```ts
+import { toast, ToastState } from '@samline/notify'
+
+ToastState.subscribe((event) => {
+  if ('dismiss' in event && event.dismiss) {
+    logEvent('toast_dismissed', { id: event.id })
+  } else {
+    logEvent('toast_created', { id: event.id, type: event.type })
+  }
+})
+```
+
+The `Observer` publishes one event per create / dismiss. `toast.promise` publishes two events (loading + settled). The subscriber fires synchronously inside `ToastState.publish()` — do not throw or block inside the callback.
+
+## Recipe: Custom CSS for the toaster
+
+```css
+/* Brand-aligned toaster */
+[data-notify-toaster] {
+  --width: 360px;
+  --gap: 12px;
+  --offset-bottom: 24px;
+  --mobile-offset-bottom: 24px;
+  --normal-bg: white;
+  --normal-text: oklch(0.18 0.02 250);
+  --normal-border: oklch(0.9 0.01 250);
+  --success-bg: oklch(0.96 0.04 150);
+  --success-text: oklch(0.22 0.1 150);
+  --success-border: oklch(0.78 0.1 150);
+  --error-bg: oklch(0.96 0.04 25);
+  --error-text: oklch(0.22 0.1 25);
+  --error-border: oklch(0.78 0.1 25);
+  --border-radius: 10px;
+}
+
+[data-notify-toaster][data-notify-theme='dark'] {
+  --normal-bg: oklch(0.18 0.02 250);
+  --normal-text: oklch(0.96 0.01 250);
+  --normal-border: oklch(0.32 0.01 250);
+}
+```
+
+The runtime never overrides these — it only sets the per-type defaults inside `[data-notify-toaster]`. Add your own stylesheet after `@samline/notify/styles.css` and your rules win on cascade order.
+
+## Recipe: Disable a specific toast's auto-dismiss
+
+```ts
+toast.info('Heads up — check the server status', { duration: Infinity })
+```
+
+`duration: Infinity` cancels the auto-dismiss. The user can still dismiss manually with the close button (when enabled) or by swiping (when the position allows it).
+
+`toast.loading` and `toast.promise` toasts are also non-auto-dismissing by design — the runtime never sets a timer for them.
+
+## Recipe: SPA cleanup on route change
+
+```ts
+import { destroyToaster, createToaster } from '@samline/notify'
+
+router.on('/profile', () => {
+  createToaster({ position: 'bottom-right' })
+})
+
+router.off('/profile', () => {
+  destroyToaster()
+})
+```
+
+`destroyToaster` is idempotent and a no-op if no toaster is mounted. Use it to guarantee a clean slate between routes.
+
+If you used `mountToaster` for a multi-toaster UI, keep your own references and call `toaster.destroy()` directly.
+
+## Recipe: Read the current toasts
+
+```ts
+import { toast } from '@samline/notify'
+
+const active = toast.getToasts()
+// [{ id: 1, type: 'success', title: 'Saved', ... }, ...]
+
+const history = toast.getHistory()
+// every toast since page load, including dismissed ones
+```
+
+`toast.getToasts()` filters out ids in `dismissedToasts`. `toast.getHistory()` returns the unfiltered list. Both return fresh arrays on every call — safe to mutate.
+
+## Recipe: Reset everything (tests, dev tools)
+
+```ts
+import { resetToasts } from '@samline/notify'
+
+resetToasts()
+```
+
+`resetToasts` drops every toast (active and dismissed) and rewinds the internal counter. Intended for tests and dev tools. In production you almost certainly want `toast.dismiss()` (which keeps the counter) or `destroyToaster()` (which also unmounts the container).
