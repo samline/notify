@@ -1,6 +1,6 @@
 {
   "name": "@samline/notify",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "Framework-agnostic toast notification runtime with a vanilla/browser API and an IIFE bundle for direct CDN use.",
   "type": "module",
   "license": "MIT",
