@@ -38,3 +38,6 @@ skills-lock.json
 
 # AGENTS.md y .agents/ SÍ se versionan (decisión 2026-07-13)
 # .local/ deprecado desde 2026-07-13 — usar .agents/ en su lugar
+scripts-tmp-*.mjs
+_tmp-*.mjs
+_tmp-*.mjs

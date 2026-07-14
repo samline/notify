@@ -50,6 +50,7 @@ export interface ToastOptions {
   type?: ToastType
   richColors?: boolean
   invert?: boolean
+  unstyled?: boolean
   closeButton?: boolean
   dismissible?: boolean
   duration?: number
@@ -58,6 +59,30 @@ export interface ToastOptions {
   action?: ToastAction
   cancel?: ToastAction
   testId?: string
+  /**
+   * Fires when the toast is dismissed by ANY path (close button,
+   * swipe-out, auto-dismiss timer, external `toast.dismiss(id)`).
+   * Mirrors the legacy React `onDismiss` contract. The vanilla
+   * refactor omitted this from the public `ToastOptions` shape;
+   * the renderer already supports it, so we re-expose it (see
+   * Fix 8 in the bug report).
+   */
+  onDismiss?: (toast: ToastT) => void
+  /**
+   * Fires when the auto-dismiss timer expires (only — not for
+   * user-initiated dismisses). Mirrors the legacy React
+   * `onAutoClose` contract.
+   */
+  onAutoClose?: (toast: ToastT) => void
+  /**
+   * Fires when the user clicks the toast body (NOT the close,
+   * action, or cancel buttons). Mirrors the legacy React
+   * `onClick` contract; the vanilla refactor dropped the click
+   * handler entirely. Skipped while the toast is in `loading`
+   * state (use the promise `success` / `error` callbacks for
+   * async work instead).
+   */
+  onClick?: (event: Event) => void
 }
 
 export type Position =
@@ -97,8 +122,32 @@ export interface ToasterOptions {
   mobileOffset?: Offset
   dir?: Direction
   richColors?: boolean
+  invert?: boolean
+  unstyled?: boolean
   customAriaLabel?: string
   containerAriaLabel?: string
+  closeButtonAriaLabel?: string
+  /**
+   * Extra CSS custom properties spread onto the `<ol>` container.
+   * Lets consumers pin their own design tokens (e.g. `'--normal-bg'`,
+   * `'--width'`) without subclassing. Legacy React build accepted
+   * this as a `CSSProperties` object; the vanilla refactor dropped
+   * it. Restored as a plain `Record<string, string>` to keep the
+   * runtime dependency-free.
+   */
+  style?: Record<string, string>
+  /**
+   * a11y: keyboard shortcut to focus the toaster. Each entry is
+   * matched against the `KeyboardEvent` (modifier keys are checked
+   * by name — `altKey`, `metaKey`, `ctrlKey`, `shiftKey` — and
+   * everything else is matched against `KeyboardEvent.code` like
+   * `KeyT`, `KeyK`, `Slash`, `Enter`, etc.). Pass `[]` to disable
+   * the hotkey entirely. Default: `['altKey', 'KeyT']` (alt+T) to
+   * match the legacy sonner default. The hotkey is ignored when
+   * the user is typing in an `INPUT` / `TEXTAREA` / `SELECT` or
+   * any element with `contenteditable=true`.
+   */
+  hotkey?: string[]
 }
 
 export interface ToasterController {
@@ -120,6 +169,7 @@ export interface ToastT {
   type?: ToastType
   richColors?: boolean
   invert?: boolean
+  unstyled?: boolean
   closeButton?: boolean
   dismissible?: boolean
   duration?: number
@@ -134,6 +184,7 @@ export interface ToastT {
   delete?: boolean
   onDismiss?: (toast: ToastT) => void
   onAutoClose?: (toast: ToastT) => void
+  onClick?: (event: Event) => void
 }
 
 export interface ToastToDismiss {

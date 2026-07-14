@@ -6,7 +6,7 @@ This page walks through what `@samline/notify` is, how the runtime is wired, and
 
 ## When to use this variant
 
-Use the vanilla variant when you work with native HTML pages, embedded scripts, static sites, or applications where you do not need a framework wrapper. This is the primary — and only — runtime entrypoint of `@samline/notify` since v3.0.0.
+Use the vanilla variant when you work with native HTML pages, embedded scripts, static sites, or applications where you do not need a framework wrapper. This is the primary — and only — runtime entrypoint of `@samline/notify` since v3.0.0. (Patch releases like v3.0.1 are API-compatible.)
 
 If you want a `<script>`-only setup without a bundler, see [docs/browser.md](browser.md).
 

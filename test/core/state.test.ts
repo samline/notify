@@ -23,8 +23,10 @@ describe('core/state', () => {
 
       const active = ToastState.getActiveToasts()
       expect(active).toHaveLength(2)
-      expect(active[0]?.title).toBe('one')
-      expect(active[1]?.title).toBe('two')
+      // Newest toast is at the front (matches the legacy React/sonner
+      // contract and the renderer's `data-front='true'` at index 0).
+      expect(active[0]?.title).toBe('two')
+      expect(active[1]?.title).toBe('one')
     })
 
     it('does not duplicate when an explicit id is reused — it updates the existing toast', () => {
@@ -74,6 +76,29 @@ describe('core/state', () => {
       ToastState.dismiss()
       expect(ToastState.getActiveToasts()).toHaveLength(0)
       expect(toast.getHistory()).toHaveLength(3)
+    })
+
+    it('double-dismiss on the same id is a no-op (no duplicate publish)', () => {
+      // Fix 16: previously, calling dismiss(id) twice on the same
+      // id would re-publish the dismiss event. The renderer
+      // subscriber re-ran, which re-invoked the toast's onDismiss
+      // callback, scheduled a duplicate DOM removal, etc. Now we
+      // short-circuit at the state level when the id is already
+      // in dismissedToasts.
+      let publishCount = 0
+      const unsubscribe = ToastState.subscribe((event) => {
+        if ('dismiss' in event && event.dismiss) publishCount += 1
+      })
+
+      ToastState.dismiss('ghost')
+      // First call: 'ghost' wasn't in the set, so the publish fires.
+      expect(publishCount).toBe(1)
+      // 'ghost' is in dismissedToasts now. The second call
+      // short-circuits via the new `if (this.dismissedToasts.has(id))
+      // return id` guard.
+      ToastState.dismiss('ghost')
+      expect(publishCount).toBe(1)
+      unsubscribe()
     })
 
     it('notifies subscribers about a dismiss event', () => {
@@ -197,6 +222,61 @@ describe('core/state', () => {
       const types = events.map((event) => event.type)
       expect(types).not.toContain('loading')
       expect(types).toContain('success')
+
+      unsubscribe()
+    })
+
+    it('attaches `promise` to the loading toast so the renderer can set data-promise', () => {
+      const events: ToastT[] = []
+      const unsubscribe = ToastState.subscribe((event) => {
+        if ('title' in event) events.push(event as ToastT)
+      })
+
+      const p = Promise.resolve('ok')
+      const result = ToastState.promise(p, {
+        loading: 'Loading...',
+        success: 'Done'
+      })
+      const id = (result as { id?: string | number }).id
+      expect(id).toBeDefined()
+
+      const loading = events.find((event) => event.id === id && event.type === 'loading')
+      expect(loading).toBeDefined()
+      // Fix 5: the legacy React build also attached the promise to
+      // the toast. The vanilla refactor dropped it; we re-added it
+      // so the renderer can set `data-promise='true'`.
+      expect(loading?.promise).toBe(p)
+
+      unsubscribe()
+    })
+
+    it('calls the function form of `description` on error (Fix 17)', async () => {
+      const events: ToastT[] = []
+      const unsubscribe = ToastState.subscribe((event) => {
+        if ('title' in event) events.push(event as ToastT)
+      })
+
+      const result = ToastState.promise(Promise.reject(new Error('boom')), {
+        loading: 'Loading...',
+        error: 'Failed',
+        // The user wants the description to be dynamic based on
+        // the error. Before Fix 17 this was silently dropped.
+        description: (err) => `Caught: ${(err as Error).message}`
+      })
+      const id = (result as { id?: string | number }).id
+      expect(id).toBeDefined()
+
+      // Flush microtasks so the rejection's catch handler runs.
+      await Promise.resolve()
+      await Promise.resolve()
+      await Promise.resolve()
+      await Promise.resolve()
+      await Promise.resolve()
+      await Promise.resolve()
+
+      const errored = events.find((event) => event.id === id && event.type === 'error')
+      expect(errored).toBeDefined()
+      expect(errored?.description).toBe('Caught: boom')
 
       unsubscribe()
     })

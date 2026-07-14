@@ -31,6 +31,12 @@ export interface ToastInput extends Omit<ToastOptions, 'description'> {
   message?: TitleInput
   description?: TitleInput
   custom?: CustomContent
+  /**
+   * Internal: set by `toast.promise()` so the renderer can attach
+   * `data-promise='true'` to the <li>. Not part of the public
+   * `ToastOptions` — `toast.promise()` is the only entrypoint.
+   */
+  promise?: PromiseInput<unknown>
 }
 
 export type ToastSubscriber = (toast: ToastT | ToastToDismiss) => void
@@ -53,7 +59,13 @@ class Observer {
   }
 
   addToast = (data: ToastT): void => {
-    this.toasts = [...this.toasts, data]
+    // Newest at the front (index 0 = `data-front='true'`). The renderer
+    // and CSS rely on index 0 being the most recently added toast — see
+    // Fix 2 in the bug report. Appending (the previous behavior) made
+    // the OLDEST toast the "front" one, which is backwards from the
+    // legacy React/sonner contract where the newest toast is the one
+    // the user just triggered.
+    this.toasts = [data, ...this.toasts]
     this.publish(data)
   }
 
@@ -110,10 +122,17 @@ class Observer {
 
   dismiss = (id?: ToastId): ToastId | undefined => {
     if (id !== undefined) {
+      // Guard against double-dismiss: a second call would
+      // re-publish the dismiss event and the renderer subscriber
+      // would re-invoke `toast.onDismiss`, schedule a second
+      // DOM-removal setTimeout, etc. The legacy React build had
+      // the same edge case; we de-duplicate here. See Fix 16.
+      if (this.dismissedToasts.has(id)) return id
       this.dismissedToasts.add(id)
       this.publish({ id, dismiss: true })
     } else {
       for (const toast of this.toasts) {
+        if (this.dismissedToasts.has(toast.id)) continue
         this.dismissedToasts.add(toast.id)
         this.publish({ id: toast.id, dismiss: true })
       }
@@ -158,7 +177,14 @@ class Observer {
       const { description: _droppedDesc, ...rest } = data
       void _droppedDesc
       const loadingPayload: ToastInput = {
+        // `promise` is part of `ToastT`; the renderer reads `toast.promise`
+        // to set `data-promise='true'` on the <li> and trigger the
+        // `[data-promise='true'] [data-icon] > svg` fade-in animation
+        // defined in `styles.css`. The legacy React build also included
+        // `promise` here. Without it the animation never plays (see
+        // Fix 5 in the bug report).
         ...rest,
+        promise,
         type: 'loading',
         message: data.loading,
         ...(description !== undefined ? { description } : {})
@@ -177,15 +203,41 @@ class Observer {
       type: K
     ): Promise<void> => {
       if (value === undefined) return
+      const errorInfo = state.result?.[1]
       const resolvedValue =
-        typeof value === 'function' ? await (value as (data: unknown) => unknown)(state.result?.[1] ?? null) : value
+        typeof value === 'function' ? await (value as (data: unknown) => unknown)(errorInfo ?? null) : value
+
+      // Fix 17: the `PromiseData.description` field accepts a function
+      // form (`(data) => Renderable`) but the vanilla renderer never
+      // invoked it. The legacy React build called the function for
+      // HTTP errors and passed a hardcoded error string. We pass the
+      // error info (the rejected value of the promise — the Response
+      // for HTTP errors, the Error object for other rejections) so
+      // the user can introspect it. Only invoked on `error`; for
+      // `success` the static value (if any) is used, matching the
+      // legacy contract. The `await` allows async descriptions
+      // (e.g. one that re-fetches the failure body).
+      const descFn =
+        typeof data.description === 'function'
+          ? (data.description as (data: unknown) => Renderable | Promise<Renderable>)
+          : null
+      const descStatic = descFn === null ? (data.description as Renderable | undefined) : undefined
+      let resolvedDescription: Renderable | undefined
+      if (type === 'error' && descFn) {
+        resolvedDescription = await descFn(errorInfo ?? null)
+      } else if (descStatic !== undefined) {
+        resolvedDescription = descStatic
+      }
+      // success path + function form: no description (matches legacy).
+
       if (isExtendedResult(resolvedValue)) {
         const { message: extendedMessage, ...rest } = resolvedValue
         const payload: ToastInput = {
           ...(id !== undefined ? { id } : {}),
           type,
           ...rest,
-          ...(extendedMessage !== undefined ? { message: extendedMessage } : {})
+          ...(extendedMessage !== undefined ? { message: extendedMessage } : {}),
+          ...(resolvedDescription !== undefined ? { description: resolvedDescription } : {})
         }
         this.create(payload)
         return
@@ -193,7 +245,8 @@ class Observer {
       const payload: ToastInput = {
         ...(id !== undefined ? { id } : {}),
         type,
-        message: resolvedValue as Renderable
+        message: resolvedValue as Renderable,
+        ...(resolvedDescription !== undefined ? { description: resolvedDescription } : {})
       }
       this.create(payload)
     }

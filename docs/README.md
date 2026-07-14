@@ -1,6 +1,6 @@
 # Notify docs
 
-This is the markdown reference for `@samline/notify` v3.0.0 — a vanilla, framework-free toast notification runtime. The same content is served as a Starlight site at [samline.github.io/notify](https://samline.github.io/notify); the markdown here is the source of truth.
+This is the markdown reference for `@samline/notify` v3.0.1 — a vanilla, framework-free toast notification runtime. The same content is served as a Starlight site at [samline.github.io/notify](https://samline.github.io/notify); the markdown here is the source of truth.
 
 ---
 
@@ -62,4 +62,4 @@ If you have not read the rest of the docs, start with [Getting started](getting-
 
 ## Versioning
 
-This documentation matches `@samline/notify` v3.0.0 — the first published vanilla release. The previous multi-framework versions (1.x and 2.0.0–2.0.3) used a different API surface and are not covered here.
+This documentation matches `@samline/notify` v3.0.1 — the first published vanilla release. The previous multi-framework versions (1.x and 2.0.0–2.0.3) used a different API surface and are not covered here.
