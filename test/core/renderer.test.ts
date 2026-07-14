@@ -2,7 +2,11 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 
 import { mountToaster } from '../../src/core/renderer'
 import { ToastState, resetToastState } from '../../src/core/state'
-import { TIME_BEFORE_UNMOUNT, VIEWPORT_OFFSET, MOBILE_VIEWPORT_OFFSET } from '../../src/core/constants'
+import {
+  TIME_BEFORE_UNMOUNT,
+  VIEWPORT_OFFSET,
+  MOBILE_VIEWPORT_OFFSET
+} from '../../src/core/constants'
 import { toast } from '../../src/api/toast'
 import type { ToasterController } from '../../src/core/types'
 
@@ -134,6 +138,87 @@ describe('core/renderer', () => {
     })
   })
 
+  it('keeps the <li> in the DOM for the full 400ms exit transition (not 200ms)', () => {
+    // Fix: the previous vanilla build scheduled `setTimeout(node.remove,
+    // TIME_BEFORE_UNMOUNT)` (200ms) on every dismiss, which truncated
+    // the 400ms CSS exit transition at the halfway mark — toasts
+    // looked like they teleported out instead of sliding. The renderer
+    // now waits for the real `transitionend` event (or, in a runtime
+    // that doesn't run CSS transitions, for the equivalent
+    // `transitionDuration`-based fallback). In jsdom
+    // `getComputedStyle` returns an empty `transitionDuration`, so the
+    // helper takes the legacy `TIME_BEFORE_UNMOUNT` path — but we
+    // can still prove the contract by mocking `getComputedStyle` to
+    // return a real 400ms duration, in which case the helper must
+    // keep the node around for at least 400ms.
+    controller = mountToaster(root, {}, ToastState)
+    const id = ToastState.create({ message: 'long-exit' })
+    const li = root.querySelector<HTMLLIElement>(`li[data-notify-toast][data-id="${id}"]`)
+    expect(li).toBeTruthy()
+
+    // Patch getComputedStyle to report a real 400ms transform/opacity
+    // transition. jsdom normally returns "" for both, which would push
+    // the helper onto the TIME_BEFORE_UNMOUNT branch. We want to
+    // exercise the real-browser branch here.
+    const original = window.getComputedStyle
+    window.getComputedStyle = ((el: Element) => {
+      const real = original.call(window, el)
+      return new Proxy(real, {
+        get(target, prop) {
+          if (prop === 'transitionDuration') return '0.4s, 0.4s, 0.4s, 0.2s'
+          if (prop === 'transitionProperty') return 'transform, opacity, height, box-shadow'
+          return Reflect.get(target, prop)
+        }
+      })
+    }) as typeof window.getComputedStyle
+
+    try {
+      ToastState.dismiss(id)
+      // Just past the old (200ms) cutoff — the node should STILL be
+      // in the DOM because the real transition is 400ms.
+      return new Promise<void>((resolve) => {
+        setTimeout(() => {
+          const stillThere = root.querySelector<HTMLLIElement>(
+            `li[data-notify-toast][data-id="${id}"]`
+          )
+          expect(stillThere).toBeTruthy()
+          expect(stillThere?.getAttribute('data-removed')).toBe('true')
+          // Well past the full transition + the 100ms fallback
+          // margin = ~500ms total. By now the helper's
+          // setTimeout fallback has fired and the node is gone.
+          setTimeout(() => {
+            const gone = root.querySelector(`li[data-notify-toast][data-id="${id}"]`)
+            expect(gone).toBeNull()
+            resolve()
+          }, 400)
+        }, 250)
+      })
+    } finally {
+      window.getComputedStyle = original
+    }
+  })
+
+  it('sets data-swipe-out="false" on initial mount so the exit CSS rules can match', () => {
+    // Fix: the previous vanilla refactor never set `data-swipe-out` until
+    // the user actually swiped. The CSS rules for the exit animation
+    // require `[data-removed='true'][data-front='true'][data-swipe-out='false']`
+    // to match, so without the initial `'false'` they never applied and
+    // the dismissal looked instantaneous. The legacy React build emitted
+    // `data-swipe-out={swipeOut}` from the JSX, so `data-swipe-out='false'`
+    // was always present in the DOM. We restore that contract.
+    controller = mountToaster(root, {}, ToastState)
+    const id = ToastState.create({ message: 'no-swipe-yet' })
+    const li = root.querySelector<HTMLLIElement>(`li[data-notify-toast][data-id="${id}"]`)
+    expect(li?.getAttribute('data-swipe-out')).toBe('false')
+
+    // After a normal dismiss (not a swipe), the attribute stays at
+    // 'false' so the [data-removed][data-front='true'][data-swipe-out='false']
+    // selector still matches for the full 400ms exit transition.
+    ToastState.dismiss(id)
+    expect(li?.getAttribute('data-removed')).toBe('true')
+    expect(li?.getAttribute('data-swipe-out')).toBe('false')
+  })
+
   it('respects visibleToasts option (stacking)', () => {
     controller = mountToaster(root, { visibleToasts: 1, expand: false }, ToastState)
     const a = ToastState.create({ message: 'a' })
@@ -148,6 +233,37 @@ describe('core/renderer', () => {
     expect(root.querySelector(`li[data-id="${a}"]`)).toBeTruthy()
     expect(root.querySelector(`li[data-id="${b}"]`)).toBeTruthy()
     expect(root.querySelector(`li[data-id="${c}"]`)).toBeTruthy()
+  })
+
+  it('expanded stack uses (index * GAP) in --offset so toasts do not pile on top of each other', () => {
+    // Fix: the previous vanilla `computeOffset` only summed the heights
+    // of the toasts in front of each one — no `* gap` factor. With 3
+    // identical toasts the offset for the back toast was 107px (53.5
+    // + 53.5) instead of 135px (53.5 + 53.5 + 14 + 14), so the
+    // expanded stack ended up with the toasts sitting flush against
+    // each other (no breathing room). The legacy React build used
+    // `heightIndex * gap + toastsHeightBefore`. We restore that
+    // arithmetic and verify the rendered `--offset` value reflects it.
+    controller = mountToaster(root, { expand: true, gap: 14 }, ToastState)
+    const a = ToastState.create({ message: 'a' })
+    const b = ToastState.create({ message: 'b' })
+    const c = ToastState.create({ message: 'c' })
+
+    const lis = Array.from(root.querySelectorAll<HTMLLIElement>('li[data-notify-toast]'))
+    // Order in the DOM matches the activeToasts order: [c, b, a]
+    // (newest at the front, oldest at the back). `c` is index 0
+    // (front, offset 0), `b` is index 1 (offset = h(c) + 1*14),
+    // `a` is index 2 (offset = h(c) + h(b) + 2*14).
+    const front = lis.find((li) => li.getAttribute('data-id') === String(c))
+    const middle = lis.find((li) => li.getAttribute('data-id') === String(b))
+    const back = lis.find((li) => li.getAttribute('data-id') === String(a))
+
+    const frontH = Number(front?.getBoundingClientRect().height ?? 0)
+    const middleH = Number(middle?.getBoundingClientRect().height ?? 0)
+
+    expect(front?.style.getPropertyValue('--offset')).toBe('0px')
+    expect(middle?.style.getPropertyValue('--offset')).toBe(`${frontH + 14}px`)
+    expect(back?.style.getPropertyValue('--offset')).toBe(`${frontH + middleH + 28}px`)
   })
 
   it('destroy() removes the toaster from the DOM', () => {
@@ -220,18 +336,14 @@ describe('core/renderer', () => {
   it('same-id update re-renders type/title on the existing <li>', () => {
     controller = mountToaster(root, {}, ToastState)
     ToastState.create({ message: 'A', id: 'x', type: 'loading' })
-    const liBefore = root.querySelector<HTMLLIElement>(
-      'li[data-notify-toast][data-id="x"]'
-    )
+    const liBefore = root.querySelector<HTMLLIElement>('li[data-notify-toast][data-id="x"]')
     expect(liBefore?.getAttribute('data-type')).toBe('loading')
     expect(liBefore?.textContent).toContain('A')
 
     // Same id, different type/title — the <li> should mutate in place.
     ToastState.create({ message: 'B', id: 'x', type: 'success' })
 
-    const liAfter = root.querySelector<HTMLLIElement>(
-      'li[data-notify-toast][data-id="x"]'
-    )
+    const liAfter = root.querySelector<HTMLLIElement>('li[data-notify-toast][data-id="x"]')
     // Same DOM node identity (option (a) — fillToastContent, not detach+create)
     expect(liAfter).toBe(liBefore)
     expect(liAfter?.getAttribute('data-type')).toBe('success')
@@ -323,12 +435,8 @@ describe('core/renderer', () => {
     const first = ToastState.success('First')
     const second = ToastState.error('Second')
 
-    const firstLi = root.querySelector<HTMLLIElement>(
-      `li[data-notify-toast][data-id="${first}"]`
-    )
-    const secondLi = root.querySelector<HTMLLIElement>(
-      `li[data-notify-toast][data-id="${second}"]`
-    )
+    const firstLi = root.querySelector<HTMLLIElement>(`li[data-notify-toast][data-id="${first}"]`)
+    const secondLi = root.querySelector<HTMLLIElement>(`li[data-notify-toast][data-id="${second}"]`)
 
     // Fix 2 (prepend): the newly added toast should be the front one.
     expect(secondLi?.getAttribute('data-front')).toBe('true')
@@ -483,7 +591,9 @@ describe('core/renderer', () => {
         // After ~80ms the auto-dismiss timer should have fired
         // (regardless of when the promise resolved) and the toast
         // should be in dismissedToasts.
-        const li = root.querySelector<HTMLLIElement>(`li[data-notify-toast][data-id="${String(id)}"]`)
+        const li = root.querySelector<HTMLLIElement>(
+          `li[data-notify-toast][data-id="${String(id)}"]`
+        )
         expect(li?.getAttribute('data-removed')).toBe('true')
         resolve()
       }, 150)
@@ -697,7 +807,11 @@ describe('core/renderer', () => {
     const id = ToastState.create({ message: 'press backspace' })
     const li = root.querySelector<HTMLLIElement>(`li[data-notify-toast][data-id="${id}"]`)
     li?.focus()
-    const event = new KeyboardEvent('keydown', { key: 'Backspace', bubbles: true, cancelable: true })
+    const event = new KeyboardEvent('keydown', {
+      key: 'Backspace',
+      bubbles: true,
+      cancelable: true
+    })
     const prevented = !document.dispatchEvent(event)
     expect(prevented).toBe(true)
   })
@@ -791,7 +905,11 @@ describe('core/renderer', () => {
     controller = mountToaster(root, { theme: 'system' }, ToastState)
     const toaster = root.querySelector('ol[data-notify-toaster]')
     expect(toaster?.getAttribute('data-notify-theme')).toBe('light')
-    Object.defineProperty(window, 'matchMedia', { configurable: true, writable: true, value: original })
+    Object.defineProperty(window, 'matchMedia', {
+      configurable: true,
+      writable: true,
+      value: original
+    })
   })
 
   it('theme: "system" resolves to "dark" when prefers-color-scheme is dark', () => {
@@ -813,7 +931,11 @@ describe('core/renderer', () => {
     controller = mountToaster(root, { theme: 'system' }, ToastState)
     const toaster = root.querySelector('ol[data-notify-toaster]')
     expect(toaster?.getAttribute('data-notify-theme')).toBe('dark')
-    Object.defineProperty(window, 'matchMedia', { configurable: true, writable: true, value: original })
+    Object.defineProperty(window, 'matchMedia', {
+      configurable: true,
+      writable: true,
+      value: original
+    })
   })
 
   it('destroy() restores focus to the element that was focused at mount', () => {
@@ -1007,7 +1129,9 @@ describe('core/renderer', () => {
     return new Promise<void>((resolve) => {
       setTimeout(() => {
         expect(toaster?.getAttribute('data-lifted')).toBe('false')
-        const remainingLi = root.querySelector<HTMLLIElement>(`li[data-notify-toast][data-id="${a}"]`)
+        const remainingLi = root.querySelector<HTMLLIElement>(
+          `li[data-notify-toast][data-id="${a}"]`
+        )
         expect(remainingLi?.getAttribute('data-expanded')).toBe('false')
         resolve()
       }, TIME_BEFORE_UNMOUNT + 50)

@@ -148,7 +148,10 @@ export function mountToaster(
   // refactor was resetting to the full duration on every
   // mouse-leave, which made toasts last longer than the user
   // expected).
-  const timers = new Map<ToastT['id'], { handle: ReturnType<typeof setTimeout>; remainingMs: number }>()
+  const timers = new Map<
+    ToastT['id'],
+    { handle: ReturnType<typeof setTimeout>; remainingMs: number }
+  >()
   const cleanups = new Map<ToastT['id'], Array<() => void>>()
   const heights = new Map<ToastT['id'], number>()
 
@@ -246,9 +249,15 @@ export function mountToaster(
     expanded = true
     renderAll()
   }
+  // The legacy React build only re-rendered on `mouseenter` / `mouseleave`,
+  // not on every `mousemove`. The previous vanilla refactor wired
+  // `mousemove` to call `renderAll()` too, which re-wrote `--offset` on
+  // every pointer wiggle and reset the running transition (the user
+  // reported it as "torpe, trabada"). Just flip `expanded` here — the
+  // next mouseenter-style change will re-render through the existing
+  // path.
   const onContainerMouseMove = (): void => {
     expanded = true
-    renderAll()
   }
   const onContainerMouseLeave = (): void => {
     if (!interacting) {
@@ -311,7 +320,11 @@ export function mountToaster(
   // follow the OS `prefers-color-scheme` media query. We add a
   // listener that re-renders on every change. Skipped silently on
   // runtimes without matchMedia (e.g. server-side, ancient browsers).
-  if (theme === 'system' && typeof window !== 'undefined' && typeof window.matchMedia === 'function') {
+  if (
+    theme === 'system' &&
+    typeof window !== 'undefined' &&
+    typeof window.matchMedia === 'function'
+  ) {
     try {
       const mq = window.matchMedia('(prefers-color-scheme: dark)')
       const onMqChange = (): void => {
@@ -346,7 +359,11 @@ export function mountToaster(
     // Escape: collapse the expanded stack when focus is inside the
     // toaster. We don't auto-dismiss; the user might just want to
     // collapse the stack and read with the screen reader.
-    if (event.key === 'Escape' && document.activeElement && container.contains(document.activeElement)) {
+    if (
+      event.key === 'Escape' &&
+      document.activeElement &&
+      container.contains(document.activeElement)
+    ) {
       if (expanded) {
         expanded = false
         renderAll()
@@ -405,7 +422,11 @@ export function mountToaster(
   // element so we can restore focus to it on destroy() (matches
   // legacy sonner behaviour — see Fix 18).
   let lastFocusedElementBeforeMount: HTMLElement | null = null
-  if (canUseDOM() && typeof document.activeElement === 'object' && document.activeElement !== null) {
+  if (
+    canUseDOM() &&
+    typeof document.activeElement === 'object' &&
+    document.activeElement !== null
+  ) {
     const active = document.activeElement as HTMLElement | null
     if (active && !container.contains(active)) {
       lastFocusedElementBeforeMount = active
@@ -478,6 +499,7 @@ export function mountToaster(
       'data-index': String(index),
       'data-front': String(isFront),
       'data-swiping': 'false',
+      'data-swipe-out': 'false',
       'data-dismissible': String(dismissible),
       // Resolve against the toaster-wide `currentInvert` so that
       // a toaster.update({ invert: ... }) actually changes the
@@ -647,9 +669,14 @@ export function mountToaster(
     }
     content.appendChild(title)
 
-    if (toast.description !== null && toast.description !== undefined && toast.description !== false) {
+    if (
+      toast.description !== null &&
+      toast.description !== undefined &&
+      toast.description !== false
+    ) {
       const descEl = createEl('div', { 'data-description': '' })
-      const descValue = typeof toast.description === 'function' ? toast.description() : toast.description
+      const descValue =
+        typeof toast.description === 'function' ? toast.description() : toast.description
       if (descValue !== null && descValue !== undefined && descValue !== false) {
         descEl.textContent = String(descValue)
       }
@@ -697,15 +724,18 @@ export function mountToaster(
 
   const dismissToast = (id: ToastT['id']): void => {
     pauseAutoDismiss(id)
-    const node = container.querySelector<HTMLLIElement>(`[data-notify-toast][data-id="${cssEscape(String(id))}"]`)
+    const node = container.querySelector<HTMLLIElement>(
+      `[data-notify-toast][data-id="${cssEscape(String(id))}"]`
+    )
     if (node) {
+      // Flip `data-removed` to start the CSS exit transition. The DOM
+      // removal itself is the subscriber's job — `dismissToast` used
+      // to schedule its own `setTimeout(node.remove, TIME_BEFORE_UNMOUNT)`
+      // here too, which double-removed the node when the subscriber
+      // also fired (every dismiss path goes through both). Now we let
+      // the subscriber own the entire cleanup so it's only ever
+      // scheduled once.
       setAttrs(node, { 'data-removed': 'true' })
-      window.setTimeout(() => {
-        node.remove()
-        heights.delete(id)
-        cleanups.get(id)?.forEach((fn) => fn())
-        cleanups.delete(id)
-      }, TIME_BEFORE_UNMOUNT)
     }
     state.dismiss(id)
   }
@@ -767,7 +797,8 @@ export function mountToaster(
     const onPointerMove = (event: PointerEvent): void => {
       if (!pointerStart || !dismissible || !swipeEnabled) return
       const isHighlighted =
-        typeof window.getSelection === 'function' && (window.getSelection()?.toString().length ?? 0) > 0
+        typeof window.getSelection === 'function' &&
+        (window.getSelection()?.toString().length ?? 0) > 0
       if (isHighlighted) return
 
       const xDelta = event.clientX - pointerStart.x
@@ -847,12 +878,14 @@ export function mountToaster(
         } catch {
           // ignore
         }
-        window.setTimeout(() => {
-          li.remove()
-          heights.delete(toast.id)
-          cleanups.get(toast.id)?.forEach((fn) => fn())
-          cleanups.delete(toast.id)
-        }, TIME_BEFORE_UNMOUNT)
+        // The DOM removal is handled by the dismiss subscriber
+        // (waits for the `swipe-out-*` keyframe + the
+        // transform/opacity transitions to finish, then removes
+        // the node). Previously this branch scheduled its own
+        // `setTimeout(node.remove, TIME_BEFORE_UNMOUNT)`, which
+        // duplicated the subscriber's removal and truncated the
+        // exit animation halfway through. Just publish the
+        // dismiss — the subscriber will do the rest.
         state.dismiss(toast.id)
       } else {
         li.style.setProperty('--swipe-amount-x', '0px')
@@ -959,7 +992,7 @@ export function mountToaster(
     // container; the vanilla renderer had only initialized it to `0px`
     // and never refreshed it. See Fix 3 in the bug report.
     const frontToast = toasts[0]
-    const frontHeight = frontToast ? heights.get(frontToast.id) ?? 0 : 0
+    const frontHeight = frontToast ? (heights.get(frontToast.id) ?? 0) : 0
     container.style.setProperty('--front-toast-height', `${frontHeight}px`)
 
     // Keep `data-lifted` in sync with the current `expanded` state.
@@ -973,7 +1006,9 @@ export function mountToaster(
 
     // Index toasts by id for lookup.
     const existing = new Map<string, HTMLLIElement>()
-    for (const child of Array.from(container.querySelectorAll<HTMLLIElement>('[data-notify-toast]'))) {
+    for (const child of Array.from(
+      container.querySelectorAll<HTMLLIElement>('[data-notify-toast]')
+    )) {
       const id = child.getAttribute('data-id')
       if (id) existing.set(id, child)
     }
@@ -1070,7 +1105,7 @@ export function mountToaster(
         // Update index/front/visible/expanded/height data-attributes.
         const isFront = index === 0
         const isVisible = index + 1 <= currentVisibleToasts
-        const offset = computeOffset(toasts, heights, index)
+        const offset = computeOffset(toasts, heights, index, gap)
         // Re-derive the position from the toaster's current
         // `currentPosition` (or the toast's per-toast override) so
         // that calling `toaster.update({ position: 'top-right' })`
@@ -1122,6 +1157,102 @@ export function mountToaster(
 
   // --- Subscriber wiring -----------------------------------------------
 
+  /**
+   * Schedule a single point of cleanup for a dismissed `<li>`: the
+   * CSS exit transition (transform + opacity, 400ms in the default
+   * stylesheet) needs to finish before we rip the node out of the
+   * DOM, otherwise the user sees the toast "teleport" off screen
+   * instead of sliding out. The previous vanilla build used a
+   * blanket `setTimeout(node.remove, TIME_BEFORE_UNMOUNT)` (200ms),
+   * which truncated every exit animation at the halfway mark. Now we
+   * wait for the actual `transitionend` event on the `transform`
+   * property (the longest of the two animated properties, 400ms) —
+   * with a generous timeout fallback in case the browser drops the
+   * event (e.g. reduced-motion, interrupted transition, tab
+   * backgrounded during the animation).
+   *
+   * `onRemove` is invoked at most once. Both the listener and the
+   * fallback are cleared after the first firing to avoid a stray
+   * late `transitionend` from re-running the cleanup.
+   *
+   * jsdom caveat: jsdom does not execute CSS transitions, so
+   * `transitionend` never fires and `getComputedStyle(node).transitionDuration`
+   * comes back as an empty string. We detect that case via the
+   * `transitionDuration` read — when it's empty or `0s` we treat it
+   * as "no transition" and fall back to `TIME_BEFORE_UNMOUNT`. That
+   * keeps the existing jsdom-based vitest suite running without
+   * changing what the tests assert, while real browsers (which do
+   * return a real duration) wait for the full transition.
+   */
+  const schedulePostExitRemoval = (node: HTMLLIElement, onRemove: () => void): void => {
+    let done = false
+    // `fallback` is declared up-front so `finish` can `clearTimeout`
+    // it from either branch (jsdom / reduced-motion vs real browser).
+    // Without this, the jsdom branch's `setTimeout(finish, ...)` would
+    // throw `ReferenceError: Cannot access 'fallback' before
+    // initialization` when `finish` ran because the `const fallback =
+    // ...` line in the real-browser branch hadn't executed yet
+    // (temporal dead zone).
+    let fallback: ReturnType<typeof setTimeout> | undefined
+    const finish = (): void => {
+      if (done) return
+      done = true
+      node.removeEventListener('transitionend', onTransitionEnd)
+      if (fallback !== undefined) clearTimeout(fallback)
+      onRemove()
+    }
+    const onTransitionEnd = (event: TransitionEvent): void => {
+      // The toast animates `transform` and `opacity` in parallel; the
+      // `transform` transition is the last one to finish (400ms vs
+      // 200ms for opacity's last leg, but both kick off at the same
+      // time, so we listen for either and just gate on transform to
+      // be safe). Only react to events fired by THIS node — a swipe
+      // or a parallel transition on a sibling shouldn't trip us.
+      if (event.target !== node) return
+      if (event.propertyName !== 'transform' && event.propertyName !== 'opacity') return
+      finish()
+    }
+    // Detect reduced motion and the "no transition" environment
+    // (jsdom / non-CSS engine). The reduced-motion media query tells
+    // us the user asked for no animation; a missing/zero
+    // `transitionDuration` tells us the runtime can't run one.
+    const isReducedMotion =
+      typeof window !== 'undefined' &&
+      typeof window.matchMedia === 'function' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const transitionDuration =
+      typeof window !== 'undefined' && typeof window.getComputedStyle === 'function'
+        ? window.getComputedStyle(node).transitionDuration
+        : ''
+    // Parse the longest transition duration out of the comma list.
+    // `getComputedStyle(...).transitionDuration` is e.g. "0.4s, 0.4s,
+    // 0.4s, 0.2s". In jsdom it's "".
+    const longestMs = transitionDuration
+      .split(',')
+      .map((s) => s.trim())
+      .reduce((max, part) => {
+        const match = part.match(/^([\d.]+)(ms|s)$/)
+        if (!match) return max
+        const n = Number(match[1])
+        const ms = match[2] === 's' ? n * 1000 : n
+        return Math.max(max, ms)
+      }, 0)
+    // No real transition to wait for (jsdom, reduced-motion, or the
+    // stylesheet didn't apply). Use the legacy `TIME_BEFORE_UNMOUNT`
+    // so the existing jsdom tests keep working AND users with
+    // reduced-motion don't see a frozen-frame before the node
+    // disappears.
+    if (isReducedMotion || longestMs === 0) {
+      fallback = setTimeout(finish, TIME_BEFORE_UNMOUNT)
+      return
+    }
+    // Real browser with a real transition. Wait for `transitionend`
+    // with a 100ms-larger-than-longest fallback (covers the worst
+    // case where the browser drops the event).
+    fallback = setTimeout(finish, longestMs + 100)
+    node.addEventListener('transitionend', onTransitionEnd)
+  }
+
   const unsubscribe = state.subscribe((event) => {
     if ('dismiss' in event && event.dismiss) {
       // Clear the auto-dismiss timer up-front so a second dismiss
@@ -1140,25 +1271,28 @@ export function mountToaster(
       // callback exactly once. The legacy React build did the same
       // via the `useEffect(..., [toast.delete])` hook. See Fix 8 in
       // the bug report. We look up the toast before scheduling the
-      // DOM removal because the removal timer fires after
-      // TIME_BEFORE_UNMOUNT and the toast may already be evicted
-      // from the active set by then.
+      // DOM removal because the removal timer fires after the exit
+      // transition ends and the toast may already be evicted from
+      // the active set by then.
       const dismissed = state.toasts.find((toast) => toast.id === event.id)
       dismissed?.onDismiss?.(dismissed)
 
       // Mark the matching <li> as removed immediately so the CSS exit
-      // animation runs; schedule the actual DOM removal on a microtask
-      // so subscribers downstream see the data-removed transition.
+      // animation runs; the DOM removal is scheduled for AFTER the
+      // transition ends (see `schedulePostExitRemoval` above). All
+      // dismiss sources (close button, auto-dismiss, swipe-out,
+      // external `toast.dismiss(id)`) funnel through this subscriber
+      // so we never schedule two removals for the same id. The
+      // legacy `dismissToast()` and the swipe-out handler used to
+      // each call `setTimeout(node.remove, TIME_BEFORE_UNMOUNT)` —
+      // those branches were removed; the cleanup happens here, and
+      // only here.
       const node = container.querySelector<HTMLLIElement>(
         `[data-notify-toast][data-id="${cssEscape(String(event.id))}"]`
       )
       if (node) {
         setAttrs(node, { 'data-removed': 'true' })
-        const cleanupsForToast = cleanups.get(event.id)
-        if (cleanupsForToast) {
-          // Don't fire cleanup yet — wait for the animation to finish.
-        }
-        window.setTimeout(() => {
+        schedulePostExitRemoval(node, () => {
           node.remove()
           heights.delete(event.id)
           cleanups.get(event.id)?.forEach((fn) => fn())
@@ -1168,7 +1302,7 @@ export function mountToaster(
           // attributes. Without this they stay stuck with the indices
           // they had before the dismiss (Fix 4 in the bug report).
           renderAll()
-        }, TIME_BEFORE_UNMOUNT)
+        })
       } else {
         // No matching DOM node — just ensure renderAll doesn't recreate it.
         window.setTimeout(renderAll, 0)
@@ -1305,14 +1439,24 @@ const applyContainerStyles = (
 const computeOffset = (
   toasts: ToastT[],
   heights: Map<ToastT['id'], number>,
-  index: number
+  index: number,
+  gap: number
 ): number => {
   let offset = 0
   for (let i = 0; i < index; i += 1) {
     const h = heights.get(toasts[i]?.id ?? -1) ?? 0
     offset += h
   }
-  return offset
+  // Add `index * gap` so the expanded stack actually has visible space
+  // between each toast. The legacy React build did this on every render
+  // (`offset.current = heightIndex * gap + toastsHeightBefore`); the
+  // previous vanilla refactor dropped the `* gap` term, so the
+  // expanded stack collapsed to its real height (toasts sitting
+  // directly on top of each other with no breathing room). The visual
+  // gap also matches the `:after` pseudo-element on each expanded
+  // toast (`height: calc(var(--gap) + 1px)`), which exists to extend
+  // the hover hit area between toasts.
+  return offset + index * gap
 }
 
 /**
