@@ -32,6 +32,7 @@ coverage/
 .DS_Store
 Thumbs.db
 
-# Local files
-.local/
+# AI agent instructions (versionados en git, NO en el tarball npm)
 AGENTS.md
+# .local/ deprecado — mantenido aquí como referencia por si reaparece
+.local/
