@@ -93,8 +93,8 @@ If you do not have a bundler, drop a single `<script>` (and the stylesheet) and 
 ```html title="index.html"
 <button id="save">Save</button>
 
-<link rel="stylesheet" href="https://unpkg.com/@samline/notify@3.0.1/dist/styles.css" />
-<script src="https://unpkg.com/@samline/notify@3.0.1/dist/browser/global.global.js" defer></script>
+<link rel="stylesheet" href="https://unpkg.com/@samline/notify@3.1.0/dist/styles.css" />
+<script src="https://unpkg.com/@samline/notify@3.1.0/dist/browser/global.global.js" defer></script>
 <script>
   document.querySelector('#save').addEventListener('click', () => {
     window.Notify.toast.success('Saved')
@@ -103,7 +103,7 @@ If you do not have a bundler, drop a single `<script>` (and the stylesheet) and 
 ```
 
 :::caution[Pin the version in production]
-The CDN URL above uses `@3.0.1`. Replace the version with the one you ship.
+The CDN URL above uses `@3.1.0`. Replace the version with the one you ship.
 :::
 
 The IIFE auto-mounts a default toaster on load (when a DOM is available), so the first `Notify.toast(...)` call already has somewhere to render. If you want a custom position / theme / colors, call `window.Notify.configureToaster(options)` first.
