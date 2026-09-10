@@ -23,8 +23,8 @@ import '@samline/notify/styles.css'
 createToaster({ position: 'bottom-right' })
 
 const controller = getToaster()
-controller?.element  // <ol data-notify-toaster ...>
-controller?.options  // { position: 'bottom-right', ... }
+controller?.element // <ol data-notify-toaster ...>
+controller?.options // { position: 'bottom-right', ... }
 ```
 
 ### Guard before calling

@@ -42,15 +42,18 @@ The AI must treat them as operational context of the project.
 ## Minimum Cases
 
 ### General task
+
 1. Query the graph with `codebase-memory-mcp`.
 2. Read `.agents/agent-index.md`.
 3. If applicable, review `.agents/todo.md` and `.agents/lessons.md`.
 
 ### New package or new scaffold
+
 1. Query the graph with `codebase-memory-mcp`.
 2. Read `.agents/agent-index.md`, `.agents/package-replication-guide.md`, `.agents/new-project.md`, `.agents/todo.md` and `.agents/lessons.md`.
 
 ### Release, deploy, or publish
+
 1. Query the graph with `codebase-memory-mcp`.
 2. Read `.agents/agent-index.md`, `.agents/deploy-and-release-guide.md`, `.agents/todo.md` and `.agents/lessons.md`.
 

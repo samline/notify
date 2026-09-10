@@ -10,9 +10,9 @@ function createToaster(options?: ToasterOptions): ToasterController
 
 ## Parameters
 
-| Name | Type | Required | Description |
-| --- | --- | --- | --- |
-| `options` | [`ToasterOptions`](../options.md#toasteroptions) | no | The toaster configuration. Every field has a default. |
+| Name      | Type                                             | Required | Description                                           |
+| --------- | ------------------------------------------------ | -------- | ----------------------------------------------------- |
+| `options` | [`ToasterOptions`](../options.md#toasteroptions) | no       | The toaster configuration. Every field has a default. |
 
 ## Returns
 
@@ -87,8 +87,8 @@ import { createToaster, getToaster } from '@samline/notify'
 createToaster({ position: 'bottom-right' })
 
 const controller = getToaster()
-controller?.element  // <ol data-notify-toaster data-x-position="right" data-y-position="bottom" ...>
-controller?.options  // { position: 'bottom-right', ... }
+controller?.element // <ol data-notify-toaster data-x-position="right" data-y-position="bottom" ...>
+controller?.options // { position: 'bottom-right', ... }
 ```
 
 ## Edge cases

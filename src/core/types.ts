@@ -4,14 +4,7 @@
 export type ToastId = number | string
 
 export type ToastType =
-  | 'normal'
-  | 'action'
-  | 'success'
-  | 'info'
-  | 'warning'
-  | 'error'
-  | 'loading'
-  | 'default'
+  'normal' | 'action' | 'success' | 'info' | 'warning' | 'error' | 'loading' | 'default'
 
 /**
  * Anything that can be safely rendered as text inside a toast.
@@ -86,12 +79,7 @@ export interface ToastOptions {
 }
 
 export type Position =
-  | 'top-left'
-  | 'top-right'
-  | 'bottom-left'
-  | 'bottom-right'
-  | 'top-center'
-  | 'bottom-center'
+  'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'top-center' | 'bottom-center'
 
 export type Theme = 'light' | 'dark' | 'system'
 export type Direction = 'rtl' | 'ltr' | 'auto'

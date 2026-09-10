@@ -30,33 +30,33 @@ If you have not read the rest of the docs, start with [Getting started](getting-
 
 ## When to use each entrypoint
 
-| Situation | Use |
-| --- | --- |
-| Modern app with a bundler (Vite, esbuild, Rollup, Webpack, Bun) | `@samline/notify` |
-| Plain HTML page, WordPress, Shopify, classic templates | `@samline/notify/browser` |
-| Type-checking the toaster controller from a CDN script | declare `window.Notify` against `NotifyApi` from `@samline/notify` |
-| You want the IIFE surface from a bundler (no `globalThis` side-effect) | `import { browser } from '@samline/notify'` |
-| You need multiple toasters in the same page | `import { mountToaster } from '@samline/notify'` |
+| Situation                                                              | Use                                                                |
+| ---------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| Modern app with a bundler (Vite, esbuild, Rollup, Webpack, Bun)        | `@samline/notify`                                                  |
+| Plain HTML page, WordPress, Shopify, classic templates                 | `@samline/notify/browser`                                          |
+| Type-checking the toaster controller from a CDN script                 | declare `window.Notify` against `NotifyApi` from `@samline/notify` |
+| You want the IIFE surface from a bundler (no `globalThis` side-effect) | `import { browser } from '@samline/notify'`                        |
+| You need multiple toasters in the same page                            | `import { mountToaster } from '@samline/notify'`                   |
 
 ---
 
 ## File-by-file map
 
-| File | What is in it |
-| --- | --- |
-| [getting-started.md](getting-started.md) | Concepts, observable contract, lifecycle, registry helpers, side-effect table. |
-| [options.md](options.md) | Every `ToasterOptions` and `ToastOptions` field, with defaults and rationale. |
-| [css-styling.md](css-styling.md) | The data-attribute contract the stylesheet expects; theming with CSS variables. |
-| [typescript.md](typescript.md) | Every exported type, callback signature, and helper return shape. |
-| [api/index.md](api/index.md) | Overview of the public API. |
-| [api/toast.md](api/toast.md) | The `toast` factory and every variant. |
-| [api/create-toaster.md](api/create-toaster.md) | The toaster mount / idempotent update entry. |
-| [api/destroy-toaster.md](api/destroy-toaster.md) | The toaster unmount entry. |
-| [api/get-toaster.md](api/get-toaster.md) | The toaster inspector entry. |
-| [api/configure-toaster.md](api/configure-toaster.md) | The `createToaster` alias, kept for intent. |
-| [api/reset-toasts.md](api/reset-toasts.md) | Drop every toast and rewind the internal counter. |
-| [recipes.md](recipes.md) | `toast.promise` with `fetch`, autoload, multi-toaster, theming, custom content. |
-| [browser.md](browser.md) | Using `window.Notify` from a plain `<script>` tag. |
+| File                                                 | What is in it                                                                   |
+| ---------------------------------------------------- | ------------------------------------------------------------------------------- |
+| [getting-started.md](getting-started.md)             | Concepts, observable contract, lifecycle, registry helpers, side-effect table.  |
+| [options.md](options.md)                             | Every `ToasterOptions` and `ToastOptions` field, with defaults and rationale.   |
+| [css-styling.md](css-styling.md)                     | The data-attribute contract the stylesheet expects; theming with CSS variables. |
+| [typescript.md](typescript.md)                       | Every exported type, callback signature, and helper return shape.               |
+| [api/index.md](api/index.md)                         | Overview of the public API.                                                     |
+| [api/toast.md](api/toast.md)                         | The `toast` factory and every variant.                                          |
+| [api/create-toaster.md](api/create-toaster.md)       | The toaster mount / idempotent update entry.                                    |
+| [api/destroy-toaster.md](api/destroy-toaster.md)     | The toaster unmount entry.                                                      |
+| [api/get-toaster.md](api/get-toaster.md)             | The toaster inspector entry.                                                    |
+| [api/configure-toaster.md](api/configure-toaster.md) | The `createToaster` alias, kept for intent.                                     |
+| [api/reset-toasts.md](api/reset-toasts.md)           | Drop every toast and rewind the internal counter.                               |
+| [recipes.md](recipes.md)                             | `toast.promise` with `fetch`, autoload, multi-toaster, theming, custom content. |
+| [browser.md](browser.md)                             | Using `window.Notify` from a plain `<script>` tag.                              |
 
 ---
 

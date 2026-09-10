@@ -15,7 +15,7 @@ hero:
       variant: minimal
 ---
 
-import { Card, CardGrid } from '@astrojs/starlight/components';
+import { Card, CardGrid } from '@astrojs/starlight/components'
 
 `@samline/notify` exposes a `toast` factory plus a small toaster-controller surface, renders DOM directly with a vanilla renderer, ships a typed IIFE bundle for `<script>` tags, and keeps every transition and animation in CSS. It is the only runtime entrypoint since v3.0.0 — no React, Vue, or Svelte wrapper, no virtual DOM, just one factory and a focused method surface. (Patch and minor releases like v3.1.0 are API-compatible.)
 
@@ -34,42 +34,43 @@ import { Card, CardGrid } from '@astrojs/starlight/components';
 	<Card title="Getting started" icon="pencil-line">
 		Install the package, mount a toaster, and show your first toast in under five minutes.
 
-		[Install @samline/notify →](/notify/getting-started)
-	</Card>
+    	[Install @samline/notify →](/notify/getting-started)
+    </Card>
 
-	<Card title="Configuration" icon="setting">
-		Every `ToasterOptions` and `ToastOptions` field with defaults and rationale.
+    <Card title="Configuration" icon="setting">
+    	Every `ToasterOptions` and `ToastOptions` field with defaults and rationale.
 
-		[Configuration reference →](/notify/reference/configuration/)
-	</Card>
+    	[Configuration reference →](/notify/reference/configuration/)
+    </Card>
 
-	<Card title="API reference" icon="open-book">
-		Every public method (`toast`, `createToaster`, `destroyToaster`, `getToaster`, `configureToaster`, `resetToasts`) documented with signatures and runnable examples.
+    <Card title="API reference" icon="open-book">
+    	Every public method (`toast`, `createToaster`, `destroyToaster`, `getToaster`, `configureToaster`, `resetToasts`) documented with signatures and runnable examples.
 
-		[Browse the API →](/notify/reference/api/)
-	</Card>
+    	[Browse the API →](/notify/reference/api/)
+    </Card>
 
-	<Card title="TypeScript" icon="seti:typescript">
-		Every exported type — `ToastT`, `ToasterController`, `ToastOptions`, `ToasterOptions`, `PromiseData`, and the rest.
+    <Card title="TypeScript" icon="seti:typescript">
+    	Every exported type — `ToastT`, `ToasterController`, `ToastOptions`, `ToasterOptions`, `PromiseData`, and the rest.
 
-		[TypeScript reference →](/notify/reference/typescript/)
-	</Card>
+    	[TypeScript reference →](/notify/reference/typescript/)
+    </Card>
 
-	<Card title="Browser global" icon="seti:html">
-		Use the pre-bundled `window.Notify` global when you don't have a bundler — perfect for Shopify, WordPress, or classic templates.
+    <Card title="Browser global" icon="seti:html">
+    	Use the pre-bundled `window.Notify` global when you don't have a bundler — perfect for Shopify, WordPress, or classic templates.
 
-		[window.Notify reference →](/notify/reference/browser/)
-	</Card>
+    	[window.Notify reference →](/notify/reference/browser/)
+    </Card>
 
-	<Card title="CSS styling" icon="seti:css">
-		The data-attribute contract the stylesheet expects, and how to theme it with CSS variables.
+    <Card title="CSS styling" icon="seti:css">
+    	The data-attribute contract the stylesheet expects, and how to theme it with CSS variables.
 
-		[CSS styling reference →](/notify/reference/css-styling/)
-	</Card>
+    	[CSS styling reference →](/notify/reference/css-styling/)
+    </Card>
 
-	<Card title="Recipes" icon="puzzle">
-		End-to-end patterns: `toast.promise` with `fetch`, undo/cancel buttons, custom content, multi-toaster, live theme changes.
+    <Card title="Recipes" icon="puzzle">
+    	End-to-end patterns: `toast.promise` with `fetch`, undo/cancel buttons, custom content, multi-toaster, live theme changes.
 
-		[Browse examples →](/notify/reference/examples/)
-	</Card>
+    	[Browse examples →](/notify/reference/examples/)
+    </Card>
+
 </CardGrid>

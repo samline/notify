@@ -10,10 +10,10 @@ function toast(message: Renderable, options?: ToastOptions): ToastId
 
 ## Parameters
 
-| Name | Type | Required | Description |
-| --- | --- | --- | --- |
-| `message` | [`Renderable`](../typescript.md#renderable) | yes | The title text. Strings and numbers render as `textContent`; `null` / `undefined` / `false` render as nothing. |
-| `options` | [`ToastOptions`](../options.md#toastoptions) | no | Per-toast options — `id`, `description`, `type`, `duration`, `action`, `cancel`, etc. |
+| Name      | Type                                         | Required | Description                                                                                                    |
+| --------- | -------------------------------------------- | -------- | -------------------------------------------------------------------------------------------------------------- |
+| `message` | [`Renderable`](../typescript.md#renderable)  | yes      | The title text. Strings and numbers render as `textContent`; `null` / `undefined` / `false` render as nothing. |
+| `options` | [`ToastOptions`](../options.md#toastoptions) | no       | Per-toast options — `id`, `description`, `type`, `duration`, `action`, `cancel`, etc.                          |
 
 ## Returns
 
@@ -80,15 +80,15 @@ toast.message(message, options?)  // alias of the callable form
 
 The only difference between the variants is the `type` they set:
 
-| Variant | Forced `type` | Auto-dismiss |
-| --- | --- | --- |
-| `toast.success` | `'success'` | yes |
-| `toast.error` | `'error'` | yes |
-| `toast.info` | `'info'` | yes |
-| `toast.warning` | `'warning'` | yes |
-| `toast.loading` | `'loading'` | **no** — resolved manually with `toast.success({ id })` / `toast.error({ id })` |
-| `toast.message` | `'normal'` | yes |
-| `toast(...)` | `'normal'` | yes |
+| Variant         | Forced `type` | Auto-dismiss                                                                    |
+| --------------- | ------------- | ------------------------------------------------------------------------------- |
+| `toast.success` | `'success'`   | yes                                                                             |
+| `toast.error`   | `'error'`     | yes                                                                             |
+| `toast.info`    | `'info'`      | yes                                                                             |
+| `toast.warning` | `'warning'`   | yes                                                                             |
+| `toast.loading` | `'loading'`   | **no** — resolved manually with `toast.success({ id })` / `toast.error({ id })` |
+| `toast.message` | `'normal'`    | yes                                                                             |
+| `toast(...)`    | `'normal'`    | yes                                                                             |
 
 You can still pass `duration: Infinity` on a non-loading variant to suppress the auto-dismiss.
 
@@ -242,10 +242,11 @@ toast.promise(saveProfile(patch), {
 ### Deferred work
 
 ```ts
-toast.promise(
-  () => fetch('/api/profile').then(r => r.json()),
-  { loading: 'Loading…', success: (p) => p.name, error: 'Failed' }
-)
+toast.promise(() => fetch('/api/profile').then((r) => r.json()), {
+  loading: 'Loading…',
+  success: (p) => p.name,
+  error: 'Failed'
+})
 ```
 
 The thunk form runs after the loading toast is on screen. Use it when the work should be deferred (e.g. behind a debounce or a click).
@@ -256,7 +257,7 @@ Drop the `loading` key to only render the settled toast:
 
 ```ts
 toast.promise(
-  fetch('/api/profile').then(r => r.json()),
+  fetch('/api/profile').then((r) => r.json()),
   { success: (p) => `Loaded ${p.name}`, error: 'Failed' }
 )
 ```
@@ -330,7 +331,7 @@ A fresh array of [`ToastT`](../typescript.md#toastt). Safe to mutate. This is wh
 const active = toast.getToasts()
 
 if (active.length >= 3) {
-  toast.dismiss(active[0].id)  // Drop the oldest to make room.
+  toast.dismiss(active[0].id) // Drop the oldest to make room.
 }
 ```
 

@@ -161,19 +161,22 @@ class Observer {
   promise = <ToastData>(
     promise: PromiseInput<ToastData>,
     data?: PromiseData<ToastData>
-  ): { id: ToastId; unwrap: () => Promise<ToastData> } | { id?: undefined; unwrap: () => Promise<ToastData> } => {
+  ):
+    | { id: ToastId; unwrap: () => Promise<ToastData> }
+    | { id?: undefined; unwrap: () => Promise<ToastData> } => {
     if (!data) {
       // Nothing to render, but still return a passthrough unwrap.
       return {
         unwrap: () =>
-          Promise.resolve(typeof promise === 'function' ? (promise as () => Promise<ToastData>)() : promise)
+          Promise.resolve(
+            typeof promise === 'function' ? (promise as () => Promise<ToastData>)() : promise
+          )
       }
     }
 
     let id: ToastId | undefined
     if (data.loading !== undefined) {
-      const description =
-        typeof data.description === 'function' ? undefined : data.description
+      const description = typeof data.description === 'function' ? undefined : data.description
       const { description: _droppedDesc, ...rest } = data
       void _droppedDesc
       const loadingPayload: ToastInput = {
@@ -205,7 +208,9 @@ class Observer {
       if (value === undefined) return
       const errorInfo = state.result?.[1]
       const resolvedValue =
-        typeof value === 'function' ? await (value as (data: unknown) => unknown)(errorInfo ?? null) : value
+        typeof value === 'function'
+          ? await (value as (data: unknown) => unknown)(errorInfo ?? null)
+          : value
 
       // Fix 17: the `PromiseData.description` field accepts a function
       // form (`(data) => Renderable`) but the vanilla renderer never
@@ -298,7 +303,8 @@ class Observer {
     return id
   }
 
-  getActiveToasts = (): ToastT[] => this.toasts.filter((toast) => !this.dismissedToasts.has(toast.id))
+  getActiveToasts = (): ToastT[] =>
+    this.toasts.filter((toast) => !this.dismissedToasts.has(toast.id))
 
   getHistory = (): ToastT[] => this.toasts
 

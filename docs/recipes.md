@@ -150,7 +150,7 @@ The runtime applies the mobile offset under `@media (hover: none) and (pointer: 
 ```ts
 createToaster({
   offset: { top: 24, right: 24, bottom: 24, left: 24 },
-  mobileOffset: { bottom: 80 }  // account for an iOS bottom bar
+  mobileOffset: { bottom: 80 } // account for an iOS bottom bar
 })
 ```
 

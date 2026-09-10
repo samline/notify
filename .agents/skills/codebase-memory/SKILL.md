@@ -3,8 +3,8 @@ name: codebase-memory
 description: Use the `codebase-memory-mcp` knowledge graph as the primary source of truth for any query about repository structure, routing, components, function calls, implementation tracking, or general codebase architecture. Load this skill BEFORE answering questions about the codebase — never reach for raw file reads or grep before consulting the graph.
 license: MIT
 metadata:
-  version: "1.2"
-  verified_against_mcp_toolset: "2026-06-30"
+  version: '1.2'
+  verified_against_mcp_toolset: '2026-06-30'
   verified_tools:
     - delete_project
     - detect_changes
@@ -42,22 +42,22 @@ You are connected to a persistent knowledge graph via `codebase-memory-mcp`.
 
 ## Available tools
 
-| Tool | Purpose |
-|------|---------|
-| `mcp_codebase-memo_search_graph` | BM25 / pattern / semantic search for functions, classes, routes, variables |
-| `mcp_codebase-memo_search_code` | Graph-augmented lexical search over source files |
-| `mcp_codebase-memo_get_code_snippet` | Read source for a specific symbol |
-| `mcp_codebase-memo_trace_path` | Trace callers / callees / data flow / cross-service paths |
-| `mcp_codebase-memo_query_graph` | Arbitrary Cypher queries for multi-hop patterns and aggregations |
-| `mcp_codebase-memo_get_architecture` | High-level architecture overview (packages, services, clusters) |
-| `mcp_codebase-memo_get_graph_schema` | Node labels and edge types in the graph |
-| `mcp_codebase-memo_index_repository` | Index a repo into the graph (only when missing or stale) |
-| `mcp_codebase-memo_index_status` | Check if a project is indexed |
-| `mcp_codebase-memo_list_projects` | List indexed projects |
-| `mcp_codebase-memo_detect_changes` | Detect code changes and their impact |
-| `mcp_codebase-memo_delete_project` | Remove a project from the index |
-| `mcp_codebase-memo_ingest_traces` | Enrich the graph with runtime traces |
-| `mcp_codebase-memo_manage_adr` | Manage Architecture Decision Records |
+| Tool                                 | Purpose                                                                    |
+| ------------------------------------ | -------------------------------------------------------------------------- |
+| `mcp_codebase-memo_search_graph`     | BM25 / pattern / semantic search for functions, classes, routes, variables |
+| `mcp_codebase-memo_search_code`      | Graph-augmented lexical search over source files                           |
+| `mcp_codebase-memo_get_code_snippet` | Read source for a specific symbol                                          |
+| `mcp_codebase-memo_trace_path`       | Trace callers / callees / data flow / cross-service paths                  |
+| `mcp_codebase-memo_query_graph`      | Arbitrary Cypher queries for multi-hop patterns and aggregations           |
+| `mcp_codebase-memo_get_architecture` | High-level architecture overview (packages, services, clusters)            |
+| `mcp_codebase-memo_get_graph_schema` | Node labels and edge types in the graph                                    |
+| `mcp_codebase-memo_index_repository` | Index a repo into the graph (only when missing or stale)                   |
+| `mcp_codebase-memo_index_status`     | Check if a project is indexed                                              |
+| `mcp_codebase-memo_list_projects`    | List indexed projects                                                      |
+| `mcp_codebase-memo_detect_changes`   | Detect code changes and their impact                                       |
+| `mcp_codebase-memo_delete_project`   | Remove a project from the index                                            |
+| `mcp_codebase-memo_ingest_traces`    | Enrich the graph with runtime traces                                       |
+| `mcp_codebase-memo_manage_adr`       | Manage Architecture Decision Records                                       |
 
 ## Decision flow
 

@@ -71,11 +71,11 @@ If you want a custom toaster configuration (position, theme, rich colors), call 
 
 ## Entrypoints
 
-| Entrypoint | When to use |
-| --- | --- |
-| `@samline/notify` | Main vanilla API for bundlers, ESM, or CJS consumers. |
-| `@samline/notify/browser` | Pre-bundled IIFE that registers `window.Notify` for direct `<script>` usage. |
-| `@samline/notify/styles.css` | The stylesheet the renderer expects. Import it once at app entry. |
+| Entrypoint                   | When to use                                                                  |
+| ---------------------------- | ---------------------------------------------------------------------------- |
+| `@samline/notify`            | Main vanilla API for bundlers, ESM, or CJS consumers.                        |
+| `@samline/notify/browser`    | Pre-bundled IIFE that registers `window.Notify` for direct `<script>` usage. |
+| `@samline/notify/styles.css` | The stylesheet the renderer expects. Import it once at app entry.            |
 
 The vanilla entrypoint also exports `browser`, the same `{ toast, Toaster, createToaster, configureToaster, getToaster, destroyToaster }` surface as the IIFE but as a module-level singleton (no `globalThis` side-effect). Use it from a bundler when you want the IIFE ergonomics without installing a global — see [docs/browser.md → Using the same shape from a bundler](docs/browser.md#using-the-same-shape-from-a-bundler).
 
@@ -127,14 +127,14 @@ What this does:
 
 The runtime is built around one factory (`toast`) plus a small toaster controller surface. Most controllers are chainable; the `toast` factory is the only function-like call.
 
-| Group | Methods |
-| --- | --- |
-| Toast factory | [`toast`](docs/api/toast.md) · [`toast.success`](docs/api/toast.md#toastvariants) · [`toast.error`](docs/api/toast.md#toastvariants) · [`toast.info`](docs/api/toast.md#toastvariants) · [`toast.warning`](docs/api/toast.md#toastvariants) · [`toast.loading`](docs/api/toast.md#toastvariants) · [`toast.message`](docs/api/toast.md#toastvariants) · [`toast.custom`](docs/api/toast.md#toastcustom) · [`toast.promise`](docs/api/toast.md#toastpromise) · [`toast.dismiss`](docs/api/toast.md#toastdismiss) · [`toast.getHistory`](docs/api/toast.md#toastgethistory) · [`toast.getToasts`](docs/api/toast.md#toastgettoasts) |
-| Toaster lifecycle | [`createToaster`](docs/api/create-toaster.md) · [`destroyToaster`](docs/api/destroy-toaster.md) · [`getToaster`](docs/api/get-toaster.md) · [`configureToaster`](docs/api/configure-toaster.md) · [`resetToasts`](docs/api/reset-toasts.md) |
-| Toaster controller | `update(options?)` · `destroy()` · `element` · `options` |
-| Registry (vanilla) | [`browser`](docs/getting-started.md#browser-registry-helpers) — bundler-friendly `{ toast, Toaster, createToaster, configureToaster, getToaster, destroyToaster }` singleton. |
-| Pure helpers | `mountToaster(root, options?)` — direct escape hatch when you need multiple toasters or a custom mount point. |
-| Numeric constants | `VISIBLE_TOASTS_AMOUNT` · `VIEWPORT_OFFSET` · `MOBILE_VIEWPORT_OFFSET` · `TOAST_LIFETIME` · `TOAST_WIDTH` · `GAP` · `SWIPE_THRESHOLD` · `TIME_BEFORE_UNMOUNT` |
+| Group              | Methods                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Toast factory      | [`toast`](docs/api/toast.md) · [`toast.success`](docs/api/toast.md#toastvariants) · [`toast.error`](docs/api/toast.md#toastvariants) · [`toast.info`](docs/api/toast.md#toastvariants) · [`toast.warning`](docs/api/toast.md#toastvariants) · [`toast.loading`](docs/api/toast.md#toastvariants) · [`toast.message`](docs/api/toast.md#toastvariants) · [`toast.custom`](docs/api/toast.md#toastcustom) · [`toast.promise`](docs/api/toast.md#toastpromise) · [`toast.dismiss`](docs/api/toast.md#toastdismiss) · [`toast.getHistory`](docs/api/toast.md#toastgethistory) · [`toast.getToasts`](docs/api/toast.md#toastgettoasts) |
+| Toaster lifecycle  | [`createToaster`](docs/api/create-toaster.md) · [`destroyToaster`](docs/api/destroy-toaster.md) · [`getToaster`](docs/api/get-toaster.md) · [`configureToaster`](docs/api/configure-toaster.md) · [`resetToasts`](docs/api/reset-toasts.md)                                                                                                                                                                                                                                                                                                                                                                                       |
+| Toaster controller | `update(options?)` · `destroy()` · `element` · `options`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| Registry (vanilla) | [`browser`](docs/getting-started.md#browser-registry-helpers) — bundler-friendly `{ toast, Toaster, createToaster, configureToaster, getToaster, destroyToaster }` singleton.                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| Pure helpers       | `mountToaster(root, options?)` — direct escape hatch when you need multiple toasters or a custom mount point.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| Numeric constants  | `VISIBLE_TOASTS_AMOUNT` · `VIEWPORT_OFFSET` · `MOBILE_VIEWPORT_OFFSET` · `TOAST_LIFETIME` · `TOAST_WIDTH` · `GAP` · `SWIPE_THRESHOLD` · `TIME_BEFORE_UNMOUNT`                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
 
 See the full per-method reference in [`docs/api/`](docs/api/index.md).
 
@@ -144,15 +144,15 @@ See the full per-method reference in [`docs/api/`](docs/api/index.md).
 
 Full API reference, guides, and examples are available at **[samline.github.io/notify](https://samline.github.io/notify)**.
 
-| Doc | Purpose |
-| --- | --- |
-| [docs/getting-started.md](docs/getting-started.md) | Concepts, observable contract, lifecycle, and side-effect overview. |
-| [docs/options.md](docs/options.md) | Full `ToasterOptions` and `ToastOptions` reference. |
-| [docs/css-styling.md](docs/css-styling.md) | The data-attribute contract the stylesheet expects. |
-| [docs/typescript.md](docs/typescript.md) | Every exported TypeScript type, with examples. |
-| [docs/api/index.md](docs/api/index.md) | One page per public method. |
-| [docs/recipes.md](docs/recipes.md) | End-to-end patterns: `toast.promise` with `fetch`, autoload, theming, etc. |
-| [docs/browser.md](docs/browser.md) | Browser global (`window.Notify`) usage. |
+| Doc                                                | Purpose                                                                    |
+| -------------------------------------------------- | -------------------------------------------------------------------------- |
+| [docs/getting-started.md](docs/getting-started.md) | Concepts, observable contract, lifecycle, and side-effect overview.        |
+| [docs/options.md](docs/options.md)                 | Full `ToasterOptions` and `ToastOptions` reference.                        |
+| [docs/css-styling.md](docs/css-styling.md)         | The data-attribute contract the stylesheet expects.                        |
+| [docs/typescript.md](docs/typescript.md)           | Every exported TypeScript type, with examples.                             |
+| [docs/api/index.md](docs/api/index.md)             | One page per public method.                                                |
+| [docs/recipes.md](docs/recipes.md)                 | End-to-end patterns: `toast.promise` with `fetch`, autoload, theming, etc. |
+| [docs/browser.md](docs/browser.md)                 | Browser global (`window.Notify`) usage.                                    |
 
 ---
 

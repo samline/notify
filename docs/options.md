@@ -52,30 +52,29 @@ interface ToasterOptions {
 
 ### Field reference
 
-| Field | Type | Default | Description |
-| --- | --- | --- | --- |
-| `id` | `string` | `undefined` | Optional toaster id. Used to filter which toasts a given toaster renders — pass `toasterId` on a [`ToastOptions`](api/toast.md) to target a specific toaster. |
-| `theme` | `'light' \| 'dark' \| 'system'` | `'light'` | Theme the stylesheet should use. `'system'` follows `prefers-color-scheme` via the CSS media query. |
-| `position` | [`Position`](#position)` \| 'top-center' \| 'bottom-center'` | `'bottom-right'` | Where the container is fixed on the viewport. |
-| `expand` | `boolean` | `false` | When `true`, hovering the toaster always expands the stacked previews (no need to move the mouse to reveal them). |
-| `duration` | `number` | `4000` | Default auto-dismiss in ms. Per-toast `duration` overrides it. `Infinity` disables the auto-dismiss. |
-| `gap` | `number` | `14` | Pixel gap between stacked toasts. Applied via `--gap` on the container. |
-| `visibleToasts` | `number` | `3` | How many stacked toasts are visible at once. The rest are still rendered but the stylesheet hides them under `--offset`. |
-| `closeButton` | `boolean` | `false` | When `true`, each toast renders a close button (skipped for `loading` and `custom`). |
-| `className` | `string` | `undefined` | Extra class names appended to the `<ol data-notify-toaster>`. |
-| `offset` | [`Offset`](#offset) | `'24px'` | Distance from the viewport edges. |
-| `mobileOffset` | [`Offset`](#offset) | `'16px'` | Distance from the viewport edges on coarse pointers (`@media (hover: none) and (pointer: coarse)`). |
-| `dir` | `'ltr' \| 'rtl' \| 'auto'` | `'auto'` (resolved from `document.dir` / `getComputedStyle`) | Text direction of the container. |
-| `richColors` | `boolean` | `false` | When `true`, the stylesheet applies the colored backgrounds/borders to `success`, `error`, `warning`, and `info` types. |
-| `customAriaLabel` | `string` | `undefined` | When set, overrides the `aria-label` on every toast. |
-| `containerAriaLabel` | `string` | `'Notifications'` | `aria-label` on the `<ol>` container. |
+| Field                | Type                                                         | Default                                                      | Description                                                                                                                                                   |
+| -------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `id`                 | `string`                                                     | `undefined`                                                  | Optional toaster id. Used to filter which toasts a given toaster renders — pass `toasterId` on a [`ToastOptions`](api/toast.md) to target a specific toaster. |
+| `theme`              | `'light' \| 'dark' \| 'system'`                              | `'light'`                                                    | Theme the stylesheet should use. `'system'` follows `prefers-color-scheme` via the CSS media query.                                                           |
+| `position`           | [`Position`](#position)` \| 'top-center' \| 'bottom-center'` | `'bottom-right'`                                             | Where the container is fixed on the viewport.                                                                                                                 |
+| `expand`             | `boolean`                                                    | `false`                                                      | When `true`, hovering the toaster always expands the stacked previews (no need to move the mouse to reveal them).                                             |
+| `duration`           | `number`                                                     | `4000`                                                       | Default auto-dismiss in ms. Per-toast `duration` overrides it. `Infinity` disables the auto-dismiss.                                                          |
+| `gap`                | `number`                                                     | `14`                                                         | Pixel gap between stacked toasts. Applied via `--gap` on the container.                                                                                       |
+| `visibleToasts`      | `number`                                                     | `3`                                                          | How many stacked toasts are visible at once. The rest are still rendered but the stylesheet hides them under `--offset`.                                      |
+| `closeButton`        | `boolean`                                                    | `false`                                                      | When `true`, each toast renders a close button (skipped for `loading` and `custom`).                                                                          |
+| `className`          | `string`                                                     | `undefined`                                                  | Extra class names appended to the `<ol data-notify-toaster>`.                                                                                                 |
+| `offset`             | [`Offset`](#offset)                                          | `'24px'`                                                     | Distance from the viewport edges.                                                                                                                             |
+| `mobileOffset`       | [`Offset`](#offset)                                          | `'16px'`                                                     | Distance from the viewport edges on coarse pointers (`@media (hover: none) and (pointer: coarse)`).                                                           |
+| `dir`                | `'ltr' \| 'rtl' \| 'auto'`                                   | `'auto'` (resolved from `document.dir` / `getComputedStyle`) | Text direction of the container.                                                                                                                              |
+| `richColors`         | `boolean`                                                    | `false`                                                      | When `true`, the stylesheet applies the colored backgrounds/borders to `success`, `error`, `warning`, and `info` types.                                       |
+| `customAriaLabel`    | `string`                                                     | `undefined`                                                  | When set, overrides the `aria-label` on every toast.                                                                                                          |
+| `containerAriaLabel` | `string`                                                     | `'Notifications'`                                            | `aria-label` on the `<ol>` container.                                                                                                                         |
 
 ### `Position`
 
 ```ts
 type Position =
-  | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right'
-  | 'top-center' | 'bottom-center'
+  'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'top-center' | 'bottom-center'
 ```
 
 Swipe-to-dismiss is only enabled for the four corner positions. Centered positions are not swipeable.
@@ -84,8 +83,8 @@ Swipe-to-dismiss is only enabled for the four corner positions. Centered positio
 
 ```ts
 type Offset =
-  | number            // 24 → "24px" on all four sides
-  | string            // "2rem" → "2rem" on all four sides
+  | number // 24 → "24px" on all four sides
+  | string // "2rem" → "2rem" on all four sides
   | {
       top?: number | string
       right?: number | string
@@ -139,22 +138,22 @@ interface ToastOptions {
 
 ### Field reference
 
-| Field | Type | Default | Description |
-| --- | --- | --- | --- |
-| `id` | `ToastId` (`number \| string`) | auto-incremented | Stable id. Re-using an id updates the existing toast in place. |
-| `toasterId` | `string` | `undefined` | Routes this toast to a toaster created with a matching [`id`](#id) on `ToasterOptions`. |
-| `description` | [`RenderableOrFactory`](#renderable) | `undefined` | Secondary line under the title. A function is invoked once on creation. |
-| `type` | [`ToastType`](#toasttype) | `'normal'` | Visual + semantic variant. `loading` is the only variant that suppresses auto-dismiss. |
-| `richColors` | `boolean` | inherited from toaster | Force the rich-color treatment on this toast only. |
-| `invert` | `boolean` | `false` | When `true`, swaps foreground/background for a darker-on-lighter look. |
-| `closeButton` | `boolean` | inherited from toaster | Force a close button on this toast. |
-| `dismissible` | `boolean` | `true` | When `false`, the close button is hidden and swipe-to-dismiss is disabled. Loading toasts are never dismissible. |
-| `duration` | `number` | inherited from toaster | Auto-dismiss in ms. `Infinity` disables it for this toast. |
-| `className` | `string` | `undefined` | Extra class names appended to the `<li>`. |
-| `descriptionClassName` | `string` | `undefined` | Extra class names appended to the `[data-description]` element. |
-| `action` | [`ToastAction`](#toastaction) | `undefined` | Trailing button. Default closes the toast on click. |
-| `cancel` | [`ToastAction`](#toastaction) | `undefined` | Leading button (rendered before `action`). Default closes the toast on click. |
-| `testId` | `string` | `undefined` | Rendered as `data-testid` on the `<li>` for E2E tests. |
+| Field                  | Type                                 | Default                | Description                                                                                                      |
+| ---------------------- | ------------------------------------ | ---------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `id`                   | `ToastId` (`number \| string`)       | auto-incremented       | Stable id. Re-using an id updates the existing toast in place.                                                   |
+| `toasterId`            | `string`                             | `undefined`            | Routes this toast to a toaster created with a matching [`id`](#id) on `ToasterOptions`.                          |
+| `description`          | [`RenderableOrFactory`](#renderable) | `undefined`            | Secondary line under the title. A function is invoked once on creation.                                          |
+| `type`                 | [`ToastType`](#toasttype)            | `'normal'`             | Visual + semantic variant. `loading` is the only variant that suppresses auto-dismiss.                           |
+| `richColors`           | `boolean`                            | inherited from toaster | Force the rich-color treatment on this toast only.                                                               |
+| `invert`               | `boolean`                            | `false`                | When `true`, swaps foreground/background for a darker-on-lighter look.                                           |
+| `closeButton`          | `boolean`                            | inherited from toaster | Force a close button on this toast.                                                                              |
+| `dismissible`          | `boolean`                            | `true`                 | When `false`, the close button is hidden and swipe-to-dismiss is disabled. Loading toasts are never dismissible. |
+| `duration`             | `number`                             | inherited from toaster | Auto-dismiss in ms. `Infinity` disables it for this toast.                                                       |
+| `className`            | `string`                             | `undefined`            | Extra class names appended to the `<li>`.                                                                        |
+| `descriptionClassName` | `string`                             | `undefined`            | Extra class names appended to the `[data-description]` element.                                                  |
+| `action`               | [`ToastAction`](#toastaction)        | `undefined`            | Trailing button. Default closes the toast on click.                                                              |
+| `cancel`               | [`ToastAction`](#toastaction)        | `undefined`            | Leading button (rendered before `action`). Default closes the toast on click.                                    |
+| `testId`               | `string`                             | `undefined`            | Rendered as `data-testid` on the `<li>` for E2E tests.                                                           |
 
 ### `Renderable`
 
@@ -176,8 +175,7 @@ A function is invoked once on creation. Useful for lazy titles / descriptions th
 
 ```ts
 type ToastType =
-  | 'normal' | 'action' | 'success' | 'info'
-  | 'warning' | 'error' | 'loading' | 'default'
+  'normal' | 'action' | 'success' | 'info' | 'warning' | 'error' | 'loading' | 'default'
 ```
 
 `'default'` is the legacy alias for `'normal'`. The renderer maps them to the same `<li data-type="...">` and the same icon slot (none).
@@ -203,21 +201,21 @@ const DEFAULT_TOASTER = {
   theme: 'light',
   position: 'bottom-right',
   expand: false,
-  duration: 4000,           // TOAST_LIFETIME
-  gap: 14,                  // GAP
-  visibleToasts: 3,         // VISIBLE_TOASTS_AMOUNT
+  duration: 4000, // TOAST_LIFETIME
+  gap: 14, // GAP
+  visibleToasts: 3, // VISIBLE_TOASTS_AMOUNT
   closeButton: false,
   dir: 'auto',
   richColors: false,
   containerAriaLabel: 'Notifications',
-  offset: '24px',           // VIEWPORT_OFFSET
-  mobileOffset: '16px'      // MOBILE_VIEWPORT_OFFSET
+  offset: '24px', // VIEWPORT_OFFSET
+  mobileOffset: '16px' // MOBILE_VIEWPORT_OFFSET
 }
 
 const DEFAULT_TOAST = {
   type: 'normal',
   dismissible: true,
-  duration: undefined       // inherits toaster
+  duration: undefined // inherits toaster
 }
 ```
 

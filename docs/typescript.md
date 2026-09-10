@@ -36,7 +36,7 @@ import type {
   PromiseExtendedResult,
 
   // browser
-  NotifyApi,
+  NotifyApi
 
   // numeric constants (values, not types)
   // VISIBLE_TOASTS_AMOUNT, TOAST_LIFETIME, etc.
@@ -87,8 +87,7 @@ The stable identity of a toast. Re-using an id updates the existing toast in pla
 
 ```ts
 type ToastType =
-  | 'normal' | 'action' | 'success' | 'info'
-  | 'warning' | 'error' | 'loading' | 'default'
+  'normal' | 'action' | 'success' | 'info' | 'warning' | 'error' | 'loading' | 'default'
 ```
 
 `'default'` is the legacy alias for `'normal'` and renders identically. `'loading'` is the only variant that suppresses the auto-dismiss timer.
@@ -290,8 +289,7 @@ interface ToasterOptions {
 
 ```ts
 type Position =
-  | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right'
-  | 'top-center' | 'bottom-center'
+  'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'top-center' | 'bottom-center'
 ```
 
 The four corner positions support swipe-to-dismiss. The two centered positions do not.
@@ -349,9 +347,7 @@ The directions a toast can be swiped in. The runtime derives the default set fro
 ## `PromiseInput`
 
 ```ts
-type PromiseInput<ToastData = unknown> =
-  | Promise<ToastData>
-  | (() => Promise<ToastData>)
+type PromiseInput<ToastData = unknown> = Promise<ToastData> | (() => Promise<ToastData>)
 ```
 
 A `Promise` or a thunk that returns one. Use the thunk form when the work should be deferred (e.g. when the toast is shown but the fetch should not start until after a debounce).
@@ -445,13 +441,13 @@ The runtime re-exports its numeric defaults so consumers can reason about timing
 ```ts
 import {
   VISIBLE_TOASTS_AMOUNT, // 3
-  VIEWPORT_OFFSET,       // '24px'
-  MOBILE_VIEWPORT_OFFSET,// '16px'
-  TOAST_LIFETIME,        // 4000 (ms)
-  TOAST_WIDTH,           // 356 (px)
-  GAP,                   // 14 (px)
-  SWIPE_THRESHOLD,       // 45 (px)
-  TIME_BEFORE_UNMOUNT    // 200 (ms)
+  VIEWPORT_OFFSET, // '24px'
+  MOBILE_VIEWPORT_OFFSET, // '16px'
+  TOAST_LIFETIME, // 4000 (ms)
+  TOAST_WIDTH, // 356 (px)
+  GAP, // 14 (px)
+  SWIPE_THRESHOLD, // 45 (px)
+  TIME_BEFORE_UNMOUNT // 200 (ms)
 } from '@samline/notify'
 ```
 

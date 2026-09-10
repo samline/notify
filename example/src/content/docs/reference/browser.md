@@ -77,7 +77,7 @@ The IIFE mounted a default toaster on load. The click handler calls `Notify.toas
   })
 
   window.Notify.toast.promise(
-    fetch('/api/profile').then(r => r.json()),
+    fetch('/api/profile').then((r) => r.json()),
     {
       loading: 'Loading profile…',
       success: (profile) => `Hi ${profile.name}`,
@@ -91,12 +91,12 @@ The IIFE mounted a default toaster on load. The click handler calls `Notify.toas
 
 ## Lifecycle helpers
 
-| Helper | Purpose |
-| --- | --- |
-| `Notify.createToaster(options?)` | Mount (or update) the singleton toaster. Returns the controller. |
+| Helper                              | Purpose                                                                             |
+| ----------------------------------- | ----------------------------------------------------------------------------------- |
+| `Notify.createToaster(options?)`    | Mount (or update) the singleton toaster. Returns the controller.                    |
 | `Notify.configureToaster(options?)` | Alias of `createToaster(options?)`. Kept for intent symmetry with `@samline/forms`. |
-| `Notify.getToaster()` | Return the current controller, or `null` if none is mounted. |
-| `Notify.destroyToaster()` | Unmount the singleton and drop all in-flight toasts. No-op if none is mounted. |
+| `Notify.getToaster()`               | Return the current controller, or `null` if none is mounted.                        |
+| `Notify.destroyToaster()`           | Unmount the singleton and drop all in-flight toasts. No-op if none is mounted.      |
 
 The toaster returned by `createToaster` is the singleton — every helper works on the same `<ol>`. Use `Notify.toast.*` to push toasts, `Notify.getToaster()` to inspect, and `Notify.destroyToaster()` to tear down.
 
@@ -104,14 +104,14 @@ The toaster returned by `createToaster` is the singleton — every helper works 
 
 The browser bundle ships the same surface as the main vanilla entrypoint, plus the IIFE auto-mount. Every method is documented under the [API reference](/notify/reference/api/).
 
-| Global | Purpose |
-| --- | --- |
-| `Notify.toast` | The factory and every variant. See [`toast`](/notify/reference/api/#toastmessage-options). |
-| `Notify.Toaster(options?)` | Alias of `Notify.createToaster(options?)`. |
-| `Notify.createToaster(options?)` | Mount / update the singleton toaster. See [`createToaster`](/notify/reference/api/#createtoasteroptions). |
+| Global                              | Purpose                                                                                                              |
+| ----------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| `Notify.toast`                      | The factory and every variant. See [`toast`](/notify/reference/api/#toastmessage-options).                           |
+| `Notify.Toaster(options?)`          | Alias of `Notify.createToaster(options?)`.                                                                           |
+| `Notify.createToaster(options?)`    | Mount / update the singleton toaster. See [`createToaster`](/notify/reference/api/#createtoasteroptions).            |
 | `Notify.configureToaster(options?)` | Intent-revealing alias of `createToaster`. See [`configureToaster`](/notify/reference/api/#configuretoasteroptions). |
-| `Notify.getToaster()` | Return the singleton controller, or `null`. See [`getToaster`](/notify/reference/api/#gettoaster). |
-| `Notify.destroyToaster()` | Unmount the singleton. See [`destroyToaster`](/notify/reference/api/#destroytoaster). |
+| `Notify.getToaster()`               | Return the singleton controller, or `null`. See [`getToaster`](/notify/reference/api/#gettoaster).                   |
+| `Notify.destroyToaster()`           | Unmount the singleton. See [`destroyToaster`](/notify/reference/api/#destroytoaster).                                |
 
 ### Controller methods
 

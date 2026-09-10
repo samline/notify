@@ -6,40 +6,41 @@ sidebar:
   order: 7
 ---
 
-import { Tabs, TabItem, Steps } from '@astrojs/starlight/components';
+import { Tabs, TabItem, Steps } from '@astrojs/starlight/components'
 
 These examples are deliberately copy-pasteable. Each one lives in a self-contained snippet so it's easy to drop into a project and adapt.
 
 <Tabs syncKey="runtime">
 	<TabItem label="Bundler / TS">
 
-		The standard entrypoint — `import { createToaster, toast } from '@samline/notify'`. Works with Vite, Webpack, Rollup, esbuild, Bun, and any modern bundler.
+    	The standard entrypoint — `import { createToaster, toast } from '@samline/notify'`. Works with Vite, Webpack, Rollup, esbuild, Bun, and any modern bundler.
 
-		```ts
-		import { createToaster, toast } from '@samline/notify'
-		import '@samline/notify/styles.css'
+    	```ts
+    	import { createToaster, toast } from '@samline/notify'
+    	import '@samline/notify/styles.css'
 
-		createToaster({ position: 'bottom-right', richColors: true })
+    	createToaster({ position: 'bottom-right', richColors: true })
 
-		toast.success('Saved')
-		```
+    	toast.success('Saved')
+    	```
 
-	</TabItem>
-	<TabItem label="Browser global">
+    </TabItem>
+    <TabItem label="Browser global">
 
-		No bundler required. Drop the CDN script and stylesheet and use `window.Notify`.
+    	No bundler required. Drop the CDN script and stylesheet and use `window.Notify`.
 
-		```html
-		<link rel="stylesheet" href="https://unpkg.com/@samline/notify@3.1.2/dist/styles.css" />
-		<script src="https://unpkg.com/@samline/notify@3.1.2/dist/browser/global.global.js" defer></script>
-		<script>
-		  document.querySelector('#save').addEventListener('click', () => {
-		    window.Notify.toast.success('Saved')
-		  })
-		</script>
-		```
+    	```html
+    	<link rel="stylesheet" href="https://unpkg.com/@samline/notify@3.1.2/dist/styles.css" />
+    	<script src="https://unpkg.com/@samline/notify@3.1.2/dist/browser/global.global.js" defer></script>
+    	<script>
+    	  document.querySelector('#save').addEventListener('click', () => {
+    	    window.Notify.toast.success('Saved')
+    	  })
+    	</script>
+    	```
 
-	</TabItem>
+    </TabItem>
+
 </Tabs>
 
 ## Recipe: `toast.promise` with `fetch`
@@ -176,7 +177,7 @@ The runtime applies the mobile offset under `@media (hover: none) and (pointer: 
 ```ts
 createToaster({
   offset: { top: 24, right: 24, bottom: 24, left: 24 },
-  mobileOffset: { bottom: 80 }  // account for an iOS bottom bar
+  mobileOffset: { bottom: 80 } // account for an iOS bottom bar
 })
 ```
 

@@ -85,15 +85,15 @@ toast.message(message, options?)  // alias of the callable form
 
 The only difference between the variants is the `type` they set:
 
-| Variant | Forced `type` | Auto-dismiss |
-| --- | --- | --- |
-| `toast.success` | `'success'` | yes |
-| `toast.error` | `'error'` | yes |
-| `toast.info` | `'info'` | yes |
-| `toast.warning` | `'warning'` | yes |
-| `toast.loading` | `'loading'` | **no** — resolved manually with `toast.success({ id })` / `toast.error({ id })` |
-| `toast.message` | `'normal'` | yes |
-| `toast(...)` | `'normal'` | yes |
+| Variant         | Forced `type` | Auto-dismiss                                                                    |
+| --------------- | ------------- | ------------------------------------------------------------------------------- |
+| `toast.success` | `'success'`   | yes                                                                             |
+| `toast.error`   | `'error'`     | yes                                                                             |
+| `toast.info`    | `'info'`      | yes                                                                             |
+| `toast.warning` | `'warning'`   | yes                                                                             |
+| `toast.loading` | `'loading'`   | **no** — resolved manually with `toast.success({ id })` / `toast.error({ id })` |
+| `toast.message` | `'normal'`    | yes                                                                             |
+| `toast(...)`    | `'normal'`    | yes                                                                             |
 
 You can still pass `duration: Infinity` on a non-loading variant to suppress the auto-dismiss:
 

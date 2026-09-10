@@ -29,7 +29,7 @@ import '@samline/notify/styles.css'
 const toaster = createToaster({ position: 'bottom-right', richColors: true })
 
 toaster.update({ duration: 5000 }) // bump the auto-dismiss to 5s
-toaster.destroy()                  // unmount
+toaster.destroy() // unmount
 ```
 
 Methods that return data instead of the controller: `toaster.options`, `toast.getHistory()`, `toast.getToasts()`, `toast.dismiss(id)`.
@@ -67,22 +67,22 @@ The recommended flow:
 
 Use this as a quick lookup when you need to know what a method will touch.
 
-| Method | DOM mutation | Timers scheduled | Subscribers notified | Toaster state touched |
-| --- | --- | --- | --- | --- |
-| [`toast`](api/toast.md) | yes (adds a `<li>`) | yes (auto-dismiss) | yes | none |
-| [`toast.success` / `error` / `info` / `warning` / `loading` / `message`](api/toast.md#toastvariants) | yes (adds a `<li>`) | yes (no timer for `loading`) | yes | none |
-| [`toast.promise`](api/toast.md#toastpromise) | yes (adds a loading `<li>`, then updates in place) | no on the loading variant | yes (twice on settle) | none |
-| [`toast.custom`](api/toast.md#toastcustom) | yes (mounts the provided `HTMLElement` or runs the callback) | yes (auto-dismiss) | yes | none |
-| [`toast.dismiss`](api/toast.md#toastdismiss) | yes (marks `data-removed`; removes `<li>` after `TIME_BEFORE_UNMOUNT`) | yes (clears pending timer) | yes | none |
-| [`toast.getHistory`](api/toast.md#toastgethistory) / [`toast.getToasts`](api/toast.md#toastgettoasts) | no | no | no | none |
-| [`createToaster`](api/create-toaster.md) | yes (mounts `<ol>`; appends to `document.body`) | no | no (subscribes once) | sets the singleton |
-| [`createToaster`](api/create-toaster.md) (called twice) | updates the singleton in place via `update()` | restarted | no | updates the singleton |
-| `toaster.update(options?)` | re-applies data-attributes and CSS variables | restarted | no | updates internal options |
-| `toaster.destroy()` | removes the `<ol>` from the DOM | clears all timers | unsubscribes the renderer | clears the singleton |
-| [`destroyToaster`](api/destroy-toaster.md) | same as `toaster.destroy()`, plus drops all toasts | clears all timers | yes (one per dropped toast) | clears the singleton |
-| [`getToaster`](api/get-toaster.md) | no | no | no | none (read-only) |
-| [`configureToaster`](api/configure-toaster.md) | same as `createToaster(options?)` | restarted | no | updates the singleton |
-| [`resetToasts`](api/reset-toasts.md) | yes (drops all `<li>`s) | clears all timers | yes | none |
+| Method                                                                                                | DOM mutation                                                           | Timers scheduled             | Subscribers notified        | Toaster state touched    |
+| ----------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- | ---------------------------- | --------------------------- | ------------------------ |
+| [`toast`](api/toast.md)                                                                               | yes (adds a `<li>`)                                                    | yes (auto-dismiss)           | yes                         | none                     |
+| [`toast.success` / `error` / `info` / `warning` / `loading` / `message`](api/toast.md#toastvariants)  | yes (adds a `<li>`)                                                    | yes (no timer for `loading`) | yes                         | none                     |
+| [`toast.promise`](api/toast.md#toastpromise)                                                          | yes (adds a loading `<li>`, then updates in place)                     | no on the loading variant    | yes (twice on settle)       | none                     |
+| [`toast.custom`](api/toast.md#toastcustom)                                                            | yes (mounts the provided `HTMLElement` or runs the callback)           | yes (auto-dismiss)           | yes                         | none                     |
+| [`toast.dismiss`](api/toast.md#toastdismiss)                                                          | yes (marks `data-removed`; removes `<li>` after `TIME_BEFORE_UNMOUNT`) | yes (clears pending timer)   | yes                         | none                     |
+| [`toast.getHistory`](api/toast.md#toastgethistory) / [`toast.getToasts`](api/toast.md#toastgettoasts) | no                                                                     | no                           | no                          | none                     |
+| [`createToaster`](api/create-toaster.md)                                                              | yes (mounts `<ol>`; appends to `document.body`)                        | no                           | no (subscribes once)        | sets the singleton       |
+| [`createToaster`](api/create-toaster.md) (called twice)                                               | updates the singleton in place via `update()`                          | restarted                    | no                          | updates the singleton    |
+| `toaster.update(options?)`                                                                            | re-applies data-attributes and CSS variables                           | restarted                    | no                          | updates internal options |
+| `toaster.destroy()`                                                                                   | removes the `<ol>` from the DOM                                        | clears all timers            | unsubscribes the renderer   | clears the singleton     |
+| [`destroyToaster`](api/destroy-toaster.md)                                                            | same as `toaster.destroy()`, plus drops all toasts                     | clears all timers            | yes (one per dropped toast) | clears the singleton     |
+| [`getToaster`](api/get-toaster.md)                                                                    | no                                                                     | no                           | no                          | none (read-only)         |
+| [`configureToaster`](api/configure-toaster.md)                                                        | same as `createToaster(options?)`                                      | restarted                    | no                          | updates the singleton    |
+| [`resetToasts`](api/reset-toasts.md)                                                                  | yes (drops all `<li>`s)                                                | clears all timers            | yes                         | none                     |
 
 ---
 
