@@ -447,6 +447,23 @@ export function mountToaster(
       : all.filter((toast) => !toast.toasterId)
   }
 
+  const measureToastHeight = (node: HTMLLIElement, id: ToastT['id']): void => {
+    const previousHeight = node.style.getPropertyValue('height')
+    const previousPriority = node.style.getPropertyPriority('height')
+
+    // Collapsed non-front toasts inherit the front toast's height from CSS.
+    // Temporarily expose the intrinsic height before updating stack offsets.
+    node.style.setProperty('height', 'auto', 'important')
+    const height = node.getBoundingClientRect().height
+    if (previousHeight) node.style.setProperty('height', previousHeight, previousPriority)
+    else node.style.removeProperty('height')
+
+    if (height > 0) {
+      heights.set(id, height)
+      node.style.setProperty('--initial-height', `${height}px`)
+    }
+  }
+
   const createToastElement = (toast: ToastT, index: number): HTMLLIElement => {
     const pos = getPositionForToast(toast)
     const [y = 'bottom', x = 'right'] = pos.split('-') as [string, string]
@@ -596,11 +613,8 @@ export function mountToaster(
     // starts. The renderAll call here is what also keeps
     // `--front-toast-height` in sync (Fix 3).
     queueMicrotask(() => {
-      const rect = li.getBoundingClientRect()
-      if (rect.height > 0) {
-        heights.set(toast.id, rect.height)
-        renderAll()
-      }
+      measureToastHeight(li, toast.id)
+      renderAll()
     })
 
     return li
@@ -1048,6 +1062,7 @@ export function mountToaster(
           // Re-bind interactions (dismissible / type / position may have
           // changed — e.g. loading → success flips `disabled` to false).
           bindToastInteractions(existingNode, toast)
+          measureToastHeight(existingNode, toast.id)
           // Update the data-type and other top-level attributes.
           const type = toast.type ?? 'normal'
           const dismissible = toast.dismissible !== false
@@ -1186,6 +1201,7 @@ export function mountToaster(
    */
   const schedulePostExitRemoval = (node: HTMLLIElement, onRemove: () => void): void => {
     let done = false
+    let longestProperties = new Set<string>()
     // `fallback` is declared up-front so `finish` can `clearTimeout`
     // it from either branch (jsdom / reduced-motion vs real browser).
     // Without this, the jsdom branch's `setTimeout(finish, ...)` would
@@ -1202,14 +1218,10 @@ export function mountToaster(
       onRemove()
     }
     const onTransitionEnd = (event: TransitionEvent): void => {
-      // The toast animates `transform` and `opacity` in parallel; the
-      // `transform` transition is the last one to finish (400ms vs
-      // 200ms for opacity's last leg, but both kick off at the same
-      // time, so we listen for either and just gate on transform to
-      // be safe). Only react to events fired by THIS node — a swipe
-      // or a parallel transition on a sibling shouldn't trip us.
+      // Ignore shorter properties such as opacity when transform is
+      // still running. Only events fired by this node can finish cleanup.
       if (event.target !== node) return
-      if (event.propertyName !== 'transform' && event.propertyName !== 'opacity') return
+      if (!longestProperties.has('all') && !longestProperties.has(event.propertyName)) return
       finish()
     }
     // Detect reduced motion and the "no transition" environment
@@ -1220,23 +1232,36 @@ export function mountToaster(
       typeof window !== 'undefined' &&
       typeof window.matchMedia === 'function' &&
       window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    const transitionDuration =
+    const computedStyle =
       typeof window !== 'undefined' && typeof window.getComputedStyle === 'function'
-        ? window.getComputedStyle(node).transitionDuration
-        : ''
-    // Parse the longest transition duration out of the comma list.
-    // `getComputedStyle(...).transitionDuration` is e.g. "0.4s, 0.4s,
-    // 0.4s, 0.2s". In jsdom it's "".
-    const longestMs = transitionDuration
-      .split(',')
-      .map((s) => s.trim())
-      .reduce((max, part) => {
-        const match = part.match(/^([\d.]+)(ms|s)$/)
-        if (!match) return max
+        ? window.getComputedStyle(node)
+        : null
+    const parseTimes = (value: string): number[] =>
+      value.split(',').map((part) => {
+        const match = part.trim().match(/^([\d.]+)(ms|s)$/)
+        if (!match) return 0
         const n = Number(match[1])
-        const ms = match[2] === 's' ? n * 1000 : n
-        return Math.max(max, ms)
-      }, 0)
+        return match[2] === 's' ? n * 1000 : n
+      })
+    const durations = parseTimes(computedStyle?.transitionDuration ?? '')
+    const delays = parseTimes(computedStyle?.transitionDelay ?? '')
+    const properties = (computedStyle?.transitionProperty ?? '')
+      .split(',')
+      .map((property) => property.trim())
+    const transitionCount = Math.max(durations.length, delays.length, properties.length)
+    let longestMs = 0
+    for (let index = 0; index < transitionCount; index += 1) {
+      const duration = durations[index % durations.length] ?? 0
+      const delay = delays[index % delays.length] ?? 0
+      const total = duration + delay
+      const property = properties[index % properties.length] ?? 'all'
+      if (total > longestMs) {
+        longestMs = total
+        longestProperties = new Set([property])
+      } else if (total === longestMs && total > 0) {
+        longestProperties.add(property)
+      }
+    }
     // No real transition to wait for (jsdom, reduced-motion, or the
     // stylesheet didn't apply). Use the legacy `TIME_BEFORE_UNMOUNT`
     // so the existing jsdom tests keep working AND users with

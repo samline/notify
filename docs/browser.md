@@ -9,18 +9,18 @@ For every other case (modern apps, bundlers, TypeScript projects), use the main 
 ## Script tag
 
 ```html
-<script src="https://unpkg.com/@samline/notify@3.1.1/dist/browser/global.global.js"></script>
+<script src="https://unpkg.com/@samline/notify@3.1.2/dist/browser/global.global.js"></script>
 ```
 
-> Pin the version in production. Replace `3.1.1` with the version you ship.
+> Pin the version in production. Replace `3.1.2` with the version you ship.
 
 The bundle is a single IIFE that registers a global object. Place the `<script>` tag in `<head>` with `defer`, or before the user script in `<body>`. The IIFE also auto-mounts a default toaster (when a DOM is available) so the first `Notify.toast(...)` call has somewhere to render.
 
 You also need the stylesheet. Either copy `dist/styles.css` to your static assets and link it, or load it from the CDN:
 
 ```html
-<link rel="stylesheet" href="https://unpkg.com/@samline/notify@3.1.1/dist/styles.css" />
-<script src="https://unpkg.com/@samline/notify@3.1.1/dist/browser/global.global.js" defer></script>
+<link rel="stylesheet" href="https://unpkg.com/@samline/notify@3.1.2/dist/styles.css" />
+<script src="https://unpkg.com/@samline/notify@3.1.2/dist/browser/global.global.js" defer></script>
 ```
 
 ---
@@ -53,8 +53,8 @@ The factory returns a `ToasterController` with the same signatures, semantics, a
 ```html
 <button id="save">Save</button>
 
-<link rel="stylesheet" href="https://unpkg.com/@samline/notify@3.1.1/dist/styles.css" />
-<script src="https://unpkg.com/@samline/notify@3.1.1/dist/browser/global.global.js" defer></script>
+<link rel="stylesheet" href="https://unpkg.com/@samline/notify@3.1.2/dist/styles.css" />
+<script src="https://unpkg.com/@samline/notify@3.1.2/dist/browser/global.global.js" defer></script>
 <script>
   document.querySelector('#save').addEventListener('click', () => {
     window.Notify.toast.success('Saved')
@@ -69,8 +69,8 @@ The IIFE mounted a default toaster on load. The click handler calls `Notify.toas
 ## Custom toaster
 
 ```html
-<link rel="stylesheet" href="https://unpkg.com/@samline/notify@3.1.1/dist/styles.css" />
-<script src="https://unpkg.com/@samline/notify@3.1.1/dist/browser/global.global.js" defer></script>
+<link rel="stylesheet" href="https://unpkg.com/@samline/notify@3.1.2/dist/styles.css" />
+<script src="https://unpkg.com/@samline/notify@3.1.2/dist/browser/global.global.js" defer></script>
 <script>
   // Reconfigure the default toaster (the IIFE already mounted one).
   window.Notify.configureToaster({
@@ -185,7 +185,7 @@ See the [Browser registry helpers section](getting-started.md#browser-registry-h
 
 ## Common pitfalls
 
-- **Pin the version.** The CDN URL above is `3.1.1`. Replace it whenever you upgrade.
+- **Pin the version.** The CDN URL above is `3.1.2`. Replace it whenever you upgrade.
 - **The script must be loaded before any code that uses `window.Notify`.** Place the `<script>` tag in `<head>` with `defer`, or before the user script in `<body>`.
 - **The stylesheet is not bundled into the IIFE.** Load `dist/styles.css` separately. The IIFE only sets data-attributes — without the stylesheet the toasts render as an unstyled list.
 - **No bundler means no tree-shaking.** The browser bundle includes the full runtime (~6 KB gzipped plus the stylesheet). That is by design — the alternative would defeat the purpose of a no-bundler setup.

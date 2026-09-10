@@ -198,6 +198,40 @@ describe('core/renderer', () => {
     }
   })
 
+  it('ignores an earlier opacity transition when transform exits later', () => {
+    controller = mountToaster(root, {}, ToastState)
+    const first = ToastState.create({ message: 'first' })
+    ToastState.create({ message: 'front' })
+    const li = root.querySelector<HTMLLIElement>(`li[data-notify-toast][data-id="${first}"]`)
+    const original = window.getComputedStyle
+    window.getComputedStyle = ((element: Element) => {
+      const real = original.call(window, element)
+      return new Proxy(real, {
+        get(target, property) {
+          if (property === 'transitionDuration') return '0.5s, 0.2s'
+          if (property === 'transitionDelay') return '0s, 0s'
+          if (property === 'transitionProperty') return 'transform, opacity'
+          return Reflect.get(target, property)
+        }
+      })
+    }) as typeof window.getComputedStyle
+
+    try {
+      ToastState.dismiss(first)
+      const opacityEnd = new Event('transitionend', { bubbles: true })
+      Object.defineProperty(opacityEnd, 'propertyName', { value: 'opacity' })
+      li?.dispatchEvent(opacityEnd)
+      expect(li?.isConnected).toBe(true)
+
+      const transformEnd = new Event('transitionend', { bubbles: true })
+      Object.defineProperty(transformEnd, 'propertyName', { value: 'transform' })
+      li?.dispatchEvent(transformEnd)
+      expect(li?.isConnected).toBe(false)
+    } finally {
+      window.getComputedStyle = original
+    }
+  })
+
   it('sets data-swipe-out="false" on initial mount so the exit CSS rules can match', () => {
     // Fix: the previous vanilla refactor never set `data-swipe-out` until
     // the user actually swiped. The CSS rules for the exit animation
@@ -264,6 +298,51 @@ describe('core/renderer', () => {
     expect(front?.style.getPropertyValue('--offset')).toBe('0px')
     expect(middle?.style.getPropertyValue('--offset')).toBe(`${frontH + 14}px`)
     expect(back?.style.getPropertyValue('--offset')).toBe(`${frontH + middleH + 28}px`)
+  })
+
+  it('remeasures updated toast content before recalculating stack offsets', async () => {
+    const original = HTMLElement.prototype.getBoundingClientRect
+    HTMLElement.prototype.getBoundingClientRect = function () {
+      const height = (this.textContent ?? '').includes('much taller') ? 80 : 20
+      return {
+        width: 356,
+        height,
+        top: 0,
+        right: 356,
+        bottom: height,
+        left: 0,
+        x: 0,
+        y: 0,
+        toJSON() {}
+      }
+    }
+
+    try {
+      controller = mountToaster(root, { expand: true, gap: 10 }, ToastState)
+      const back = ToastState.create({ id: 'back', message: 'back' })
+      let resolveMiddle!: (value: string) => void
+      const pendingMiddle = new Promise<string>((resolve) => {
+        resolveMiddle = resolve
+      })
+      const middleResult = toast.promise(pendingMiddle, {
+        id: 'middle',
+        loading: 'middle',
+        success: 'much taller resolved content'
+      })
+      ToastState.create({ id: 'front', message: 'front' })
+      await Promise.resolve()
+
+      resolveMiddle('done')
+      await middleResult.unwrap()
+
+      const middleNode = root.querySelector<HTMLLIElement>('li[data-id="middle"]')
+      const backNode = root.querySelector<HTMLLIElement>(`li[data-id="${back}"]`)
+      expect(middleNode?.textContent).toContain('much taller')
+      expect(middleNode?.getBoundingClientRect().height).toBe(80)
+      expect(backNode?.style.getPropertyValue('--offset')).toBe('120px')
+    } finally {
+      HTMLElement.prototype.getBoundingClientRect = original
+    }
   })
 
   it('destroy() removes the toaster from the DOM', () => {
