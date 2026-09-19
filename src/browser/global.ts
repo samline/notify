@@ -24,7 +24,7 @@ declare global {
 
 const Notify: NotifyApi = browser
 
-if (typeof globalThis !== 'undefined') {
+if (canUseDOM() && typeof globalThis !== 'undefined') {
   ;(globalThis as typeof globalThis & { Notify: NotifyApi }).Notify = Notify
 }
 
@@ -34,14 +34,16 @@ if (typeof globalThis !== 'undefined') {
 // bundle in isolation), `global.window` is a separate object from
 // `globalThis`. We mirror the assignment to `window` so the literal
 // spec check `window.Notify` works in both shapes.
-if (typeof window !== 'undefined' && (window as typeof globalThis) !== globalThis) {
+if (canUseDOM() && typeof window !== 'undefined' && (window as typeof globalThis) !== globalThis) {
   ;(window as { Notify?: NotifyApi }).Notify = Notify
 }
 
 if (canUseDOM()) {
-  // Auto-mount a default toaster. The first call to `Notify.toast(...)`
-  // should not require the consumer to also call `Notify.createToaster()`.
-  Notify.createToaster()
+  if (document.body) {
+    Notify.createToaster()
+  } else {
+    document.addEventListener('DOMContentLoaded', () => Notify.createToaster(), { once: true })
+  }
 }
 
 export default Notify

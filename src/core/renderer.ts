@@ -140,20 +140,18 @@ export function mountToaster(
 
   root.appendChild(container)
 
-  // Internal state: per-toast timer records (handle + remaining ms)
-  // + heights. Storing `remainingMs` alongside the timeout handle
-  // lets us preserve the auto-dismiss time across hover/visibility
-  // pause/resume cycles (the legacy React build preserved the
-  // remaining time via `remainingTime.current`; the vanilla
-  // refactor was resetting to the full duration on every
-  // mouse-leave, which made toasts last longer than the user
-  // expected).
   const timers = new Map<
     ToastT['id'],
-    { handle: ReturnType<typeof setTimeout>; remainingMs: number }
+    { handle: ReturnType<typeof setTimeout>; deadline: number }
   >()
   const cleanups = new Map<ToastT['id'], Array<() => void>>()
+  const exitCleanups = new Map<ToastT['id'], () => void>()
   const heights = new Map<ToastT['id'], number>()
+  const interactions = new Map<
+    ToastT['id'],
+    { hovered: boolean; focused: boolean; remainingMs: number | null }
+  >()
+  const nodeIds = new WeakMap<HTMLLIElement, ToastT['id']>()
 
   // Start an auto-dismiss timer for the given toast. If a timer
   // already exists, do nothing (caller's responsibility to clear
@@ -173,7 +171,7 @@ export function mountToaster(
       live?.onAutoClose?.(live)
       dismissToast(id)
     }, duration)
-    timers.set(id, { handle, remainingMs: duration })
+    timers.set(id, { handle, deadline: Date.now() + duration })
   }
 
   // Pause the auto-dismiss timer for the given toast. Computes the
@@ -184,7 +182,7 @@ export function mountToaster(
     if (!record) return 0
     clearTimeout(record.handle)
     timers.delete(id)
-    return record.remainingMs
+    return Math.max(0, record.deadline - Date.now())
   }
   let expanded = false
   let interacting = false
@@ -194,8 +192,10 @@ export function mountToaster(
   let currentCloseButton = closeButton
   let currentRichColors = richColors
   let currentDuration = duration
+  let currentGap = gap
   let currentExpand = expand
   let currentPosition = position
+  let currentThemePreference: Theme = theme
   let currentTheme: Theme = theme
   // a11y / ux: `theme: 'system'` follows the OS `prefers-color-scheme`
   // media query. The legacy React build had this; the vanilla
@@ -283,11 +283,8 @@ export function mountToaster(
       // behaviour — without this, a 4s toast that the user
       // backgrounded after 3s would dismiss 4s after the tab
       // re-foregrounds, instead of 1s).
-      for (const [id, record] of timers.entries()) {
-        clearTimeout(record.handle)
-        timers.delete(id)
-        // Stash the remaining time on a side-table indexed by id.
-        ;(hiddenRemaining as Map<ToastT['id'], number>).set(id, record.remainingMs)
+      for (const id of [...timers.keys()]) {
+        hiddenRemaining.set(id, pauseAutoDismiss(id))
       }
     } else {
       // Resume: each stashed entry is the time-remaining at the
@@ -316,15 +313,20 @@ export function mountToaster(
   const hiddenRemaining: Map<ToastT['id'], number> = new Map()
   removeListeners.push(addListener(document, 'visibilitychange', onVisibilityChange))
 
-  // a11y / ux: when the toaster is configured with `theme: 'system'`,
-  // follow the OS `prefers-color-scheme` media query. We add a
-  // listener that re-renders on every change. Skipped silently on
-  // runtimes without matchMedia (e.g. server-side, ancient browsers).
-  if (
-    theme === 'system' &&
-    typeof window !== 'undefined' &&
-    typeof window.matchMedia === 'function'
-  ) {
+  let removeThemeListener: (() => void) | undefined
+  const syncThemeSubscription = (): void => {
+    removeThemeListener?.()
+    removeThemeListener = undefined
+    currentTheme =
+      currentThemePreference === 'system' ? resolveSystemTheme() : currentThemePreference
+    setAttrs(container, { 'data-notify-theme': currentTheme })
+    if (
+      currentThemePreference !== 'system' ||
+      typeof window === 'undefined' ||
+      typeof window.matchMedia !== 'function'
+    ) {
+      return
+    }
     try {
       const mq = window.matchMedia('(prefers-color-scheme: dark)')
       const onMqChange = (): void => {
@@ -332,19 +334,19 @@ export function mountToaster(
         setAttrs(container, { 'data-notify-theme': currentTheme })
         renderAll()
       }
-      // Modern browsers use addEventListener; older Safari used
-      // addListener. Both are no-ops on the wrong runtime.
       if (typeof mq.addEventListener === 'function') {
         mq.addEventListener('change', onMqChange)
-        removeListeners.push(() => mq.removeEventListener('change', onMqChange))
+        removeThemeListener = () => mq.removeEventListener('change', onMqChange)
       } else if (typeof mq.addListener === 'function') {
         mq.addListener(onMqChange)
-        removeListeners.push(() => mq.removeListener(onMqChange))
+        removeThemeListener = () => mq.removeListener(onMqChange)
       }
     } catch {
-      // matchMedia can throw in some sandboxes; silently skip.
+      // matchMedia can throw in constrained browser environments.
     }
   }
+  syncThemeSubscription()
+  removeListeners.push(() => removeThemeListener?.())
 
   // a11y: keyboard handlers on the document.
   //   - Escape: when focus is inside the toaster, collapse the
@@ -375,10 +377,10 @@ export function mountToaster(
     // Delete / Backspace: dismiss the focused toast.
     if ((event.key === 'Delete' || event.key === 'Backspace') && document.activeElement) {
       const active = document.activeElement as HTMLElement | null
-      const toastId = active?.dataset?.id
       const toastNode = active?.closest<HTMLLIElement>('[data-notify-toast]')
-      if (toastNode && toastId) {
-        const target = activeMatchingToasts().find((t) => String(t.id) === toastId)
+      const toastKey = toastNode?.dataset['notifyKey']
+      if (toastNode && toastKey) {
+        const target = activeMatchingToasts().find((t) => getToastKey(t.id) === toastKey)
         if (target && target.dismissible !== false) {
           // Prevent Backspace from triggering browser back-nav.
           event.preventDefault()
@@ -480,6 +482,7 @@ export function mountToaster(
       tabIndex: 0,
       'data-notify-toast': '',
       'data-id': String(toast.id),
+      'data-notify-key': getToastKey(toast.id),
       'data-type': type,
       // a11y: mark loading toasts as busy so screen readers
       // announce "busy" while the promise is in flight. The
@@ -533,6 +536,7 @@ export function mountToaster(
       'data-expanded': String(Boolean(expanded || currentExpand)),
       ...(toast.testId ? { 'data-testid': toast.testId } : {})
     }) as HTMLLIElement
+    nodeIds.set(li, toast.id)
 
     li.style.setProperty('--index', String(index))
     li.style.setProperty('--toasts-before', String(index))
@@ -552,27 +556,6 @@ export function mountToaster(
     // Bind interactions.
     bindToastInteractions(li, toast)
 
-    // a11y: body click handler — invokes `toast.onClick` if the
-    // toast isn't loading. The legacy React build attached this to
-    // the `<li>` itself; the vanilla refactor dropped the handler
-    // entirely. Skipped while loading (use `success` / `error`
-    // callbacks for async work). Skipped when the click target is
-    // the close / action / cancel button (those have their own
-    // click handlers that stop propagation isn't needed for — the
-    // button is a child of the <li>, and click events bubble, so
-    // the button's handler fires first and the body's handler is
-    // skipped because the buttons call `event.stopPropagation()` is
-    // not done — instead we check if the event target is a button
-    // and bail out if so).
-    if (toast.onClick) {
-      li.addEventListener('click', (event) => {
-        if ((toast.type ?? 'normal') === 'loading') return
-        const target = event.target as HTMLElement | null
-        if (target?.closest('button')) return
-        toast.onClick?.(event)
-      })
-    }
-
     // Store the content snapshot so renderAll() can detect updates.
     li.dataset['snapshot'] = getContentSnapshot(toast, {
       closeButton: currentCloseButton,
@@ -583,6 +566,7 @@ export function mountToaster(
     })
     li.dataset['type'] = type
     li.dataset['dismissible'] = String(dismissible)
+    li.dataset['duration'] = String(duration)
 
     // Schedule auto-dismiss. The legacy React build only skipped the
     // timer when (toast.promise && toastType === 'loading') — i.e. a
@@ -654,19 +638,19 @@ export function mountToaster(
       const customContainer = createEl('div', { 'data-custom': '' })
       if (typeof toast.custom === 'function') {
         toast.custom(customContainer)
-      } else if (toast.custom instanceof HTMLElement) {
+      } else {
         customContainer.appendChild(toast.custom)
       }
       iconDiv.appendChild(customContainer)
       li.appendChild(iconDiv)
     } else if (type === 'loading') {
-      const iconDiv = createEl('div', { 'data-icon': '' })
+      const iconDiv = createEl('div', { 'data-icon': '', 'aria-hidden': 'true' })
       setInnerHTML(iconDiv, getLoaderMarkup())
       li.appendChild(iconDiv)
     } else {
       const iconMarkup = getIcon(type)
       if (iconMarkup) {
-        const iconDiv = createEl('div', { 'data-icon': '' })
+        const iconDiv = createEl('div', { 'data-icon': '', 'aria-hidden': 'true' })
         setInnerHTML(iconDiv, iconMarkup)
         li.appendChild(iconDiv)
       }
@@ -739,7 +723,7 @@ export function mountToaster(
   const dismissToast = (id: ToastT['id']): void => {
     pauseAutoDismiss(id)
     const node = container.querySelector<HTMLLIElement>(
-      `[data-notify-toast][data-id="${cssEscape(String(id))}"]`
+      `[data-notify-toast][data-notify-key="${cssEscape(getToastKey(id))}"]`
     )
     if (node) {
       // Flip `data-removed` to start the CSS exit transition. The DOM
@@ -772,6 +756,11 @@ export function mountToaster(
       // is the right gate. A promise toast that has settled to
       // success/error should auto-dismiss like any other toast.
       if ((toast.type ?? 'normal') === 'loading') continue
+      const interaction = interactions.get(toast.id)
+      if (interaction?.hovered || interaction?.focused) {
+        interaction.remainingMs = toast.duration ?? currentDuration ?? TOAST_LIFETIME
+        continue
+      }
       startAutoDismiss(toast.id)
     }
   }
@@ -918,46 +907,69 @@ export function mountToaster(
     }
 
     // Pause the auto-dismiss on hover / focus so the user can read
-    // the toast without it disappearing. The remaining time is
-    // captured in `hoverRemainingMs` on mouse-enter and restored on
-    // mouse-leave / focus-out via `startAutoDismiss(toast.id, ms)`.
-    // The legacy React build preserved the remaining time the same
-    // way (see `pauseTimer` / `startTimer` in src/react/render.tsx);
-    // the vanilla refactor was resetting to the full duration on
-    // every mouse-leave, which made toasts last `duration * 2` in
-    // the worst case (hover once, the resume re-armed a full new
-    // timer on top of the already-elapsed time). The capture has
-    // to happen in onMouseEnter (before pauseAutoDismiss clears the
-    // record) — calling `pauseAutoDismiss` a second time in
-    // onMouseLeave returns 0, which is why the previous version
-    // always fell through to the full-duration branch. See Fix 18
-    // in the bug report.
-    let hoverRemainingMs = 0
+    // the toast without it disappearing. One shared interaction record
+    // preserves the remaining time across content re-renders and only
+    // resumes once both hover and focus have ended.
+    const interaction = interactions.get(toast.id) ?? {
+      hovered: li.matches(':hover'),
+      focused: li.contains(document.activeElement),
+      remainingMs: null
+    }
+    interactions.set(toast.id, interaction)
     const onMouseEnter = (): void => {
-      hoverRemainingMs = pauseAutoDismiss(toast.id)
+      if (interaction.hovered) return
+      interaction.hovered = true
+      if (!interaction.focused) interaction.remainingMs = pauseAutoDismiss(toast.id)
     }
     const onMouseLeave = (): void => {
+      if (!interaction.hovered) return
+      interaction.hovered = false
+      resumeAfterInteraction()
+    }
+    const resumeAfterInteraction = (): void => {
+      if (interaction.hovered || interaction.focused) return
       // See Fix 11 — drop the `toast.promise` check. The legacy React
       // build restarted the auto-dismiss timer on mouse-leave for
       // resolved promise toasts (success/error type) just like
       // normal toasts. Loading toasts never get an auto-dismiss
       // timer in the first place, so there is nothing to resume.
       if ((toast.type ?? 'normal') === 'loading') {
-        hoverRemainingMs = 0
+        interaction.remainingMs = null
         return
       }
-      if (hoverRemainingMs > 0) {
-        startAutoDismiss(toast.id, hoverRemainingMs)
+      if (interaction.remainingMs !== null && interaction.remainingMs > 0) {
+        startAutoDismiss(toast.id, interaction.remainingMs)
       } else {
         // No prior hover captured a remaining (or the toast had
         // `duration: Infinity`). Use the full duration — same
         // behaviour as a freshly-mounted toast.
         startAutoDismiss(toast.id)
       }
-      hoverRemainingMs = 0
+      interaction.remainingMs = null
     }
-    const onFocusIn = (): void => onMouseEnter()
-    const onFocusOut = (): void => onMouseLeave()
+    const onFocusIn = (): void => {
+      if (interaction.focused) return
+      interaction.focused = true
+      if (!interaction.hovered) interaction.remainingMs = pauseAutoDismiss(toast.id)
+    }
+    const onFocusOut = (event: FocusEvent): void => {
+      if (event.relatedTarget instanceof window.Node && li.contains(event.relatedTarget)) return
+      interaction.focused = false
+      resumeAfterInteraction()
+    }
+    const onClick = (event: MouseEvent): void => {
+      if (disabled || !toast.onClick) return
+      const target = event.target as HTMLElement | null
+      if (target?.closest('button')) return
+      toast.onClick(event)
+    }
+    const onActivationKeyDown = (event: KeyboardEvent): void => {
+      if (!toast.onClick || disabled || (event.key !== 'Enter' && event.key !== ' ')) return
+      const target = event.target as HTMLElement | null
+      if (target !== li) return
+      event.preventDefault()
+      toast.onClick(event)
+    }
 
     li.addEventListener('pointerdown', onPointerDown)
     li.addEventListener('pointermove', onPointerMove)
@@ -967,6 +979,8 @@ export function mountToaster(
     li.addEventListener('mouseleave', onMouseLeave)
     li.addEventListener('focusin', onFocusIn)
     li.addEventListener('focusout', onFocusOut)
+    li.addEventListener('click', onClick)
+    li.addEventListener('keydown', onActivationKeyDown)
 
     const teardown: Array<() => void> = [
       () => li.removeEventListener('pointerdown', onPointerDown),
@@ -976,7 +990,9 @@ export function mountToaster(
       () => li.removeEventListener('mouseenter', onMouseEnter),
       () => li.removeEventListener('mouseleave', onMouseLeave),
       () => li.removeEventListener('focusin', onFocusIn),
-      () => li.removeEventListener('focusout', onFocusOut)
+      () => li.removeEventListener('focusout', onFocusOut),
+      () => li.removeEventListener('click', onClick),
+      () => li.removeEventListener('keydown', onActivationKeyDown)
     ]
     cleanups.set(toast.id, teardown)
   }
@@ -1023,15 +1039,15 @@ export function mountToaster(
     for (const child of Array.from(
       container.querySelectorAll<HTMLLIElement>('[data-notify-toast]')
     )) {
-      const id = child.getAttribute('data-id')
-      if (id) existing.set(id, child)
+      const key = child.getAttribute('data-notify-key')
+      if (key) existing.set(key, child)
     }
 
     // Update or create each toast.
     for (let index = 0; index < toasts.length; index += 1) {
       const toast = toasts[index]!
-      const id = String(toast.id)
-      const existingNode = existing.get(id)
+      const key = getToastKey(toast.id)
+      const existingNode = existing.get(key)
       if (!existingNode) {
         const node = createToastElement(toast, index)
         container.appendChild(node)
@@ -1089,6 +1105,9 @@ export function mountToaster(
             'aria-busy': String(type === 'loading'),
             'aria-label': type === 'normal' ? '' : `${type}: ${toast.title ?? ''}`
           })
+          existingNode.className = cn(toast.className)
+          if (toast.testId) existingNode.dataset['testid'] = toast.testId
+          else existingNode.removeAttribute('data-testid')
           // Cache the new snapshot so the next render can compare.
           existingNode.dataset['snapshot'] = newSnapshot
           existingNode.dataset['type'] = type
@@ -1100,6 +1119,7 @@ export function mountToaster(
           // timer if the new duration is the same as the old
           // (Fix: don't lose the elapsed time on snapshot-only
           // re-fills).
+          const previousDuration = existingNode.dataset['duration']
           const previousRemaining = pauseAutoDismiss(toast.id)
           // See Fix 11 — `!toast.promise` was the wrong gate. The
           // type check is enough: a promise toast that has settled
@@ -1107,20 +1127,26 @@ export function mountToaster(
           // should now auto-dismiss.
           if ((toast.type ?? 'normal') !== 'loading') {
             const newDuration = toast.duration ?? currentDuration ?? TOAST_LIFETIME
-            if (newDuration !== Infinity) {
-              startAutoDismiss(toast.id, newDuration)
+            const durationChanged = previousDuration !== String(newDuration)
+            const interaction = interactions.get(toast.id)
+            if (interaction?.hovered || interaction?.focused) {
+              if (durationChanged || interaction.remainingMs === null) {
+                interaction.remainingMs = durationChanged ? newDuration : previousRemaining
+              }
+            } else if (newDuration !== Infinity) {
+              startAutoDismiss(
+                toast.id,
+                durationChanged || previousRemaining <= 0 ? newDuration : previousRemaining
+              )
             }
+            existingNode.dataset['duration'] = String(newDuration)
           }
-          // previousRemaining is unused; the helper uses the
-          // new duration unconditionally to honour the explicit
-          // `toaster.update({ duration: ... })` semantics.
-          void previousRemaining
         }
 
         // Update index/front/visible/expanded/height data-attributes.
         const isFront = index === 0
         const isVisible = index + 1 <= currentVisibleToasts
-        const offset = computeOffset(toasts, heights, index, gap)
+        const offset = computeOffset(toasts, heights, index, currentGap)
         // Re-derive the position from the toaster's current
         // `currentPosition` (or the toast's per-toast override) so
         // that calling `toaster.update({ position: 'top-right' })`
@@ -1146,7 +1172,7 @@ export function mountToaster(
         existingNode.style.setProperty('--toasts-before', String(index))
         existingNode.style.setProperty('--z-index', String(1000 - index))
         existingNode.style.setProperty('--offset', `${offset}px`)
-        existing.delete(id)
+        existing.delete(key)
       }
     }
 
@@ -1159,12 +1185,13 @@ export function mountToaster(
     // toast comes in. See Fix 6 in the bug report.
     for (const [, node] of existing) {
       if (node.getAttribute('data-removed') === 'true') continue
-      const id = node.getAttribute('data-id')
+      const id = nodeIds.get(node)
       node.remove()
-      if (id) {
+      if (id !== undefined) {
         heights.delete(id)
         cleanups.get(id)?.forEach((fn) => fn())
         cleanups.delete(id)
+        interactions.delete(id)
         pauseAutoDismiss(id)
       }
     }
@@ -1199,7 +1226,7 @@ export function mountToaster(
    * changing what the tests assert, while real browsers (which do
    * return a real duration) wait for the full transition.
    */
-  const schedulePostExitRemoval = (node: HTMLLIElement, onRemove: () => void): void => {
+  const schedulePostExitRemoval = (node: HTMLLIElement, onRemove: () => void): (() => void) => {
     let done = false
     let longestProperties = new Set<string>()
     // `fallback` is declared up-front so `finish` can `clearTimeout`
@@ -1223,6 +1250,12 @@ export function mountToaster(
       if (event.target !== node) return
       if (!longestProperties.has('all') && !longestProperties.has(event.propertyName)) return
       finish()
+    }
+    const cancel = (): void => {
+      if (done) return
+      done = true
+      node.removeEventListener('transitionend', onTransitionEnd)
+      if (fallback !== undefined) clearTimeout(fallback)
     }
     // Detect reduced motion and the "no transition" environment
     // (jsdom / non-CSS engine). The reduced-motion media query tells
@@ -1269,13 +1302,14 @@ export function mountToaster(
     // disappears.
     if (isReducedMotion || longestMs === 0) {
       fallback = setTimeout(finish, TIME_BEFORE_UNMOUNT)
-      return
+      return cancel
     }
     // Real browser with a real transition. Wait for `transitionend`
     // with a 100ms-larger-than-longest fallback (covers the worst
     // case where the browser drops the event).
     fallback = setTimeout(finish, longestMs + 100)
     node.addEventListener('transitionend', onTransitionEnd)
+    return cancel
   }
 
   const unsubscribe = state.subscribe((event) => {
@@ -1290,7 +1324,8 @@ export function mountToaster(
       // ran. See Fix 9 in the bug report.
       pauseAutoDismiss(event.id)
 
-      // Fire `onDismiss` here (instead of in each dismiss source —
+      // Read the callback before scheduling removal so a same-id toast
+      // recreated by the callback does not replace this reference.
       // close button, swipe-out, auto-dismiss timer, external
       // `toast.dismiss(id)`) so every dismiss path triggers the
       // callback exactly once. The legacy React build did the same
@@ -1300,7 +1335,6 @@ export function mountToaster(
       // transition ends and the toast may already be evicted from
       // the active set by then.
       const dismissed = state.toasts.find((toast) => toast.id === event.id)
-      dismissed?.onDismiss?.(dismissed)
 
       // Mark the matching <li> as removed immediately so the CSS exit
       // animation runs; the DOM removal is scheduled for AFTER the
@@ -1313,26 +1347,45 @@ export function mountToaster(
       // those branches were removed; the cleanup happens here, and
       // only here.
       const node = container.querySelector<HTMLLIElement>(
-        `[data-notify-toast][data-id="${cssEscape(String(event.id))}"]`
+        `[data-notify-toast][data-notify-key="${cssEscape(getToastKey(event.id))}"]`
       )
       if (node) {
         setAttrs(node, { 'data-removed': 'true' })
-        schedulePostExitRemoval(node, () => {
+        const cancelExit = schedulePostExitRemoval(node, () => {
+          exitCleanups.delete(event.id)
           node.remove()
           heights.delete(event.id)
           cleanups.get(event.id)?.forEach((fn) => fn())
           cleanups.delete(event.id)
+          interactions.delete(event.id)
           // After the dismissed <li> is gone, re-render so the remaining
           // toasts get fresh `data-index` / `data-front` / `data-visible`
           // attributes. Without this they stay stuck with the indices
           // they had before the dismiss (Fix 4 in the bug report).
           renderAll()
         })
+        exitCleanups.set(event.id, cancelExit)
       } else {
         // No matching DOM node — just ensure renderAll doesn't recreate it.
         window.setTimeout(renderAll, 0)
       }
+      dismissed?.onDismiss?.(dismissed)
       return
+    }
+    const cancelExit = exitCleanups.get(event.id)
+    if (cancelExit) {
+      cancelExit()
+      exitCleanups.delete(event.id)
+      const node = container.querySelector<HTMLLIElement>(
+        `[data-notify-toast][data-notify-key="${cssEscape(getToastKey(event.id))}"]`
+      )
+      if (node) {
+        setAttrs(node, {
+          'data-removed': 'false',
+          'data-swipe-out': 'false',
+          'data-swiping': 'false'
+        })
+      }
     }
     renderAll()
   })
@@ -1354,6 +1407,7 @@ export function mountToaster(
         if (next.closeButton !== undefined) currentCloseButton = next.closeButton
         if (next.richColors !== undefined) currentRichColors = next.richColors
         if (next.duration !== undefined) currentDuration = next.duration
+        if (next.gap !== undefined) currentGap = next.gap
         if (next.expand !== undefined) currentExpand = next.expand
         if (next.position !== undefined) {
           currentPosition = next.position
@@ -1361,10 +1415,8 @@ export function mountToaster(
           setAttrs(container, { 'data-y-position': y, 'data-x-position': x })
         }
         if (next.theme !== undefined) {
-          // `theme: 'system'` needs to be resolved against the OS
-          // media query at update time too, not just at mount.
-          currentTheme = next.theme === 'system' ? resolveSystemTheme() : next.theme
-          setAttrs(container, { 'data-notify-theme': currentTheme })
+          currentThemePreference = next.theme
+          syncThemeSubscription()
         }
         if (next.richColors !== undefined) {
           currentRichColors = next.richColors
@@ -1384,16 +1436,25 @@ export function mountToaster(
         }
         if (next.style !== undefined) currentStyle = next.style
         if (next.hotkey !== undefined) currentHotkey = next.hotkey
+        if (next.className !== undefined) container.className = next.className
+        if (next.customAriaLabel !== undefined || next.containerAriaLabel !== undefined) {
+          setAttrs(container, {
+            'aria-label':
+              currentOptions.customAriaLabel ?? currentOptions.containerAriaLabel ?? 'Notifications'
+          })
+        }
         applyContainerStyles(container, {
-          offset: next.offset,
-          mobileOffset: next.mobileOffset,
-          gap: next.gap ?? GAP,
+          offset: currentOptions.offset,
+          mobileOffset: currentOptions.mobileOffset,
+          gap: currentGap,
           width: TOAST_WIDTH,
           style: currentStyle
         })
       }
       renderAll()
-      restartAllTimers()
+      if (next?.duration !== undefined || next?.id !== undefined) {
+        restartAllTimers()
+      }
       return controller
     },
     destroy: () => {
@@ -1404,6 +1465,9 @@ export function mountToaster(
         for (const fn of cleanupsForToast) fn()
       }
       cleanups.clear()
+      interactions.clear()
+      for (const cancelExit of exitCleanups.values()) cancelExit()
+      exitCleanups.clear()
       for (const fn of removeListeners) fn()
       removeListeners.length = 0
       // a11y: restore focus to whatever the user had focused before
@@ -1497,10 +1561,8 @@ const computeOffset = (
  * `type`, `title`, and `description` all change in the same tick and
  * the snapshot diff picks that up.
  *
- * `JSON.stringify` skips function values, which is why we coerce the
- * title/description/action label callbacks to a stable `'fn'` sentinel —
- * a different callback reference is the same signal as a value change
- * (re-fill).
+ * Function and object references receive stable weak IDs so replacing a
+ * callback or custom element triggers a re-fill without retaining it.
  */
 const getContentSnapshot = (
   toast: ToastT,
@@ -1531,16 +1593,24 @@ const getContentSnapshot = (
     action: toast.action
       ? {
           label: normalizeForSnapshot(toast.action.label as RenderableOrFactory),
-          closeOnClick: toast.action.closeOnClick
+          closeOnClick: toast.action.closeOnClick,
+          onClick: normalizeForSnapshot(toast.action.onClick)
         }
       : null,
     cancel: toast.cancel
       ? {
           label: normalizeForSnapshot(toast.cancel.label as RenderableOrFactory),
-          closeOnClick: toast.cancel.closeOnClick
+          closeOnClick: toast.cancel.closeOnClick,
+          onClick: normalizeForSnapshot(toast.cancel.onClick)
         }
       : null,
-    custom: toast.custom ? 'present' : null,
+    custom: normalizeForSnapshot(toast.custom),
+    onClick: normalizeForSnapshot(toast.onClick),
+    duration: toast.duration,
+    position: toast.position,
+    className: toast.className,
+    descriptionClassName: toast.descriptionClassName,
+    testId: toast.testId,
     // See Fix 14 — resolve against the toaster-wide defaults so
     // a toaster.update({ closeButton: ... }) flips the snapshot
     // for every toast that doesn't pin its own value.
@@ -1557,9 +1627,20 @@ const getContentSnapshot = (
   })
 }
 
-const normalizeForSnapshot = (value: RenderableOrFactory): unknown => {
+const snapshotReferences = new WeakMap<object, number>()
+let snapshotReferenceCounter = 0
+
+const normalizeForSnapshot = (value: unknown): unknown => {
   if (value === null || value === undefined || value === false) return null
-  if (typeof value === 'function') return 'fn'
+  if (typeof value === 'function' || typeof value === 'object') {
+    const reference = value as object
+    let id = snapshotReferences.get(reference)
+    if (id === undefined) {
+      id = ++snapshotReferenceCounter
+      snapshotReferences.set(reference, id)
+    }
+    return `ref:${id}`
+  }
   return value
 }
 
@@ -1572,4 +1653,8 @@ function cssEscape(value: string): string {
     return CSS.escape(value)
   }
   return value.replace(/["\\]/g, '\\$&')
+}
+
+function getToastKey(id: ToastT['id']): string {
+  return `${typeof id === 'number' ? 'number' : 'string'}:${id}`
 }

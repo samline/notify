@@ -51,4 +51,14 @@ describe('api/create-toaster', () => {
       if (original) w.document = original
     }
   })
+
+  it('throws a clear error when document.body is not ready', () => {
+    const body = document.body
+    body.remove()
+    try {
+      expect(() => createToaster()).toThrow(/DOMContentLoaded/)
+    } finally {
+      document.documentElement.appendChild(body)
+    }
+  })
 })

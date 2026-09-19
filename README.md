@@ -46,17 +46,17 @@ Requires Node 20+ when bundling. Runtime target is ES2020.
 Use the browser build when you do not have a bundler and need to run the package directly in HTML, Shopify, WordPress, or any traditional template.
 
 ```html
-<script src="https://unpkg.com/@samline/notify@3.1.2/dist/browser/global.global.js"></script>
+<script src="https://unpkg.com/@samline/notify@latest/dist/browser/global.global.js"></script>
 ```
 
-> Pin the version in production. Replace `3.1.2` with the version you ship.
+> Pin a concrete published version in production instead of `latest`.
 
 The browser bundle exposes a single global: `window.Notify`. It auto-mounts a default toaster, so the first call has somewhere to render.
 
 ```html
 <button id="save">Save</button>
 
-<script src="https://unpkg.com/@samline/notify@3.1.2/dist/browser/global.global.js"></script>
+<script src="https://unpkg.com/@samline/notify@latest/dist/browser/global.global.js"></script>
 <script>
   window.Notify.toast('Hello from the browser')
   document.querySelector('#save').addEventListener('click', () => {
@@ -74,7 +74,7 @@ If you want a custom toaster configuration (position, theme, rich colors), call 
 | Entrypoint                   | When to use                                                                  |
 | ---------------------------- | ---------------------------------------------------------------------------- |
 | `@samline/notify`            | Main vanilla API for bundlers, ESM, or CJS consumers.                        |
-| `@samline/notify/browser`    | Pre-bundled IIFE that registers `window.Notify` for direct `<script>` usage. |
+| `@samline/notify/browser`    | Importable ESM/CJS browser registry; the CDN file registers `window.Notify`. |
 | `@samline/notify/styles.css` | The stylesheet the renderer expects. Import it once at app entry.            |
 
 The vanilla entrypoint also exports `browser`, the same `{ toast, Toaster, createToaster, configureToaster, getToaster, destroyToaster }` surface as the IIFE but as a module-level singleton (no `globalThis` side-effect). Use it from a bundler when you want the IIFE ergonomics without installing a global — see [docs/browser.md → Using the same shape from a bundler](docs/browser.md#using-the-same-shape-from-a-bundler).

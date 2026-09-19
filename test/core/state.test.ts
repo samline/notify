@@ -40,6 +40,14 @@ describe('core/state', () => {
       expect(active[0]?.title).toBe('one updated')
     })
 
+    it('does not collide generated ids with explicit numeric ids', () => {
+      ToastState.create({ message: 'explicit', id: 1 })
+      const generated = ToastState.create({ message: 'generated' })
+
+      expect(generated).toBe(2)
+      expect(ToastState.getActiveToasts()).toHaveLength(2)
+    })
+
     it('defaults `dismissible` to true', () => {
       ToastState.create({ message: 'open' })
       const [toast] = ToastState.getActiveToasts()
@@ -50,6 +58,20 @@ describe('core/state', () => {
       ToastState.create({ message: 'sticky', dismissible: false })
       const [toast] = ToastState.getActiveToasts()
       expect(toast?.dismissible).toBe(false)
+    })
+
+    it('evaluates a description factory once and stores its result', () => {
+      let calls = 0
+      ToastState.create({
+        message: 'title',
+        description: () => {
+          calls += 1
+          return 'details'
+        }
+      })
+
+      expect(calls).toBe(1)
+      expect(ToastState.getActiveToasts()[0]?.description).toBe('details')
     })
   })
 
@@ -279,6 +301,50 @@ describe('core/state', () => {
       expect(errored?.description).toBe('Caught: boom')
 
       unsubscribe()
+    })
+
+    it('unwrap preserves the original resolution when a renderer callback throws', async () => {
+      const result = ToastState.promise(Promise.resolve('original'), {
+        success: () => {
+          throw new Error('formatter failed')
+        }
+      })
+
+      await expect(result.unwrap()).resolves.toBe('original')
+    })
+
+    it('unwrap waits for an async finally callback', async () => {
+      let finishFinally: (() => void) | undefined
+      const finallyPending = new Promise<void>((resolve) => {
+        finishFinally = resolve
+      })
+      let finished = false
+      const result = ToastState.promise(Promise.resolve('ok'), {
+        success: 'Done',
+        finally: async () => {
+          await finallyPending
+          finished = true
+        }
+      })
+      const unwrapped = result.unwrap()
+
+      await Promise.resolve()
+      expect(finished).toBe(false)
+      finishFinally?.()
+      await expect(unwrapped).resolves.toBe('ok')
+      expect(finished).toBe(true)
+    })
+
+    it('turns a synchronously throwing promise thunk into an unwrap rejection', async () => {
+      const error = new Error('sync failure')
+      const result = ToastState.promise(
+        () => {
+          throw error
+        },
+        { error: 'Failed' }
+      )
+
+      await expect(result.unwrap()).rejects.toBe(error)
     })
   })
 

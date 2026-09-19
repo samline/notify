@@ -1,6 +1,6 @@
 # Notify docs
 
-This is the markdown reference for `@samline/notify` v3.1.2 — a vanilla, framework-free toast notification runtime. The same content is served as a Starlight site at [samline.github.io/notify](https://samline.github.io/notify); the markdown here is the source of truth.
+This is the markdown reference for `@samline/notify` 3.x — a vanilla, framework-free toast notification runtime. The same content is served as a Starlight site at [samline.github.io/notify](https://samline.github.io/notify); the markdown here is the source of truth.
 
 ---
 
@@ -22,7 +22,7 @@ This is the markdown reference for `@samline/notify` v3.1.2 — a vanilla, frame
 
 - **A tiny observable.** Every toast lives in a module-level `Observer`; the renderer subscribes to it and re-renders the DOM on each event. No framework runtime, no virtual DOM.
 - **A vanilla renderer.** Each active toast becomes a `<li data-notify-toast>` inside a single `<ol data-notify-toaster>`. Every transition is a CSS rule driven by a `data-*` attribute; the JS only sets attributes.
-- **Two entrypoints.** `@samline/notify` (ESM + CJS) for bundlers, and `@samline/notify/browser` (IIFE) for `<script>` tags. The same surface, no global side-effect from the root entrypoint.
+- **Two module entrypoints.** `@samline/notify` exposes the full ESM/CJS API and `@samline/notify/browser` exposes the browser registry. The standalone IIFE under `dist/browser/global.global.js` registers `window.Notify`.
 
 If you have not read the rest of the docs, start with [Getting started](getting-started.md) — it walks through the lifecycle and the observable contract.
 
@@ -33,7 +33,7 @@ If you have not read the rest of the docs, start with [Getting started](getting-
 | Situation                                                              | Use                                                                |
 | ---------------------------------------------------------------------- | ------------------------------------------------------------------ |
 | Modern app with a bundler (Vite, esbuild, Rollup, Webpack, Bun)        | `@samline/notify`                                                  |
-| Plain HTML page, WordPress, Shopify, classic templates                 | `@samline/notify/browser`                                          |
+| Plain HTML page, WordPress, Shopify, classic templates                 | `dist/browser/global.global.js`                                    |
 | Type-checking the toaster controller from a CDN script                 | declare `window.Notify` against `NotifyApi` from `@samline/notify` |
 | You want the IIFE surface from a bundler (no `globalThis` side-effect) | `import { browser } from '@samline/notify'`                        |
 | You need multiple toasters in the same page                            | `import { mountToaster } from '@samline/notify'`                   |
@@ -62,4 +62,4 @@ If you have not read the rest of the docs, start with [Getting started](getting-
 
 ## Versioning
 
-This documentation matches `@samline/notify` v3.1.2 — the first published vanilla release. The previous multi-framework versions (1.x and 2.0.0–2.0.3) used a different API surface and are not covered here.
+This documentation matches the current `@samline/notify` 3.x API. The previous multi-framework versions (1.x and 2.0.0–2.0.3) used a different API surface and are not covered here.

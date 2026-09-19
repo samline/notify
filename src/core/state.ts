@@ -71,19 +71,19 @@ class Observer {
 
   create = (data: ToastInput): ToastId => {
     const { message, custom, description, ...rest } = data
-    const id: ToastId =
-      typeof data.id === 'number' || (typeof data.id === 'string' && data.id.length > 0)
-        ? data.id
-        : toastsCounter++
+    let id: ToastId
+    if (typeof data.id === 'number' || (typeof data.id === 'string' && data.id.length > 0)) {
+      id = data.id
+    } else {
+      do {
+        id = toastsCounter++
+      } while (this.toasts.some((toast) => toast.id === id))
+    }
 
     const dismissible = data.dismissible === undefined ? true : data.dismissible
     const title = typeof message === 'function' ? message() : message
-    // `description` on the input is `TitleInput` (function allowed), but
-    // `ToastT.description` is `Renderable` (function NOT allowed) — the
-    // renderer does not call description as a function. We only persist
-    // the description if it's not a function.
     const descriptionRenderable: Renderable | undefined =
-      typeof description === 'function' ? undefined : description
+      typeof description === 'function' ? description() : description
 
     if (this.dismissedToasts.has(id)) {
       this.dismissedToasts.delete(id)
@@ -164,13 +164,19 @@ class Observer {
   ):
     | { id: ToastId; unwrap: () => Promise<ToastData> }
     | { id?: undefined; unwrap: () => Promise<ToastData> } => {
+    const resolveInput = (): Promise<ToastData> => {
+      if (typeof promise !== 'function') return Promise.resolve(promise)
+      try {
+        return Promise.resolve((promise as () => Promise<ToastData>)())
+      } catch (error) {
+        return Promise.reject(error)
+      }
+    }
+
     if (!data) {
       // Nothing to render, but still return a passthrough unwrap.
       return {
-        unwrap: () =>
-          Promise.resolve(
-            typeof promise === 'function' ? (promise as () => Promise<ToastData>)() : promise
-          )
+        unwrap: resolveInput
       }
     }
 
@@ -195,9 +201,7 @@ class Observer {
       id = this.create(loadingPayload)
     }
 
-    const resolved = Promise.resolve(
-      typeof promise === 'function' ? (promise as () => Promise<ToastData>)() : promise
-    )
+    const resolved = resolveInput()
 
     const state: { result: ['resolve', ToastData] | ['reject', unknown] | null } = { result: null }
 
@@ -256,39 +260,38 @@ class Observer {
       this.create(payload)
     }
 
-    const originalPromise = resolved
-      .then(async (response) => {
-        state.result = ['resolve', response]
-        if (isHttpResponse(response) && !response.ok) {
+    const outcome = resolved.then(
+      (value) => ({ status: 'fulfilled' as const, value }),
+      (reason: unknown) => ({ status: 'rejected' as const, reason })
+    )
+    const rendering = outcome
+      .then(async (result) => {
+        if (result.status === 'rejected') {
+          state.result = ['reject', result.reason]
           await handleValue(data.error, 'error')
-        } else if (response instanceof Error) {
+          return
+        }
+        state.result = ['resolve', result.value]
+        if (isHttpResponse(result.value) && !result.value.ok) {
+          await handleValue(data.error, 'error')
+        } else if (result.value instanceof Error) {
           await handleValue(data.error, 'error')
         } else {
           await handleValue(data.success as PromiseValue<unknown> | undefined, 'success')
         }
       })
-      .catch(async (error) => {
-        state.result = ['reject', error]
-        await handleValue(data.error, 'error')
+      .finally(async () => {
+        await data.finally?.()
       })
-      .finally(() => {
-        data.finally?.()
-      })
+    const renderingHandled = rendering.catch(() => undefined)
 
-    const unwrap = () =>
-      new Promise<ToastData>((resolve, reject) => {
-        originalPromise
-          .then(() => {
-            if (state.result && state.result[0] === 'reject') {
-              reject(state.result[1])
-            } else if (state.result) {
-              resolve(state.result[1])
-            } else {
-              resolve(undefined as unknown as ToastData)
-            }
-          })
-          .catch(reject)
-      })
+    const unwrap = async (): Promise<ToastData> => {
+      const result = await outcome
+      // Rendering callbacks must not change the original promise outcome.
+      await renderingHandled
+      if (result.status === 'rejected') throw result.reason
+      return result.value
+    }
 
     if (id === undefined) {
       return { unwrap }

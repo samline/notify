@@ -1,8 +1,7 @@
 // Main vanilla entrypoint. Public surface exposed to `@samline/notify`.
 //
 // The package is **side-effect free** at the root entrypoint
-// (`"sideEffects": false` in package.json). Consumers who want
-// `window.Notify` should import `@samline/notify/browser` instead.
+// Consumers who want `window.Notify` should load the standalone IIFE.
 
 export { toast } from './api/toast'
 export type { ToastApi } from './api/toast'

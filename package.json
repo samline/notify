@@ -1,10 +1,18 @@
 {
   "name": "@samline/notify",
-  "version": "3.1.2",
+  "version": "3.1.3",
   "description": "Framework-agnostic toast notification runtime with a vanilla/browser API and an IIFE bundle for direct CDN use.",
   "type": "module",
   "license": "MIT",
   "homepage": "https://samline.github.io/notify",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/samline/notify.git"
+  },
+  "bugs": {
+    "url": "https://github.com/samline/notify/issues"
+  },
+  "packageManager": "bun@1.3.14",
   "publishConfig": {
     "access": "public",
     "tag": "latest"
@@ -12,7 +20,10 @@
   "engines": {
     "node": ">=20"
   },
-  "sideEffects": false,
+  "sideEffects": [
+    "./dist/browser/global.global.js",
+    "./dist/styles.css"
+  ],
   "files": [
     "dist"
   ],
@@ -26,8 +37,9 @@
       "require": "./dist/index.cjs"
     },
     "./browser": {
-      "types": "./dist/browser/global.d.ts",
-      "default": "./dist/browser/global.global.js"
+      "types": "./dist/browser/index.d.ts",
+      "import": "./dist/browser/index.js",
+      "require": "./dist/browser/index.cjs"
     },
     "./styles.css": "./dist/styles.css"
   },
@@ -37,17 +49,25 @@
     "dev": "tsup --config tsup.config.ts --watch",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "test:package": "node test/package-smoke.mjs",
     "test:watch": "vitest",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "prepublishOnly": "npm run clean && npm run build && npm run typecheck && npm test"
+    "prepublishOnly": "npm run clean && npm run build && npm run typecheck && npm test && npm run test:package"
+  },
+  "overrides": {
+    "esbuild": "0.28.2",
+    "nanoid": "3.3.18",
+    "postcss": "8.5.28"
   },
   "devDependencies": {
-    "@types/node": "^24.0.0",
+    "@types/node": "^24.13.5",
+    "@vitest/coverage-v8": "^5.0.1",
     "jsdom": "^26.1.0",
-    "prettier": "^3.3.0",
-    "tsup": "^8.5.0",
-    "typescript": "^5.8.3",
-    "vitest": "^3.1.1"
+    "prettier": "^3.9.7",
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3",
+    "vitest": "^5.0.1"
   }
 }

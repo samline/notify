@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { mountToaster } from '../../src/core/renderer'
 import { ToastState, resetToastState } from '../../src/core/state'
@@ -101,6 +101,18 @@ describe('core/renderer', () => {
     await new Promise<void>((resolve) => setTimeout(resolve, 10))
     expect(li?.getAttribute('data-mounted')).toBe('true')
     expect(li?.textContent).toContain('hello')
+  })
+
+  it('keeps numeric and string ids distinct in the DOM', async () => {
+    controller = mountToaster(root, { duration: Infinity }, ToastState)
+    ToastState.create({ id: 1, message: 'number' })
+    ToastState.create({ id: '1', message: 'string' })
+    await Promise.resolve()
+    await Promise.resolve()
+
+    const nodes = root.querySelectorAll<HTMLLIElement>('li[data-notify-toast][data-id="1"]')
+    expect(nodes).toHaveLength(2)
+    expect(new Set(Array.from(nodes, (node) => node.dataset['notifyKey'])).size).toBe(2)
   })
 
   it('applies data-type=success for success variant', () => {
@@ -431,6 +443,41 @@ describe('core/renderer', () => {
     expect(liAfter?.querySelector('[data-close-button][data-disabled="true"]')).toBeNull()
   })
 
+  it('same-id update refreshes behavior, attributes, and duration', () => {
+    vi.useFakeTimers()
+    try {
+      let oldClicks = 0
+      let newClicks = 0
+      controller = mountToaster(root, {}, ToastState)
+      ToastState.create({
+        id: 'behavior',
+        message: 'old',
+        duration: 40,
+        onClick: () => (oldClicks += 1)
+      })
+      vi.advanceTimersByTime(10)
+      ToastState.create({
+        id: 'behavior',
+        message: 'new',
+        duration: 1000,
+        className: 'updated',
+        testId: 'updated-toast',
+        onClick: () => (newClicks += 1)
+      })
+
+      const li = root.querySelector<HTMLLIElement>('li[data-id="behavior"]')
+      li?.click()
+      expect(oldClicks).toBe(0)
+      expect(newClicks).toBe(1)
+      expect(li?.className).toBe('updated')
+      expect(li?.dataset['testid']).toBe('updated-toast')
+      vi.advanceTimersByTime(50)
+      expect(li?.getAttribute('data-removed')).toBe('false')
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
   it('toast.promise() updates DOM to success after resolve', async () => {
     controller = mountToaster(root, {}, ToastState)
     // Schedule the promise resolution for the NEXT microtask so we can
@@ -694,7 +741,7 @@ describe('core/renderer', () => {
   })
 
   it('onDismiss is invoked for every dismiss path (close, auto, external)', () => {
-    controller = mountToaster(root, { duration: 50 }, ToastState)
+    controller = mountToaster(root, { duration: 50, closeButton: true }, ToastState)
 
     // Path 1: close button click
     let closeCalls = 0
@@ -707,10 +754,7 @@ describe('core/renderer', () => {
     })
     const closeLi = root.querySelector<HTMLLIElement>('li[data-id="close-path"]')
     const closeBtn = closeLi?.querySelector<HTMLButtonElement>('[data-close-button]')
-    // Default `closeButton: false` — the close button only renders
-    // when the toaster has `closeButton: true`. We can't easily
-    // exercise that path here, but the swipe-out and external paths
-    // cover the subscriber invocation.
+    closeBtn?.click()
 
     // Path 2: auto-dismiss timer
     let autoCalls = 0
@@ -736,11 +780,7 @@ describe('core/renderer', () => {
 
     return new Promise<void>((resolve) =>
       setTimeout(() => {
-        // The close button path requires `closeButton: true`; skip
-        // the assertion for it and just verify the auto-dismiss
-        // (which fires after the 50ms duration) and the external
-        // dismiss both triggered the callback. Fix 8: previously
-        // only the close button path called onDismiss.
+        expect(closeCalls).toBe(1)
         expect(externalCalls).toBe(1)
         expect(autoCalls).toBe(1)
         resolve()
@@ -777,6 +817,14 @@ describe('core/renderer', () => {
     controller = mountToaster(root, { containerAriaLabel: 'Alerts' }, ToastState)
     const toaster = root.querySelector('ol[data-notify-toaster]')
     expect(toaster?.getAttribute('aria-label')).toBe('Alerts')
+  })
+
+  it('updates container class and accessible label', () => {
+    controller = mountToaster(root, { className: 'before' }, ToastState)
+    controller.update({ className: 'after', containerAriaLabel: 'Updated notifications' })
+
+    expect(controller.element.className).toBe('after')
+    expect(controller.element.getAttribute('aria-label')).toBe('Updated notifications')
   })
 
   it('customAriaLabel takes precedence over containerAriaLabel', () => {
@@ -1017,6 +1065,42 @@ describe('core/renderer', () => {
     })
   })
 
+  it('subscribes and unsubscribes when update changes system theme mode', () => {
+    const original = window.matchMedia
+    let dark = false
+    const listeners = new Set<() => void>()
+    Object.defineProperty(window, 'matchMedia', {
+      configurable: true,
+      writable: true,
+      value: () => ({
+        get matches() {
+          return dark
+        },
+        addEventListener: (_event: string, listener: () => void) => listeners.add(listener),
+        removeEventListener: (_event: string, listener: () => void) => listeners.delete(listener)
+      })
+    })
+
+    try {
+      controller = mountToaster(root, { theme: 'light' }, ToastState)
+      controller.update({ theme: 'system' })
+      expect(listeners.size).toBe(1)
+      dark = true
+      listeners.forEach((listener) => listener())
+      expect(controller.element.dataset['notifyTheme']).toBe('dark')
+
+      controller.update({ theme: 'light' })
+      expect(listeners.size).toBe(0)
+      expect(controller.element.dataset['notifyTheme']).toBe('light')
+    } finally {
+      Object.defineProperty(window, 'matchMedia', {
+        configurable: true,
+        writable: true,
+        value: original
+      })
+    }
+  })
+
   it('destroy() restores focus to the element that was focused at mount', () => {
     // Place a focus-able button outside the toaster, focus it, mount
     // the toaster, then call destroy(). The button should regain focus
@@ -1064,6 +1148,17 @@ describe('core/renderer', () => {
     expect(bodyClicks).toBe(1)
   })
 
+  it('toast.onClick is keyboard activatable with Enter and Space', () => {
+    let activations = 0
+    controller = mountToaster(root, {}, ToastState)
+    const id = ToastState.create({ message: 'activate', onClick: () => (activations += 1) })
+    const li = root.querySelector<HTMLLIElement>(`li[data-notify-toast][data-id="${id}"]`)
+
+    li?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }))
+    li?.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }))
+    expect(activations).toBe(2)
+  })
+
   it('toast.onClick does NOT fire while the toast is in loading state', () => {
     // Loading toasts are in-flight async work. The legacy React build
     // skipped the body click handler for them — use the promise
@@ -1073,18 +1168,16 @@ describe('core/renderer', () => {
     const result = toast.promise(new Promise(() => {}), {
       // Never resolve — keeps the toast in loading state for the test.
       loading: 'Loading...',
-      success: 'Done'
+      success: 'Done',
+      onClick: () => {
+        bodyClicks += 1
+      }
     })
     const id = (result as { id?: string | number }).id
     expect(id).toBeDefined()
     const li = root.querySelector<HTMLLIElement>(`li[data-notify-toast][data-id="${String(id)}"]`)
-    // The body handler is added in createToastElement only when
-    // toast.onClick is truthy. We can't add it after the fact
-    // without re-running the path, so this test verifies the
-    // onClick skip path differently: dispatch a click and check
-    // the renderer didn't crash. (The skip path is also covered
-    // by the onClick-fires test for non-loading toasts.)
     expect(li?.getAttribute('data-type')).toBe('loading')
+    li?.click()
     expect(bodyClicks).toBe(0)
   })
 
@@ -1186,6 +1279,151 @@ describe('core/renderer', () => {
       }, 400)
     })
   }, 8000)
+
+  it('subtracts elapsed time when pausing and resuming auto-dismiss', () => {
+    vi.useFakeTimers()
+    try {
+      controller = mountToaster(root, { duration: 1000 }, ToastState)
+      const id = ToastState.create({ message: 'accurate timer' })
+      const li = root.querySelector<HTMLLIElement>(`li[data-notify-toast][data-id="${id}"]`)
+
+      vi.advanceTimersByTime(400)
+      li?.dispatchEvent(new MouseEvent('mouseenter'))
+      vi.advanceTimersByTime(5000)
+      li?.dispatchEvent(new MouseEvent('mouseleave'))
+      vi.advanceTimersByTime(599)
+      expect(li?.getAttribute('data-removed')).toBe('false')
+      vi.advanceTimersByTime(1)
+      expect(li?.getAttribute('data-removed')).toBe('true')
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
+  it('stays paused while either hover or focus remains active', () => {
+    vi.useFakeTimers()
+    try {
+      controller = mountToaster(root, { duration: 1000 }, ToastState)
+      const id = ToastState.create({ message: 'multiple interactions' })
+      const li = root.querySelector<HTMLLIElement>(`li[data-notify-toast][data-id="${id}"]`)
+
+      vi.advanceTimersByTime(400)
+      li?.dispatchEvent(new MouseEvent('mouseenter'))
+      li?.dispatchEvent(new FocusEvent('focusin', { bubbles: true }))
+      li?.dispatchEvent(new MouseEvent('mouseleave'))
+      vi.advanceTimersByTime(2000)
+      expect(li?.getAttribute('data-removed')).toBe('false')
+
+      li?.dispatchEvent(new FocusEvent('focusout', { bubbles: true }))
+      vi.advanceTimersByTime(600)
+      expect(li?.getAttribute('data-removed')).toBe('true')
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
+  it('stays paused when content updates while hovered', () => {
+    vi.useFakeTimers()
+    try {
+      controller = mountToaster(root, { duration: 1000 }, ToastState)
+      ToastState.create({ id: 'hover-update', message: 'before' })
+      const li = root.querySelector<HTMLLIElement>('li[data-id="hover-update"]')
+
+      vi.advanceTimersByTime(400)
+      li?.dispatchEvent(new MouseEvent('mouseenter'))
+      ToastState.create({ id: 'hover-update', message: 'after' })
+      vi.advanceTimersByTime(5000)
+      expect(li?.getAttribute('data-removed')).toBe('false')
+
+      li?.dispatchEvent(new MouseEvent('mouseleave'))
+      vi.advanceTimersByTime(600)
+      expect(li?.getAttribute('data-removed')).toBe('true')
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
+  it('preserves paused remaining time across unrelated container updates', () => {
+    vi.useFakeTimers()
+    try {
+      controller = mountToaster(root, { duration: 1000 }, ToastState)
+      const id = ToastState.create({ message: 'theme update' })
+      const li = root.querySelector<HTMLLIElement>(`li[data-id="${id}"]`)
+
+      vi.advanceTimersByTime(400)
+      li?.dispatchEvent(new MouseEvent('mouseenter'))
+      controller.update({ theme: 'dark' })
+      li?.dispatchEvent(new MouseEvent('mouseleave'))
+      vi.advanceTimersByTime(599)
+      expect(li?.getAttribute('data-removed')).toBe('false')
+      vi.advanceTimersByTime(1)
+      expect(li?.getAttribute('data-removed')).toBe('true')
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
+  it('cancels pending exit removal when an id is recreated', () => {
+    vi.useFakeTimers()
+    try {
+      controller = mountToaster(root, { duration: Infinity }, ToastState)
+      ToastState.create({ id: 'reused', message: 'old' })
+      ToastState.dismiss('reused')
+      ToastState.create({ id: 'reused', message: 'new' })
+
+      const node = root.querySelector<HTMLLIElement>('li[data-id="reused"]')
+      expect(node?.textContent).toContain('new')
+      expect(node?.getAttribute('data-removed')).toBe('false')
+      vi.advanceTimersByTime(TIME_BEFORE_UNMOUNT + 50)
+      expect(root.querySelector('li[data-id="reused"]')).toBe(node)
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
+  it('allows onDismiss to recreate the same id without the old exit removing it', () => {
+    vi.useFakeTimers()
+    try {
+      controller = mountToaster(root, { duration: Infinity }, ToastState)
+      ToastState.create({
+        id: 'dismiss-recreate',
+        message: 'old',
+        onDismiss: () => {
+          ToastState.create({ id: 'dismiss-recreate', message: 'new' })
+        }
+      })
+      ToastState.dismiss('dismiss-recreate')
+
+      const node = root.querySelector<HTMLLIElement>('li[data-id="dismiss-recreate"]')
+      expect(node?.textContent).toContain('new')
+      expect(node?.getAttribute('data-removed')).toBe('false')
+      vi.advanceTimersByTime(TIME_BEFORE_UNMOUNT + 50)
+      expect(root.querySelector('li[data-id="dismiss-recreate"]')).toBe(node)
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
+  it('partial updates preserve offsets and gap, while explicit gap updates affect layout', () => {
+    controller = mountToaster(
+      root,
+      { offset: 40, mobileOffset: 20, gap: 24, expand: true, duration: Infinity },
+      ToastState
+    )
+    controller.update({ theme: 'dark' })
+    expect(controller.element.style.getPropertyValue('--offset-top')).toBe('40px')
+    expect(controller.element.style.getPropertyValue('--mobile-offset-top')).toBe('20px')
+    expect(controller.element.style.getPropertyValue('--gap')).toBe('24px')
+
+    controller.update({ gap: 30 })
+    ToastState.create({ message: 'back' })
+    ToastState.create({ message: 'front' })
+    const back = Array.from(root.querySelectorAll<HTMLLIElement>('li[data-notify-toast]')).find(
+      (node) => node.textContent === 'back'
+    )
+    expect(controller.element.style.getPropertyValue('--gap')).toBe('30px')
+    expect(back?.style.getPropertyValue('--offset')).toBe('30px')
+  })
 
   it('setExpanded auto-collapses when the active toast list drops to 1', () => {
     // When the user hovers the toaster to expand the stack and the
