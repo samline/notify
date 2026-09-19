@@ -9,6 +9,10 @@ marked as unpublished have a Git tag but are not present in the npm registry.
 
 ## [Unreleased]
 
+### Fixed
+
+- Moved the GitHub Pages workflow to the repository root so Actions can discover it and deploy the `example/dist` documentation build.
+
 ## [3.1.4] - Unpublished
 
 ### Changed

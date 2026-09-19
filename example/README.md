@@ -75,7 +75,7 @@ npm run check
 ### 4. Deploy
 
 Push to `main` — the bundled GitHub Actions workflow
-(`.github/workflows/deploy.yml`) builds and publishes the site to
+(`../.github/workflows/deploy.yml`) builds and publishes the site to
 GitHub Pages.
 
 One-off repo setting: **Settings → Pages → Build and deployment →
@@ -91,18 +91,18 @@ https://samline.github.io/notify/
 
 ## File-by-file tour
 
-| Path                           | What it is                                                  |
-| ------------------------------ | ----------------------------------------------------------- |
-| `site.config.mjs`              | ⭐ The only per-package config. **Edit this.**              |
-| `site.schema.mjs`              | Runtime validator for `site.config.mjs`.                    |
-| `astro.config.mjs`             | Astro + Starlight glue. Reads everything from above.        |
-| `src/content.config.ts`        | Frontmatter schema for the docs content collection.         |
-| `src/content/docs/`            | The documentation content. Add `.md`/`.mdx` here.           |
-| `public/`                      | Static assets served as-is (favicon, screenshots).          |
-| `src/styles/custom.css`        | Free-form CSS that layers on top of Starlight's theme.      |
-| `.github/workflows/deploy.yml` | Auto-deploys `dist/` to GitHub Pages on every push to main. |
-| `AGENTS.md`                    | AI-agent instructions (use this if you delegate to an AI).  |
-| `README.md`                    | The file you are reading right now.                         |
+| Path                              | What it is                                                          |
+| --------------------------------- | ------------------------------------------------------------------- |
+| `site.config.mjs`                 | ⭐ The only per-package config. **Edit this.**                      |
+| `site.schema.mjs`                 | Runtime validator for `site.config.mjs`.                            |
+| `astro.config.mjs`                | Astro + Starlight glue. Reads everything from above.                |
+| `src/content.config.ts`           | Frontmatter schema for the docs content collection.                 |
+| `src/content/docs/`               | The documentation content. Add `.md`/`.mdx` here.                   |
+| `public/`                         | Static assets served as-is (favicon, screenshots).                  |
+| `src/styles/custom.css`           | Free-form CSS that layers on top of Starlight's theme.              |
+| `../.github/workflows/deploy.yml` | Auto-deploys `example/dist/` to GitHub Pages on every push to main. |
+| `AGENTS.md`                       | AI-agent instructions (use this if you delegate to an AI).          |
+| `README.md`                       | The file you are reading right now.                                 |
 
 ---
 

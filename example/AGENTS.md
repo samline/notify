@@ -32,9 +32,9 @@ docs/
 │               └── examples.md
 ├── public/
 │   └── favicon.svg
-└── .github/
+└── ../.github/
     └── workflows/
-        └── deploy.yml       ← auto-deploys to GitHub Pages
+        └── deploy.yml       ← repository-root GitHub Pages workflow
 ```
 
 The dev server: `npm run dev` → http://localhost:4321
@@ -237,19 +237,19 @@ GitHub Actions will deploy automatically. Confirm via:
 
 ## 2. Edit/Don't-edit quick reference
 
-| File                    | Edit? | Why                                            |
-| ----------------------- | ----- | ---------------------------------------------- |
-| `site.config.mjs`       | ✅    | Only place to change site-wide identity.       |
-| `src/content/docs/**`   | ✅    | The actual documentation.                      |
-| `public/**`             | ✅    | Favicon, logos, PDFs, screenshots.             |
-| `src/assets/**`         | ✅    | Images you reference from MDX.                 |
-| `astro.config.mjs`      | ❌    | Reads from `site.config.mjs`.                  |
-| `site.schema.mjs`       | ❌    | Runtime validation; edit only if schema grows. |
-| `src/content.config.ts` | ❌    | Starlight frontmatter schema.                  |
-| `package.json`          | ❌*   | Only if a new dependency is required.          |
-| `tsconfig.json`         | ❌    | Strict TS — keep.                              |
-| `.gitignore`            | ❌    |                                                |
-| `.github/workflows/*`   | ❌    | Auto-deploys; don't break the workflow.        |
+| File                     | Edit? | Why                                            |
+| ------------------------ | ----- | ---------------------------------------------- |
+| `site.config.mjs`        | ✅    | Only place to change site-wide identity.       |
+| `src/content/docs/**`    | ✅    | The actual documentation.                      |
+| `public/**`              | ✅    | Favicon, logos, PDFs, screenshots.             |
+| `src/assets/**`          | ✅    | Images you reference from MDX.                 |
+| `astro.config.mjs`       | ❌    | Reads from `site.config.mjs`.                  |
+| `site.schema.mjs`        | ❌    | Runtime validation; edit only if schema grows. |
+| `src/content.config.ts`  | ❌    | Starlight frontmatter schema.                  |
+| `package.json`           | ❌*   | Only if a new dependency is required.          |
+| `tsconfig.json`          | ❌    | Strict TS — keep.                              |
+| `.gitignore`             | ❌    |                                                |
+| `../.github/workflows/*` | ❌    | Repository-root workflows; don't break them.   |
 
 ---
 
