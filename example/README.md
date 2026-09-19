@@ -29,7 +29,7 @@ match the `@samline/notify` identity:
 
 ```js
 title: 'Notify',
-description: '@samline/notify — a small, framework-free toast notification runtime for vanilla JS and direct browser usage.',
+description: 'Accessible, dependency-free toast notifications for JavaScript and TypeScript, with ESM, CommonJS, and browser builds.',
 site: 'https://samline.github.io',
 base: '/notify',
 editLinkBaseUrl: 'https://github.com/samline/notify/edit/main/',

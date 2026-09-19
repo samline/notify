@@ -1,6 +1,6 @@
 # Notify docs
 
-This is the markdown reference for `@samline/notify` 3.x — a vanilla, framework-free toast notification runtime. The same content is served as a Starlight site at [samline.github.io/notify](https://samline.github.io/notify); the markdown here is the source of truth.
+This is the markdown reference for `@samline/notify` 3.x — accessible, dependency-free toast notifications for JavaScript and TypeScript, with ESM, CommonJS, and browser builds. The same content is served as a Starlight site at [samline.github.io/notify](https://samline.github.io/notify); the markdown here is the source of truth.
 
 ---
 

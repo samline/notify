@@ -1,8 +1,8 @@
 # Notify
 
-> A small, framework-free toast notification runtime for vanilla JS and direct browser usage.
+> Accessible, dependency-free toast notifications for JavaScript and TypeScript, with ESM, CommonJS, and browser builds.
 
-> It exposes a single `toast` factory plus a singleton toaster controller, renders DOM directly with a vanilla renderer, ships a typed IIFE bundle for `<script>` tags, and keeps every transition and animation in CSS.
+> Use one typed, framework-agnostic API in bundled applications or plain `<script>` pages. Promise states, actions, multiple toasters, themes, keyboard interaction, and swipe dismissal are included without a runtime dependency.
 
 ---
 

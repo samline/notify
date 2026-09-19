@@ -68,7 +68,7 @@ Open **`site.config.mjs`** and replace each placeholder:
 
 ```js
 title: 'Notify',                                         // ← was 'My Package Docs'
-description: 'A small, framework-free toast notification runtime for vanilla JS and direct browser usage.', // ← 1–2 sentence tagline
+description: 'Accessible, dependency-free toast notifications for JavaScript and TypeScript, with ESM, CommonJS, and browser builds.', // ← 1–2 sentence tagline
 site: 'https://samline.github.io',                       // ← owner only
 base: '/notify',                                         // ← repo name as /repo
 editLinkBaseUrl: 'https://github.com/samline/notify/edit/main/',

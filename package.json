@@ -1,7 +1,7 @@
 {
   "name": "@samline/notify",
-  "version": "3.1.3",
-  "description": "Framework-agnostic toast notification runtime with a vanilla/browser API and an IIFE bundle for direct CDN use.",
+  "version": "3.1.4",
+  "description": "Accessible, dependency-free toast notifications for JavaScript and TypeScript, with ESM, CommonJS, and browser builds.",
   "type": "module",
   "license": "MIT",
   "homepage": "https://samline.github.io/notify",
@@ -12,6 +12,17 @@
   "bugs": {
     "url": "https://github.com/samline/notify/issues"
   },
+  "keywords": [
+    "toast",
+    "notification",
+    "notifications",
+    "vanilla",
+    "typescript",
+    "javascript",
+    "browser",
+    "accessible",
+    "framework-agnostic"
+  ],
   "packageManager": "bun@1.3.14",
   "publishConfig": {
     "access": "public",

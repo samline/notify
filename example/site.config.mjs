@@ -21,7 +21,7 @@ const siteConfig = defineSiteConfig({
 
   // Used in <meta name="description"> and social share cards.
   description:
-    '@samline/notify — a small, framework-free toast notification runtime for vanilla JS and direct browser usage.',
+    'Accessible, dependency-free toast notifications for JavaScript and TypeScript, with ESM, CommonJS, and browser builds.',
 
   // ---- GitHub Pages deployment -----------------------------------------
   // GitHub Pages serves this site at:
