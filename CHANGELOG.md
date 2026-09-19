@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Dates for published releases are the UTC publication dates reported by npm. Versions
 marked as unpublished have a Git tag but are not present in the npm registry.
 
+## [Unreleased]
+
+### Fixed
+
+- Updated documentation CI and deployment to Node.js 22, as required by Astro 7.
+
 ## [3.1.3] - Unpublished
 
 ### Added
@@ -265,6 +271,7 @@ marked as unpublished have a Git tag but are not present in the npm registry.
 - Renamed the internal controller and package from Sileo to Notify.
 - Exposed `window.notify` while retaining the previous browser global as a compatibility alias.
 
+[Unreleased]: https://github.com/samline/notify/compare/v3.1.3...HEAD
 [3.1.3]: https://github.com/samline/notify/compare/v3.1.2...v3.1.3
 [3.1.2]: https://github.com/samline/notify/compare/v3.1.1...v3.1.2
 [3.1.1]: https://github.com/samline/notify/compare/v3.1.0...v3.1.1

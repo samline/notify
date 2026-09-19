@@ -6,3 +6,4 @@
 - Tests for browser globals and package exports must execute built artifacts, not only TypeScript source modules.
 - CDN examples must reference an actually published version or `latest`; a package version in Git does not imply npm availability.
 - GitHub Pages deployment is externally confirmed for this repository. Do not relocate or replace its deployment workflow solely from local layout assumptions; verify the live deployment first.
+- Astro 7 documentation jobs require Node.js 22.12.0 or newer; keep CI, Pages deployment, and `example` engine metadata aligned.
