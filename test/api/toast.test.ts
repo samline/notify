@@ -93,4 +93,25 @@ describe('api/toast', () => {
     toast.dismiss(a)
     expect(toast.getHistory()).toHaveLength(2)
   })
+
+  it('returns defensive snapshots from the public getters', () => {
+    toast('safe', { action: { label: 'Undo', onClick: () => undefined } })
+
+    const active = toast.getToasts()
+    const history = toast.getHistory()
+    active.length = 0
+    if (history[0]) history[0].title = 'mutated'
+    if (history[0]?.action) history[0].action.label = 'Changed'
+
+    expect(toast.getToasts()).toHaveLength(1)
+    expect(toast.getHistory()[0]?.title).toBe('safe')
+    expect(toast.getHistory()[0]?.action?.label).toBe('Undo')
+  })
+
+  it('generates an id when toast.custom receives an empty id', () => {
+    const id = toast.custom(document.createElement('div'), { id: '' })
+
+    expect(typeof id).toBe('number')
+    expect(toast.getToasts()[0]?.id).toBe(id)
+  })
 })

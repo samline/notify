@@ -1,22 +1,25 @@
 ---
 title: Reference
-description: Authoritative documentation for every public symbol in @samline/notify.
+description: Authoritative documentation for the complete public surface of @samline/notify.
 template: doc
 sidebar:
   order: 1
 ---
 
-This section documents the complete public surface of `@samline/notify`. Pages are grouped by concept — configuration, API, types, browser usage, styling, and examples — so you can scan to what you need without diving into the source.
+Use these pages to find every public export and the runtime behavior behind it.
 
-:::note
-If you add a new page under `src/content/docs/reference/`, declare its `slug` inside the `sidebar` array in `site.config.mjs` to control its position.
-:::
+## Core reference
 
-## Sections in this reference
+- [Configuration](/notify/reference/configuration/) documents every `ToasterOptions` and `ToastOptions` field.
+- [API](/notify/reference/api/) covers `toast`, toaster lifecycle helpers, aliases, snapshots, and advanced exports.
+- [Promise API](/notify/reference/promises/) explains the complete `toast.promise()` contract.
+- [TypeScript](/notify/reference/typescript/) lists every exported public type and constant.
+- [Browser builds](/notify/reference/browser/) distinguishes the root `browser` export, `@samline/notify/browser`, and the IIFE global.
+- [CSS styling](/notify/reference/css-styling/) documents inline styles, custom properties, and renderer attributes.
 
-- [Configuration](/notify/reference/configuration/) — every `ToasterOptions` and `ToastOptions` field, with defaults and rationale.
-- [API](/notify/reference/api/) — method-by-method signatures, parameters, return shapes, and behaviour tables.
-- [TypeScript](/notify/reference/typescript/) — every exported type, callback signature, and helper return shape.
-- [Browser global](/notify/reference/browser/) — the `window.Notify` IIFE for no-bundler setups (Shopify, WordPress, classic templates).
-- [CSS styling](/notify/reference/css-styling/) — the data-attribute contract the stylesheet expects; theming with CSS variables.
-- [Examples](/notify/reference/examples/) — end-to-end recipes for common real-world scenarios.
+## Usage guides
+
+- [Accessibility](/notify/reference/accessibility/) describes the actual live-region and keyboard behavior.
+- [Framework integrations](/notify/reference/frameworks/) shows lifecycle-safe React, Vue, Svelte, and SSR patterns.
+- [Examples](/notify/reference/examples/) provides self-contained recipes.
+- [Troubleshooting](/notify/reference/troubleshooting/) covers mounting, CSS, CDN, CSP, duplicate mounts, and teardown.

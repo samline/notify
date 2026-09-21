@@ -116,12 +116,9 @@ export interface ToasterOptions {
   containerAriaLabel?: string
   closeButtonAriaLabel?: string
   /**
-   * Extra CSS custom properties spread onto the `<ol>` container.
-   * Lets consumers pin their own design tokens (e.g. `'--normal-bg'`,
-   * `'--width'`) without subclassing. Legacy React build accepted
-   * this as a `CSSProperties` object; the vanilla refactor dropped
-   * it. Restored as a plain `Record<string, string>` to keep the
-   * runtime dependency-free.
+   * CSS declarations applied inline to the `<ol>` container with
+   * `style.setProperty()`. Keys may be ordinary CSS property names or
+   * custom properties such as `'--normal-bg'`.
    */
   style?: Record<string, string>
   /**

@@ -1,179 +1,129 @@
 ---
-title: Browser global
-description: Use @samline/notify without a bundler via the window.Notify IIFE.
+title: Browser builds
+description: Use the browser registry, package subpath, or standalone window.Notify IIFE correctly.
 template: doc
 sidebar:
-  order: 5
+  order: 6
 ---
 
-Use the browser build when you do not have a bundler and need to integrate the package directly into HTML, Shopify, WordPress, or any traditional template that does not run through a build step.
+Notify has three related browser-facing forms. They share a `NotifyApi` shape but differ in loading and side effects.
 
-For every other case (modern apps, bundlers, TypeScript projects), use the main vanilla entrypoint — see [Getting started](/notify/getting-started/).
+| Form                                                   | Installs `window.Notify` | Auto-mounts | Intended use                               |
+| ------------------------------------------------------ | ------------------------ | ----------- | ------------------------------------------ |
+| `browser` from `@samline/notify`                       | no                       | no          | Bundled apps that want one registry object |
+| default/named `browser` from `@samline/notify/browser` | no                       | no          | Dedicated bundler subpath                  |
+| `dist/browser/global.global.js`                        | yes, in a DOM            | yes, once   | Classic `<script>` usage without a bundler |
 
-## Script tag
-
-```html
-<link rel="stylesheet" href="https://unpkg.com/@samline/notify@latest/dist/styles.css" />
-<script src="https://unpkg.com/@samline/notify@latest/dist/browser/global.global.js" defer></script>
-```
-
-:::caution[Pin the version in production]
-The CDN URL above uses `@latest`. Pin a concrete published version in production.
-:::
-
-The bundle is a single IIFE that registers a global object. Place the `<script>` tag in `<head>` with `defer`, or before the user script in `<body>`. The IIFE also auto-mounts a default toaster (when a DOM is available) so the first `Notify.toast(...)` call has somewhere to render.
-
-You also need the stylesheet. Either copy `dist/styles.css` to your static assets and link it, or load it from the CDN (as in the example above).
-
-## Global object
-
-The browser build exposes `window.Notify` (also reachable via `globalThis.Notify`).
+## Root registry
 
 ```ts
-window.Notify = {
-  toast,
-  Toaster: createToaster,
-  createToaster,
-  configureToaster,
-  getToaster,
-  destroyToaster
-}
+import { browser } from '@samline/notify'
+import '@samline/notify/styles.css'
+
+browser.createToaster({ position: 'bottom-right' })
+browser.toast.success('Saved')
 ```
 
-- `toast` is the same factory exported by `@samline/notify` — see the [API reference](/notify/reference/api/#toastmessage-options) for the full surface.
-- `createToaster` is the same factory exported by `@samline/notify`. The IIFE auto-mounts a default toaster on load, so calling `createToaster()` later with new options updates the singleton in place via `toaster.update()`.
-- `getToaster` and `destroyToaster` are the inspector / lifecycle helpers. See the [API reference](/notify/reference/api/#gettoaster) and the [API reference](/notify/reference/api/#destroytoaster).
+The object contains `toast`, `Toaster`, `createToaster`, `configureToaster`, `getToaster`, and `destroyToaster`. It shares the same state and singleton as the corresponding named root exports.
 
-The factory returns a `ToasterController` with the same signatures, semantics, and behaviours as the main vanilla entrypoint — every per-method page in the [API reference](/notify/reference/api/) applies.
+## Browser subpath
 
-## Minimal example
+```ts
+import notify, { browser } from '@samline/notify/browser'
+import '@samline/notify/styles.css'
+
+notify.createToaster()
+browser.toast.info('Both names refer to the same registry')
+```
+
+The subpath exports `browser` as both default and named, and exports `NotifyApi` as a type. It does not include the stylesheet and does not mount automatically.
+
+## Standalone IIFE
+
+The IIFE is a built file rather than the `@samline/notify/browser` module export. Load its stylesheet separately. This complete example puts both scripts after the button and executes the external script synchronously before the inline script.
 
 ```html
-<button id="save">Save</button>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Notify browser example</title>
+    <link rel="stylesheet" href="https://unpkg.com/@samline/notify@latest/dist/styles.css" />
+  </head>
+  <body>
+    <button id="notify" type="button">Show notification</button>
 
-<link rel="stylesheet" href="https://unpkg.com/@samline/notify@latest/dist/styles.css" />
-<script src="https://unpkg.com/@samline/notify@latest/dist/browser/global.global.js" defer></script>
-<script>
-  document.querySelector('#save').addEventListener('click', () => {
-    window.Notify.toast.success('Saved')
-  })
-</script>
+    <script src="https://unpkg.com/@samline/notify@latest/dist/browser/global.global.js"></script>
+    <script>
+      window.Notify.configureToaster({ richColors: true, position: 'top-right' })
+
+      document.querySelector('#notify').addEventListener('click', () => {
+        window.Notify.toast.promise(
+          () => new Promise((resolve) => window.setTimeout(() => resolve('ready'), 700)),
+          {
+            loading: 'Saving changes',
+            success: 'Changes saved',
+            error: 'Could not save changes'
+          }
+        )
+      })
+    </script>
+  </body>
+</html>
 ```
 
-The IIFE mounted a default toaster on load. The click handler calls `Notify.toast.success('Saved')`, which renders a `<li data-notify-toast data-type="success">` inside the default toaster's `<ol data-notify-toaster>`. The toast auto-dismisses after 4 seconds.
+Do not combine a deferred external IIFE with an immediately executing classic inline script: the inline script runs during parsing before the deferred file. If scripts must remain in `<head>`, wait for `DOMContentLoaded` in your own script or use a module script whose imports establish ordering.
 
-## Custom toaster
+:::caution[Pin production URLs]
+`@latest` is convenient for a demo. Pin a published package version in production, and keep the script and stylesheet on the same version.
+:::
+
+## IIFE lifecycle
+
+When evaluated in a browser, the IIFE assigns `window.Notify`. It mounts immediately if `document.body` exists; otherwise it mounts once on `DOMContentLoaded`.
+
+The automatic mount happens only during bundle initialization. After `Notify.destroyToaster()` or `Notify.getToaster().destroy()`, call `Notify.createToaster()` before sending more visible notifications.
+
+```js
+window.Notify.destroyToaster()
+
+// Later, remount explicitly.
+window.Notify.createToaster({ position: 'bottom-left' })
+window.Notify.toast.success('Mounted again')
+```
+
+## SSR safety
+
+Importing the root or `@samline/notify/browser` registry does not access the DOM. Calls that mount are DOM-only and must run in client lifecycle code.
+
+The IIFE also checks for a DOM. In a non-DOM runtime it returns its registry export but does not install a global and does not mount. A server import does not arrange a later client mount; the browser must load or hydrate the client entry separately.
+
+## Hosting and base paths
+
+The CDN examples use absolute URLs, so an application base path such as `/notify/` does not affect them. When self-hosting, resolve both files through your own public base:
 
 ```html
-<link rel="stylesheet" href="https://unpkg.com/@samline/notify@latest/dist/styles.css" />
-<script src="https://unpkg.com/@samline/notify@latest/dist/browser/global.global.js" defer></script>
-<script>
-  // Reconfigure the default toaster (the IIFE already mounted one).
-  window.Notify.configureToaster({
-    position: 'top-right',
-    theme: 'dark',
-    richColors: true,
-    duration: 6000
-  })
-
-  window.Notify.toast.promise(
-    fetch('/api/profile').then((r) => r.json()),
-    {
-      loading: 'Loading profile…',
-      success: (profile) => `Hi ${profile.name}`,
-      error: 'Could not load profile'
-    }
-  )
-</script>
+<link rel="stylesheet" href="/my-app/vendor/notify/styles.css" />
+<script src="/my-app/vendor/notify/global.global.js"></script>
 ```
 
-`Notify.configureToaster(options)` is an alias of `Notify.createToaster(options)` — kept for intent. Calling it twice with different options updates the singleton in place via `toaster.update(options)`. Calling it with `undefined` returns the existing controller without changes.
+Verify those URLs directly in production. A missing stylesheet leaves a semantic but visually unstyled list; a missing script leaves `window.Notify` undefined.
 
-## Lifecycle helpers
+## Content Security Policy
 
-| Helper                              | Purpose                                                                             |
-| ----------------------------------- | ----------------------------------------------------------------------------------- |
-| `Notify.createToaster(options?)`    | Mount (or update) the singleton toaster. Returns the controller.                    |
-| `Notify.configureToaster(options?)` | Alias of `createToaster(options?)`. Kept for intent symmetry with `@samline/forms`. |
-| `Notify.getToaster()`               | Return the current controller, or `null` if none is mounted.                        |
-| `Notify.destroyToaster()`           | Unmount the singleton and drop all in-flight toasts. No-op if none is mounted.      |
+Prefer self-hosted assets under strict CSP. Otherwise allow the chosen CDN in both `script-src` and `style-src`. Inline examples also require a nonce/hash or an external application script. Notify's renderer creates inline `style` declarations for layout and custom properties, so a policy that blocks style attributes may require CSP changes or a custom integration; `unstyled` disables built-in toast presentation but does not stop renderer layout declarations.
 
-The toaster returned by `createToaster` is the singleton — every helper works on the same `<ol>`. Use `Notify.toast.*` to push toasts, `Notify.getToaster()` to inspect, and `Notify.destroyToaster()` to tear down.
-
-## Surface reference
-
-The browser bundle ships the same surface as the main vanilla entrypoint, plus the IIFE auto-mount. Every method is documented under the [API reference](/notify/reference/api/).
-
-| Global                              | Purpose                                                                                                              |
-| ----------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
-| `Notify.toast`                      | The factory and every variant. See [`toast`](/notify/reference/api/#toastmessage-options).                           |
-| `Notify.Toaster(options?)`          | Alias of `Notify.createToaster(options?)`.                                                                           |
-| `Notify.createToaster(options?)`    | Mount / update the singleton toaster. See [`createToaster`](/notify/reference/api/#createtoasteroptions).            |
-| `Notify.configureToaster(options?)` | Intent-revealing alias of `createToaster`. See [`configureToaster`](/notify/reference/api/#configuretoasteroptions). |
-| `Notify.getToaster()`               | Return the singleton controller, or `null`. See [`getToaster`](/notify/reference/api/#gettoaster).                   |
-| `Notify.destroyToaster()`           | Unmount the singleton. See [`destroyToaster`](/notify/reference/api/#destroytoaster).                                |
-
-### Controller methods
-
-The controller returned by `createToaster` exposes:
-
-- `element` — the `<ol data-notify-toaster>` element.
-- `options` — the current merged `ToasterOptions` (live, updates on `update`).
-- `update(options?)` — re-applies options and re-renders.
-- `destroy()` — unmounts. The IIFE will then auto-remount a fresh default toaster on the next `Notify.toast` call (because `Notify.createToaster` will create a new one).
-
-## TypeScript users
-
-The browser build does not ship its own types. Reuse the types exported by `@samline/notify` instead of redeclaring the surface — declare `window.Notify` against the package's `NotifyApi`:
+## TypeScript global declaration
 
 ```ts
 import type { NotifyApi } from '@samline/notify'
 
 declare global {
   interface Window {
-    Notify: NotifyApi
+    Notify?: NotifyApi
   }
 }
 ```
 
-See [`NotifyApi`](/notify/reference/typescript/#notifyapi) for the full shape.
-
-## Using the same shape from a bundler
-
-If you have a bundler but still want the IIFE ergonomics — without the IIFE and without `window.Notify` auto-installed — import the `browser` singleton from the vanilla entrypoint:
-
-```ts
-import { browser } from '@samline/notify'
-import '@samline/notify/styles.css'
-
-window.MyNotify = { ...browser }
-
-window.MyNotify.createToaster({ position: 'top-right' })
-window.MyNotify.toast.success('Saved')
-window.MyNotify.destroyToaster()
-```
-
-`browser` is a module-level singleton that shares the same `Observer` and toaster as the named exports. Because every spread reads from the same module state, `window.MyNotify.createToaster({})` and `createToaster({})` end up calling the same factory and updating the same DOM container.
-
-If you need multiple independent singletons, use the `mountToaster(root, options?)` escape hatch and keep your own map of controllers:
-
-```ts
-import { mountToaster } from '@samline/notify'
-
-const left = mountToaster(document.body, { position: 'bottom-left' })
-const right = mountToaster(document.body, { position: 'bottom-right' })
-
-left.destroy()
-right.destroy()
-```
-
-See the [Browser registry helpers section](/notify/getting-started/#browser-registry-helpers-bundler) in the getting-started guide for the full pattern.
-
-## Common pitfalls
-
-- **Pin the version.** Replace `latest` with a concrete published version in production.
-- **The script must be loaded before any code that uses `window.Notify`.** Place the `<script>` tag in `<head>` with `defer`, or before the user script in `<body>`.
-- **The stylesheet is not bundled into the IIFE.** Load `dist/styles.css` separately. The IIFE only sets data-attributes — without the stylesheet the toasts render as an unstyled list.
-- **No bundler means no tree-shaking.** The browser bundle includes the full runtime (~6 KB gzipped plus the stylesheet). That is by design — the alternative would defeat the purpose of a no-bundler setup.
-- **CSP:** if your site uses a strict Content Security Policy, allow `unpkg.com` in `script-src` and `style-src` (or self-host the files).
-- **Server-side rendering (SSR):** the IIFE checks `canUseDOM()` before touching `globalThis.Notify` and before auto-mounting the toaster. It is safe to evaluate in a Node SSR environment — the global is set, but no DOM is mounted.
+Check `window.Notify` when third-party script loading can fail. For all methods, see the [API reference](/notify/reference/api/).

@@ -4,7 +4,7 @@
 
 import { mountToaster } from '../core/renderer'
 import { canUseDOM } from '../core/dom-helpers'
-import { setToaster, getToasterInstance } from './toaster-instance'
+import { clearToaster, setToaster, getToasterInstance } from './toaster-instance'
 import type { ToasterController, ToasterOptions } from '../core/types'
 
 export function createToaster(options?: ToasterOptions): ToasterController {
@@ -19,6 +19,11 @@ export function createToaster(options?: ToasterOptions): ToasterController {
     return existing.update(options)
   }
   const controller = mountToaster(document.body, options ?? {})
+  const destroy = controller.destroy
+  controller.destroy = () => {
+    destroy()
+    if (getToasterInstance() === controller) clearToaster()
+  }
   setToaster(controller)
   return controller
 }

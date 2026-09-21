@@ -866,6 +866,17 @@ describe('core/renderer', () => {
     expect(li?.getAttribute('aria-label')).toBeNull()
   })
 
+  it('removes aria-label when an existing typed toast becomes normal', () => {
+    controller = mountToaster(root, {}, ToastState)
+    ToastState.success('Saved', { id: 'status' })
+    ToastState.create({ message: 'Ready', id: 'status', type: 'normal' })
+
+    const li = root.querySelector('[data-notify-toast]')
+    expect(li?.getAttribute('data-type')).toBe('normal')
+    expect(li?.getAttribute('aria-label')).toBeNull()
+    expect(li?.querySelector('[data-title]')?.textContent).toBe('Ready')
+  })
+
   it('aria-busy + aria-label update when a promise toast settles', async () => {
     // When the promise resolves from loading → success, the renderer's
     // update path must also re-emit `aria-busy=false` and the new

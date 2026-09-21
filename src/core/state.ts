@@ -301,18 +301,22 @@ class Observer {
   }
 
   custom = (content: CustomContent, data?: ToastOptions): ToastId => {
-    const id: ToastId = data?.id ?? toastsCounter++
-    this.create({ ...(data ?? {}), custom: content, id })
-    return id
+    return this.create({ ...(data ?? {}), custom: content })
   }
 
   getActiveToasts = (): ToastT[] =>
     this.toasts.filter((toast) => !this.dismissedToasts.has(toast.id))
 
-  getHistory = (): ToastT[] => this.toasts
+  getHistory = (): ToastT[] => this.toasts.map(cloneToast)
 
-  getToasts = (): ToastT[] => this.getActiveToasts()
+  getToasts = (): ToastT[] => this.getActiveToasts().map(cloneToast)
 }
+
+const cloneToast = (toast: ToastT): ToastT => ({
+  ...toast,
+  ...(toast.action ? { action: { ...toast.action } } : {}),
+  ...(toast.cancel ? { cancel: { ...toast.cancel } } : {})
+})
 
 const isHttpResponse = (value: unknown): value is Response =>
   typeof value === 'object' &&
@@ -340,8 +344,8 @@ export const toast = Object.assign(toastFunction, {
   promise: ToastState.promise,
   dismiss: ToastState.dismiss,
   loading: ToastState.loading,
-  getHistory: () => ToastState.toasts,
-  getToasts: () => ToastState.getActiveToasts()
+  getHistory: ToastState.getHistory,
+  getToasts: ToastState.getToasts
 })
 
 /**

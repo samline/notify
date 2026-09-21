@@ -9,9 +9,25 @@ marked as unpublished have a Git tag but are not present in the npm registry.
 
 ## [Unreleased]
 
+## [3.1.5] - Unpublished
+
+### Added
+
+- Added complete public documentation for promises, browser builds, accessibility, framework integrations, styling, troubleshooting, and every exported API/type.
+
+### Changed
+
+- Made `RenderableOrFactory` and `ToastToDismiss` available as root type exports.
+- Made public toast history and active-list getters return defensive snapshots.
+- Clarified the shared-state behavior of direct toaster mounts and replaced non-runnable or misleading examples.
+
 ### Fixed
 
 - Moved the GitHub Pages workflow to the repository root so Actions can discover it and deploy the `example/dist` documentation build.
+- Preserved mounted renderer subscriptions when `resetToasts()` clears toast state.
+- Cleared the singleton registry when its controller is destroyed directly and delivered dismissal callbacks before `destroyToaster()` unmounts it.
+- Generated a valid id when `toast.custom()` receives an empty string id.
+- Removed stale empty accessibility labels when a typed toast is updated to a normal toast.
 
 ## [3.1.4] - Unpublished
 
@@ -282,7 +298,8 @@ marked as unpublished have a Git tag but are not present in the npm registry.
 - Renamed the internal controller and package from Sileo to Notify.
 - Exposed `window.notify` while retaining the previous browser global as a compatibility alias.
 
-[Unreleased]: https://github.com/samline/notify/compare/v3.1.4...HEAD
+[Unreleased]: https://github.com/samline/notify/compare/v3.1.5...HEAD
+[3.1.5]: https://github.com/samline/notify/compare/v3.1.4...v3.1.5
 [3.1.4]: https://github.com/samline/notify/compare/v3.1.3...v3.1.4
 [3.1.3]: https://github.com/samline/notify/compare/v3.1.2...v3.1.3
 [3.1.2]: https://github.com/samline/notify/compare/v3.1.1...v3.1.2

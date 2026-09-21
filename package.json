@@ -1,6 +1,6 @@
 {
   "name": "@samline/notify",
-  "version": "3.1.4",
+  "version": "3.1.5",
   "description": "Accessible, dependency-free toast notifications for JavaScript and TypeScript, with ESM, CommonJS, and browser builds.",
   "type": "module",
   "license": "MIT",

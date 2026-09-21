@@ -38,7 +38,7 @@ const siteConfig = defineSiteConfig({
 
   // Where the source content lives on GitHub — used for the
   // "Edit this page" link that Starlight adds to every page.
-  editLinkBaseUrl: 'https://github.com/samline/notify/edit/main/',
+  editLinkBaseUrl: 'https://github.com/samline/notify/edit/main/example/src/content/docs/',
 
   // ---- Sidebar -----------------------------------------------------------
   // Explicit navigation tree so the order is stable across builds.
@@ -53,10 +53,14 @@ const siteConfig = defineSiteConfig({
         { slug: 'reference' },
         { slug: 'reference/configuration' },
         { slug: 'reference/api' },
+        { slug: 'reference/promises' },
         { slug: 'reference/typescript' },
         { slug: 'reference/browser' },
         { slug: 'reference/css-styling' },
-        { slug: 'reference/examples' }
+        { slug: 'reference/accessibility' },
+        { slug: 'reference/frameworks' },
+        { slug: 'reference/examples' },
+        { slug: 'reference/troubleshooting' }
       ]
     }
   ],

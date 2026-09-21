@@ -43,6 +43,16 @@ describe('api/destroy-toaster', () => {
     destroyToaster()
     expect(toast.getToasts()).toHaveLength(0)
   })
+
+  it('runs dismissal callbacks before unmounting', () => {
+    const dismissed: Array<string | number> = []
+    createToaster()
+    toast('one', { onDismiss: (entry) => dismissed.push(entry.id) })
+
+    destroyToaster()
+
+    expect(dismissed).toHaveLength(1)
+  })
 })
 
 describe('api/get-toaster', () => {

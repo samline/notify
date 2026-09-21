@@ -1,12 +1,12 @@
 ---
 title: '@samline/notify'
-description: 'Accessible, dependency-free toast notifications for JavaScript and TypeScript, with ESM, CommonJS, and browser builds.'
+description: 'Dependency-free toast notifications for JavaScript and TypeScript, with ESM, CommonJS, and browser builds.'
 template: doc
 hero:
   tagline: 'One typed toast API. Zero runtime dependencies. No framework required.'
   actions:
     - text: Get started
-      link: /notify/getting-started
+      link: /notify/getting-started/
       icon: right-arrow
       variant: primary
     - text: View on GitHub
@@ -15,62 +15,49 @@ hero:
       variant: minimal
 ---
 
-import { Card, CardGrid } from '@astrojs/starlight/components'
+import { CardGrid, LinkCard } from '@astrojs/starlight/components'
 
-`@samline/notify` exposes a `toast` factory plus a small toaster-controller surface, renders DOM directly with a vanilla renderer, ships a typed IIFE bundle for `<script>` tags, and keeps every transition and animation in CSS. It is the only runtime entrypoint since v3.0.0 — no React, Vue, or Svelte wrapper, no virtual DOM, just one factory and a focused method surface. (Patch and minor releases like v3.1.0 are API-compatible.)
+`@samline/notify` renders toast notifications directly into the DOM. Use the typed package entrypoint with a bundler, the browser subpath as a registry, or the standalone IIFE as `window.Notify`.
 
-## Why @samline/notify?
+## Why Notify?
 
-- **Vanilla-first** — Works with native HTML pages, embedded scripts, static sites, and server-rendered templates.
-- **Two entrypoints** — Import the ESM factory for bundlers, or drop a single `<script>` for the browser global (`window.Notify`).
-- **Data-attribute driven** — Every visual state is a CSS rule reading a `data-*` attribute. Theme by overriding CSS variables, no inline JS styles.
-- **Same-id updates** — `toast.promise()` and manual `toast({ id })` updates re-render the existing `<li>` in place, so the DOM never grows past the visible stack.
-- **Auto-dismiss + swipe** — Per-toast `setTimeout`, hover-pause, swipe-to-dismiss for corner positions, `visibilitychange` to pause while the tab is hidden.
-- **Zero runtime dependencies** — Tiny footprint, ESM + CJS bundles, ships its own types, and a IIFE for `<script>` tags.
+- **Vanilla-first:** no React, Vue, Svelte, or virtual DOM dependency.
+- **Typed public API:** toast variants, promise states, lifecycle controls, snapshots, controllers, and advanced state access.
+- **Accessible mechanics:** a polite live list, keyboard focus shortcut, focus-paused timers, native buttons, and reduced-motion CSS.
+- **Flexible styling:** one stylesheet, stable `data-*` hooks, per-toast classes, unstyled rendering, and CSS custom properties.
+- **Zero runtime dependencies:** ESM, CommonJS, browser-registry, and standalone IIFE builds.
 
-## Next steps
+## Explore
 
 <CardGrid>
-	<Card title="Getting started" icon="pencil-line">
-		Install the package, mount a toaster, and show your first toast in under five minutes.
-
-    	[Install @samline/notify →](/notify/getting-started)
-    </Card>
-
-    <Card title="Configuration" icon="setting">
-    	Every `ToasterOptions` and `ToastOptions` field with defaults and rationale.
-
-    	[Configuration reference →](/notify/reference/configuration/)
-    </Card>
-
-    <Card title="API reference" icon="open-book">
-    	Every public method (`toast`, `createToaster`, `destroyToaster`, `getToaster`, `configureToaster`, `resetToasts`) documented with signatures and runnable examples.
-
-    	[Browse the API →](/notify/reference/api/)
-    </Card>
-
-    <Card title="TypeScript" icon="seti:typescript">
-    	Every exported type — `ToastT`, `ToasterController`, `ToastOptions`, `ToasterOptions`, `PromiseData`, and the rest.
-
-    	[TypeScript reference →](/notify/reference/typescript/)
-    </Card>
-
-    <Card title="Browser global" icon="seti:html">
-    	Use the pre-bundled `window.Notify` global when you don't have a bundler — perfect for Shopify, WordPress, or classic templates.
-
-    	[window.Notify reference →](/notify/reference/browser/)
-    </Card>
-
-    <Card title="CSS styling" icon="seti:css">
-    	The data-attribute contract the stylesheet expects, and how to theme it with CSS variables.
-
-    	[CSS styling reference →](/notify/reference/css-styling/)
-    </Card>
-
-    <Card title="Recipes" icon="puzzle">
-    	End-to-end patterns: `toast.promise` with `fetch`, undo/cancel buttons, custom content, multi-toaster, live theme changes.
-
-    	[Browse examples →](/notify/reference/examples/)
-    </Card>
-
+  <LinkCard
+    title="Getting started"
+    description="Install, mount one toaster, and show a first notification."
+    href="/notify/getting-started/"
+  />
+  <LinkCard
+    title="API reference"
+    description="Every toast method, lifecycle helper, controller, and advanced export."
+    href="/notify/reference/api/"
+  />
+  <LinkCard
+    title="Configuration"
+    description="Every toaster and toast option, including exact defaults and inheritance."
+    href="/notify/reference/configuration/"
+  />
+  <LinkCard
+    title="Promise API"
+    description="Thunks, optional loading states, extended results, HTTP values, and unwrap()."
+    href="/notify/reference/promises/"
+  />
+  <LinkCard
+    title="Accessibility"
+    description="The rendered semantics, keyboard behavior, timing, labels, and practical guidance."
+    href="/notify/reference/accessibility/"
+  />
+  <LinkCard
+    title="Integrations"
+    description="Use the vanilla controller safely from React, Vue, Svelte, SSR, and browser scripts."
+    href="/notify/reference/frameworks/"
+  />
 </CardGrid>

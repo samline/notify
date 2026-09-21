@@ -1103,7 +1103,7 @@ export function mountToaster(
             // promise toast that settles (loading → success/error)
             // updates for screen readers too.
             'aria-busy': String(type === 'loading'),
-            'aria-label': type === 'normal' ? '' : `${type}: ${toast.title ?? ''}`
+            'aria-label': type === 'normal' ? undefined : `${type}: ${toast.title ?? ''}`
           })
           existingNode.className = cn(toast.className)
           if (toast.testId) existingNode.dataset['testid'] = toast.testId
