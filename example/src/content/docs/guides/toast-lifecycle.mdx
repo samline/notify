@@ -1,0 +1,82 @@
+---
+title: Toast lifecycle
+description: Understand creation, same-id updates, timers, dismissal, history, reset, and toaster teardown.
+template: doc
+---
+
+import { Steps } from '@astrojs/starlight/components'
+
+A toast is a state record observed by a mounted renderer. Keeping those two pieces separate explains most Notify behavior: `toast.*` publishes state, while `createToaster()` gives that state somewhere to render.
+
+## The complete flow
+
+<Steps>
+
+1. Mount one renderer
+
+   ```ts
+   import { createToaster } from '@samline/notify'
+   import '@samline/notify/styles.css'
+
+   const toaster = createToaster({ position: 'bottom-right' })
+   ```
+
+   Repeating `createToaster()` updates the singleton. It does not append another container.
+
+2. Create a state record
+
+   ```ts
+   import { toast } from '@samline/notify'
+
+   const id = toast.loading('Uploading invoice')
+   ```
+
+   The returned `ToastId` identifies the record. Loading toasts do not start an auto-dismiss timer.
+
+3. Update it in place
+
+   ```ts
+   toast.success('Invoice uploaded', { id, duration: 6000 })
+   ```
+
+   Reusing the id replaces the existing state record and DOM content. The success state starts its own timer.
+
+4. Pause, resume, or dismiss
+
+   Hovering or focusing pauses the timer and preserves its remaining duration. The timer resumes when interaction ends. Close, keyboard, swipe, action, or `toast.dismiss(id)` can publish dismissal.
+
+5. Remove after the exit state
+
+   Dismissal marks the rendered item as removed before DOM cleanup. The record leaves the active snapshot but stays in history until reset.
+
+</Steps>
+
+## Active state versus history
+
+```ts
+const visibleCandidates = toast.getToasts()
+const allCurrentRecords = toast.getHistory()
+```
+
+Both methods return defensive snapshots. `getToasts()` excludes dismissed records; `getHistory()` includes them. Updating an id replaces its record rather than appending another history entry.
+
+## Reset versus teardown
+
+| Operation           | Clears toast records           | Keeps renderer subscribed      | Removes container |
+| ------------------- | ------------------------------ | ------------------------------ | ----------------- |
+| `toast.dismiss()`   | No; records remain in history  | Yes                            | No                |
+| `resetToasts()`     | Yes; also resets generated ids | Yes                            | No                |
+| `destroyToaster()`  | No                             | No                             | Yes               |
+| `resetToastState()` | Yes                            | **No**; drops every subscriber | No                |
+
+Prefer `resetToasts()` in tests and dev tools. `resetToastState()` is a low-level escape hatch: existing containers become stale and must be destroyed and remounted.
+
+## Avoid duplicate renderers
+
+`mountToaster(root)` is advanced and subscribes to the shared global state by default. Two direct mounts can render every notification twice and invoke dismissal callbacks twice. Use the `createToaster()` singleton unless you are deliberately supplying isolated state.
+
+## Related
+
+- [Promise API](/notify/reference/promises/)
+- [API reference](/notify/reference/api/)
+- [Troubleshooting](/notify/reference/troubleshooting/)

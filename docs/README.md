@@ -8,11 +8,16 @@ This is the markdown reference for `@samline/notify` 3.x — accessible, depende
 
 - [Getting started](getting-started.md) — concepts, lifecycle, side-effects, registry helpers.
 - [Options](options.md) — every `ToasterOptions` and `ToastOptions` field, with defaults.
+- [Entrypoints](entrypoints.md) — ESM, CommonJS, registry modules, the IIFE, and CSS loading.
+- [Promise API](promises.md) — loading and settled states, HTTP values, and `unwrap()`.
 - [CSS styling](css-styling.md) — the data-attributes the stylesheet expects, and how to theme it.
 - [TypeScript reference](typescript.md) — every exported type, callback, and helper shape.
+- [Accessibility](accessibility.md) — semantics, keyboard controls, timing, and content guidance.
+- [Framework integrations](frameworks.md) — React, Vue, Svelte, SSR, and safe mounting.
 - [API reference](api/index.md) — one page per public method.
 - [Recipes](recipes.md) — end-to-end patterns for the common flows.
 - [Browser](browser.md) — using `window.Notify` with a plain `<script>` tag.
+- [Troubleshooting](troubleshooting.md) — fixes for mounting, CSS, SSR, CDN, and teardown.
 
 ---
 
@@ -46,8 +51,12 @@ If you have not read the rest of the docs, start with [Getting started](getting-
 | ---------------------------------------------------- | ------------------------------------------------------------------------------- |
 | [getting-started.md](getting-started.md)             | Concepts, observable contract, lifecycle, registry helpers, side-effect table.  |
 | [options.md](options.md)                             | Every `ToasterOptions` and `ToastOptions` field, with defaults and rationale.   |
+| [entrypoints.md](entrypoints.md)                     | Module formats, registries, IIFE behavior, and stylesheet loading.              |
+| [promises.md](promises.md)                           | Complete `toast.promise()` behavior and original-outcome semantics.             |
 | [css-styling.md](css-styling.md)                     | The data-attribute contract the stylesheet expects; theming with CSS variables. |
 | [typescript.md](typescript.md)                       | Every exported type, callback signature, and helper return shape.               |
+| [accessibility.md](accessibility.md)                 | Rendered semantics, keyboard behavior, timing, and custom-content guidance.     |
+| [frameworks.md](frameworks.md)                       | Lifecycle-safe React, Vue, Svelte, and SSR integration patterns.                |
 | [api/index.md](api/index.md)                         | Overview of the public API.                                                     |
 | [api/toast.md](api/toast.md)                         | The `toast` factory and every variant.                                          |
 | [api/create-toaster.md](api/create-toaster.md)       | The toaster mount / idempotent update entry.                                    |
@@ -57,6 +66,7 @@ If you have not read the rest of the docs, start with [Getting started](getting-
 | [api/reset-toasts.md](api/reset-toasts.md)           | Drop every toast and rewind the internal counter.                               |
 | [recipes.md](recipes.md)                             | `toast.promise` with `fetch`, autoload, multi-toaster, theming, custom content. |
 | [browser.md](browser.md)                             | Using `window.Notify` from a plain `<script>` tag.                              |
+| [troubleshooting.md](troubleshooting.md)             | Mounting, styles, duplicate renderers, CDN, CSP, reset, and remount fixes.      |
 
 ---
 

@@ -8,6 +8,14 @@ sidebar:
 
 import { CardGrid, LinkCard, Tabs, TabItem } from '@astrojs/starlight/components'
 
+This guide takes you from installation to a working success, error, and promise notification. By the end, you will know where the toaster lives, when it must be mounted, and which imports belong in your client entrypoint.
+
+## Prerequisites
+
+- Node.js 20 or newer for package tooling.
+- A browser target with ES2020 support.
+- A client entrypoint that runs after the DOM is available.
+
 ## Install
 
 <Tabs syncKey="package-manager">
@@ -119,14 +127,14 @@ Use `createToaster()` for normal application usage. The advanced `mountToaster(r
 
 <CardGrid>
   <LinkCard
-    title="Configuration"
-    description="Review every option and default."
-    href="/notify/reference/configuration/"
+    title="Toast lifecycle"
+    description="Understand updates, timers, dismissal, history, reset, and teardown."
+    href="/notify/guides/toast-lifecycle/"
   />
   <LinkCard
-    title="Examples"
-    description="Try updates, actions, custom DOM, and snapshots."
-    href="/notify/reference/examples/"
+    title="Actions and custom content"
+    description="Build undo, retry, persistent, and custom-DOM notifications safely."
+    href="/notify/guides/actions-and-custom-content/"
   />
   <LinkCard
     title="Frameworks"

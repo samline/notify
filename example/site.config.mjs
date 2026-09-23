@@ -45,7 +45,12 @@ const siteConfig = defineSiteConfig({
   sidebar: [
     {
       label: 'Guide',
-      items: [{ slug: 'getting-started' }]
+      items: [
+        { slug: 'getting-started' },
+        { slug: 'guides/toast-lifecycle' },
+        { slug: 'guides/actions-and-custom-content' },
+        { slug: 'reference/examples' }
+      ]
     },
     {
       label: 'Reference',
@@ -55,11 +60,11 @@ const siteConfig = defineSiteConfig({
         { slug: 'reference/api' },
         { slug: 'reference/promises' },
         { slug: 'reference/typescript' },
+        { slug: 'reference/entrypoints' },
         { slug: 'reference/browser' },
         { slug: 'reference/css-styling' },
         { slug: 'reference/accessibility' },
         { slug: 'reference/frameworks' },
-        { slug: 'reference/examples' },
         { slug: 'reference/troubleshooting' }
       ]
     }

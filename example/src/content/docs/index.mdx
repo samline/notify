@@ -15,7 +15,7 @@ hero:
       variant: minimal
 ---
 
-import { CardGrid, LinkCard } from '@astrojs/starlight/components'
+import { Card, CardGrid } from '@astrojs/starlight/components'
 
 `@samline/notify` renders toast notifications directly into the DOM. Use the typed package entrypoint with a bundler, the browser subpath as a registry, or the standalone IIFE as `window.Notify`.
 
@@ -27,37 +27,41 @@ import { CardGrid, LinkCard } from '@astrojs/starlight/components'
 - **Flexible styling:** one stylesheet, stable `data-*` hooks, per-toast classes, unstyled rendering, and CSS custom properties.
 - **Zero runtime dependencies:** ESM, CommonJS, browser-registry, and standalone IIFE builds.
 
-## Explore
+## Choose a path
 
 <CardGrid>
-  <LinkCard
-    title="Getting started"
-    description="Install, mount one toaster, and show a first notification."
-    href="/notify/getting-started/"
-  />
-  <LinkCard
-    title="API reference"
-    description="Every toast method, lifecycle helper, controller, and advanced export."
-    href="/notify/reference/api/"
-  />
-  <LinkCard
-    title="Configuration"
-    description="Every toaster and toast option, including exact defaults and inheritance."
-    href="/notify/reference/configuration/"
-  />
-  <LinkCard
-    title="Promise API"
-    description="Thunks, optional loading states, extended results, HTTP values, and unwrap()."
-    href="/notify/reference/promises/"
-  />
-  <LinkCard
-    title="Accessibility"
-    description="The rendered semantics, keyboard behavior, timing, labels, and practical guidance."
-    href="/notify/reference/accessibility/"
-  />
-  <LinkCard
-    title="Integrations"
-    description="Use the vanilla controller safely from React, Vue, Svelte, SSR, and browser scripts."
-    href="/notify/reference/frameworks/"
-  />
+  <Card title="Start here" icon="rocket">
+    Install the package, mount the singleton, and send a first notification in a few minutes.
+
+    [Get started →](/notify/getting-started/)
+
+  </Card>
+  <Card title="Understand the lifecycle" icon="refresh">
+    Learn how creation, same-id updates, timers, dismissal, history, reset, and teardown fit together.
+
+    [Follow a toast through its lifecycle →](/notify/guides/toast-lifecycle/)
+
+  </Card>
+  <Card title="Build interactive toasts" icon="puzzle">
+    Add undo and retry actions, custom DOM, safe text, and accessible interaction.
+
+    [Actions and custom content →](/notify/guides/actions-and-custom-content/)
+
+  </Card>
+  <Card title="Look up the contract" icon="open-book">
+    Find every method, option, type, entrypoint, browser surface, and styling hook.
+
+    [Browse the reference →](/notify/reference/)
+
+  </Card>
 </CardGrid>
+
+## What should I read next?
+
+| Goal                                              | Page                                                             |
+| ------------------------------------------------- | ---------------------------------------------------------------- |
+| Show progress for an async operation              | [Promise API](/notify/reference/promises/)                       |
+| Choose ESM, CommonJS, a registry, or a script tag | [Entrypoints and module formats](/notify/reference/entrypoints/) |
+| Customize colors, spacing, or unstyled content    | [CSS styling](/notify/reference/css-styling/)                    |
+| Mount from React, Vue, Svelte, or an SSR app      | [Framework integrations](/notify/reference/frameworks/)          |
+| Diagnose missing, duplicated, or unstyled toasts  | [Troubleshooting](/notify/reference/troubleshooting/)            |

@@ -148,11 +148,16 @@ Full API reference, guides, and examples are available at **[samline.github.io/n
 | -------------------------------------------------- | -------------------------------------------------------------------------- |
 | [docs/getting-started.md](docs/getting-started.md) | Concepts, observable contract, lifecycle, and side-effect overview.        |
 | [docs/options.md](docs/options.md)                 | Full `ToasterOptions` and `ToastOptions` reference.                        |
+| [docs/entrypoints.md](docs/entrypoints.md)         | ESM, CommonJS, registries, the standalone IIFE, and stylesheet loading.    |
+| [docs/promises.md](docs/promises.md)               | Complete `toast.promise()` behavior, HTTP values, and `unwrap()`.          |
 | [docs/css-styling.md](docs/css-styling.md)         | The data-attribute contract the stylesheet expects.                        |
 | [docs/typescript.md](docs/typescript.md)           | Every exported TypeScript type, with examples.                             |
+| [docs/accessibility.md](docs/accessibility.md)     | Semantics, keyboard controls, timing, and accessible content guidance.     |
+| [docs/frameworks.md](docs/frameworks.md)           | Lifecycle-safe React, Vue, Svelte, and SSR integration patterns.           |
 | [docs/api/index.md](docs/api/index.md)             | One page per public method.                                                |
 | [docs/recipes.md](docs/recipes.md)                 | End-to-end patterns: `toast.promise` with `fetch`, autoload, theming, etc. |
 | [docs/browser.md](docs/browser.md)                 | Browser global (`window.Notify`) usage.                                    |
+| [docs/troubleshooting.md](docs/troubleshooting.md) | Fixes for mounting, CSS, duplicate renderers, CDN, CSP, and teardown.      |
 
 ---
 
