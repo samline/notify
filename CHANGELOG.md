@@ -9,6 +9,16 @@ marked as unpublished have a Git tag but are not present in the npm registry.
 
 ## [Unreleased]
 
+## [3.2.0] - Unpublished
+
+### Added
+
+- Added the named `Notify` namespace export alongside `browser`.
+
+### Changed
+
+- Made the root entrypoint, browser module, IIFE, and `window.Notify` consume the exact same singleton namespace.
+
 ## [3.1.5] - Unpublished
 
 ### Added
@@ -298,7 +308,8 @@ marked as unpublished have a Git tag but are not present in the npm registry.
 - Renamed the internal controller and package from Sileo to Notify.
 - Exposed `window.notify` while retaining the previous browser global as a compatibility alias.
 
-[Unreleased]: https://github.com/samline/notify/compare/v3.1.5...HEAD
+[Unreleased]: https://github.com/samline/notify/compare/v3.2.0...HEAD
+[3.2.0]: https://github.com/samline/notify/compare/v3.1.5...v3.2.0
 [3.1.5]: https://github.com/samline/notify/compare/v3.1.4...v3.1.5
 [3.1.4]: https://github.com/samline/notify/compare/v3.1.3...v3.1.4
 [3.1.3]: https://github.com/samline/notify/compare/v3.1.2...v3.1.3

@@ -13,7 +13,7 @@ export { getToaster } from './api/get-toaster'
 export { configureToaster } from './api/configure-toaster'
 export { resetToasts } from './api/reset-toasts'
 
-export { browser } from './browser/registry'
+export { browser, Notify } from './browser/registry'
 export type { NotifyApi } from './browser/registry'
 
 // Public types

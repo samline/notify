@@ -102,9 +102,10 @@ Use this as a quick lookup when you need to know what a method will touch.
 The browser IIFE bundle ships a single global (`window.Notify`) that wraps `toast` + `createToaster` + `getToaster` + `destroyToaster` + `configureToaster`. The same shape is available from the vanilla entrypoint as a module-level singleton called `browser`:
 
 ```ts
-import { browser } from '@samline/notify'
+import { browser, Notify } from '@samline/notify'
 import '@samline/notify/styles.css'
 
+browser === Notify // true
 window.MyNotify = { ...browser }
 
 window.MyNotify.createToaster({ position: 'bottom-right' })
@@ -113,6 +114,8 @@ window.MyNotify.destroyToaster()
 ```
 
 `browser` is an object you can spread into your own globals or use directly. Because it shares the same module-level `Observer` and the same toaster singleton as the named exports, every spread behaves the same — `window.MyNotify.createToaster({})` and `createToaster({})` end up calling the same factory and updating the same DOM container.
+
+`Notify` is the namespace-oriented name for that same object. The root entrypoint, `@samline/notify/browser`, the IIFE default export, and `window.Notify` all share its identity.
 
 If you need multiple independent singletons, use the `mountToaster(root, options?)` escape hatch and keep your own map of controllers.
 

@@ -13,7 +13,7 @@
 //   - If no DOM is available (e.g. server-side import), do NOT touch
 //     `globalThis`; just return the registry.
 
-import { browser, type NotifyApi } from './registry'
+import { Notify, type NotifyApi } from './registry'
 import { canUseDOM } from '../core/dom-helpers'
 
 declare global {
@@ -21,8 +21,6 @@ declare global {
     Notify?: NotifyApi
   }
 }
-
-const Notify: NotifyApi = browser
 
 if (canUseDOM() && typeof globalThis !== 'undefined') {
   ;(globalThis as typeof globalThis & { Notify: NotifyApi }).Notify = Notify
@@ -47,3 +45,4 @@ if (canUseDOM()) {
 }
 
 export default Notify
+export { browser, Notify } from './registry'

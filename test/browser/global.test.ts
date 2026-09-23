@@ -36,6 +36,15 @@ describe('browser/global', () => {
     expect(typeof Notify.Toaster).toBe('function')
   })
 
+  it('uses one namespace for Notify, browser, default, and the global', async () => {
+    vi.resetModules()
+    const mod = await import('../../src/browser/global')
+
+    expect(mod.Notify).toBe(mod.browser)
+    expect(mod.default).toBe(mod.Notify)
+    expect((globalThis as unknown as { Notify: NotifyApi }).Notify).toBe(mod.Notify)
+  })
+
   it('auto-mounts a default toaster on import', async () => {
     await importGlobal()
     expect(document.body.querySelector('ol[data-notify-toaster]')).toBeTruthy()

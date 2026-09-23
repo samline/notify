@@ -18,7 +18,7 @@ export interface NotifyApi {
   destroyToaster: () => void
 }
 
-export const browser: NotifyApi = {
+export const Notify: NotifyApi = {
   toast,
   Toaster: createToaster,
   createToaster,
@@ -26,3 +26,7 @@ export const browser: NotifyApi = {
   getToaster,
   destroyToaster
 }
+
+// Both names intentionally reference one singleton. `Notify` is the
+// namespace name and `browser` follows the shared package convention.
+export const browser = Notify
