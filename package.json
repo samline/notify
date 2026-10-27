@@ -65,6 +65,18 @@
     "test:watch": "vitest",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
+    "site:dev": "npm --prefix site run dev",
+    "site:build": "npm --prefix site run build",
+    "site:preview": "npm --prefix site run preview",
+    "site:check": "npm --prefix site run check",
+    "site:format": "npm --prefix site run format",
+    "site:format:check": "npm --prefix site run format:check",
+    "site:test": "npm --prefix site run test",
+    "site:test:browser": "npm --prefix site run test:browser",
+    "site:verify": "npm --prefix site run verify",
+    "site:configure": "npm --prefix site run configure",
+    "site:check:design": "npm --prefix site run check:design",
+    "site:check:release": "npm --prefix site run check:release",
     "prepublishOnly": "npm run clean && npm run build && npm run typecheck && npm test && npm run test:package"
   },
   "overrides": {

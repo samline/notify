@@ -4,6 +4,9 @@ node_modules/
 # Build output
 dist/
 coverage/
+.astro/
+test-results/
+playwright-report/
 
 # OS files
 .DS_Store
@@ -32,6 +35,8 @@ bun.lockb
 
 # Auto-generated
 skills-lock.json
+# La website (site/) registra la procedencia de sus skills en un lockfile versionado.
+!site/skills-lock.json
 
 # Agent internal state (NOT versioned, solo existe en local)
 .mavis/

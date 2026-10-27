@@ -1,0 +1,263 @@
+---
+import DemoStudio from './DemoStudio.astro'
+import DemoPanel from './DemoPanel.astro'
+import DemoFooter from './DemoFooter.astro'
+import Button from './Button.astro'
+import Tabs from './Tabs.astro'
+import CodeFrame from './CodeFrame.astro'
+import Disclosure from './Disclosure.astro'
+import DemoCode from './DemoCode.astro'
+import t from '../i18n/translations/en/demo'
+import controls from '../i18n/translations/en/controls'
+interface Props {
+  id?: string
+  showCode?: boolean
+}
+const { id = `demo-${crypto.randomUUID()}`, showCode = false } = Astro.props
+---
+
+<div data-ui class:list={['playground']}>
+  <package-site-demo role="group" aria-labelledby={`${id}-label`}>
+    <DemoStudio>
+      <Tabs id={`${id}-preview`} variant="demo" label={t.label} items={t.tabs}>
+        <div slot="heading" class:list={['studio-title']}>
+          <span class:list={['status-dot']} aria-hidden="true"></span>
+          <span id={`${id}-label`}>{t.label}</span>
+        </div>
+        <DemoPanel data-panel="preview" label={t.label} tagline={t.previewTagline}>
+          <div class:list={['specimen']}>
+            <p class:list={['value']}>
+              {t.count}
+              {': '}
+              <output aria-live="polite">0</output>
+            </p>
+          </div>
+        </DemoPanel>
+        <DemoPanel data-panel="html" label={controls.codeFiles.html}>
+          <CodeFrame label="index.html" text={t.html} language="html" copyLabel={t.copyComplete} />
+        </DemoPanel>
+        <DemoPanel data-panel="javascript" label={controls.codeFiles.javascript}>
+          <CodeFrame
+            label="main.js"
+            text={t.javascript}
+            language="javascript"
+            copyLabel={t.copyComplete}
+          />
+        </DemoPanel>
+      </Tabs>
+      <DemoFooter note={t.description}>
+        <div class:list={['actions']}>
+          <Button data-add disabled>
+            {t.increment}
+          </Button>
+          <Button data-reset variant="secondary" disabled>
+            {t.reset}
+          </Button>
+          <Button data-promise variant="secondary" disabled>
+            {t.promise}
+          </Button>
+          <Button data-action variant="secondary" disabled>
+            {t.action}
+          </Button>
+        </div>
+      </DemoFooter>
+      <noscript>
+        <p>{t.noscript}</p>
+      </noscript>
+    </DemoStudio>
+  </package-site-demo>
+  {showCode && (
+    <Disclosure class:list={['code-disclosure']}>
+      <span slot="summary">{t.openCode}</span>
+      <div class:list={['code-body']}>
+        <p class:list={['note']}>{t.note}</p>
+        <DemoCode />
+      </div>
+    </Disclosure>
+  )}
+</div>
+
+<script>
+  import { mountElements } from '../lib/mount-elements'
+  import { createToaster, destroyToaster, getToaster, toast } from '@samline/notify'
+  import '@samline/notify/styles.css'
+
+  // One toaster per page. Count the mounted previews so a navigation that
+  // replaces the demo releases the toaster exactly once.
+  let previews = 0
+
+  mountElements('package-site-demo', element => {
+    const lifecycle = new AbortController()
+    const { signal } = lifecycle
+    const output = element.querySelector('output')
+    const add = element.querySelector<HTMLButtonElement>('[data-add]')
+    const reset = element.querySelector<HTMLButtonElement>('[data-reset]')
+    const promise = element.querySelector<HTMLButtonElement>('[data-promise]')
+    const action = element.querySelector<HTMLButtonElement>('[data-action]')
+    if (!output || !add || !reset || !promise || !action) return
+    const tabs = element.querySelector('[data-group]')
+    const syncControls = () => {
+      const selected = tabs?.querySelector('[data-tab][aria-selected="true"]')
+      const disabled = selected?.getAttribute('data-tab') !== 'preview'
+      add.disabled = reset.disabled = promise.disabled = action.disabled = disabled
+    }
+    element.addEventListener(
+      'tabs:change',
+      event => {
+        if (event.target === tabs) syncControls()
+      },
+      { signal }
+    )
+
+    // The real runtime, mounted on the page body exactly like an app would.
+    // The toaster follows the site theme so a toast never contradicts the
+    // page it appears on.
+    const theme = document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light'
+    const toaster = createToaster({
+      position: 'bottom-right',
+      theme,
+      richColors: true,
+      duration: 6000,
+    })
+    previews += 1
+    document.addEventListener(
+      'package-site:theme-change',
+      event => {
+        const next = (event as CustomEvent<'light' | 'dark'>).detail
+        toaster.update({ theme: next })
+      },
+      { signal }
+    )
+
+    const syncCount = () => {
+      output.value = String(toast.getToasts().length)
+    }
+    output.value = '0'
+
+    add.addEventListener(
+      'click',
+      () => {
+        toast.success('Saved', {
+          description: 'Your changes are live.',
+          onDismiss: syncCount,
+        })
+        syncCount()
+      },
+      { signal }
+    )
+    reset.addEventListener(
+      'click',
+      () => {
+        toast.error('Could not save', {
+          description: 'The server rejected the request.',
+          onDismiss: syncCount,
+        })
+        syncCount()
+      },
+      { signal }
+    )
+    promise.addEventListener(
+      'click',
+      () => {
+        toast.promise(
+          new Promise<string>(resolve => {
+            window.setTimeout(() => resolve('Q3'), 1800)
+          }),
+          {
+            loading: 'Generating the report…',
+            success: name => `Report ${name} is ready`,
+            error: 'The report could not be generated',
+            onDismiss: syncCount,
+          }
+        )
+        syncCount()
+      },
+      { signal }
+    )
+    action.addEventListener(
+      'click',
+      () => {
+        toast('Message archived', {
+          type: 'action',
+          duration: 8000,
+          action: {
+            label: 'Undo',
+            onClick: () => {
+              toast.success('Archive undone', { onDismiss: syncCount })
+            },
+          },
+          onDismiss: syncCount,
+        })
+        syncCount()
+      },
+      { signal }
+    )
+    syncControls()
+    return () => {
+      lifecycle.abort()
+      previews -= 1
+      if (previews === 0 && getToaster() === toaster) destroyToaster()
+    }
+  })
+</script>
+
+<style>
+  .playground {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-lg);
+    min-width: 0;
+  }
+  package-site-demo {
+    display: block;
+    min-width: 0;
+  }
+  .studio-title {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.13em;
+    line-height: 1.6;
+    display: flex;
+    align-items: center;
+    gap: 0.5625rem;
+    color: var(--palette-studio-title);
+  }
+  .status-dot {
+    width: 0.375rem;
+    height: 0.375rem;
+    background: var(--color-accent);
+    border-radius: 50%;
+    flex: none;
+  }
+  .specimen {
+    min-height: 9rem;
+    display: grid;
+    align-items: center;
+  }
+  .value {
+    margin: 0;
+    font-size: 1.5rem;
+    color: var(--palette-package-site-text);
+    letter-spacing: -0.02em;
+    overflow-wrap: anywhere;
+  }
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+  }
+  .note {
+    font-size: var(--text-small);
+    margin: 0;
+  }
+  .code-body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-md);
+    padding: var(--space-sm);
+  }
+  .code-disclosure {
+    margin-top: var(--space-lg);
+    padding-block: var(--space-xs);
+  }
+</style>

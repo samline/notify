@@ -15,8 +15,10 @@ Read this file first for every repository task, then load only the relevant docu
 
 ## Documentation
 
-- Follow `example/AGENTS.md` when changing the Starlight documentation.
-- Run `npm run check` and `npm run build` from `example/`.
+- `docs/` holds the source of truth for the package reference. Keep it in sync with `site/docs/src/content/docs/`.
+- The public website (landing, examples and docs) lives in `site/`. Follow `site/AGENTS.md` and `site/.agents/skills/package-site/SKILL.md` when changing it.
+- Run `npm --prefix site run check` and `npm --prefix site run build` after website changes.
+- The site is a private npm workspace with its own lockfile: use `npm` inside `site/`, never Bun. The package itself stays on Bun.
 
 ## Release Or Publish
 

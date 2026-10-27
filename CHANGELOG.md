@@ -9,7 +9,15 @@ marked as unpublished have a Git tag but are not present in the npm registry.
 
 ## [Unreleased]
 
-## [3.2.0] - Unpublished
+### Added
+
+- Added the public website workspace in `site/`: a landing page with a live `@samline/notify` demo, an examples gallery and the documentation app. The site uses an amber accent and is published from the `site/` build.
+
+### Changed
+
+- Moved the documentation from the retired Starlight app in `example/` to `site/docs/`, and redirected the previous public routes (`/getting-started/`, `/reference/*`, `/guides/*`) to their new location under `/docs/`.
+
+## [3.2.0] - 2026-09-23
 
 ### Added
 
@@ -19,7 +27,7 @@ marked as unpublished have a Git tag but are not present in the npm registry.
 
 - Made the root entrypoint, browser module, IIFE, and `window.Notify` consume the exact same singleton namespace.
 
-## [3.1.5] - Unpublished
+## [3.1.5] - 2026-09-23
 
 ### Added
 

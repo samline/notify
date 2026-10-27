@@ -1,0 +1,35 @@
+{
+  "package": {
+    "name": "Notify",
+    "npmName": "@samline/notify",
+    "version": "3.2.0",
+    "description": "Accessible, dependency-free toast notifications for JavaScript and TypeScript, with ESM, CommonJS, and browser builds.",
+    "author": "Samuel Olvera",
+    "license": "MIT",
+    "keywords": [
+      "toast",
+      "notification",
+      "notifications",
+      "vanilla",
+      "typescript",
+      "javascript",
+      "browser",
+      "accessible",
+      "framework-agnostic"
+    ]
+  },
+  "site": {
+    "url": "https://samline.github.io/notify/",
+    "repository": "https://github.com/samline/notify",
+    "namespace": "notify",
+    "template": false
+  },
+  "theme": {
+    "accentLight": "#b45309",
+    "accentDark": "#fbbf24"
+  },
+  "delivery": {
+    "cdnScript": "https://cdn.jsdelivr.net/npm/@samline/notify@3.2.0/dist/browser/global.global.js",
+    "cdnStylesheet": "https://cdn.jsdelivr.net/npm/@samline/notify@3.2.0/dist/styles.css"
+  }
+}

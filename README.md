@@ -142,7 +142,9 @@ See the full per-method reference in [`docs/api/`](docs/api/index.md).
 
 ## Documentation
 
-Full API reference, guides, and examples are available at **[samline.github.io/notify](https://samline.github.io/notify)**.
+The landing page lives at **[samline.github.io/notify](https://samline.github.io/notify)** and the full documentation at **[samline.github.io/notify/docs](https://samline.github.io/notify/docs)**.
+
+The markdown files below are the source of truth for the package. The published site in [`site/`](site/) mirrors them.
 
 | Doc                                                | Purpose                                                                    |
 | -------------------------------------------------- | -------------------------------------------------------------------------- |

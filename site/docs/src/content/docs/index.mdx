@@ -1,0 +1,68 @@
+---
+title: 'Toast notifications for the web'
+titleAccent: 'for the web'
+description: 'Accessible, dependency-free toast notifications for JavaScript and TypeScript, with ESM, CommonJS, and browser builds.'
+locale: en
+sidebar:
+  group: start
+  order: 1
+---
+
+import CardGrid from '../../../../shared/components/CardGrid.astro'
+import LinkCard from '../../../../shared/components/LinkCard.astro'
+import { href } from '../../lib/routes'
+
+`@samline/notify` turns a function call into a live, accessible toast. No runtime dependencies, no framework runtime, no build step. Import `toast`, mount one renderer, and every call becomes a list item inside a polite live region.
+
+## Three ideas
+
+### A tiny observable
+
+Every toast lives in one module-level observer. The `toast` factory pushes a record into it and notifies subscribers synchronously; the renderer reconciles the DOM when that happens. There is no virtual DOM and no framework to adopt — one shared object per page.
+
+### A vanilla renderer
+
+A mounted toaster creates a single `ol` with the `data-notify-toaster` attribute and one `li` with the `data-notify-toast` attribute per active toast. Every transition is a CSS rule driven by a `data-*` attribute, so the JavaScript only sets attributes and text.
+
+### Two module entrypoints
+
+`@samline/notify` is the complete ESM and CommonJS API. `@samline/notify/browser` exposes the same surface as a single registry object. The standalone build at `dist/browser/global.global.js` registers that surface as `window.Notify`.
+
+## What it solves
+
+Notification libraries usually arrive with one of three problems: a wrapper that only works inside one framework, a stylesheet you cannot theme, or an API that hides when a toast actually goes away. Notify answers each one directly.
+
+- **No framework lock-in.** The package is vanilla DOM. `Toaster` is a function alias of `createToaster()`, not a component, so React, Vue, Svelte, Astro and plain HTML all use the same code.
+- **Themeable without fighting the library.** The stylesheet targets `data-*` attributes and CSS custom properties. Override `--normal-bg` and the palette follows; override `--width` and the layout follows.
+- **A lifecycle you can observe.** `toast.getToasts()` and `toast.getHistory()` return snapshots, `toast.dismiss(id)` ends a toast early, and every state change is published to subscribers.
+
+```ts
+import { createToaster, toast } from '@samline/notify'
+import '@samline/notify/styles.css'
+
+createToaster({ position: 'bottom-right', richColors: true })
+
+toast.success('Profile saved', {
+  description: 'Your changes are live.',
+  action: { label: 'View profile', onClick: () => location.assign('/profile') },
+})
+```
+
+## Choose your next step
+
+<CardGrid columns={2}>
+  <LinkCard href={href('getting-started')} title="Installation">
+    Install the package, import the stylesheet, and send your first toast.
+  </LinkCard>
+  <LinkCard href={href('guides/examples')} title="Examples">
+    End-to-end recipes for the flows you will build first.
+  </LinkCard>
+  <LinkCard href={href('reference/configuration')} title="Configuration">
+    Every toaster and toast option, with its default and its effect.
+  </LinkCard>
+  <LinkCard href={href('reference/api')} title="API reference">
+    The complete public surface, one function at a time.
+  </LinkCard>
+</CardGrid>
+
+Release notes for every published version live in the [changelog](changelog/).

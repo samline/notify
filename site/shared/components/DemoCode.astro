@@ -1,0 +1,8 @@
+---
+import CodeFiles from './CodeFiles.astro'
+import { demoFiles } from '../lib/demo-files'
+import t from '../i18n/translations/en/demo'
+const { files, complete } = await demoFiles
+---
+
+<CodeFiles files={files} complete={{ code: complete.code, copyLabel: t.copyComplete }} />

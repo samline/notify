@@ -1,0 +1,307 @@
+---
+title: 'End-to-end examples'
+titleAccent: 'examples'
+description: 'End-to-end recipes for the notification flows you will build first, from first toast to teardown.'
+locale: en
+sidebar:
+  group: guides
+  order: 3
+---
+
+import Tabs from '../../../../../shared/components/Tabs.astro'
+import TabPanel from '../../../../../shared/components/TabPanel.astro'
+import Callout from '../../../../../shared/components/Callout.astro'
+import Playground from '../../../../../shared/components/Playground.astro'
+
+End-to-end patterns that combine multiple methods. Each recipe is self-contained and can be dropped into a real project.
+
+## Try it
+
+<Playground showCode />
+
+The preview runs the published package. The code disclosure holds the same source as separate files and as one complete document.
+
+## 1. Minimal setup
+
+<Tabs id="notify-runtime" label="Runtime" items={[{ id: 'bundler', label: 'Bundler' }, { id: 'browser', label: 'Browser global' }]}>
+  <TabPanel id="bundler" label="Bundler">
+
+```ts
+import { createToaster, toast } from '@samline/notify'
+import '@samline/notify/styles.css'
+
+createToaster({ richColors: true })
+toast.success('Notify is ready')
+```
+
+  </TabPanel>
+  <TabPanel id="browser" label="Browser global">
+
+```html
+<button id="save" type="button">Save</button>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@samline/notify@3.2.0/dist/styles.css" />
+<script src="https://cdn.jsdelivr.net/npm/@samline/notify@3.2.0/dist/browser/global.global.js"></script>
+<script>
+  const notify = window.Notify.default ?? window.Notify
+
+  document.querySelector('#save').addEventListener('click', () => {
+    notify.toast.success('Saved')
+  })
+</script>
+```
+
+  </TabPanel>
+</Tabs>
+
+## 2. `toast.promise` with `fetch`
+
+```ts
+import { toast } from '@samline/notify'
+
+async function saveProfile(patch: object) {
+  const response = await fetch('/api/profile', {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(patch),
+  })
+
+  if (!response.ok) {
+    throw new Error(`Profile save failed: ${response.status}`)
+  }
+
+  return response.json()
+}
+
+toast.promise(saveProfile({ name: 'Sam' }), {
+  loading: 'Saving profile…',
+  success: profile => `Saved as ${profile.name}`,
+  error: 'Could not save your profile',
+})
+```
+
+The loading toast appears immediately. Once the promise settles, the same list item updates in place to the success or error type. The id returned by `toast.promise()` is the same id used for both phases.
+
+If the resolved value is a response whose `ok` is `false`, the runtime routes to `error` automatically. Pass a thunk when the work should be deferred behind a debounce or a click.
+
+## 3. Undo with `action` and `cancel`
+
+```ts
+toast('Item deleted', {
+  type: 'action',
+  duration: 6000,
+  action: {
+    label: 'Undo',
+    onClick: () => restoreItem(item),
+  },
+  cancel: {
+    label: 'Dismiss',
+    onClick: () => {},
+  },
+})
+```
+
+The toast renders two trailing buttons: `cancel` first, `action` second. Both close the toast on click by default. Set `closeOnClick: false` on either to keep the toast open while a follow-up action runs.
+
+## 4. Rich content with `toast.custom`
+
+```ts
+toast.custom(container => {
+  const heading = document.createElement('strong')
+  heading.textContent = 'Build complete'
+
+  const detail = document.createElement('span')
+  detail.textContent = ' Production assets are ready.'
+
+  container.append(heading, detail)
+})
+```
+
+The renderer creates a mount element for you and hands it to the callback. Append whatever DOM you own. Do not inject user-supplied HTML as `innerHTML`.
+
+You can also pass a pre-built element:
+
+```ts
+const widget = document.createElement('div')
+widget.textContent = 'Pre-built widget'
+
+toast.custom(widget, { duration: 8000 })
+```
+
+## 5. Same-id updates in place
+
+```ts
+const id = toast.loading('Uploading…', { id: 'upload-1' })
+
+await uploadFile(file)
+
+toast.success('Upload complete', { id: 'upload-1' })
+```
+
+The second call updates the same list item in place. The runtime fingerprints the content and re-fills only when the type, title, description, action, or cancel changed. The auto-dismiss timer is also reset, so the toast stays visible for another full duration after the success message replaces the loading message.
+
+This is the same mechanism `toast.promise` uses internally.
+
+## 6. Live theme and position changes
+
+```ts
+import { createToaster, getToaster } from '@samline/notify'
+import '@samline/notify/styles.css'
+
+createToaster({ theme: 'light', position: 'bottom-right' })
+
+document.querySelector('#theme-toggle')?.addEventListener('click', () => {
+  getToaster()?.update({ theme: 'dark' })
+})
+```
+
+`toaster.update(options?)` re-applies the data attributes and the CSS variables. Omitted options keep their current value. Toasts already in flight keep their own type and mounted state.
+
+## 7. Mobile offsets
+
+```ts
+createToaster({
+  position: 'bottom-right',
+  offset: 24,
+  mobileOffset: 16,
+})
+```
+
+The runtime applies the mobile offset on coarse pointers. Pass an object to customize each side:
+
+```ts
+createToaster({
+  offset: { top: 24, right: 24, bottom: 24, left: 24 },
+  mobileOffset: { bottom: 80 }, // account for an iOS bottom bar
+})
+```
+
+Numbers become pixels. Strings such as `'2rem'` are used verbatim.
+
+## 8. Multi-toaster interface
+
+```ts
+import { mountToaster } from '@samline/notify'
+import '@samline/notify/styles.css'
+
+const errors = mountToaster(document.body, {
+  position: 'top-right',
+  theme: 'dark',
+  richColors: true,
+  visibleToasts: 5,
+})
+
+const banners = mountToaster(document.body, {
+  position: 'bottom-left',
+  duration: 6000,
+})
+
+errors.element.dataset['notifyChannel'] = 'errors'
+banners.element.dataset['notifyChannel'] = 'banners'
+```
+
+`mountToaster` accepts a root, the toaster options, and an optional state object for tests. The two toasters have separate containers and separate cleanup.
+
+<Callout title="Direct mounts share the global state">
+  Both mounts subscribe to the same global `ToastState`, so every published event reaches every
+  renderer. The legacy `id` and `toasterId` fields filter that shared stream; they do not create
+  isolated state, history, counters, or subscriptions. Keep one `createToaster()` singleton for
+  normal integrations.
+</Callout>
+
+## 9. Per-toast test hook
+
+```ts
+toast.success('Profile saved', { testId: 'profile-save-success' })
+```
+
+The runtime renders `data-testid="profile-save-success"` on the list item, so an end-to-end selector can target one specific toast.
+
+## 10. Persist a toast log
+
+```ts
+import { toast, ToastState } from '@samline/notify'
+
+ToastState.subscribe(event => {
+  if ('dismiss' in event && event.dismiss) {
+    logEvent('toast_dismissed', { id: event.id })
+  } else {
+    logEvent('toast_created', { id: event.id, type: event.type })
+  }
+})
+```
+
+The observer publishes one event per create or dismiss. `toast.promise` publishes two events, one for the loading state and one for the settled state. Subscribers run synchronously inside the publish call, so keep them fast and do not throw.
+
+## 11. Custom CSS for the toaster
+
+```css
+/* Brand-aligned toaster */
+[data-notify-toaster] {
+  --width: 360px;
+  --gap: 12px;
+  --offset-bottom: 24px;
+  --mobile-offset-bottom: 24px;
+  --normal-bg: white;
+  --normal-text: oklch(0.18 0.02 250);
+  --normal-border: oklch(0.9 0.01 250);
+  --success-bg: oklch(0.96 0.04 150);
+  --success-text: oklch(0.22 0.1 150);
+  --success-border: oklch(0.78 0.1 150);
+  --error-bg: oklch(0.96 0.04 25);
+  --error-text: oklch(0.22 0.1 25);
+  --error-border: oklch(0.78 0.1 25);
+  --border-radius: 10px;
+}
+```
+
+The runtime only sets the per-type defaults inside the container. Add your own stylesheet after `@samline/notify/styles.css` and your rules win on cascade order.
+
+## 12. Disable auto-dismiss for one toast
+
+```ts
+toast.info('Heads up — check the server status', { duration: Infinity })
+```
+
+`duration: Infinity` cancels the auto-dismiss. The user can still dismiss manually with the close button, when it is enabled, or by swiping, when the position allows it.
+
+`toast.loading` and the loading state of `toast.promise` never schedule a timer by design.
+
+## 13. SPA cleanup on route change
+
+```ts
+import { createToaster, destroyToaster } from '@samline/notify'
+
+router.on('/profile', () => {
+  createToaster({ position: 'bottom-right' })
+})
+
+router.off('/profile', () => {
+  destroyToaster()
+})
+```
+
+`destroyToaster()` is idempotent and a no-op when no toaster is mounted. If you used `mountToaster` for a multi-toaster interface, keep your own references and call `controller.destroy()` directly.
+
+## 14. Read the current toasts
+
+```ts
+import { toast } from '@samline/notify'
+
+const active = toast.getToasts()
+// [{ id: 1, type: 'success', title: 'Saved', ... }, ...]
+
+const history = toast.getHistory()
+// every toast since page load, including dismissed ones
+```
+
+`getToasts()` filters out the ids in the dismissed set. `getHistory()` returns the unfiltered list. Both return fresh arrays on every call, so they are safe to mutate.
+
+## 15. Reset everything
+
+```ts
+import { resetToasts } from '@samline/notify'
+
+resetToasts()
+```
+
+`resetToasts()` drops every toast, active and dismissed, and rewinds the generated-id counter. It keeps the mounted renderer subscribed. In production you usually want `toast.dismiss()`, which keeps the counter, or `destroyToaster()`, which also unmounts the container.

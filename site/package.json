@@ -1,0 +1,36 @@
+{
+  "name": "notify-site",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "workspaces": [
+    "landing",
+    "docs",
+    "shared"
+  ],
+  "scripts": {
+    "dev": "node scripts/assets.mjs && node scripts/dev.mjs",
+    "build": "node scripts/assets.mjs && npm run build --workspace docs && npm run build --workspace landing && node scripts/assemble.mjs && node scripts/check-site.mjs",
+    "preview": "npm run preview --workspace landing -- --host 127.0.0.1 --port 4330",
+    "check": "node scripts/check-config.mjs && npm run check:design && npm run check --workspace landing && npm run check --workspace docs",
+    "format": "prettier --plugin prettier-plugin-astro --write .",
+    "format:check": "prettier --plugin prettier-plugin-astro --check .",
+    "test": "node --test tests/*.test.mjs",
+    "test:browser": "playwright test",
+    "verify": "npm run check && npm run format:check && npm test && npm run test:adaptation && npm run build && npm run test:browser",
+    "configure": "node scripts/configure.mjs",
+    "postinstall": "node scripts/assets.mjs",
+    "check:release": "node scripts/check-release.mjs",
+    "test:adaptation": "node scripts/test-adaptation.mjs",
+    "check:design": "node scripts/check-design.mjs"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.62.1",
+    "axe-core": "^4.14.0",
+    "prettier": "^3.9.10",
+    "prettier-plugin-astro": "^1.1.1"
+  }
+}

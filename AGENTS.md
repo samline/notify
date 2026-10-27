@@ -52,6 +52,12 @@ The AI must treat them as operational context of the project.
 1. Query the graph with `codebase-memory-mcp`.
 2. Read `.agents/agent-index.md`, `.agents/package-replication-guide.md`, `.agents/new-project.md`, `.agents/todo.md` and `.agents/lessons.md`.
 
+### Website (landing, examples and docs)
+
+1. Query the graph with `codebase-memory-mcp`.
+2. Read `.agents/agent-index.md` and `site/AGENTS.md` (plus `site/.agents/skills/package-site/SKILL.md`).
+3. The website is the private workspace in `site/`. It owns the landing page, the examples gallery and the documentation app. It never ships in the npm tarball.
+
 ### Release, deploy, or publish
 
 1. Query the graph with `codebase-memory-mcp`.
