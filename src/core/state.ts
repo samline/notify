@@ -24,6 +24,9 @@ import type {
 } from './types'
 
 let toastsCounter = 1
+
+/** Maximum number of dismissed records kept for `toast.getHistory()`. */
+export const HISTORY_LIMIT = 50
 let resetEpoch = 0
 
 type TitleInput = RenderableOrFactory
@@ -134,29 +137,64 @@ class Observer {
 
   dismiss = (id?: ToastId): ToastId | undefined => {
     if (id !== undefined) {
-      // Guard against double-dismiss: a second call would
-      // re-publish the dismiss event and the renderer subscriber
-      // would re-invoke `toast.onDismiss`, schedule a second
-      // DOM-removal setTimeout, etc. The legacy React build had
-      // the same edge case; we de-duplicate here. See Fix 16.
+      // A second dismissal of the same id, or one for an id that was never
+      // created, is a no-op: lifecycle callbacks run exactly once.
       if (this.dismissedToasts.has(id)) return id
-      this.dismissedToasts.add(id)
-      this.publish({ id, dismiss: true })
+      const record = this.toasts.find((toast) => toast.id === id)
+      if (!record) return id
+      this.dismissRecord(record)
+      this.pruneHistory()
     } else {
       resetEpoch += 1
       const errors: unknown[] = []
-      for (const toast of this.toasts) {
-        if (this.dismissedToasts.has(toast.id)) continue
-        this.dismissedToasts.add(toast.id)
+      for (const record of [...this.toasts]) {
+        if (this.dismissedToasts.has(record.id)) continue
         try {
-          this.publish({ id: toast.id, dismiss: true })
+          this.dismissRecord(record)
         } catch (error) {
           errors.push(error)
         }
       }
+      this.pruneHistory()
       if (errors.length) throw errors[0]
     }
     return id
+  }
+
+  /**
+   * Publish one dismissal and then run its `onDismiss` callback once,
+   * independently of how many toasters are mounted.
+   */
+  private dismissRecord = (record: ToastT): void => {
+    this.dismissedToasts.add(record.id)
+    try {
+      this.publish({ id: record.id, dismiss: true })
+    } finally {
+      record.onDismiss?.(record)
+    }
+  }
+
+  /**
+   * Keep at most `HISTORY_LIMIT` dismissed records so long-lived pages do
+   * not retain every toast (and its callbacks or custom elements) forever.
+   */
+  private pruneHistory = (): void => {
+    let dismissed = 0
+    for (const record of this.toasts) if (this.dismissedToasts.has(record.id)) dismissed += 1
+    if (dismissed <= HISTORY_LIMIT) return
+    let excess = dismissed - HISTORY_LIMIT
+    const kept: ToastT[] = []
+    // `toasts` is newest-first, so drop the oldest dismissed records.
+    for (let index = this.toasts.length - 1; index >= 0; index -= 1) {
+      const record = this.toasts[index]!
+      if (excess > 0 && this.dismissedToasts.has(record.id)) {
+        this.dismissedToasts.delete(record.id)
+        excess -= 1
+        continue
+      }
+      kept.push(record)
+    }
+    this.toasts = kept.reverse()
   }
 
   message = (message: TitleInput, data?: ToastOptions): ToastId =>
@@ -242,28 +280,16 @@ class Observer {
       const resolvedValue =
         typeof value === 'function' ? await (value as (data: unknown) => unknown)(errorInfo) : value
 
-      // Fix 17: the `PromiseData.description` field accepts a function
-      // form (`(data) => Renderable`) but the vanilla renderer never
-      // invoked it. The legacy React build called the function for
-      // HTTP errors and passed a hardcoded error string. We pass the
-      // error info (the rejected value of the promise — the Response
-      // for HTTP errors, the Error object for other rejections) so
-      // the user can introspect it. Only invoked on `error`; for
-      // `success` the static value (if any) is used, matching the
-      // legacy contract. The `await` allows async descriptions
-      // (e.g. one that re-fetches the failure body).
-      const descFn =
-        typeof data.description === 'function'
-          ? (data.description as (data: unknown) => Renderable | Promise<Renderable>)
-          : null
-      const descStatic = descFn === null ? (data.description as Renderable | undefined) : undefined
+      // `description` may be a function of the settled value: the resolved
+      // data on success, or the rejection reason / failed Response on error.
       let resolvedDescription: Renderable | undefined
-      if (type === 'error' && descFn) {
-        resolvedDescription = await descFn(errorInfo)
-      } else if (descStatic !== undefined) {
-        resolvedDescription = descStatic
+      if (typeof data.description === 'function') {
+        resolvedDescription = await (
+          data.description as (data: unknown) => Renderable | Promise<Renderable>
+        )(errorInfo)
+      } else if (data.description !== undefined) {
+        resolvedDescription = data.description
       }
-      // success path + function form: no description (matches legacy).
 
       if (!isCurrent()) return
 
@@ -375,26 +401,13 @@ const isHttpResponse = (value: unknown): value is Response =>
   typeof (value as { status: unknown }).status === 'number'
 
 const isExtendedResult = (value: unknown): value is { message: Renderable } & ToastOptions =>
-  typeof value === 'object' && value !== null && 'message' in value && !Array.isArray(value)
+  typeof value === 'object' &&
+  value !== null &&
+  'message' in value &&
+  !Array.isArray(value) &&
+  !(value instanceof Error)
 
 export const ToastState = new Observer()
-
-const toastFunction = (message: TitleInput, data?: ToastOptions): ToastId =>
-  ToastState.create({ ...(data ?? {}), message })
-
-export const toast = Object.assign(toastFunction, {
-  success: ToastState.success,
-  info: ToastState.info,
-  warning: ToastState.warning,
-  error: ToastState.error,
-  custom: ToastState.custom,
-  message: ToastState.message,
-  promise: ToastState.promise,
-  dismiss: ToastState.dismiss,
-  loading: ToastState.loading,
-  getHistory: ToastState.getHistory,
-  getToasts: ToastState.getToasts
-})
 
 /**
  * Reset the singleton — used by tests and `resetToasts()` to ensure

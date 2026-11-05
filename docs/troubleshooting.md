@@ -35,7 +35,7 @@ Import `@samline/notify/styles.css` in a bundled client entry, or link `dist/sty
 
 ## Duplicate notifications or callbacks
 
-Look for multiple `mountToaster()` calls, or framework effects mounted in more than one root. Direct mounts share the global `ToastState` and receive the same events, so each renderer can display the toast and invoke `onDismiss`.
+Look for multiple `mountToaster()` calls, or framework effects mounted in more than one root. Direct mounts share the global `ToastState` and receive the same events, so each renderer displays the toast. `onDismiss` still runs once, from the shared state.
 
 Repeated `createToaster()` calls alone do not create duplicates. They update the same registered controller.
 
@@ -77,7 +77,7 @@ The renderer writes inline layout and custom-property declarations. A policy tha
 
 ## Callbacks run more than once
 
-With one renderer, dismissal publication is de-duplicated by id. With duplicate direct mounts, each subscribed renderer processes the same event and can call `onDismiss`. Remove the duplicate mounts. Also make sure your own application callbacks do not register the same side effect repeatedly during framework development lifecycles.
+Dismissal is de-duplicated by id in the shared state, and `onDismiss` runs once per toast regardless of how many renderers are mounted. If you still see repeated side effects, look for duplicate mounts rendering the same toast twice. Also make sure your own application callbacks do not register the same side effect repeatedly during framework development lifecycles.
 
 ## Framework migration
 

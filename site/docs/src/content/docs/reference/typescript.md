@@ -323,11 +323,11 @@ import {
 
 - ToastId is number | string. Numeric 1 and string '1' are different identities even when their data-id text is identical.
 - RenderableOrFactory callbacks are evaluated when a state record is created or updated; calling the factory again with the same id evaluates the new callback again. They are not a reactive subscription.
-- CustomContent mounts an owned element directly or invokes the callback with a div[data-custom] in the icon slot. Use textContent for untrusted text; provide cleanup for application listeners when the integration leaves.
+- CustomContent mounts an owned element directly or invokes the callback with a div[data-custom] and a `{ id, dismiss }` context. The callback can run again after toaster updates; return a cleanup function to release its listeners. Use textContent for untrusted text.
 - ToastAction.closeOnClick defaults to true for action and cancel. Set false only when the action should leave the toast open.
 - ToasterController.element is the mounted ordered list; options is the current merged configuration. update returns the same controller. destroy clears listeners/timers and removes that container; use destroyToaster to publish global dismissals too.
 - Position determines swipe availability. Direction 'auto' reads document direction. Theme 'system' resolves and follows matchMedia changes in JavaScript, rather than relying on a stylesheet-only media query.
 - Offset numbers receive px; strings are forwarded. Omitted object sides use 24px desktop or 16px mobile defaults.
-- SwipeDirection describes the directions derived from a corner position. Centered positions disable swipe dismissal.
+- SwipeDirection describes the directions derived from a position: both edges of a corner, or the vertical edge of a centered position.
 - PromiseInput thunks with data run immediately; without data, each unwrap invocation runs the thunk. PromiseValue and PromiseExtendedResult let a settled message override toast options; finally waits for the rendering callback pipeline.
 - NotifyApi describes the registry, not the published 3.2.0 global namespace wrapper. Resolve the registry before applying that type.

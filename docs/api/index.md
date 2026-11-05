@@ -38,7 +38,7 @@ declare namespace toast {
 }
 ```
 
-Accepts an `HTMLElement` or a `(container: HTMLElement) => void` callback. The renderer mounts the custom DOM in a `[data-custom]` element and marks the toast unstyled. It does not sanitize your DOM, and custom toasts do not render the generated close button.
+Accepts an `HTMLElement` or a `(container, { id, dismiss }) => void | cleanup` callback. The renderer mounts the custom DOM in a `[data-custom]` element and marks the toast unstyled; a returned cleanup runs before re-renders and on removal. It does not sanitize your DOM, and custom toasts do not render the generated close button.
 
 ```ts
 const content = document.createElement('p')

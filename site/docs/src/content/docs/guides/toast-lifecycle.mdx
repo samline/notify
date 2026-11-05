@@ -56,7 +56,7 @@ const visibleCandidates = toast.getToasts()
 const allCurrentRecords = toast.getHistory()
 ```
 
-Both methods return defensive snapshots. `getToasts()` excludes dismissed records; `getHistory()` includes them. Updating an id replaces its record rather than appending another history entry.
+Both methods return defensive snapshots. `getToasts()` excludes dismissed records; `getHistory()` includes them, keeping the newest 50 dismissed records (`HISTORY_LIMIT`). Updating an id replaces its record rather than appending another history entry.
 
 Both snapshots are clones: the array, each record, and nested `action` and `cancel` objects are copied. Callback functions, promise objects, and DOM references stay the same references.
 

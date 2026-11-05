@@ -19,6 +19,7 @@ export type { NotifyApi } from './browser/registry'
 // Public types
 export type {
   CustomContent,
+  CustomContentContext,
   Direction,
   Offset,
   Position,
@@ -42,7 +43,7 @@ export type {
 
 // Re-export the internal state for tests and advanced consumers
 // (advanced use only — most callers should stick to `toast.*`).
-export { ToastState, resetToastState, mountToaster } from './core'
+export { ToastState, resetToastState, mountToaster, HISTORY_LIMIT } from './core'
 export type { ToastInput, ToastSubscriber } from './core'
 
 // Numeric constants for consumers who want to reason about timing

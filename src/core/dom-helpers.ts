@@ -45,14 +45,12 @@ export function getDocumentDirection(): Direction {
 
 /**
  * Default swipe directions derived from a position string
- * (e.g. `"top-right"` → `["top", "right"]`).
+ * (e.g. `"top-right"` → `["top", "right"]`,
+ * `"bottom-center"` → `["bottom"]`).
  */
 export function getDefaultSwipeDirections(position: string): SwipeDirection[] {
-  const parts = position.split('-') as [SwipeDirection | undefined, SwipeDirection | undefined]
-  const directions: SwipeDirection[] = []
-  if (parts[0]) directions.push(parts[0])
-  if (parts[1]) directions.push(parts[1])
-  return directions
+  const valid: readonly string[] = ['top', 'right', 'bottom', 'left']
+  return position.split('-').filter((part): part is SwipeDirection => valid.includes(part))
 }
 
 /**

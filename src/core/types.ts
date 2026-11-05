@@ -24,11 +24,22 @@ export type Renderable = string | number | boolean | null | undefined
  */
 export type RenderableOrFactory = Renderable | (() => Renderable)
 
+/** Context handed to a `toast.custom()` render callback. */
+export interface CustomContentContext {
+  /** Id of the toast being rendered. */
+  id: ToastId
+  /** Dismiss this toast (runs the exit animation and `onDismiss`). */
+  dismiss: () => void
+}
+
 /**
  * Rich content for `toast.custom()`. Pass either an `HTMLElement` you own or
- * a callback that fills a container. The renderer will mount it directly.
+ * a callback that fills the `[data-custom]` container. The callback may run
+ * again when the toaster re-renders; return a cleanup function to release
+ * listeners — it runs before every re-render and when the toast is removed.
  */
-export type CustomContent = HTMLElement | ((container: HTMLElement) => void)
+export type CustomContent =
+  HTMLElement | ((container: HTMLElement, context: CustomContentContext) => void | (() => void))
 
 export interface ToastAction {
   label: Renderable

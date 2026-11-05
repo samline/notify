@@ -25,3 +25,7 @@
 - Los previews que siguen el tema de la página deben actualizar preferencias sin reenviar duration: enviarla reinicia los timers. Exigir que una regresión falle contra el artefacto anterior antes de aceptar su verde; la prueba final del plazo usa tiempo real.
 
 - La revisión visual no se cierra con fingerprints o tests verdes: comprobar inputs/selects reales, superficie semántica, fuente válida, flecha separada con padding reservado, cursores pointer/text/not-allowed, hover/foco y disabled. Revisar también el ancho útil del valor a 320 px y 200%: un campo sin overflow podía dejar solo 64 px para texto. Comparar las fuentes fijadas de Ticker/Drawer y revisar los archivos copiados además del preview.
+
+- Lifecycle callbacks (`onDismiss`) belong in the shared state, not in renderers: a per-renderer call fires once per mounted toaster and never without one.
+- Never put an `aria-label` on a toast item: it replaces the description, actions and custom content for screen readers.
+- Home's first playground tab is the Toast types panel; e2e tests that use a scenario preset on Home must select its tab first.

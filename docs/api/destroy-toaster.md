@@ -18,7 +18,7 @@ function destroyToaster(): void
 2. Calls `controller.destroy()` on the singleton. That clears every active timer, removes every event listener, and removes the container from the DOM.
 3. Clears the singleton slot, so `getToaster()` returns `null` afterwards.
 
-The state history is not cleared by this call. `toast.getToasts()` returns an empty array, while `toast.getHistory()` still lists the dismissed records until `resetToasts()` runs.
+The state history is not cleared by this call. `toast.getToasts()` returns an empty array, while `toast.getHistory()` still lists the dismissed records (up to the newest 50) until `resetToasts()` runs.
 
 ## Examples
 

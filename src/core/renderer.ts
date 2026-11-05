@@ -154,6 +154,41 @@ export function mountToaster(
     { hovered: boolean; focused: boolean; remainingMs: number | null }
   >()
   const nodeIds = new WeakMap<HTMLLIElement, ToastT['id']>()
+  // Cleanup functions returned by `toast.custom((container) => cleanup)`.
+  const customCleanups = new Map<ToastT['id'], () => void>()
+  const releaseCustom = (id: ToastT['id']): void => {
+    const cleanup = customCleanups.get(id)
+    if (!cleanup) return
+    customCleanups.delete(id)
+    cleanup()
+  }
+
+  // Re-measure when a toast's intrinsic size changes after mount
+  // (viewport resize, web fonts, async custom content).
+  let measureFrame = 0
+  const pendingMeasure = new Set<HTMLLIElement>()
+  const resizeObserver =
+    typeof ResizeObserver === 'function'
+      ? new ResizeObserver((entries) => {
+          for (const entry of entries) pendingMeasure.add(entry.target as HTMLLIElement)
+          if (measureFrame) return
+          measureFrame = requestAnimationFrame(() => {
+            measureFrame = 0
+            let changed = false
+            for (const node of pendingMeasure) {
+              const id = nodeIds.get(node)
+              if (id === undefined || !node.isConnected || node.dataset['removed'] === 'true') {
+                continue
+              }
+              const before = heights.get(id)
+              measureToastHeight(node, id)
+              if (heights.get(id) !== before) changed = true
+            }
+            pendingMeasure.clear()
+            if (changed) renderAll()
+          })
+        })
+      : null
 
   // Start an auto-dismiss timer for the given toast. If a timer
   // already exists, do nothing (caller's responsibility to clear
@@ -416,7 +451,7 @@ export function mountToaster(
         return
       const toastNode = active?.closest<HTMLLIElement>('[data-notify-toast]')
       const toastKey = toastNode?.dataset['notifyKey']
-      if (toastNode && toastKey) {
+      if (toastNode && toastKey && container.contains(toastNode)) {
         const target = activeMatchingToasts().find((t) => getToastKey(t.id) === toastKey)
         if (target && target.dismissible !== false) {
           // Prevent Backspace from triggering browser back-nav.
@@ -459,19 +494,32 @@ export function mountToaster(
   }
   removeListeners.push(addListener(document, 'keydown', onKeyDown as EventListener))
 
-  // a11y: when the toaster mounts, capture the currently focused
-  // element so we can restore focus to it on destroy() (matches
-  // legacy sonner behaviour — see Fix 18).
-  let lastFocusedElementBeforeMount: HTMLElement | null = null
-  if (
-    canUseDOM() &&
-    typeof document.activeElement === 'object' &&
-    document.activeElement !== null
-  ) {
-    const active = document.activeElement as HTMLElement | null
-    if (active && !container.contains(active)) {
-      lastFocusedElementBeforeMount = active
+  // a11y: remember where focus came from when it enters the toaster
+  // (hotkey, Tab) so removing the focused toast never drops focus on
+  // <body>: it moves to the next toast or back to that element.
+  let returnFocusTo: HTMLElement | null = null
+  const onFocusEnter = (event: FocusEvent): void => {
+    const from = event.relatedTarget
+    if (from instanceof window.HTMLElement && !container.contains(from)) returnFocusTo = from
+  }
+  removeListeners.push(addListener(container, 'focusin', onFocusEnter as EventListener))
+
+  const rescueFocus = (leaving: HTMLElement): void => {
+    const active = document.activeElement
+    if (!active || !leaving.contains(active)) return
+    const next = container.querySelector<HTMLLIElement>(
+      '[data-notify-toast][data-visible="true"]:not([data-removed="true"])'
+    )
+    const target = next && next !== leaving ? next : returnFocusTo
+    if (target && target.isConnected) {
+      try {
+        target.focus({ preventScroll: true })
+        return
+      } catch {
+        // Fall through: focus could not be moved.
+      }
     }
+    ;(active as HTMLElement).blur?.()
   }
 
   // --- Per-toast rendering helpers -------------------------------------
@@ -513,9 +561,7 @@ export function mountToaster(
     const dismissible = toast.dismissible !== false
     const type = toast.type ?? 'normal'
     const rich = toast.richColors ?? currentRichColors
-    const invert = Boolean(toast.invert)
     const duration = toast.duration ?? currentDuration ?? TOAST_LIFETIME
-    const disabled = type === 'loading'
 
     const li = createEl('li', {
       tabIndex: 0,
@@ -528,9 +574,6 @@ export function mountToaster(
       // legacy React build omitted this; loading toasts read as
       // silent <li>s to AT.
       'aria-busy': String(type === 'loading'),
-      // a11y: surface the type to AT as a label prefix so the
-      // user hears "success: saved" rather than just "saved".
-      'aria-label': type === 'normal' ? undefined : `${type}: ${toast.title ?? ''}`,
       // `data-styled` is 'true' unless the toast OR the toaster asks
       // for the unstyled variant. The legacy React build computed
       // this from `toast.unstyled || unstyled || toast.jsx`; the
@@ -578,6 +621,7 @@ export function mountToaster(
       ...(toast.testId ? { 'data-testid': toast.testId } : {})
     }) as HTMLLIElement
     nodeIds.set(li, toast.id)
+    resizeObserver?.observe(li)
 
     li.style.setProperty('--index', String(index))
     li.style.setProperty('--toasts-before', String(index))
@@ -676,18 +720,25 @@ export function mountToaster(
       li.appendChild(btn)
     }
 
-    // 2) Icon (or loader for loading type).
+    // 2) Custom content owns the whole toast body.
+    releaseCustom(toast.id)
     if (toast.custom) {
-      const iconDiv = createEl('div', { 'data-icon': '' })
       const customContainer = createEl('div', { 'data-custom': '' })
+      li.appendChild(customContainer)
       if (typeof toast.custom === 'function') {
-        toast.custom(customContainer)
+        const cleanup = toast.custom(customContainer, {
+          id: toast.id,
+          dismiss: () => dismissToast(toast.id)
+        })
+        if (typeof cleanup === 'function') customCleanups.set(toast.id, cleanup)
       } else {
         customContainer.appendChild(toast.custom)
       }
-      iconDiv.appendChild(customContainer)
-      li.appendChild(iconDiv)
-    } else if (type === 'loading') {
+      return
+    }
+
+    // 3) Icon (or loader for loading type).
+    if (type === 'loading') {
       const iconDiv = createEl('div', { 'data-icon': '', 'aria-hidden': 'true' })
       setInnerHTML(iconDiv, getLoaderMarkup())
       li.appendChild(iconDiv)
@@ -700,7 +751,7 @@ export function mountToaster(
       }
     }
 
-    // 3) Content (title + description).
+    // 4) Content (title + description).
     const content = createEl('div', { 'data-content': '' })
     const title = createEl('div', {
       'data-title': ''
@@ -727,7 +778,7 @@ export function mountToaster(
     }
     li.appendChild(content)
 
-    // 4) Cancel + action buttons.
+    // 5) Cancel + action buttons.
     const actions = toast.cancel && toast.action ? createEl('div', { 'data-actions': '' }) : li
     if (toast.cancel) {
       const btn = buildActionButton(toast.cancel, 'data-cancel', toast, li)
@@ -758,7 +809,8 @@ export function mountToaster(
       try {
         action.onClick?.(event)
       } finally {
-        if (action.closeOnClick !== false) dismissToast(toast.id)
+        // `closeOnClick: false` or `event.preventDefault()` keeps the toast open.
+        if (action.closeOnClick !== false && !event.defaultPrevented) dismissToast(toast.id)
       }
     })
     return btn
@@ -779,6 +831,7 @@ export function mountToaster(
       // also fired (every dismiss path goes through both). Now we let
       // the subscriber own the entire cleanup so it's only ever
       // scheduled once.
+      rescueFocus(node)
       setAttrs(node, { 'data-removed': 'true', inert: true, 'aria-hidden': 'true' })
     }
     state.dismiss(id)
@@ -814,13 +867,12 @@ export function mountToaster(
 
   const bindToastInteractions = (li: HTMLLIElement, toast: ToastT): void => {
     const pos = getPositionForToast(toast)
-    const [y = 'bottom', x = 'right'] = pos.split('-') as [string, string]
     const dismissible = toast.dismissible !== false
     const type = toast.type ?? 'normal'
     const disabled = type === 'loading'
+    // Centered toasters only swipe vertically (toward their edge).
     const swipeDirections: SwipeDirection[] = getDefaultSwipeDirections(pos)
-    // No swipe on centered positions.
-    const swipeEnabled = x !== 'center' && y !== 'center'
+    const swipeEnabled = swipeDirections.length > 0
 
     let pointerStart: { x: number; y: number } | null = null
     let swipeAxis: 'x' | 'y' | null = null
@@ -916,7 +968,12 @@ export function mountToaster(
         swipeAxis === 'x'
           ? swipeDirections.includes(xAmount > 0 ? 'right' : 'left')
           : swipeDirections.includes(yAmount > 0 ? 'bottom' : 'top')
-      if (pointerStart && allowed && (Math.abs(amount) >= SWIPE_THRESHOLD || velocity > 0.11)) {
+      if (
+        pointerStart &&
+        allowed &&
+        (Math.abs(amount) >= SWIPE_THRESHOLD ||
+          (Math.abs(amount) >= MIN_FLICK_DISTANCE && velocity > 0.11))
+      ) {
         const direction: 'left' | 'right' | 'up' | 'down' = (() => {
           if (swipeAxis === 'x') return xAmount > 0 ? 'right' : 'left'
           return yAmount > 0 ? 'down' : 'up'
@@ -945,7 +1002,8 @@ export function mountToaster(
         li.style.setProperty('--swipe-amount-x', '0px')
         li.style.setProperty('--swipe-amount-y', '0px')
         setAttrs(li, { 'data-swiped': 'false', 'data-swiping': 'false' })
-        swipeSwiped = false
+        // Keep `swipeSwiped` until the click that follows this pointerup.
+        if (swipeSwiped) setTimeout(() => (swipeSwiped = false), 0)
       }
       pointerStart = null
       swipeAxis = null
@@ -1011,6 +1069,11 @@ export function mountToaster(
       resumeAfterInteraction()
     }
     const onClick = (event: MouseEvent): void => {
+      // A drag that did not dismiss is not a click on the toast body.
+      if (swipeSwiped) {
+        swipeSwiped = false
+        return
+      }
       if (disabled || !toast.onClick) return
       const target = event.target as HTMLElement | null
       if (target?.closest('button, a, input, textarea, select, [contenteditable]')) return
@@ -1155,11 +1218,8 @@ export function mountToaster(
             // replicate it explicitly because the data-* attributes
             // are set imperatively. See Fix 5 in the bug report.
             'data-promise': String(Boolean(toast.promise)),
-            // a11y: re-emit `aria-busy` and `aria-label` so a
-            // promise toast that settles (loading → success/error)
-            // updates for screen readers too.
-            'aria-busy': String(type === 'loading'),
-            'aria-label': type === 'normal' ? undefined : `${type}: ${toast.title ?? ''}`
+            // Keep the busy state in sync when a promise toast settles.
+            'aria-busy': String(type === 'loading')
           })
           existingNode.className = cn(toast.className)
           if (toast.testId) existingNode.dataset['testid'] = toast.testId
@@ -1244,8 +1304,10 @@ export function mountToaster(
     for (const [, node] of existing) {
       if (node.getAttribute('data-removed') === 'true') continue
       const id = nodeIds.get(node)
+      resizeObserver?.unobserve(node)
       node.remove()
       if (id !== undefined) {
+        releaseCustom(id)
         heights.delete(id)
         cleanups.get(id)?.forEach((fn) => fn())
         cleanups.delete(id)
@@ -1382,18 +1444,6 @@ export function mountToaster(
       // ran. See Fix 9 in the bug report.
       pauseAutoDismiss(event.id)
 
-      // Read the callback before scheduling removal so a same-id toast
-      // recreated by the callback does not replace this reference.
-      // close button, swipe-out, auto-dismiss timer, external
-      // `toast.dismiss(id)`) so every dismiss path triggers the
-      // callback exactly once. The legacy React build did the same
-      // via the `useEffect(..., [toast.delete])` hook. See Fix 8 in
-      // the bug report. We look up the toast before scheduling the
-      // DOM removal because the removal timer fires after the exit
-      // transition ends and the toast may already be evicted from
-      // the active set by then.
-      const dismissed = state.toasts.find((toast) => toast.id === event.id)
-
       // Mark the matching <li> as removed immediately so the CSS exit
       // animation runs; the DOM removal is scheduled for AFTER the
       // transition ends (see `schedulePostExitRemoval` above). All
@@ -1408,10 +1458,13 @@ export function mountToaster(
         `[data-notify-toast][data-notify-key="${cssEscape(getToastKey(event.id))}"]`
       )
       if (node) {
+        rescueFocus(node)
         setAttrs(node, { 'data-removed': 'true', inert: true, 'aria-hidden': 'true' })
         const cancelExit = schedulePostExitRemoval(node, () => {
           exitCleanups.delete(event.id)
+          resizeObserver?.unobserve(node)
           node.remove()
+          releaseCustom(event.id)
           heights.delete(event.id)
           cleanups.get(event.id)?.forEach((fn) => fn())
           cleanups.delete(event.id)
@@ -1427,7 +1480,6 @@ export function mountToaster(
         // No matching DOM node — just ensure renderAll doesn't recreate it.
         window.setTimeout(renderAll, 0)
       }
-      dismissed?.onDismiss?.(dismissed)
       return
     }
     const cancelExit = exitCleanups.get(event.id)
@@ -1528,28 +1580,15 @@ export function mountToaster(
       }
       cleanups.clear()
       interactions.clear()
+      for (const id of [...customCleanups.keys()]) releaseCustom(id)
+      if (measureFrame) cancelAnimationFrame(measureFrame)
       for (const cancelExit of exitCleanups.values()) cancelExit()
       exitCleanups.clear()
       for (const fn of removeListeners) fn()
       removeListeners.length = 0
-      // a11y: restore focus to whatever the user had focused before
-      // the toaster mounted (the legacy sonner behaviour). Only
-      // restore if the active element is still the container or
-      // a child of it — otherwise the user has moved focus
-      // somewhere else and we shouldn't yank it back. Skip when
-      // there's nothing to restore to.
-      if (
-        lastFocusedElementBeforeMount &&
-        document.activeElement &&
-        container.contains(document.activeElement)
-      ) {
-        try {
-          lastFocusedElementBeforeMount.focus({ preventScroll: true })
-        } catch {
-          // Some elements (e.g. detached inputs) throw on focus().
-          // Best-effort restoration; ignore failures.
-        }
-      }
+      // Return focus to where it was before entering the toaster.
+      rescueFocus(container)
+      resizeObserver?.disconnect()
       container.remove()
     }
   }
@@ -1565,6 +1604,9 @@ export function mountToaster(
 }
 
 // --- Internal helpers ----------------------------------------------------
+
+// A fast flick must still travel this far, so a jittery tap never dismisses.
+const MIN_FLICK_DISTANCE = 10
 
 const applyContainerStyles = (
   container: HTMLElement,

@@ -113,7 +113,7 @@ declare namespace toast {
 }
 ```
 
-`CustomContent` is `HTMLElement | ((container: HTMLElement) => void)`.
+`CustomContent` is `HTMLElement | ((container: HTMLElement, context: CustomContentContext) => void | (() => void))`. The context holds the toast `id` and a `dismiss()` helper.
 
 ### Pre-built element
 
@@ -124,7 +124,7 @@ widget.textContent = 'Pre-built widget'
 toast.custom(widget, { duration: 8000 })
 ```
 
-The renderer appends the element inside its div[data-custom] mount point.
+The renderer appends the element inside its div[data-custom] mount point, a direct child of the toast item.
 
 ### Callback
 
@@ -147,11 +147,27 @@ toast.custom(container => {
 })
 ```
 
-The renderer creates the mount element and passes it as the only argument. Your callback fills it with whatever DOM you own.
+The renderer creates the mount element and passes it with a `{ id, dismiss }` context. Your callback fills it with whatever DOM you own.
+
+### Dismiss and clean up
+
+The callback can run again when the toaster re-renders (for example after `update()`). Return a cleanup function to release listeners; it runs before every re-render and when the toast is removed.
+
+```ts
+toast.custom((container, { dismiss }) => {
+  const button = document.createElement('button')
+  button.type = 'button'
+  button.textContent = 'Got it'
+  const onClick = () => dismiss()
+  button.addEventListener('click', onClick)
+  container.append(button)
+  return () => button.removeEventListener('click', onClick)
+})
+```
 
 ### Caveats
 
-- The custom content replaces the icon slot, so there is no icon and no loader.
+- The custom content replaces the whole toast body, so there is no icon, loader, title or description.
 - No close button is generated for custom content, even when `closeButton` is enabled. Give the content its own dismissal control if it needs one.
 - The custom element is removed when the toast is dismissed and the unmount grace period elapses.
 - The runtime does not sanitize your DOM. Never interpolate user-supplied HTML as `innerHTML`.
@@ -285,7 +301,7 @@ const id = toast('Saved')
 toast.dismiss(id)
 ```
 
-The element is marked as removed so the exit transition runs, and the actual DOM removal is scheduled after the exit grace period. The id remains in the history returned by `toast.getHistory()`.
+The element is marked as removed so the exit transition runs, and the actual DOM removal is scheduled after the exit grace period. The id remains in the history returned by `toast.getHistory()`, which keeps the newest 50 dismissed records.
 
 ## `toast.getHistory`
 

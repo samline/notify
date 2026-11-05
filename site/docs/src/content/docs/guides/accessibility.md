@@ -29,7 +29,7 @@ The toaster is an ordered list with an accessible label. It does not set `role="
 
 New toast list items and changed text are eligible for polite announcement. Removals are not included by `aria-relevant`. Because announcements depend on the browser and screen-reader combination, and on timing, never use a toast as the only presentation of a critical error or a required action.
 
-Each toast is a focusable list item. Loading toasts set `aria-busy="true"`; the other types set it to `false`. Non-normal variants receive a label such as `success: Saved`, while normal toasts have no custom label and expose their descendant text. Generated icons are decorative and hidden from assistive technology.
+Each toast is a focusable list item. Loading toasts set `aria-busy="true"`; the other types set it to `false`. Toasts never receive an `aria-label`, so screen readers read the title, description and action labels exactly as rendered. Generated icons are decorative and hidden from assistive technology. When a focused toast is dismissed, focus moves to the next visible toast or back to the element that was focused before the toaster.
 
 `customAriaLabel` is a historical toaster option: it replaces the **container's** accessible label. `containerAriaLabel` defaults to `Notifications`. Neither option changes the text of an individual toast.
 

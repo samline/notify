@@ -13,6 +13,31 @@ marked as unpublished have a Git tag but are not present in the npm registry.
 
 - Added the public website workspace in `site/`: a landing page with a live `@samline/notify` demo, an examples gallery and the documentation app. The site uses an amber accent and is published from the `site/` build.
 
+- `toast.custom()` callbacks receive a `{ id, dismiss }` context and may return a cleanup function, which runs before every re-render and when the toast is removed. New `CustomContentContext` type.
+- Action and cancel buttons stay open when their `onClick` calls `event.preventDefault()`.
+- Toasts re-measure with a `ResizeObserver` when their content or the viewport changes size.
+- `HISTORY_LIMIT` export (50): the number of dismissed records kept for `getHistory()`.
+- Website: a "Toast types" panel on Home and a schematic preview of each example's notification.
+
+### Behavior changes
+
+- `onDismiss` runs once from the shared state, regardless of how many toasters are mounted (previously once per mounted renderer, and never without one).
+- `getHistory()` keeps only the newest 50 dismissed records so long-lived pages do not retain every toast.
+- `toast.dismiss(id)` for an id that was never created is a no-op instead of reserving that id.
+- A `PromiseData.description` function now also runs on success, receiving the resolved value.
+- Toast items no longer carry an `aria-label` (it replaced the description and actions for screen readers); their rendered content is the accessible name.
+- `[data-custom]` is now a direct child of the toast item instead of being nested in `[data-icon]`.
+- Centered positions support vertical swipe dismissal; `getDefaultSwipeDirections` no longer returns `'center'`.
+- When the focused toast leaves, focus moves to the next toast or back to the element focused before entering the toaster, instead of the element focused when the toaster mounted.
+
+### Fixed
+
+- Inverted toasts had unreadable descriptions (dark grey on black in light theme, light grey on white in dark theme). Description color and focus rings are now theme tokens (`--description-text`, `--focus-ring`).
+- A fast tap with a few pixels of jitter could dismiss a toast as a flick; flicks now need at least 10 px.
+- Releasing an aborted drag no longer fires the toast's `onClick`.
+- Delete/Backspace only dismisses toasts that belong to the focused toaster.
+- The stylesheet no longer defines its direction variables on the `html` element.
+
 ### Changed
 
 - Moved the documentation from the retired Starlight app in `example/` to `site/docs/`, and redirected the previous public routes (`/getting-started/`, `/reference/*`, `/guides/*`) to their new location under `/docs/`.

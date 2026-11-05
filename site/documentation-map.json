@@ -3,7 +3,7 @@
     "source": "docs/README.md",
     "destination": "docs/src/content/docs/index.mdx",
     "route": "",
-    "frontmatter": "title: 'Toast notifications for the web'\ntitleAccent: 'for the web'\ndescription: 'Accessible, dependency-free toast notifications for JavaScript and TypeScript, with ESM, CommonJS, and browser builds.'\nlocale: en\nsidebar:\n  group: start\n  order: 1"
+    "frontmatter": "title: '@samline/notify'\ntitleAccent: 'notify'\ndescription: 'Accessible, dependency-free toast notifications for JavaScript and TypeScript, with ESM, CommonJS, and browser builds.'\nlocale: en\nsidebar:\n  group: start\n  order: 1"
   },
   {
     "source": "docs/installation.md",

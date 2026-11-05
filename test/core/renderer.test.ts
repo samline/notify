@@ -837,12 +837,9 @@ describe('core/renderer', () => {
     expect(toaster?.getAttribute('aria-label')).toBe('System messages')
   })
 
-  it('loading toasts have aria-busy=true and aria-label="loading: <title>"', () => {
-    // Loading toasts are in-flight async work. The legacy React build
-    // did not annotate them, so screen readers read them as ordinary
-    // list items. We add `aria-busy=true` to signal the in-progress
-    // state and an `aria-label` like "loading: Saving..." so the
-    // user hears the type prefix.
+  it('loading toasts have aria-busy=true and keep their content as the accessible name', () => {
+    // An aria-label on the <li> would replace the description, actions and
+    // custom content for screen readers, so the item never gets one.
     controller = mountToaster(root, {}, ToastState)
     const result = toast.promise(Promise.resolve('ok'), {
       loading: 'Saving...',
@@ -852,7 +849,8 @@ describe('core/renderer', () => {
     expect(id).toBeDefined()
     const li = root.querySelector<HTMLLIElement>(`li[data-notify-toast][data-id="${String(id)}"]`)
     expect(li?.getAttribute('aria-busy')).toBe('true')
-    expect(li?.getAttribute('aria-label')).toBe('loading: Saving...')
+    expect(li?.getAttribute('aria-label')).toBeNull()
+    expect(li?.textContent).toContain('Saving...')
   })
 
   it('normal toasts have no aria-label prefix and aria-busy=false', () => {
@@ -877,11 +875,7 @@ describe('core/renderer', () => {
     expect(li?.querySelector('[data-title]')?.textContent).toBe('Ready')
   })
 
-  it('aria-busy + aria-label update when a promise toast settles', async () => {
-    // When the promise resolves from loading → success, the renderer's
-    // update path must also re-emit `aria-busy=false` and the new
-    // "success: <title>" label so the screen reader's announcement
-    // matches the new state.
+  it('aria-busy updates when a promise toast settles', async () => {
     controller = mountToaster(root, {}, ToastState)
     const result = toast.promise(Promise.resolve('ok'), {
       loading: 'Saving...',
@@ -896,7 +890,8 @@ describe('core/renderer', () => {
     const li = root.querySelector<HTMLLIElement>(`li[data-notify-toast][data-id="${String(id)}"]`)
     expect(li?.getAttribute('data-type')).toBe('success')
     expect(li?.getAttribute('aria-busy')).toBe('false')
-    expect(li?.getAttribute('aria-label')).toBe('success: Done')
+    expect(li?.getAttribute('aria-label')).toBeNull()
+    expect(li?.textContent).toContain('Done')
   })
 
   it('Escape inside the toaster collapses the expanded stack', () => {

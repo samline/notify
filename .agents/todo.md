@@ -21,3 +21,9 @@
 ## Revisión visual de controles — 2026-11-05
 
 - Corregidos select nativo/flecha/cursores, superficies de campos, checkbox, foco/hover/disabled, tipografía y scroll del editor custom. Evidencia y cierre de pruebas: site/brief/notify-controls-audit-2026-11-05.md. No reutilizar como actuales los conteos o métricas de la segunda pasada.
+
+## Auditoría completa — 2026-11-05
+
+- Paquete: `onDismiss` único desde el estado, historial limitado (`HISTORY_LIMIT` = 50), dismiss de ids inexistentes sin efecto, descripción de promesa como función también en éxito, sin `aria-label` en los toasts, swipe vertical en posiciones centradas, umbral de flick de 10 px, sin `onClick` tras un arrastre, Delete/Backspace por toaster, rescate de foco, `preventDefault()` en acciones, `ResizeObserver`, contexto y cleanup en `toast.custom()`, contraste de descripciones invertidas. 190 pruebas.
+- Sitio: panel "Toast types" como primera pestaña de Home, diagrama esquemático por ejemplo (paridad con Drawer), portada de Docs reescrita con tarjetas (`<!-- notify:cards -->` en docs/README.md), FAQ/copy sin la nota de `Notify.default`. 75 pruebas de navegador.
+- Pendiente de decisión del mantenedor: versión de publicación (los cambios de comportamiento listados en CHANGELOG justifican major o minor), y publicar/desplegar.

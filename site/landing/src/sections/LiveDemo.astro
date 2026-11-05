@@ -2,9 +2,13 @@
 import Playground from '../../../shared/components/Playground.astro'
 import DemoStudio from '../../../shared/components/DemoStudio.astro'
 import Tabs from '../../../shared/components/Tabs.astro'
-import t, { homePresets, presets } from '../../../shared/i18n/translations/en/demo'
+import ToastTypes from '../components/ToastTypes.astro'
+import t, { homePresets, presets, toastTypes } from '../../../shared/i18n/translations/en/demo'
 const { id = 'demo' } = Astro.props
-const items = homePresets.map(id => ({ id, label: presets[id].label }))
+const items = [
+  { id: 'types', label: toastTypes.label },
+  ...homePresets.map(id => ({ id, label: presets[id].label })),
+]
 ---
 
 <div id={id} class:list={['live-demo']}>
@@ -13,6 +17,9 @@ const items = homePresets.map(id => ({ id, label: presets[id].label }))
       <span slot="heading" class:list={['studio-title']}>
         {t.label}
       </span>
+      <div data-panel="types">
+        <ToastTypes />
+      </div>
       {homePresets.map(preset => (
         <div data-panel={preset}>
           <Playground preset={preset} framed={false} />

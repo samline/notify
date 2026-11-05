@@ -101,6 +101,8 @@ test('Home, Examples and Docs share the title font pairing and actual preview', 
   }
   for (const path of ['', 'examples/', 'docs/guides/examples/']) {
     await page.goto(path || './')
+    // Home opens on the Toast types panel; the save scenario is its second tab.
+    if (!path) await page.getByRole('tab', { name: 'Save changes', exact: true }).click()
     const demo = page.locator('package-site-demo[data-preset=save]').first()
     await demo.getByRole('button', { name: 'Save changes', exact: true }).click()
     await expect(demo.locator('[data-demo-result]')).toContainText('Profile saved')
@@ -312,4 +314,19 @@ test('ToC follows the clicked section and anchors retain the 2.5rem header gap',
     expected: parseFloat(getComputedStyle(document.documentElement).fontSize) * 2.5,
   }))
   expect(Math.abs(spacing.gap - spacing.expected)).toBeLessThan(2)
+})
+
+test('Home toast types panel sends each kind and shows its code', async ({ page }) => {
+  await page.goto('./')
+  const panel = page.locator('package-site-toast-types')
+  await expect(panel.getByRole('button', { name: 'Success', exact: true })).toBeEnabled()
+  await panel.getByRole('button', { name: 'Success', exact: true }).click()
+  await expect(page.locator('li[data-notify-toast][data-type="success"]')).toBeVisible()
+  await expect(panel.locator('[data-types-code]')).toContainText("toast.success('Changes saved')")
+  await panel.getByLabel('Position').selectOption('top-center')
+  await expect(page.locator('[data-notify-toaster]')).toHaveAttribute('data-y-position', 'top')
+  await expect(panel.locator('[data-types-code]')).toContainText("position: 'top-center'")
+  await panel.getByRole('button', { name: 'Action', exact: true }).click()
+  await page.getByRole('button', { name: 'Undo', exact: true }).click()
+  await expect(page.locator('li[data-notify-toast]', { hasText: 'Message restored' })).toBeVisible()
 })

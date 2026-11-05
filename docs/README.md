@@ -1,28 +1,6 @@
 # Toast notifications for the web
 
-`@samline/notify` turns a function call into a live, accessible toast. No runtime dependencies, no framework runtime, no build step. Import `toast`, mount one renderer, and every call becomes a list item inside a polite live region.
-
-## Three ideas
-
-### A tiny observable
-
-Every toast lives in one module-level observer. The `toast` factory pushes a record into it and notifies subscribers synchronously; the renderer reconciles the DOM when that happens. There is no virtual DOM and no framework to adopt — one shared object per page.
-
-### A vanilla renderer
-
-A mounted toaster creates a single `ol` with the `data-notify-toaster` attribute and one `li` with the `data-notify-toast` attribute per active toast. The renderer drives CSS transitions through attributes and custom properties, measures the stack and handles pointer and keyboard interactions.
-
-### Two module entrypoints
-
-`@samline/notify` is the complete ESM and CommonJS API. `@samline/notify/browser` exposes the same surface as a single registry object. The standalone build at `dist/browser/global.global.js` registers that surface as `window.Notify`.
-
-## What it solves
-
-Use Notify when you want ordinary DOM integration, CSS you control and an observable notification lifecycle.
-
-- **No framework lock-in.** The package is vanilla DOM. `Toaster` is a function alias of `createToaster()`, not a component, so React, Vue, Svelte, Astro and plain HTML all use the same code.
-- **Themeable without fighting the library.** The stylesheet targets `data-*` attributes and CSS custom properties. Override `--normal-bg` and the palette follows; override `--width` and the layout follows.
-- **A lifecycle you can observe.** `toast.getToasts()` and `toast.getHistory()` return snapshots, `toast.dismiss(id)` ends a toast early, and every state change is published to subscribers.
+Notify is a dependency-free toast runtime for the browser. Mount one toaster, call `toast()` from anywhere in your application, and the package owns the stack, timers, gestures, keyboard access and screen-reader announcements.
 
 ```ts
 import { createToaster, toast } from '@samline/notify'
@@ -36,43 +14,29 @@ toast.success('Profile saved', {
 })
 ```
 
-## Choose your next step
+## Start building
 
-- [Installation](installation.md) — Install the package, load its stylesheet, and send your first toast.
-- [Examples](recipes.md) — Complete working files and recipes for common notification flows.
-- [Configuration](options.md) — Every toaster and toast option, with defaults and effects.
-- [API reference](api/index.md) — The public functions and their lifecycle contracts.
+<!-- notify:cards -->
 
-Release notes for every published version live in the [changelog](../CHANGELOG.md).
+- [Installation](installation.md) — Choose Package / ESM or HTML / CDN and send your first toast.
+- [Working examples](recipes.md) — Saves, retries, undo, progress, promises and custom content. Copy complete files.
+- [API reference](api/index.md) — `toast`, the toaster lifecycle, return values and cleanup.
+- [Changelog](../CHANGELOG.md) — Recorded release changes, including behavior changes.
 
-## When to use each entrypoint
+## Choose your integration
 
-Use the root ESM or CommonJS entry with a bundler. The browser module collects the same singleton helpers without installing a global. Plain HTML and CMS templates can load the standalone script and the separate stylesheet. Direct mounts are advanced: default mounts share state, and separate containers are not independent notification systems.
+Use `@samline/notify` for named ESM or CommonJS imports, or `@samline/notify/browser` for the same helpers collected in one registry object. Plain HTML and CMS templates load the standalone script and stylesheet; the script exposes `window.Notify` and mounts a default toaster once the body exists.
 
-## Documentation map
+Read [entrypoints](entrypoints.md) for the loading options and [framework integrations](frameworks.md) for React, Vue, Svelte and Astro.
 
-- [Getting started](installation.md)
-- [Runtime contract](getting-started.md)
-- [Accessibility](accessibility.md)
-- [Framework integrations](frameworks.md)
-- [Examples and recipes](recipes.md)
-- [Toast configuration](options.md)
-- [Package entrypoints](entrypoints.md)
-- [Promise API](promises.md)
-- [CSS styling](css-styling.md)
-- [TypeScript reference](typescript.md)
-- [Browser builds](browser.md)
-- [Troubleshooting](troubleshooting.md)
-- [API reference](api/index.md)
-- [Toast lifecycle](guides/toast-lifecycle.md)
-- [Actions and custom content](guides/actions-and-custom-content.md)
-- [toast](api/toast.md)
-- [createToaster](api/create-toaster.md)
-- [configureToaster](api/configure-toaster.md)
-- [destroyToaster](api/destroy-toaster.md)
-- [getToaster](api/get-toaster.md)
-- [resetToasts](api/reset-toasts.md)
+## Styling and accessibility
 
-## Versioning
+The stylesheet supplies layout, stacking, motion, light and dark palettes and reduced-motion support. Restyle it with CSS custom properties and `data-*` selectors ([CSS styling](css-styling.md)), or render your own DOM with `toast.custom()`. Notify renders a polite live region, pauses timers on hover, focus and hidden tabs, and keeps focus on the page when a focused toast leaves. Your application still owns meaningful messages and timing; see [accessibility](accessibility.md).
 
-The current checkout prepares patch 3.2.1; it has not been published. Published 3.2.0 remains the CDN pin. Patch 3.2.1 repairs the global and lifecycle bugs without removing exports or introducing new required options. See the package changelog for the exact changes.
+## How it works
+
+Every toast is a record in one shared state object. `toast()` adds or updates a record by id and notifies subscribers; the mounted toaster reconciles one `ol` and one `li` per active toast and drives CSS transitions through data attributes. Read the [runtime contract](getting-started.md) for the complete model.
+
+## Version
+
+This site documents `@samline/notify` from the repository's current source. CDN examples pin the latest published version; check the [changelog](../CHANGELOG.md) for unreleased changes.

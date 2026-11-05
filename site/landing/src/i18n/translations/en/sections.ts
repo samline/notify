@@ -98,7 +98,7 @@ export default {
         label: 'HTML / CDN',
         entrypoint: 'window.Notify',
         description:
-          'Load the standalone script and stylesheet. The script mounts a default toaster when the body is ready. Published 3.2.0 requires resolving its default registry.',
+          'Load the standalone script and stylesheet. The script mounts a default toaster when the body is ready.',
       },
       style: {
         label: 'Styles',
@@ -210,19 +210,13 @@ export default {
       style: {
         question: text('Can I change the design or supply my own content?'),
         answer: text(
-          'Yes. Override CSS variables, add classes, or supply DOM through toast.custom. Custom content is unstyled and has no generated close button, so your integration provides its appearance, labels and dismissal control.'
+          'Yes. Override CSS variables, add classes, or render your own DOM with toast.custom. The render callback receives the toast id and a dismiss() helper, and can return a cleanup function for its listeners.'
         ),
       },
       multiple: {
         question: text('Does each component need its own toaster?'),
         answer: text(
-          'No. Mount the singleton near your application root. Direct mounts share global state unless you deliberately inject another state object; multiple mounts can display duplicates and repeat dismissal callbacks.'
-        ),
-      },
-      browser: {
-        question: text('Why do the CDN examples resolve Notify.default?'),
-        answer: text(
-          'Published 3.2.0 wraps its registry in a module namespace. The examples resolve that shape and the direct registry shape used by the corrected build. The correction is local until a new package release is published.'
+          'No. Mount one toaster near your application root and call toast() from anywhere. Every component shares the same queue, so there is nothing to pass around.'
         ),
       },
       accessible: {

@@ -9,23 +9,23 @@
       "sections": [
         {
           "fragment": "index",
-          "destination": "/#documentation-map"
+          "destination": "/#start-building"
         },
         {
           "fragment": "what-this-package-is",
-          "destination": "/#three-ideas"
+          "destination": "/#how-it-works"
         },
         {
           "fragment": "when-to-use-each-entrypoint",
-          "destination": "/#when-to-use-each-entrypoint"
+          "destination": "/#choose-your-integration"
         },
         {
           "fragment": "file-by-file-map",
-          "destination": "/#documentation-map"
+          "destination": "/#start-building"
         },
         {
           "fragment": "versioning",
-          "destination": "/#versioning"
+          "destination": "/#version"
         }
       ],
       "reviewed": true
@@ -1095,15 +1095,15 @@
       "sections": [
         {
           "fragment": "why-notify",
-          "destination": "/#what-it-solves"
+          "destination": "/#start-building"
         },
         {
           "fragment": "choose-a-path",
-          "destination": "/#choose-your-next-step"
+          "destination": "/#start-building"
         },
         {
           "fragment": "what-should-i-read-next",
-          "destination": "/#choose-your-next-step"
+          "destination": "/#start-building"
         }
       ],
       "reviewed": true
@@ -1611,12 +1611,14 @@
   ],
   "aliases": {
     "": {
-      "index": "documentation-map",
-      "what-this-package-is": "three-ideas",
-      "file-by-file-map": "documentation-map",
-      "why-notify": "what-it-solves",
-      "choose-a-path": "choose-your-next-step",
-      "what-should-i-read-next": "choose-your-next-step"
+      "index": "start-building",
+      "what-this-package-is": "how-it-works",
+      "file-by-file-map": "start-building",
+      "why-notify": "start-building",
+      "choose-a-path": "start-building",
+      "what-should-i-read-next": "start-building",
+      "when-to-use-each-entrypoint": "choose-your-integration",
+      "versioning": "version"
     },
     "guides/accessibility": {
       "semantics": "rendered-semantics",

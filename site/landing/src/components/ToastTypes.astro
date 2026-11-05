@@ -1,0 +1,339 @@
+---
+import DemoPanel from '../../../shared/components/DemoPanel.astro'
+import DemoFooter from '../../../shared/components/DemoFooter.astro'
+import { previewTagline, toastTypes as t } from '../../../shared/i18n/translations/en/demo'
+---
+
+<DemoPanel label={t.label} tagline={previewTagline}>
+  <package-site-toast-types class:list={['types']} role="group" aria-label={t.label}>
+    <div class:list={['types-copy']}>
+      <p class:list={['types-eyebrow']}>{t.eyebrow}</p>
+      <p class:list={['types-heading']}>{t.heading}</p>
+      <p class:list={['types-description']}>{t.description}</p>
+      <div class:list={['types-grid']} role="group" aria-label={t.typesLabel}>
+        {t.kinds.map(kind => (
+          <button type="button" class:list={['type-chip']} data-kind={kind.id} disabled>
+            <span class:list={['type-dot']} data-kind={kind.id} aria-hidden="true" />
+            {kind.label}
+          </button>
+        ))}
+      </div>
+    </div>
+    <div class:list={['types-options']}>
+      <label class:list={['types-field']}>
+        {t.position}
+        <span class:list={['types-select']}>
+          <select data-types-position disabled>
+            {t.positions.map(([value, label]) => (
+              <option value={value}>{label}</option>
+            ))}
+          </select>
+        </span>
+      </label>
+      {t.toggles.map(([option, label]) => (
+        <label class:list={['types-check']}>
+          <input
+            type="checkbox"
+            data-types-option={option}
+            checked={option === 'richColors'}
+            disabled
+          />
+          {label}
+        </label>
+      ))}
+      <pre
+        class:list={['types-code']}
+        aria-label={t.codeLabel}
+        tabindex="0"
+      ><code data-types-code>{t.kinds[1]?.code}</code></pre>
+    </div>
+    <noscript>
+      <p>{t.noscript}</p>
+    </noscript>
+  </package-site-toast-types>
+</DemoPanel>
+<DemoFooter note={t.note} controls={false} />
+
+<script>
+  import { mountElements } from '../../../shared/lib/mount-elements'
+  import { browser } from '@samline/notify'
+  import type { Position, ToasterOptions } from '@samline/notify'
+  import '@samline/notify/styles.css'
+  import { toastTypes } from '../../../shared/i18n/translations/en/demo'
+
+  mountElements('package-site-toast-types', element => {
+    const lifecycle = new AbortController()
+    const { signal } = lifecycle
+    const timers = new Set<number>()
+    const code = element.querySelector<HTMLElement>('[data-types-code]')!
+    const position = element.querySelector<HTMLSelectElement>('[data-types-position]')!
+    const toggles = [...element.querySelectorAll<HTMLInputElement>('[data-types-option]')]
+    const controls = [
+      ...element.querySelectorAll<HTMLButtonElement | HTMLInputElement | HTMLSelectElement>(
+        'button, input, select'
+      ),
+    ]
+
+    const preferences = (): ToasterOptions => {
+      const options: ToasterOptions = {
+        position: position.value as Position,
+        theme: document.documentElement.dataset['theme'] === 'dark' ? 'dark' : 'light',
+        style: { '--width': '22.25rem' },
+      }
+      for (const toggle of toggles) {
+        ;(options as Record<string, unknown>)[toggle.dataset['typesOption']!] = toggle.checked
+      }
+      return options
+    }
+    const describe = (call: string) => {
+      const { theme: _theme, style: _style, ...shown } = preferences()
+      void _theme
+      void _style
+      const entries = Object.entries(shown)
+        .filter(
+          ([key, value]) => !(key === 'position' && value === 'bottom-right') && value !== false
+        )
+        .map(([key, value]) => `${key}: ${typeof value === 'string' ? `'${value}'` : value}`)
+      code.textContent = `createToaster(${entries.length ? `{ ${entries.join(', ')} }` : ''})\n\n${call}`
+    }
+    const later = (callback: () => void, delay: number) => {
+      const timer = window.setTimeout(() => {
+        timers.delete(timer)
+        callback()
+      }, delay)
+      timers.add(timer)
+    }
+    const fire = (kind: string) => {
+      browser.createToaster(preferences())
+      const { toast } = browser
+      const copy = toastTypes.messages
+      switch (kind) {
+        case 'success':
+          toast.success(copy.success)
+          break
+        case 'info':
+          toast.info(copy.info, { description: copy.infoDescription })
+          break
+        case 'warning':
+          toast.warning(copy.warning)
+          break
+        case 'error':
+          toast.error(copy.error, { description: copy.errorDescription })
+          break
+        case 'action': {
+          toast(copy.action, {
+            action: { label: copy.undo, onClick: () => toast.success(copy.restored) },
+          })
+          break
+        }
+        case 'loading': {
+          const id = toast.loading(copy.loading)
+          later(() => toast.success(copy.loaded, { id }), 1600)
+          break
+        }
+        case 'promise':
+          toast.promise(new Promise(resolve => later(() => resolve(undefined), 1800)), {
+            loading: copy.promiseLoading,
+            success: copy.promiseSuccess,
+            error: copy.promiseError,
+          })
+          break
+        default:
+          toast(copy.normal, { description: copy.normalDescription })
+      }
+      describe(toastTypes.kinds.find(entry => entry.id === kind)?.code ?? '')
+    }
+
+    element.addEventListener(
+      'click',
+      event => {
+        const chip = (event.target as HTMLElement).closest<HTMLButtonElement>('[data-kind]')
+        if (chip && element.contains(chip)) fire(chip.dataset['kind']!)
+      },
+      { signal }
+    )
+    const apply = () => {
+      const controller = browser.getToaster()
+      if (controller) controller.update(preferences())
+      describe(code.textContent?.split('\n\n')[1] ?? '')
+    }
+    position.addEventListener('change', apply, { signal })
+    for (const toggle of toggles) toggle.addEventListener('change', apply, { signal })
+    for (const control of controls) control.disabled = false
+    return () => {
+      lifecycle.abort()
+      for (const timer of timers) clearTimeout(timer)
+      timers.clear()
+    }
+  })
+</script>
+
+<style>
+  .types {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.62fr);
+    gap: var(--space-xl);
+    align-items: start;
+  }
+  .types-copy,
+  .types-options {
+    display: grid;
+    gap: 1rem;
+    min-width: 0;
+  }
+  .types-eyebrow {
+    font: 0.625rem/1.6 var(--font-mono);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-text-subtle);
+  }
+  .types-heading {
+    font-size: clamp(1.4rem, 3vw, 1.9rem);
+    line-height: 1.25;
+    font-weight: 500;
+    letter-spacing: -0.035em;
+  }
+  .types-description {
+    color: var(--color-text-muted);
+    line-height: 1.7;
+  }
+  .types-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 8.5rem), 1fr));
+    gap: 0.5rem;
+    margin-top: 0.25rem;
+  }
+  .type-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    min-height: 2.75rem;
+    padding: 0.5rem 0.875rem;
+    font: 500 0.875rem/1.3 var(--font-sans);
+    color: var(--color-text);
+    background: var(--palette-studio-surface);
+    border: 0.0625rem solid var(--palette-studio-border);
+    border-radius: var(--radius-control);
+    cursor: pointer;
+    transition:
+      background-color var(--duration-ui) var(--ease-ui),
+      border-color var(--duration-ui) var(--ease-ui);
+  }
+  .type-chip:hover {
+    border-color: var(--color-accent);
+  }
+  .type-chip:focus-visible {
+    outline: 0.125rem solid var(--color-accent);
+    outline-offset: 0.125rem;
+  }
+  .type-chip:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+  .type-dot {
+    flex: none;
+    width: 0.625rem;
+    height: 0.625rem;
+    border-radius: 50%;
+    background: var(--color-text-subtle);
+  }
+  .type-dot[data-kind='success'] {
+    background: oklch(0.72 0.17 150);
+  }
+  .type-dot[data-kind='error'] {
+    background: oklch(0.66 0.2 25);
+  }
+  .type-dot[data-kind='info'] {
+    background: oklch(0.68 0.15 245);
+  }
+  .type-dot[data-kind='warning'] {
+    background: oklch(0.8 0.15 80);
+  }
+  .type-dot[data-kind='action'] {
+    background: none;
+    border: 0.125rem solid var(--color-text-muted);
+    box-sizing: border-box;
+  }
+  .type-dot[data-kind='loading'],
+  .type-dot[data-kind='promise'] {
+    background: none;
+    border: 0.125rem solid var(--color-accent-soft);
+    border-top-color: var(--color-accent);
+    box-sizing: border-box;
+  }
+  .types-field {
+    display: grid;
+    gap: var(--space-xs);
+    color: var(--color-text-muted);
+    font-size: var(--text-small);
+  }
+  .types-select {
+    position: relative;
+    display: block;
+  }
+  .types-select::after {
+    content: '';
+    position: absolute;
+    inset-inline-end: 1rem;
+    top: 50%;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-right: 0.125rem solid currentColor;
+    border-bottom: 0.125rem solid currentColor;
+    transform: translateY(-70%) rotate(45deg);
+    pointer-events: none;
+  }
+  .types-select select {
+    appearance: none;
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 2.75rem;
+    padding: 0.5rem 2.75rem 0.5rem 1rem;
+    font: 400 0.9375rem/1.5 var(--font-sans);
+    color: var(--color-text);
+    background: var(--color-bg-soft);
+    border: 0.0625rem solid var(--color-border);
+    border-radius: var(--radius-control);
+    cursor: pointer;
+  }
+  .types-select select:focus-visible {
+    outline: 0.125rem solid var(--color-accent);
+    outline-offset: 0.125rem;
+  }
+  .types-check {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    color: var(--color-text-muted);
+    font-size: var(--text-small);
+    cursor: pointer;
+  }
+  .types-check input {
+    width: 1.125rem;
+    height: 1.125rem;
+    accent-color: var(--color-accent);
+    cursor: pointer;
+  }
+  .types-code {
+    margin: 0.25rem 0 0;
+    padding: 0.875rem 1rem;
+    min-height: 11.5rem;
+    font: 0.75rem/1.7 var(--font-mono);
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    color: var(--color-text);
+    background: var(--palette-studio-surface);
+    border: 0.0625rem solid var(--palette-studio-border);
+    border-radius: var(--radius-control);
+  }
+  .types-code:focus-visible {
+    outline: 0.125rem solid var(--color-accent);
+    outline-offset: 0.125rem;
+  }
+  @media (width < 56rem) {
+    .types {
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--space-lg);
+    }
+  }
+</style>

@@ -5,6 +5,7 @@ import DemoFooter from './DemoFooter.astro'
 import Button from './Button.astro'
 import Disclosure from './Disclosure.astro'
 import DemoCode from './DemoCode.astro'
+import ToastDiagram from './ToastDiagram.astro'
 import t, { presets, type DemoPreset } from '../i18n/translations/en/demo'
 import { bodyFor } from '../lib/demo-source'
 import '../lib/demo-styles.css'
@@ -21,36 +22,39 @@ const Frame = framed ? DemoStudio : 'div'
 <div data-ui class:list={['playground']}>
   <Frame>
     <DemoPanel label={copy.label} tagline={t.previewTagline}>
-      <package-site-demo
-        data-notify-demo
-        data-preset={preset}
-        class:list={['notify-demo']}
-        role="group"
-        aria-label={copy.eyebrow}
-      >
-        <Fragment set:html={bodyFor(preset)} />
-        <div class:list={['notify-demo-actions']}>
-          <Button data-demo-action disabled>
-            {copy.action}
-          </Button>
-          {['persistent', 'history'].includes(preset) && (
-            <Button data-demo-dismiss variant="secondary">
-              {t.dismiss}
+      <div class:list={['specimen']}>
+        <package-site-demo
+          data-notify-demo
+          data-preset={preset}
+          class:list={['notify-demo']}
+          role="group"
+          aria-label={copy.eyebrow}
+        >
+          <Fragment set:html={bodyFor(preset)} />
+          <div class:list={['notify-demo-actions']}>
+            <Button data-demo-action disabled>
+              {copy.action}
             </Button>
-          )}
-          {preset === 'task' && (
-            <Button data-demo-cancel disabled variant="secondary">
-              {t.cancel}
+            {['persistent', 'history'].includes(preset) && (
+              <Button data-demo-dismiss variant="secondary">
+                {t.dismiss}
+              </Button>
+            )}
+            {preset === 'task' && (
+              <Button data-demo-cancel disabled variant="secondary">
+                {t.cancel}
+              </Button>
+            )}
+            <Button data-demo-reset variant="ghost">
+              {t.reset}
             </Button>
-          )}
-          <Button data-demo-reset variant="ghost">
-            {t.reset}
-          </Button>
-        </div>
-        <noscript>
-          <p>{t.noscript}</p>
-        </noscript>
-      </package-site-demo>
+          </div>
+          <noscript>
+            <p>{t.noscript}</p>
+          </noscript>
+        </package-site-demo>
+        <ToastDiagram preset={preset} />
+      </div>
     </DemoPanel>
     <DemoFooter note={copy.note} controls={false} />
   </Frame>
@@ -91,6 +95,18 @@ const Frame = framed ? DemoStudio : 'div'
   package-site-demo {
     display: grid;
     min-width: 0;
+  }
+  .specimen {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.62fr);
+    align-items: start;
+    gap: var(--space-xl);
+  }
+  @media (width < 56rem) {
+    .specimen {
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--space-lg);
+    }
   }
   .code-body {
     display: grid;

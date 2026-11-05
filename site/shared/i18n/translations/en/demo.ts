@@ -4,8 +4,7 @@ export const presets = {
     label: 'Save changes',
     eyebrow: 'Profile settings',
     heading: 'A little more like you.',
-    description:
-      'Update your public display name. The preview saves locally; no request leaves this page.',
+    description: 'Update your public display name. Nothing leaves this page.',
     action: 'Save changes',
     note: 'A loading notification becomes a success on the same id. The saved name stays visible in the form.',
     initial: 'Your profile is up to date.',
@@ -73,7 +72,7 @@ export const presets = {
     description:
       'Choose position, theme and reading direction. Preview the same notification, then apply changes while it is still open.',
     action: 'Preview preference',
-    note: 'update() preserves omitted settings. Centered positions do not support swipe dismissal; the close button remains available.',
+    note: 'update() preserves omitted settings. Corner toasts swipe toward their edges; centered toasts swipe vertically.',
     initial: 'Bottom right · Follows the page theme',
   },
   history: {
@@ -122,11 +121,46 @@ export const presets = {
   },
 } as const
 export type DemoPreset = keyof typeof presets
-export const homePresets = ['save', 'retry', 'undo', 'custom'] as const
+
+type Diagram = {
+  position:
+    'bottom-right' | 'bottom-left' | 'bottom-center' | 'top-right' | 'top-left' | 'top-center'
+  type: 'normal' | 'success' | 'error' | 'info' | 'warning' | 'loading' | 'custom'
+  description?: boolean
+  actions: number
+  stack: number
+  close?: boolean
+  progress?: boolean
+  ghost?: boolean
+}
+const diagram = (shape: Partial<Diagram> & Pick<Diagram, 'type'>): Diagram => ({
+  position: 'bottom-right',
+  actions: 0,
+  stack: 1,
+  description: true,
+  ...shape,
+})
+/** Schematic of the notification each preset produces (decorative). */
+export const diagrams: Record<DemoPreset, Diagram> = {
+  save: diagram({ type: 'success' }),
+  retry: diagram({ type: 'error', actions: 1 }),
+  upload: diagram({ type: 'loading', description: false, progress: true }),
+  undo: diagram({ type: 'normal', actions: 1 }),
+  persistent: diagram({ type: 'info', actions: 1, close: true }),
+  custom: diagram({ type: 'custom', actions: 1 }),
+  position: diagram({ type: 'normal', position: 'top-center' }),
+  history: diagram({ type: 'success', stack: 2, ghost: true }),
+  decisions: diagram({ type: 'info', actions: 2 }),
+  stream: diagram({ type: 'warning', stack: 3 }),
+  task: diagram({ type: 'loading', actions: 1 }),
+}
+export const homePresets = ['save', 'retry', 'custom'] as const
+export const previewTagline = 'Live · @samline/notify'
+
 export default {
   label: 'Notify playground',
   title: 'Notifications with a next step',
-  previewTagline: 'Live · Notify 3.2.1 preview',
+  previewTagline,
   noscript:
     'Enable JavaScript to try the interaction. The explanation and all copied source files remain readable.',
   openCode: 'Explore the code',
@@ -219,4 +253,83 @@ export const messages = {
   saveNote: 'Save release note',
   noteSaved: 'Release note saved locally',
   releaseStats: 'Runtime fixes · Compatible API · Native DOM',
+} as const
+
+/** Home-only "Toast types" panel: one call per kind of feedback. */
+export const toastTypes = {
+  label: 'Toast types',
+  eyebrow: 'Every kind of feedback',
+  heading: 'One call. The right tone.',
+  description:
+    'Pick a type to send a real notification. Change the position or the options, then hover the stack to expand it.',
+  typesLabel: 'Notification types',
+  position: 'Position',
+  codeLabel: 'Code for the last notification',
+  noscript: 'Enable JavaScript to send notifications from this panel.',
+  note: 'Each button calls the same toast API you install. Options update the mounted toaster in place; hover or focus pauses timers and swipe dismisses.',
+  positions: [
+    ['bottom-right', 'Bottom right'],
+    ['bottom-center', 'Bottom center'],
+    ['bottom-left', 'Bottom left'],
+    ['top-right', 'Top right'],
+    ['top-center', 'Top center'],
+    ['top-left', 'Top left'],
+  ],
+  toggles: [
+    ['richColors', 'Rich colors'],
+    ['closeButton', 'Close button'],
+    ['expand', 'Expand the stack'],
+  ],
+  kinds: [
+    {
+      id: 'normal',
+      label: 'Default',
+      code: "toast('Event created', {\n  description: 'Friday, November 7 at 10:00',\n})",
+    },
+    { id: 'success', label: 'Success', code: "toast.success('Changes saved')" },
+    {
+      id: 'info',
+      label: 'Info',
+      code: "toast.info('A new version is available', {\n  description: 'Reload to update.',\n})",
+    },
+    { id: 'warning', label: 'Warning', code: "toast.warning('Storage is almost full')" },
+    {
+      id: 'error',
+      label: 'Error',
+      code: "toast.error('Payment failed', {\n  description: 'Check your card details and try again.',\n})",
+    },
+    {
+      id: 'action',
+      label: 'Action',
+      code: "toast('Message archived', {\n  action: { label: 'Undo', onClick: restore },\n})",
+    },
+    {
+      id: 'loading',
+      label: 'Loading',
+      code: "const id = toast.loading('Syncing your files…')\n// later:\ntoast.success('All files synced', { id })",
+    },
+    {
+      id: 'promise',
+      label: 'Promise',
+      code: "toast.promise(uploadReport(), {\n  loading: 'Uploading report…',\n  success: 'Report uploaded',\n  error: 'Upload failed',\n})",
+    },
+  ],
+  messages: {
+    normal: 'Event created',
+    normalDescription: 'Friday, November 7 at 10:00',
+    success: 'Changes saved',
+    info: 'A new version is available',
+    infoDescription: 'Reload to update.',
+    warning: 'Storage is almost full',
+    error: 'Payment failed',
+    errorDescription: 'Check your card details and try again.',
+    action: 'Message archived',
+    undo: 'Undo',
+    restored: 'Message restored',
+    loading: 'Syncing your files…',
+    loaded: 'All files synced',
+    promiseLoading: 'Uploading report…',
+    promiseSuccess: 'Report uploaded',
+    promiseError: 'Upload failed',
+  },
 } as const

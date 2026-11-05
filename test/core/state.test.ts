@@ -1,6 +1,7 @@
-import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { ToastState, resetToastState, toast } from '../../src/core/state'
+import { HISTORY_LIMIT, ToastState, resetToastState } from '../../src/core/state'
+import { toast } from '../../src/api/toast'
 import type { ToastT } from '../../src/core/types'
 
 describe('core/state', () => {
@@ -101,26 +102,45 @@ describe('core/state', () => {
     })
 
     it('double-dismiss on the same id is a no-op (no duplicate publish)', () => {
-      // Fix 16: previously, calling dismiss(id) twice on the same
-      // id would re-publish the dismiss event. The renderer
-      // subscriber re-ran, which re-invoked the toast's onDismiss
-      // callback, scheduled a duplicate DOM removal, etc. Now we
-      // short-circuit at the state level when the id is already
-      // in dismissedToasts.
       let publishCount = 0
+      let dismissCalls = 0
+      const id = ToastState.create({ message: 'once', onDismiss: () => (dismissCalls += 1) })
       const unsubscribe = ToastState.subscribe((event) => {
         if ('dismiss' in event && event.dismiss) publishCount += 1
       })
-
-      ToastState.dismiss('ghost')
-      // First call: 'ghost' wasn't in the set, so the publish fires.
+      ToastState.dismiss(id)
+      ToastState.dismiss(id)
       expect(publishCount).toBe(1)
-      // 'ghost' is in dismissedToasts now. The second call
-      // short-circuits via the new `if (this.dismissedToasts.has(id))
-      // return id` guard.
-      ToastState.dismiss('ghost')
-      expect(publishCount).toBe(1)
+      expect(dismissCalls).toBe(1)
       unsubscribe()
+    })
+
+    it('ignores dismissals for ids that were never created', () => {
+      let publishCount = 0
+      const unsubscribe = ToastState.subscribe(() => (publishCount += 1))
+      ToastState.dismiss('ghost')
+      expect(publishCount).toBe(0)
+      expect(ToastState.dismissedToasts.has('ghost')).toBe(false)
+      unsubscribe()
+    })
+
+    it('runs onDismiss once even with no toaster mounted', () => {
+      const onDismiss = vi.fn()
+      const id = ToastState.create({ message: 'headless', onDismiss })
+      ToastState.dismiss(id)
+      expect(onDismiss).toHaveBeenCalledOnce()
+    })
+
+    it('caps dismissed history at HISTORY_LIMIT, dropping the oldest', () => {
+      for (let index = 0; index < HISTORY_LIMIT + 10; index += 1) {
+        ToastState.dismiss(ToastState.create({ message: `t${index}` }))
+      }
+      const live = ToastState.create({ message: 'live' })
+      const history = ToastState.getHistory()
+      expect(history).toHaveLength(HISTORY_LIMIT + 1)
+      expect(history[0]?.id).toBe(live)
+      expect(history[history.length - 1]?.title).toBe('t10')
+      expect(ToastState.dismissedToasts.size).toBe(HISTORY_LIMIT)
     })
 
     it('notifies subscribers about a dismiss event', () => {

@@ -40,7 +40,7 @@ describe('core/dom-helpers', () => {
       expect(getDefaultSwipeDirections('top-right')).toEqual(['top', 'right'])
     })
     it('parses bottom-center correctly', () => {
-      expect(getDefaultSwipeDirections('bottom-center')).toEqual(['bottom', 'center'])
+      expect(getDefaultSwipeDirections('bottom-center')).toEqual(['bottom'])
     })
     it('handles single-axis position', () => {
       expect(getDefaultSwipeDirections('top')).toEqual(['top'])

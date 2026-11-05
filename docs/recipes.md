@@ -300,7 +300,7 @@ const history = toast.getHistory()
 // the latest record for each id since the last reset, including dismissed records
 ```
 
-`getToasts()` filters out the ids in the dismissed set. `getHistory()` returns the unfiltered list. Both return defensive snapshots. Array and record changes stay local; callback functions, promises and custom DOM remain shared references.
+`getToasts()` filters out the ids in the dismissed set. `getHistory()` returns the unfiltered list, capped at the newest 50 dismissed records. Both return defensive snapshots. Array and record changes stay local; callback functions, promises and custom DOM remain shared references.
 
 ## 15. Reset everything
 

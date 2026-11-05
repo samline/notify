@@ -76,35 +76,35 @@ Generated container custom properties are `--offset-top`, `--offset-right`, `--o
 
 Each active state id has one toast item.
 
-| Attribute              | Values                                         | Meaning                                                                              |
-| ---------------------- | ---------------------------------------------- | ------------------------------------------------------------------------------------ |
-| `data-notify-toast`    | empty marker                                   | Toast selector.                                                                      |
-| `data-id`              | stringified id                                 | Public id for inspection; number and string ids can serialize identically.           |
-| `data-notify-key`      | type-prefixed internal id                      | Renderer lookup key that preserves the number and string distinction.                |
-| `data-type`            | `ToastType`                                    | Current variant.                                                                     |
-| `data-styled`          | `'true' \| 'false'`                            | Built-in presentation gate. False for custom content or `unstyled`.                  |
-| `data-rich-colors`     | `'true' \| 'false'`                            | Resolved toast and toaster setting.                                                  |
-| `data-promise`         | `'true' \| 'false'`                            | Whether the state record came from `toast.promise()`.                                |
-| `data-mounted`         | `'true' \| 'false'`                            | Entry-transition state.                                                              |
-| `data-removed`         | `'true' \| 'false'`                            | Exit-transition state.                                                               |
-| `data-visible`         | `'true' \| 'false'`                            | Whether the item is inside `visibleToasts`.                                          |
-| `data-front`           | `'true' \| 'false'`                            | Newest, front item.                                                                  |
-| `data-expanded`        | `'true' \| 'false'`                            | Expanded-stack state.                                                                |
-| `data-y-position`      | `'top' \| 'bottom'`                            | Resolved item position.                                                              |
-| `data-x-position`      | `'left' \| 'right' \| 'center'`                | Resolved item position.                                                              |
-| `data-index`           | integer string                                 | Newest-first stack index.                                                            |
-| `data-swiping`         | `'true' \| 'false'`                            | Active pointer swipe.                                                                |
-| `data-swiped`          | `'true' \| 'false'` when set                   | Whether pointer movement produced a swipe.                                           |
-| `data-swipe-out`       | `'true' \| 'false'`                            | Swipe-dismiss animation gate.                                                        |
-| `data-swipe-direction` | `'left' \| 'right' \| 'up' \| 'down'` when set | Dismissal animation direction.                                                       |
-| `data-dismissible`     | `'true' \| 'false'`                            | User-dismiss interaction gate.                                                       |
-| `data-invert`          | `'true' \| 'false'`                            | Resolved inversion.                                                                  |
-| `data-testid`          | consumer string                                | Optional test selector.                                                              |
-| `data-snapshot`        | internal serialized value                      | Renderer change-detection cache. Do not depend on its format.                        |
-| `data-duration`        | number or `'Infinity'` string                  | Renderer timer cache.                                                                |
-| `tabindex`             | `0`                                            | Makes the toast focusable for reading, pausing, keyboard activation, and dismissal.  |
-| `aria-busy`            | `'true' \| 'false'`                            | True for the loading type.                                                           |
-| `aria-label`           | variant prefix plus title, except for normal   | Exposes typed state such as `success: Saved`. Normal toasts rely on descendant text. |
+| Attribute              | Values                                         | Meaning                                                                                                                                   |
+| ---------------------- | ---------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| `data-notify-toast`    | empty marker                                   | Toast selector.                                                                                                                           |
+| `data-id`              | stringified id                                 | Public id for inspection; number and string ids can serialize identically.                                                                |
+| `data-notify-key`      | type-prefixed internal id                      | Renderer lookup key that preserves the number and string distinction.                                                                     |
+| `data-type`            | `ToastType`                                    | Current variant.                                                                                                                          |
+| `data-styled`          | `'true' \| 'false'`                            | Built-in presentation gate. False for custom content or `unstyled`.                                                                       |
+| `data-rich-colors`     | `'true' \| 'false'`                            | Resolved toast and toaster setting.                                                                                                       |
+| `data-promise`         | `'true' \| 'false'`                            | Whether the state record came from `toast.promise()`.                                                                                     |
+| `data-mounted`         | `'true' \| 'false'`                            | Entry-transition state.                                                                                                                   |
+| `data-removed`         | `'true' \| 'false'`                            | Exit-transition state.                                                                                                                    |
+| `data-visible`         | `'true' \| 'false'`                            | Whether the item is inside `visibleToasts`.                                                                                               |
+| `data-front`           | `'true' \| 'false'`                            | Newest, front item.                                                                                                                       |
+| `data-expanded`        | `'true' \| 'false'`                            | Expanded-stack state.                                                                                                                     |
+| `data-y-position`      | `'top' \| 'bottom'`                            | Resolved item position.                                                                                                                   |
+| `data-x-position`      | `'left' \| 'right' \| 'center'`                | Resolved item position.                                                                                                                   |
+| `data-index`           | integer string                                 | Newest-first stack index.                                                                                                                 |
+| `data-swiping`         | `'true' \| 'false'`                            | Active pointer swipe.                                                                                                                     |
+| `data-swiped`          | `'true' \| 'false'` when set                   | Whether pointer movement produced a swipe.                                                                                                |
+| `data-swipe-out`       | `'true' \| 'false'`                            | Swipe-dismiss animation gate.                                                                                                             |
+| `data-swipe-direction` | `'left' \| 'right' \| 'up' \| 'down'` when set | Dismissal animation direction.                                                                                                            |
+| `data-dismissible`     | `'true' \| 'false'`                            | User-dismiss interaction gate.                                                                                                            |
+| `data-invert`          | `'true' \| 'false'`                            | Resolved inversion.                                                                                                                       |
+| `data-testid`          | consumer string                                | Optional test selector.                                                                                                                   |
+| `data-snapshot`        | internal serialized value                      | Renderer change-detection cache. Do not depend on its format.                                                                             |
+| `data-duration`        | number or `'Infinity'` string                  | Renderer timer cache.                                                                                                                     |
+| `tabindex`             | `0`                                            | Makes the toast focusable for reading, pausing, keyboard activation, and dismissal.                                                       |
+| `aria-busy`            | `'true' \| 'false'`                            | True for the loading type.                                                                                                                |
+| `aria-busy`            | `'true'` while loading                         | Marks a loading toast as in progress. The toast has no `aria-label`, so its title, description and actions remain its accessible content. |
 
 Renderer-owned item properties include `--index`, `--toasts-before`, `--z-index`, `--initial-height`, `--offset`, `--swipe-amount-x`, and `--swipe-amount-y`. Avoid overriding them.
 
@@ -115,7 +115,7 @@ Renderer-owned item properties include `--index`, `--toasts-before`, `--z-index`
 | `[data-close-button]`                          | Native button when close is requested and the content is neither loading nor custom. It also receives `data-disabled` and an `aria-label`. |
 | `[data-icon]`                                  | Icon wrapper for typed icons, the loading spinner, or custom content. Generated decorative icons are `aria-hidden`.                        |
 | `.notify-loading-wrapper[data-visible="true"]` | Loading spinner wrapper. The packaged renderer creates it as visible; the stylesheet also supports a false exit state.                     |
-| `[data-custom]`                                | Custom callback or element mount point.                                                                                                    |
+| `[data-custom]`                                | Custom callback or element mount point. It is a direct child of the toast item.                                                            |
 | `[data-content]`                               | Title and description wrapper.                                                                                                             |
 | `[data-title]`                                 | Primary text.                                                                                                                              |
 | `[data-description]`                           | Optional secondary text.                                                                                                                   |

@@ -68,7 +68,7 @@ widget.textContent = 'Pre-built widget'
 toast.custom(widget, { duration: 8000 })
 ```
 
-The renderer appends that element inside its div[data-custom] mount point.
+The renderer appends that element inside its div[data-custom] mount point, a direct child of the toast item.
 
 ## Safety and accessibility checklist
 

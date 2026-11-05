@@ -41,6 +41,27 @@ for (const entry of map) {
       '<FrameworkExamples label="Framework integration" groups={frameworkGroups} />',
     ],
   }
+  // `<!-- notify:cards -->` turns the Markdown link list that follows it into
+  // link cards on the website while GitHub keeps rendering the plain list.
+  if (body.includes('<!-- notify:cards -->')) {
+    imports.push(
+      "import CardGrid from '../../../../shared/components/CardGrid.astro'",
+      "import LinkCard from '../../../../shared/components/LinkCard.astro'"
+    )
+    body = body.replace(/<!-- notify:cards -->\n+((?:- .+\n?)+)/, (_, list) => {
+      const cards = list
+        .trim()
+        .split('\n')
+        .map(line => {
+          const match = line.match(/^- \[([^\]]+)\]\(([^)]+)\) — (.+)$/)
+          if (!match) throw new Error(`Unsupported card line: ${line}`)
+          const [, title, href, text] = match
+          const html = text.replace(/`([^`]+)`/g, '<code>$1</code>')
+          return `  <LinkCard href="${href}" title="${title}">\n    ${html}\n  </LinkCard>`
+        })
+      return `<CardGrid>\n${cards.join('\n')}\n</CardGrid>\n`
+    })
+  }
   for (const [key, [name, component, markup]] of Object.entries(ui)) {
     if (!body.includes(`<!-- notify:${key} -->`)) continue
     imports.push(`import ${name} from '${component}'`)

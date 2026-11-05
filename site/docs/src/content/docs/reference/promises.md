@@ -99,7 +99,7 @@ An extended result is spread into the settled toast. Its options can override th
 `PromiseData.description` has two distinct forms:
 
 - A static renderable appears on the loading toast, when one exists, and on the settled toast.
-- A function is not shown during loading. It is called only on the error path with the error value and may return a promise. It is not called for success.
+- A function is not shown during loading. It is called once the promise settles, with the resolved value on success or the error value on failure, and may return a promise.
 
 If an extended result also includes a `description`, the top-level resolved promise description is applied afterwards and takes precedence when it is defined.
 

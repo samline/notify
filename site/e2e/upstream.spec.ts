@@ -125,6 +125,7 @@ test('scopes reconnect once and an open drawer releases its lock on same-batch r
 }) => {
   await page.setViewportSize({ width: 390, height: 900 })
   await page.goto('./')
+  await page.getByRole('tab', { name: 'Save changes', exact: true }).click()
   const demo = page.locator('package-site-demo[data-preset=save]').first()
   await expect(demo).toHaveAttribute('data-mounted', 'true')
   await demo.getByRole('button', { name: 'Save changes', exact: true }).click()
