@@ -27,3 +27,7 @@
 - Paquete: `onDismiss` único desde el estado, historial limitado (`HISTORY_LIMIT` = 50), dismiss de ids inexistentes sin efecto, descripción de promesa como función también en éxito, sin `aria-label` en los toasts, swipe vertical en posiciones centradas, umbral de flick de 10 px, sin `onClick` tras un arrastre, Delete/Backspace por toaster, rescate de foco, `preventDefault()` en acciones, `ResizeObserver`, contexto y cleanup en `toast.custom()`, contraste de descripciones invertidas. 190 pruebas.
 - Sitio: panel "Toast types" como primera pestaña de Home, diagrama esquemático por ejemplo (paridad con Drawer), portada de Docs reescrita con tarjetas (`<!-- notify:cards -->` en docs/README.md), FAQ/copy sin la nota de `Notify.default`. 75 pruebas de navegador.
 - Pendiente de decisión del mantenedor: versión de publicación (los cambios de comportamiento listados en CHANGELOG justifican major o minor), y publicar/desplegar.
+
+## Publicación 4.0.0 — 2026-11-05
+
+- `@samline/notify@4.0.0` publicado en npm (tag `latest`) y disponible en jsDelivr/unpkg; los archivos CDN coinciden con el build local. El sitio depende de `^4.0.0`.
