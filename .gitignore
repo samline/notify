@@ -45,4 +45,6 @@ skills-lock.json
 # .local/ deprecado desde 2026-07-13 — usar .agents/ en su lugar
 scripts-tmp-*.mjs
 _tmp-*.mjs
-_tmp-*.mjs
+
+# npm pack output
+*.tgz
