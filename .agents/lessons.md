@@ -29,3 +29,7 @@
 - Lifecycle callbacks (`onDismiss`) belong in the shared state, not in renderers: a per-renderer call fires once per mounted toaster and never without one.
 - Never put an `aria-label` on a toast item: it replaces the description, actions and custom content for screen readers.
 - Home's first playground tab is the Toast types panel; e2e tests that use a scenario preset on Home must select its tab first.
+- `npm run check:release` compares sha256 hashes of reviewed sources recorded in `site/content-audit.json`. After reviewing edits to README.md, docs/ or shared visual sources, refresh those hashes in the same commit or CI fails.
+- Playwright `grep` also matches the project name: never name a project with a word its own `grep` filters on.
+- Copied CDN examples are tested against this checkout's `dist/`, so the CI browser jobs build the package first.
+- Never add AI co-author or "Generated with" lines to commits, tags or PRs (maintainer rule, also in ~/.claude/CLAUDE.md).
