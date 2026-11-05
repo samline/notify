@@ -3,6 +3,16 @@ name: Deploy website to GitHub Pages
 on:
   push:
     branches: [main]
+    # Pushes that cannot change the built site (tests, CI, agent notes) skip
+    # the deploy. Package source and docs/ still deploy: the site renders them.
+    paths-ignore:
+      - '.github/workflows/ci.yml'
+      - '.agents/**'
+      - '**/AGENTS.md'
+      - 'test/**'
+      - 'site/e2e/**'
+      - 'site/tests/**'
+      - 'site/playwright.config.ts'
   workflow_dispatch:
 
 permissions:
@@ -17,6 +27,7 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     defaults:
       run:
         working-directory: site
@@ -48,6 +59,7 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

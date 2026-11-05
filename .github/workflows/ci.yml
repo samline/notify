@@ -11,6 +11,7 @@ permissions:
 jobs:
   package:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
@@ -22,13 +23,45 @@ jobs:
       - run: bun run test:coverage
       - run: bun run build
       - run: bun run test:package
-      - run: bunx playwright install --with-deps chromium
+      # ubuntu-latest already has Chromium's system libraries; --with-deps only
+      # adds apt fallback fonts, which a slow mirror can stall for minutes.
+      - run: bunx playwright install chromium
+        timeout-minutes: 5
       - run: bun run test:package:browser
       - run: npm pack --dry-run
       - run: bun audit
 
   website:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: site
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: site/package-lock.json
+      - run: npm ci
+      - run: npm run check
+      - run: npm run format:check
+      - run: npm test
+      - run: npm run test:adaptation
+      - run: npm run build
+      - run: npm run check:release
+
+  # The browser suite runs as three Playwright projects split by measured
+  # time (see site/playwright.config.ts), one runner each.
+  browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        project: [files, scenarios, site]
+    name: browser (${{ matrix.project }})
     defaults:
       run:
         working-directory: site
@@ -46,6 +79,7 @@ jobs:
       - run: bun install --frozen-lockfile && bun run build
         working-directory: .
       - run: npm ci
-      - run: npx playwright install --with-deps chromium
-      - run: npm run verify
-      - run: npm run check:release
+      - run: npx playwright install chromium
+        timeout-minutes: 5
+      - run: npm run build
+      - run: npx playwright test --project=${{ matrix.project }}
