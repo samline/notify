@@ -30,7 +30,7 @@ if (!getToaster()) createToaster()
 document.addEventListener(
   'DOMContentLoaded',
   () => {
-    const notify = window.Notify.default ?? window.Notify
+    const notify = window.Notify
     notify.createToaster()
   },
   { once: true }

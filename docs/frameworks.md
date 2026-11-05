@@ -104,7 +104,7 @@ The Astro component mounts native buttons after page load and cleans up before a
 
 ## Shopify and WordPress
 
-Copy the matching published JavaScript and CSS assets into the theme as notify.global.js and notify.css. The CMS examples remain pinned to published 3.2.0 until 3.2.1 ships. Add notify-hosts.js once after the package script. Shopify assets belong in the layout rather than being loaded once per section; WordPress dependency handles establish execution order.
+Copy the matching published JavaScript and CSS assets into the theme as notify.global.js and notify.css. The CMS examples are pinned to 4.0.0. Add notify-hosts.js once after the package script. Shopify assets belong in the layout rather than being loaded once per section; WordPress dependency handles establish execution order.
 
 Each data-notify-host scope owns its listeners. Multiple scopes share one toaster; removing the final owner destroys it. Shopify section load/unload and DOM replacement release the affected listeners. Do not use the preview's saved message as proof of a server-side save: call the notification only after your real submission succeeds.
 

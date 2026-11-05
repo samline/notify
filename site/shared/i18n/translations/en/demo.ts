@@ -9,7 +9,7 @@ export const presets = {
     note: 'A loading notification becomes a success on the same id. The saved name stays visible in the form.',
     initial: 'Your profile is up to date.',
     field: 'Display name',
-    value: 'Sam Olvera',
+    value: 'Nora Quinn',
   },
   retry: {
     title: 'Give a failed request a way back',
@@ -62,7 +62,7 @@ export const presets = {
       'Open a release card, write a note inside the notification and save it back to the page. Your integration owns the DOM and appearance.',
     action: 'Show release receipt',
     note: 'toast.custom uses safe DOM construction. Your integration supplies the custom appearance and close action.',
-    initial: 'Release 3.2.1 · Ready for review',
+    initial: 'Release 4.0.0 · Ready for review',
   },
   position: {
     title: 'Change the setting, keep the controller',
@@ -219,7 +219,7 @@ export const messages = {
   restored: 'Launch checklist restored',
   invitation: 'You are invited to Studio',
   invitationDetails: 'Studio workspace · Editor access · Accept the invitation from your account.',
-  release: 'Release 3.2.1',
+  release: 'Release 4.0.0',
   releaseDetails: 'The release notes are ready for your review.',
   closeReceipt: 'Close release receipt',
   preference: 'Notification preference applied',

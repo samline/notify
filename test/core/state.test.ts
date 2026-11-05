@@ -203,7 +203,7 @@ describe('core/state', () => {
         if ('title' in event) events.push(event as ToastT)
       })
 
-      const result = ToastState.promise(Promise.resolve({ name: 'Sam' }), {
+      const result = ToastState.promise(Promise.resolve({ name: 'Nora' }), {
         loading: 'Loading...',
         success: (data) => `Hi ${(data as { name: string }).name}`
       })
@@ -218,7 +218,7 @@ describe('core/state', () => {
       expect(types).toContain('loading')
       expect(types).toContain('success')
       const success = events.find((event) => event.type === 'success')
-      expect(success?.title).toBe('Hi Sam')
+      expect(success?.title).toBe('Hi Nora')
 
       unsubscribe()
     })

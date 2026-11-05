@@ -2,7 +2,7 @@
 
 Start with one mounted toaster and one notification. Choose package imports for a bundled app, or the complete HTML / CDN file for a page without a build step.
 
-This checkout prepares **3.2.1**, which is not yet published. The live preview uses that local source. npm and the pinned CDN files currently supply **3.2.0**; the CDN examples resolve its namespace wrapper.
+This guide documents **4.0.0**. The live preview runs the same source.
 
 ## Install
 

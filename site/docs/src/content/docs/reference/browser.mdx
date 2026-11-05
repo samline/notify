@@ -80,15 +80,15 @@ The standalone file `dist/browser/global.global.js` is a built artifact, not the
     <title>Notify browser example</title>
     <link
       rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/@samline/notify@3.2.0/dist/styles.css"
+      href="https://cdn.jsdelivr.net/npm/@samline/notify@4.0.0/dist/styles.css"
     />
   </head>
   <body>
     <button id="notify" type="button">Show notification</button>
 
-    <script src="https://cdn.jsdelivr.net/npm/@samline/notify@3.2.0/dist/browser/global.global.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@samline/notify@4.0.0/dist/browser/global.global.js"></script>
     <script>
-      const notify = window.Notify.default ?? window.Notify
+      const notify = window.Notify
       notify.configureToaster({ richColors: true, position: 'top-right' })
 
       document.querySelector('#notify').addEventListener('click', () => {
@@ -110,19 +110,15 @@ Do not combine a deferred external script with an immediately executing classic 
 
 Pin a published version in production, and keep the script and the stylesheet on the same version.
 
-**The global is the module namespace**
+**The global is the registry**
 
-Published 3.2.0 assigns the module namespace to `window.Notify`: it holds `Notify`, `browser` and `default`. The corrected local build exposes the registry directly; that fix has not yet been published. The registry is the default export, so
-`window.Notify.default` and `window.Notify.Notify` are the same object. Resolve it once and
-keep using the registry:
+`window.Notify` is the registry itself, with the six members listed above:
 
 ```js
-const notify = window.Notify.default ?? window.Notify
-
-notify.toast.success('Ready')
+window.Notify.toast.success('Ready')
 ```
 
-The resolution works whether the global is the namespace or the registry itself.
+Versions 3.2.0 and earlier assigned the module namespace instead; on those, resolve `window.Notify.default ?? window.Notify` once.
 
 <span id="lifecycle-helpers" class="legacy-fragment" aria-hidden="true"></span>
 <span id="controller-methods" class="legacy-fragment" aria-hidden="true"></span>
@@ -135,7 +131,7 @@ When the standalone build is evaluated in a browser, it assigns `window.Notify`.
 The automatic mount happens only during the initialization of the script. After `Notify.destroyToaster()`, or after `Notify.getToaster().destroy()`, call `Notify.createToaster()` again before sending more visible notifications.
 
 ```js
-const notify = window.Notify.default ?? window.Notify
+const notify = window.Notify
 notify.destroyToaster()
 
 // Later, remount explicitly.

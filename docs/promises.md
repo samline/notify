@@ -19,7 +19,7 @@ The input can be an already-started promise or a thunk. When `data` is supplied,
 const result = toast.promise(
   () =>
     new Promise<{ name: string }>((resolve) => {
-      window.setTimeout(() => resolve({ name: 'Sam' }), 800)
+      window.setTimeout(() => resolve({ name: 'Nora' }), 800)
     }),
   {
     loading: 'Saving profile',
@@ -62,7 +62,7 @@ Both fields accept:
 The success callback receives the fulfilled value. The error callback receives the rejected reason, a fulfilled non-ok `Response`, or a fulfilled `Error` value.
 
 ```ts
-toast.promise(Promise.resolve({ name: 'Sam' }), {
+toast.promise(Promise.resolve({ name: 'Nora' }), {
   success: async (profile) => ({
     message: `Saved ${profile.name}`,
     description: 'The local copy is current.',
@@ -136,8 +136,8 @@ Calling `unwrap()` more than once observes the same already-created outcome when
 - [Examples](recipes.md)
 - [TypeScript reference](typescript.md)
 
-## Ownership and cleanup in 3.2.1
+## Ownership and cleanup
 
 Dismissing the loading toast, resetting global state, destroying the singleton, or replacing the same id prevents the pending operation from publishing a late result. This does not cancel your network request or change unwrap(): it still returns or throws the original outcome. Formatters are checked for ownership again after awaiting. If the selected result message is omitted or its formatter throws, the owned loading notification is dismissed.
 
-These safeguards are part of the prepared 3.2.1 patch. Published 3.2.0 does not contain them. Keep your application's cancellation and cleanup explicit until that release is available.
+These safeguards do not cancel the underlying work; keep your application's cancellation and cleanup explicit.

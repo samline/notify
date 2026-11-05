@@ -39,6 +39,12 @@ jobs:
           node-version: 22
           cache: npm
           cache-dependency-path: site/package-lock.json
+      # Copied CDN examples run against this checkout's own standalone build.
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.14
+      - run: bun install --frozen-lockfile && bun run build
+        working-directory: .
       - run: npm ci
       - run: npx playwright install --with-deps chromium
       - run: npm run verify

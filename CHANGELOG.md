@@ -9,6 +9,10 @@ marked as unpublished have a Git tag but are not present in the npm registry.
 
 ## [Unreleased]
 
+## [4.0.0] - 2026-11-05
+
+Includes every change prepared for 3.2.1, which was never published.
+
 ### Added
 
 - Added the public website workspace in `site/`: a landing page with a live `@samline/notify` demo, an examples gallery and the documentation app. The site uses an amber accent and is published from the `site/` build.
@@ -42,7 +46,7 @@ marked as unpublished have a Git tag but are not present in the npm registry.
 
 - Moved the documentation from the retired Starlight app in `example/` to `site/docs/`, and redirected the previous public routes (`/getting-started/`, `/reference/*`, `/guides/*`) to their new location under `/docs/`.
 
-## [3.2.1] - Unreleased
+## [3.2.1] - Not published (folded into 4.0.0)
 
 ### Fixed
 
@@ -369,7 +373,8 @@ marked as unpublished have a Git tag but are not present in the npm registry.
 - Renamed the internal controller and package from Sileo to Notify.
 - Exposed `window.notify` while retaining the previous browser global as a compatibility alias.
 
-[Unreleased]: https://github.com/samline/notify/compare/v3.2.0...HEAD
+[Unreleased]: https://github.com/samline/notify/compare/v4.0.0...HEAD
+[4.0.0]: https://github.com/samline/notify/compare/v3.2.0...v4.0.0
 [3.2.0]: https://github.com/samline/notify/compare/v3.1.5...v3.2.0
 [3.1.5]: https://github.com/samline/notify/compare/v3.1.4...v3.1.5
 [3.1.4]: https://github.com/samline/notify/compare/v3.1.3...v3.1.4

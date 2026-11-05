@@ -53,7 +53,7 @@ const exercise = async (
     await expect(page.locator('[data-notify-toast]')).toHaveCount(0)
   }
   if (preset === 'custom') {
-    await expect(page.locator('.notify-receipt')).toContainText('Release 3.2.1')
+    await expect(page.locator('.notify-receipt')).toContainText('Release 4.0.0')
     const input = page.getByRole('textbox', { name: 'Release note', exact: true })
     await input.fill('Ready for the team!')
     await input.press('Backspace')
@@ -234,8 +234,8 @@ for (const preset of presets) {
             body: await readFile(
               new URL(
                 route.request().url() === project.delivery.cdnScript
-                  ? '../node_modules/@samline/notify/dist/browser/global.global.js'
-                  : '../node_modules/@samline/notify/dist/styles.css',
+                  ? '../../dist/browser/global.global.js'
+                  : '../../dist/styles.css',
                 import.meta.url
               )
             ),

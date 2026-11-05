@@ -4,7 +4,7 @@ Accessible, dependency-free toast notifications for JavaScript and TypeScript, w
 
 [Demo](https://samline.github.io/notify/) · [Examples](https://samline.github.io/notify/examples/) · [Documentation](https://samline.github.io/notify/docs/) · [Changelog](CHANGELOG.md)
 
-This checkout prepares **3.2.1**, which has not been published. CDN examples use published **3.2.0** with its registry compatibility resolver.
+Current version: **4.0.0**. See the [changelog](CHANGELOG.md) for behavior changes from 3.x.
 
 ## Table of contents
 
@@ -70,8 +70,8 @@ Keep `toaster` to update preferences. At application teardown, call `destroyToas
 Use the browser build when you do not have a bundler and need to run the package directly in HTML, Shopify, WordPress, or any traditional template.
 
 ```html
-<link rel="stylesheet" href="https://unpkg.com/@samline/notify@3.2.0/dist/styles.css" />
-<script src="https://unpkg.com/@samline/notify@3.2.0/dist/browser/global.global.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/@samline/notify@4.0.0/dist/styles.css" />
+<script src="https://unpkg.com/@samline/notify@4.0.0/dist/browser/global.global.js"></script>
 ```
 
 > Pin a concrete published version in production instead of `latest`.
@@ -81,10 +81,10 @@ The browser bundle exposes a single global: `window.Notify`. It auto-mounts a de
 ```html
 <button id="save">Save</button>
 
-<link rel="stylesheet" href="https://unpkg.com/@samline/notify@3.2.0/dist/styles.css" />
-<script src="https://unpkg.com/@samline/notify@3.2.0/dist/browser/global.global.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/@samline/notify@4.0.0/dist/styles.css" />
+<script src="https://unpkg.com/@samline/notify@4.0.0/dist/browser/global.global.js"></script>
 <script>
-  const notify = window.Notify.default ?? window.Notify
+  const notify = window.Notify
   notify.toast('Hello from the browser')
   document.querySelector('#save').addEventListener('click', () => {
     notify.toast.success('Saved')
@@ -153,7 +153,7 @@ toast.promise(fetchProfile(), {
 
 ## Documentation
 
-This checkout prepares **3.2.1** (not yet published). Its stability fixes and browser-global correction are listed in [CHANGELOG.md](CHANGELOG.md). CDN recipes stay pinned to published **3.2.0** and resolve its namespace wrapper.
+Version 4.0.0 includes the stability fixes, the direct `window.Notify` global and the behavior changes listed in [CHANGELOG.md](CHANGELOG.md).
 
 The landing page lives at **[samline.github.io/notify](https://samline.github.io/notify)** and the full documentation at **[samline.github.io/notify/docs](https://samline.github.io/notify/docs)**.
 
@@ -177,7 +177,7 @@ The markdown files below are the source of truth for the package. The published 
 
 ## Changelog
 
-See [CHANGELOG.md](CHANGELOG.md) for release history and the prepared 3.2.1 patch.
+See [CHANGELOG.md](CHANGELOG.md) for release history.
 
 ## AI agent skill
 

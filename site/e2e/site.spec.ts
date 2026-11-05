@@ -146,8 +146,8 @@ test('copied files and complete document actually run', async ({ page, context }
   // The copied example loads the published build from the CDN. Serve the very
   // same artifacts from node_modules so the test never depends on the network.
   const assets = new Map([
-    [project.delivery.cdnScript!, '../node_modules/@samline/notify/dist/browser/global.global.js'],
-    [project.delivery.cdnStylesheet!, '../node_modules/@samline/notify/dist/styles.css'],
+    [project.delivery.cdnScript!, '../../dist/browser/global.global.js'],
+    [project.delivery.cdnStylesheet!, '../../dist/styles.css'],
   ])
   for (const mode of ['separate', 'complete']) {
     // Each variant runs in its own page: the example declares top-level
@@ -185,7 +185,7 @@ test('copied files and complete document actually run', async ({ page, context }
     await expect(example.getByRole('button', { name: 'Save changes', exact: true })).toBeEnabled()
     await expect(example.locator('[data-demo-result]')).toContainText('Profile saved')
     await expect(example.locator('li[data-notify-toast]')).toHaveCount(1)
-    await example.evaluate(() => (window.Notify.default ?? window.Notify).toast.dismiss())
+    await example.evaluate(() => window.Notify.toast.dismiss())
     await expect(example.locator('li[data-notify-toast]')).toHaveCount(0)
     await example.evaluate(() => {
       window.dispatchEvent(new PageTransitionEvent('pagehide', { persisted: true }))
@@ -195,7 +195,7 @@ test('copied files and complete document actually run', async ({ page, context }
     await expect(example.getByRole('button', { name: 'Save changes', exact: true })).toBeEnabled()
     await expect(example.locator('[data-demo-result]')).toContainText('Profile saved')
     await expect(example.locator('li[data-notify-toast]')).toHaveCount(1)
-    await example.evaluate(() => (window.Notify.default ?? window.Notify).toast.dismiss())
+    await example.evaluate(() => window.Notify.toast.dismiss())
     await expect(example.locator('li[data-notify-toast]')).toHaveCount(0)
     await example.evaluate(() =>
       window.dispatchEvent(new PageTransitionEvent('pagehide', { persisted: false }))

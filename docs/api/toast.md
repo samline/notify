@@ -124,14 +124,14 @@ The renderer appends the element inside its div[data-custom] mount point, a dire
 ```ts
 toast.custom((container) => {
   const img = document.createElement('img')
-  img.src = '/avatars/sam.png'
+  img.src = '/avatars/nora.png'
   img.alt = ''
   img.width = 32
   img.height = 32
 
   const text = document.createElement('div')
   text.innerHTML = `
-    <div data-title>Sam liked your post</div>
+    <div data-title>Nora liked your post</div>
     <div data-description>5 minutes ago</div>
   `
 

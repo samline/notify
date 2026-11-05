@@ -44,7 +44,7 @@ createToaster({
 })
 ```
 
-It is not the same as declaring custom properties in CSS. It can contain ordinary CSS names, it has inline-style cascade priority, and it applies to one mount. In 3.2.1 the style map can override the default `--width`. The renderer reserves `--gap` and `--front-toast-height` after this map so CSS agrees with measured stack geometry; set spacing with the numeric `gap` option. Published 3.2.0 also overwrites `--width`: use the scoped external CSS recipe below with that version. There is no `width` toaster option. Replacing the map does not remove omitted ordinary declarations or palette keys; width and measured geometry are recomputed. To change one palette value while keeping a custom width, spread the existing `controller.options.style` into the new map.
+It is not the same as declaring custom properties in CSS. It can contain ordinary CSS names, it has inline-style cascade priority, and it applies to one mount. The style map can override the default `--width`. The renderer reserves `--gap` and `--front-toast-height` after this map so CSS agrees with measured stack geometry; set spacing with the numeric `gap` option. Versions 3.2.0 and earlier overwrite `--width`: use the scoped external CSS recipe below with those versions. There is no `width` toaster option. Replacing the map does not remove omitted ordinary declarations or palette keys; width and measured geometry are recomputed. To change one palette value while keeping a custom width, spread the existing `controller.options.style` into the new map.
 
 ### Classes and `unstyled`
 

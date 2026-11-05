@@ -125,7 +125,7 @@ window.MyNotify.destroyToaster()
 
 `browser` is an object you can spread into your own globals or use directly. Because it shares the same module-level `Observer` and the same toaster singleton as the named exports, every spread behaves the same — `window.MyNotify.createToaster({})` and `createToaster({})` end up calling the same factory and updating the same DOM container.
 
-`Notify` is the namespace-oriented name for that same object. The root and browser module share the registry within the same module graph. The standalone script contains its own bundled instance. Published 3.2.0 wraps that registry: resolve window.Notify.default ?? window.Notify. Do not mix independently loaded package instances and assume shared state.
+`Notify` is the namespace-oriented name for that same object. The root and browser module share the registry within the same module graph. The standalone script contains its own bundled instance. Do not mix independently loaded package instances and assume shared state.
 
 For multiple containers, use mountToaster and own each controller. Their default stream is shared; separate containers are not separate state, history or counters. Inject isolated state only in an advanced integration.
 
@@ -165,7 +165,7 @@ async function saveProfile(patch: object): Promise<{ name: string }> {
   return response.json()
 }
 
-toast.promise(saveProfile({ name: 'Sam' }), {
+toast.promise(saveProfile({ name: 'Nora' }), {
   loading: 'Saving profile…',
   success: profile => `Saved as ${profile.name}`,
   error: 'Could not save your profile',

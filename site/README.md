@@ -50,7 +50,7 @@ npm run configure -- --package .. \
   --accent-light '#b45309' --accent-dark '#fbbf24'
 ```
 
-Identity, deployment base and the amber accent live in `project.config.json`. The amber pair is the maintainer's choice: `#b45309` on light surfaces and `#fbbf24` on dark ones, both above 4.5:1 contrast against the surfaces they are used on. The CDN entries point at the published `@samline/notify@3.2.0` assets; remove them if that release is no longer available.
+Identity, deployment base and the amber accent live in `project.config.json`. The amber pair is the maintainer's choice: `#b45309` on light surfaces and `#fbbf24` on dark ones, both above 4.5:1 contrast against the surfaces they are used on. The CDN entries point at the `@samline/notify@4.0.0` assets; keep them on a published version.
 
 Re-running the importer resets the content audit, so review that diff. `npm run check:release` rejects an adaptation whose audit, theme review or capability review is unfinished.
 
@@ -99,7 +99,7 @@ Use `site.template: true` while writing the package content: generated metadata 
 
 Edit package reference prose in `../docs/`, then run `npm run sync:docs`. `documentation-map.json` defines the 22 source-to-article mappings; `check:docs` rejects drift. The migration inventory in `brief/documentation-migration.json` preserves 35 historical articles and 323 sections, including meaningful fragment destinations.
 
-The eleven task scenarios and their ESM/CDN copies share `demo-behavior.js`, scenario markup and scoped styles. Framework files have separate compiler checks; CMS fixtures exercise lifecycle behavior locally, without claiming a hosted Shopify or WordPress deployment. The live site uses the local 3.2.1 runtime; CDN files intentionally use published 3.2.0 with namespace resolution.
+The eleven task scenarios and their ESM/CDN copies share `demo-behavior.js`, scenario markup and scoped styles. Framework files have separate compiler checks; CMS fixtures exercise lifecycle behavior locally, without claiming a hosted Shopify or WordPress deployment. The live site and the CDN files use 4.0.0.
 
 Start with [ADAPTATION.md](ADAPTATION.md). Maintenance conventions live in [AGENTS.md](AGENTS.md); the committed visual reference is recorded in [REFERENCE.md](REFERENCE.md).
 

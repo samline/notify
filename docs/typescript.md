@@ -289,4 +289,4 @@ import {
 - Offset numbers receive px; strings are forwarded. Omitted object sides use 24px desktop or 16px mobile defaults.
 - SwipeDirection describes the directions derived from a position: both edges of a corner, or the vertical edge of a centered position.
 - PromiseInput thunks with data run immediately; without data, each unwrap invocation runs the thunk. PromiseValue and PromiseExtendedResult let a settled message override toast options; finally waits for the rendering callback pipeline.
-- NotifyApi describes the registry, not the published 3.2.0 global namespace wrapper. Resolve the registry before applying that type.
+- NotifyApi describes the registry exposed as `window.Notify`.

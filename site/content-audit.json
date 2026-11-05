@@ -114,7 +114,7 @@
     ],
     "onboarding": {
       "equivalentModes": true,
-      "summary": "Short matching Package / ESM and HTML / CDN initializers, with complete and split runnable file viewers for both modes. CDN stays on published 3.2.0; the local preview prepares 3.2.1."
+      "summary": "Short matching Package / ESM and HTML / CDN initializers, with complete and split runnable file viewers for both modes. CDN and the local preview use 4.0.0."
     }
   },
   "themeReview": {
@@ -124,29 +124,29 @@
     "accentDark": "#fbbf24"
   },
   "status": "verified",
-  "packageVersion": "3.2.1",
+  "packageVersion": "4.0.0",
   "sources": [
     {
       "source": "CHANGELOG.md",
-      "sha256": "4cc50fa4bae553818bab0cccff624f30e7d88fa39cb04f049620d2062bfd1fbb",
+      "sha256": "152ebdca5f0ab7f153b4853c242efef52d80c79836b476df5c09acbde604b06e",
       "destination": "docs/src/content.config.ts",
       "reviewed": true
     },
     {
       "source": "README.md",
-      "sha256": "2a8e1629ace1ed8cf26a7fd141bfcccc8dfaa74f7f8c99b2a128f9320eefe996",
+      "sha256": "24b0e4274aa9501e945543caaf7e049f559141518948d00339d6c9d537863845",
       "destination": "landing/src/i18n/translations/en/sections.ts",
       "reviewed": true
     },
     {
       "source": "docs/README.md",
-      "sha256": "803d49845ba31a9ad57492647d1c221c02907bfa4b43e9e4f3772fd342a75b72",
+      "sha256": "78cd476e65045046a0dbc735ac6e77a2ca2c01ee30bb2ed45f73e11450618e1b",
       "destination": "docs/src/content/docs/index.mdx",
       "reviewed": true
     },
     {
       "source": "docs/accessibility.md",
-      "sha256": "da181b8c6d122e19ee33e02f2e1622887784c8a946e742b7b496df996cfea796",
+      "sha256": "267203e7cbdfeac7e53e588ae8e3f8d992b7c4dbe5e7584f402362d831f8885f",
       "destination": "docs/src/content/docs/guides/accessibility.md",
       "reviewed": true
     },
@@ -164,7 +164,7 @@
     },
     {
       "source": "docs/api/destroy-toaster.md",
-      "sha256": "3bc83733c054b49868999a164e0b13c5f1e3f061a74530fae8d38d9a40ad8e77",
+      "sha256": "8630e7e83fc2d1cd042f0c8066670aa6a83642d374d0249524e661dbc13b1b6b",
       "destination": "docs/src/content/docs/api/destroy-toaster.md",
       "reviewed": true
     },
@@ -176,7 +176,7 @@
     },
     {
       "source": "docs/api/index.md",
-      "sha256": "0935e94e89f7e971539eb3284908b41d94f02d1cf8c444ccfa2027b7fb8db14a",
+      "sha256": "c59ca41b477c9cf259a89ac04f8224c6e2d6a4d73fe55dbfc55ca976b441d947",
       "destination": "docs/src/content/docs/reference/api.md",
       "reviewed": true
     },
@@ -188,67 +188,67 @@
     },
     {
       "source": "docs/api/toast.md",
-      "sha256": "f693fcf4e041c23283df6b7f193818bda07fe58d532668a03473f7f57667e891",
+      "sha256": "02e341aeecf9095fd94a038d75554331f208e62ac87a2a42d43f9ef0887bae1f",
       "destination": "docs/src/content/docs/api/toast.md",
       "reviewed": true
     },
     {
       "source": "docs/browser.md",
-      "sha256": "5871f49d3938d45a9352ee037236de7c89c017e8e35900ef7b14d6fbab55b1b8",
+      "sha256": "3d47a0693df2118dafccf3e09b4241a802886489a9ae0676fcbf132bf876c15b",
       "destination": "docs/src/content/docs/reference/browser.mdx",
       "reviewed": true
     },
     {
       "source": "docs/css-styling.md",
-      "sha256": "58d06c74666b1654a82f0dfbcd127519e20c18b8f6e312ad9a690b3f75099d11",
+      "sha256": "45420cbbba1f83543e8aa1012315d9e8fbd3dcabbcfe80aea60c0d2c41720498",
       "destination": "docs/src/content/docs/reference/css-styling.md",
       "reviewed": true
     },
     {
       "source": "docs/entrypoints.md",
-      "sha256": "9c658d37fef4ebdb2f9834827a1d79dd814c97eb1c141e240297cb9901d190fd",
+      "sha256": "f0bd1caa0da6519c6aa3dd1d1364cef1de4ecd4ddd84ccfbaafe4c8b4a80afd1",
       "destination": "docs/src/content/docs/reference/entrypoints.md",
       "reviewed": true
     },
     {
       "source": "docs/frameworks.md",
-      "sha256": "3eb223bf49a85ccef74b699f28173692e8ef9a88d0b6e6d11509a23ac27ca781",
+      "sha256": "9201ae51ed6b90e2bf2163a72dcb89acdea34e4287974ca36016a5c0d31f4168",
       "destination": "docs/src/content/docs/guides/frameworks.mdx",
       "reviewed": true
     },
     {
       "source": "docs/getting-started.md",
-      "sha256": "4377d6070bdfc38e5726dfac2cfe81193eaca40d7591477dad04bec175cfc963",
+      "sha256": "2468008ee141f40c9c273c46cdbca0c4b758b8923619dcdaacf970be56c46d66",
       "destination": "docs/src/content/docs/reference/runtime-contract.md",
       "reviewed": true
     },
     {
       "source": "docs/options.md",
-      "sha256": "c4e9449944253ccd34df8e02eb90dbbd92d304619c24d64fd5a2df9312b5d2b9",
+      "sha256": "0be579fca6ebd01ad5724db91f84b7c71b7055f472ddf346e94c0e5b8ddc3345",
       "destination": "docs/src/content/docs/reference/configuration.md",
       "reviewed": true
     },
     {
       "source": "docs/promises.md",
-      "sha256": "1091a5ff31a77365a8f8ea7b48b19257d00bd82ba9faa1355a90b5155a531c73",
+      "sha256": "94bb89a2ecfe0962063faab38304c78e12b5c78825d09c573cead3d5e07dc25a",
       "destination": "docs/src/content/docs/reference/promises.md",
       "reviewed": true
     },
     {
       "source": "docs/recipes.md",
-      "sha256": "64caa84a29a69f3d0b92d103cc9084edcdb1ba7451c8f4d7ae97841dd6df3c32",
+      "sha256": "cc37db0847bd6e035a67910d09a56028ad07c7fed11ff2ffa7a2fccddbbfad31",
       "destination": "docs/src/content/docs/guides/examples.mdx",
       "reviewed": true
     },
     {
       "source": "docs/troubleshooting.md",
-      "sha256": "237933127c1e46ec70c7e03a15c2415704f2d6cd83477858501fe375b20aa4be",
+      "sha256": "3c814ed9ada91080eb8a17d11cdb9031df90ffc473e87cb00896e39bfc4877be",
       "destination": "docs/src/content/docs/reference/troubleshooting.md",
       "reviewed": true
     },
     {
       "source": "docs/typescript.md",
-      "sha256": "e2d8a5547d14b710b35205fa735569dfc2ad7f993d310a1a3d4322f5dbc4a2d4",
+      "sha256": "e0e8a183f8d9a08131e8d6b382abb0c811b1a51d37de6a7fb0dc6622924de02d",
       "destination": "docs/src/content/docs/reference/typescript.md",
       "reviewed": true
     },
@@ -415,7 +415,7 @@
     },
     {
       "source": "package.json",
-      "sha256": "038c72bf226e2e123e8393fe2651a86c4a22b887155b99e4c5ec8cc0cf54e7ae",
+      "sha256": "cb0d6a971b8b04f1fd4c2de25c13abf71f939b240c05dea9cb3ff6a6a8867fb7",
       "destination": "project.config.json",
       "reviewed": true
     },
@@ -487,7 +487,7 @@
     },
     {
       "source": "src/core/dom-helpers.ts",
-      "sha256": "f7282159d9991151e5dc4062a6b9990862f63a521556542b9cd1af00c494aed4",
+      "sha256": "2fa1c67613d0a9f13eba550b95fdb188b8c2aa874c6a5e7e4d2f1c7b2db78052",
       "destination": "docs/src/content/docs/reference/api.md",
       "reviewed": true
     },
@@ -499,55 +499,55 @@
     },
     {
       "source": "src/core/index.ts",
-      "sha256": "14bd15252fb6ab1a86f3d51c64ccd8beeb187be54ce0932b8f5cc18a3ed685d5",
+      "sha256": "8a95406894a27b4de73147c9c69517a8fa4cef5c438962eaa3798555b71cb17d",
       "destination": "docs/src/content/docs/reference/api.md",
       "reviewed": true
     },
     {
       "source": "src/core/renderer.ts",
-      "sha256": "20aaf6f877f40e6a7e637f460358377fc60304aa6d23cae04bb343252ee60f6b",
+      "sha256": "92bb9bc8b289022c99b1047cfc1175f922394a8a145c44cfb9127e43f048b641",
       "destination": "docs/src/content/docs/guides/toast-lifecycle.mdx",
       "reviewed": true
     },
     {
       "source": "src/core/state.ts",
-      "sha256": "c2f192467a8aea51fc698697b9f34d8860d15c52a5e2ec46a63fa73e80eb0ab8",
+      "sha256": "b9a89c9b26ef6d6955b98afaf3aafa9e7fb33a4194116727661431abf135a47b",
       "destination": "docs/src/content/docs/guides/toast-lifecycle.mdx",
       "reviewed": true
     },
     {
       "source": "src/core/types.ts",
-      "sha256": "6919133f5945c54d2eeac77f9b0ed18f8f7bbf2cf848e5594317322f30a11f9b",
+      "sha256": "f06b2de96f0b9395a153f037a8cf849b2dc66a027e71708be4e3290d42538419",
       "destination": "docs/src/content/docs/reference/typescript.md",
       "reviewed": true
     },
     {
       "source": "src/index.ts",
-      "sha256": "2490408f76fa46880448be30d6afd449faaf251618fa7ceaee3d550c9ebd0f1f",
+      "sha256": "2a38c29bfa6fd8f3d2b01e2e0fb9e457be5b8a31d6b7d4910120a7d22ce4b65d",
       "destination": "docs/src/content/docs/reference/api.md",
       "reviewed": true
     },
     {
       "source": "src/styles.css",
-      "sha256": "8db4eb0bd4d216ebb2c4c7b3496f797eb8a78a4c06e6a1f263a4ecef8983c947",
+      "sha256": "d5843afc1196ac0ef9ae2bb3795a97d9976c024bf19e63709271f48d7a2a8b3b",
       "destination": "docs/src/content/docs/reference/css-styling.md",
       "reviewed": true
     },
     {
       "source": "docs/installation.md",
-      "sha256": "061737a6d4a15a0b44528066fb18c49a729402f584691ac11a7f05bc34d23349",
+      "sha256": "e6e004df25f692078c2c26e59691276f01c9bfea2239cdb9a0690bc3347649e0",
       "destination": "docs/src/content/docs/getting-started.mdx",
       "reviewed": true
     },
     {
       "source": "docs/guides/toast-lifecycle.md",
-      "sha256": "38207874d5122a5229b6423eb8d19262f42b14f121bf2310a40bf7213ba91ab6",
+      "sha256": "4d1083ac2ba50fe73759edc7806ca936a625da1aa9dc65bc8a8a876f633b50b0",
       "destination": "docs/src/content/docs/guides/toast-lifecycle.mdx",
       "reviewed": true
     },
     {
       "source": "docs/guides/actions-and-custom-content.md",
-      "sha256": "15e6210a01ca79e0778e7975c21fe58b417491b101abdceca92d26d40a335766",
+      "sha256": "9941c1e4e8e6061680c019ef6ba15daafb11da71c34e79d2ed14fc4e56bd371c",
       "destination": "docs/src/content/docs/guides/actions-and-custom-content.md",
       "reviewed": true
     }
@@ -774,7 +774,7 @@
       "reviewed": true
     }
   ],
-  "notes": "22 canonical Markdown sources remain synchronized; all historical destinations and fragments remain mapped. The 2026-11-04 second pass adds composed consumer tasks and corrects reproduced runtime and documentation faults. Prepared 3.2.1 remains unpublished; CDN 3.2.0 is explicitly distinguished.",
+  "notes": "22 canonical Markdown sources remain synchronized; all historical destinations and fragments remain mapped. The 2026-11-04 second pass adds composed consumer tasks and corrects reproduced runtime and documentation faults. Version 4.0.0 is the CDN pin.",
   "migrationReview": {
     "status": "verified",
     "evidence": "brief/documentation-migration.json",
@@ -820,11 +820,11 @@
       },
       {
         "source": "shared/lib/demo-files.ts",
-        "sha256": "18641df951b7f3b807b8b8d3bfd32838277f96e2fbef9258d78f7155d5238318"
+        "sha256": "565a7cbdc4adeb0903da89f4bf7a212de125bc3cc5ca730a9064481d8458dae3"
       },
       {
         "source": "shared/components/Playground.astro",
-        "sha256": "263752305ffc202ca51076a7dc525723e824f50e786910fac4676a7dad612d86"
+        "sha256": "a1018ea3936b7bdc9c27dc5eb1d4b55dde6872519a06db45365d5a3c87579657"
       },
       {
         "source": "shared/components/TextField.astro",

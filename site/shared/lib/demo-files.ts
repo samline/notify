@@ -105,7 +105,7 @@ export const createDemoFiles = async (preset: DemoPreset = 'save', mode: DemoMod
   const setup =
     mode === 'esm'
       ? `import { browser as notify } from '@samline/notify'\nimport '@samline/notify/styles.css'\n`
-      : `// Published 3.2.0 wraps its registry in a namespace. New fixed builds expose it directly.\nconst notify = window.Notify.default ?? window.Notify\n`
+      : `const notify = window.Notify\n`
   const behavior = behaviorFor(preset)
   const used = new Set(Array.from(behavior.matchAll(/copy\.(\w+)/g), match => match[1]))
   const copy = Object.fromEntries(Object.entries(messages).filter(([key]) => used.has(key)))

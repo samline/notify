@@ -482,7 +482,7 @@ describe('core/renderer', () => {
     controller = mountToaster(root, {}, ToastState)
     // Schedule the promise resolution for the NEXT microtask so we can
     // capture the loading state synchronously first.
-    const resolvedPromise = Promise.resolve({ name: 'Sam' })
+    const resolvedPromise = Promise.resolve({ name: 'Nora' })
     const result = toast.promise(resolvedPromise, {
       loading: 'Loading...',
       success: (data) => `Hi ${(data as { name: string }).name}`,
@@ -513,7 +513,7 @@ describe('core/renderer', () => {
       `li[data-notify-toast][data-id="${String(id)}"]`
     )
     expect(successLi?.getAttribute('data-type')).toBe('success')
-    expect(successLi?.textContent).toContain('Hi Sam')
+    expect(successLi?.textContent).toContain('Hi Nora')
     expect(successLi?.textContent).not.toContain('Loading...')
   })
 

@@ -2,7 +2,7 @@
 ;(() => {
   const key = Symbol.for('samline.notify.host-integration')
   if (window[key]) return
-  const notify = window.Notify.default ?? window.Notify
+  const notify = window.Notify
   const owners = new Map()
   const unloaded = new WeakSet()
   const mount = root => {

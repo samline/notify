@@ -18,7 +18,7 @@ End-to-end patterns that combine multiple methods. Mount a toaster and load its 
 
 <Playground showCode />
 
-The live preview uses the local 3.2.1 runtime. Its disclosure contains separate files and a complete document for package imports and published CDN 3.2.0. The CDN build predates the 3.2.1 fixes; the example resolves its namespace and contains the edit keys inside the custom form.
+The live preview runs the package source. Each disclosure contains separate files and a complete document for package imports and the 4.0.0 CDN build.
 
 ## Explore the possibilities
 
@@ -62,10 +62,10 @@ toast.success('Notify is ready')
 
 ```html
 <button id="save" type="button">Save</button>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@samline/notify@3.2.0/dist/styles.css" />
-<script src="https://cdn.jsdelivr.net/npm/@samline/notify@3.2.0/dist/browser/global.global.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@samline/notify@4.0.0/dist/styles.css" />
+<script src="https://cdn.jsdelivr.net/npm/@samline/notify@4.0.0/dist/browser/global.global.js"></script>
 <script>
-  const notify = window.Notify.default ?? window.Notify
+  const notify = window.Notify
 
   document.querySelector('#save').addEventListener('click', () => {
     notify.toast.success('Saved')
@@ -94,7 +94,7 @@ async function saveProfile(patch: object): Promise<{ name: string }> {
   return response.json()
 }
 
-toast.promise(saveProfile({ name: 'Sam' }), {
+toast.promise(saveProfile({ name: 'Nora' }), {
   loading: 'Saving profile…',
   success: profile => `Saved as ${profile.name}`,
   error: 'Could not save your profile',
@@ -289,7 +289,7 @@ createToaster({
 })
 ```
 
-The `style` width override works in 3.2.1. Published 3.2.0 overwrites it with its default width; use the scoped `!important` width recipe in [CSS styling](../../reference/css-styling/) with that version. Gap and measured offsets belong to their options so JavaScript stack measurements and CSS agree. Add ordinary cosmetic rules after the package stylesheet, using matching scope and specificity:
+The `style` map can override the default `--width`. Gap and measured offsets belong to their options so JavaScript stack measurements and CSS agree. Add ordinary cosmetic rules after the package stylesheet, using matching scope and specificity:
 
 ```css
 [data-notify-toaster][data-notify-theme='light'] {
