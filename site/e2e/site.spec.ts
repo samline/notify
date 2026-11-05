@@ -330,3 +330,32 @@ test('Home toast types panel sends each kind and shows its code', async ({ page 
   await page.getByRole('button', { name: 'Undo', exact: true }).click()
   await expect(page.locator('li[data-notify-toast]', { hasText: 'Message restored' })).toBeVisible()
 })
+
+test('header icon buttons stay square at 375px and the hero copy keeps its spaces', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 375, height: 812 })
+  for (const path of ['./', 'docs/']) {
+    await page.goto(path)
+    const buttons = page.locator('header button:visible').filter({ has: page.locator('svg') })
+    expect(await buttons.count()).toBeGreaterThan(0)
+    for (const button of await buttons.all()) {
+      const box = (await button.boundingBox())!
+      expect(Math.abs(box.width - box.height)).toBeLessThan(1)
+      const icon = (await button.locator('svg').first().boundingBox())!
+      expect(icon.width).toBeGreaterThan(14)
+    }
+  }
+  await page.goto('./')
+  const description = await page.locator('.hero-description').innerText()
+  expect(description).not.toMatch(/\S\.[A-Z]/)
+})
+
+test('mobile menu resources and footer changelog point to the right places', async ({ page }) => {
+  await page.goto('./')
+  const changelog = page.locator('footer').getByRole('link', { name: 'Changelog' })
+  await expect(changelog).not.toHaveAttribute('target', '_blank')
+  const resources = page.locator('.menu-resources a')
+  await expect(resources).toHaveCount(2)
+  await expect(resources.nth(1)).toHaveAttribute('href', /npmjs\.com\/package\/@samline\/notify/)
+})

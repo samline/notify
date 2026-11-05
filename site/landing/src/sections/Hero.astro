@@ -28,6 +28,7 @@ const headingId = `section-heading-${crypto.randomUUID()}`
     </Heading>
     <p class:list={['hero-description']}>
       {t.description}
+      {t.descriptionContinuation && ' '}
       <br class:list={['desktop-break']} />
       {t.descriptionContinuation}
     </p>

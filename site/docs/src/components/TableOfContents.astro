@@ -37,12 +37,20 @@ const items = headings.filter(h => h.depth === 2 || h.depth === 3)
 
   mountElements('package-site-docs-toc', element => {
     let frame = 0
+    // `#100%` is not valid percent-encoding: keep the literal id instead of throwing.
+    const decodeFragment = (value: string) => {
+      try {
+        return decodeURIComponent(value)
+      } catch {
+        return value
+      }
+    }
     const lifecycle = new AbortController()
     const { signal } = lifecycle
     const entries = Array.from(element.querySelectorAll<HTMLAnchorElement>('a[href^="#"]'))
       .map(link => ({
         link,
-        heading: document.getElementById(decodeURIComponent(link.hash.slice(1))),
+        heading: document.getElementById(decodeFragment(link.hash.slice(1))),
       }))
       .filter(entry => entry.heading)
     const header = document.querySelector('package-site-docs-header')
