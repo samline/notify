@@ -1,13 +1,33 @@
 ---
 import Playground from '../../../shared/components/Playground.astro'
+import DemoStudio from '../../../shared/components/DemoStudio.astro'
+import Tabs from '../../../shared/components/Tabs.astro'
+import t, { homePresets, presets } from '../../../shared/i18n/translations/en/demo'
 const { id = 'demo' } = Astro.props
+const items = homePresets.map(id => ({ id, label: presets[id].label }))
 ---
 
 <div id={id} class:list={['live-demo']}>
-  <Playground />
+  <DemoStudio>
+    <Tabs id={`home-${id}`} variant="demo" label={t.label} items={items}>
+      <span slot="heading" class:list={['studio-title']}>
+        {t.label}
+      </span>
+      {homePresets.map(preset => (
+        <div data-panel={preset}>
+          <Playground preset={preset} framed={false} />
+        </div>
+      ))}
+    </Tabs>
+  </DemoStudio>
 </div>
 
 <style>
+  .studio-title {
+    font: 0.65rem/1.6 var(--font-mono);
+    letter-spacing: 0.13em;
+    color: var(--palette-studio-title);
+  }
   .live-demo {
     margin-top: 2.625rem;
     scroll-margin-top: 1.5rem;

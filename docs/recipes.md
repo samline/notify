@@ -1,15 +1,70 @@
-# Recipes
+# End-to-end examples
 
-End-to-end patterns that combine multiple methods. Each recipe is a self-contained example you can drop into a real project.
+End-to-end patterns that combine multiple methods. Mount a toaster and load its stylesheet first. The complete file viewer is standalone; the shorter recipes continue an existing application integration.
 
----
+## Try it
 
-## 1. `toast.promise` with `fetch`
+<!-- notify:playground -->
+
+The live preview uses the local 3.2.1 runtime. Its disclosure contains separate files and a complete document for package imports and published CDN 3.2.0. The CDN build predates the 3.2.1 fixes; the example resolves its namespace and contains the edit keys inside the custom form.
+
+## Explore the possibilities
+
+Choose a task by the behavior you want to build, not the notification color:
+
+| Task                      | What to try                                                | Capabilities composed                                                            |
+| ------------------------- | ---------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| Save a profile            | Change the name, save, then repeat                         | Loading → success on the same id; form feedback                                  |
+| Recover delivery          | Fail once, then retry from the notification                | Persistent error, description and actionable recovery                            |
+| Track an upload           | Watch one message update while progress advances           | Manual loading and same-id terminal update                                       |
+| Undo an archive           | Remove an item, then restore the same item                 | State restoration from a toast action                                            |
+| Keep an invitation        | Read at your own pace, then dismiss                        | Infinite duration and explicit close controls                                    |
+| Write a release note      | Edit inside a custom card and save to the page             | Consumer DOM factory, styling and native form controls                           |
+| Change preferences        | Change theme, direction and position while a toast is open | Partial controller updates, system theme and RTL                                 |
+| Inspect activity          | Dismiss a record and compare active/history snapshots      | Lazy message factory and defensive state reads                                   |
+| Review and decide         | Review access, then join or defer                          | action + cancel, closeOnClick: false and multi-step same-id content              |
+| Follow workspace activity | Change visibility/expansion, focus, swipe or wait          | Normal and typed variants, stack geometry, paused timers and lifecycle callbacks |
+| Export a report           | Succeed, fail, cancel, then view the CSV                   | Promise outcome, extended result action, unwrap, AbortController and finally     |
+
+Every task is available in the [interactive gallery](https://samline.github.io/notify/examples/) with the exact complete and split source. Keep important outcomes on the page as well as in the toast. The gallery simulates local work; its messages do not claim a real save, invitation acceptance or server export.
+
+The previews deliberately share one application-level toaster. The most recently used preview controls its global preferences. Use the preview reset to dismiss only its owned notifications; do not mount independent singleton owners for every application component.
+
+Low-level `ToastState` subscriptions, injected state and direct mounts are module APIs for advanced integrations; they are documented below and in the API reference. They are not extra isolated channels or members of the standalone browser registry.
+
+## 1. Minimal setup
+
+### Bundler
+
+```ts
+import { createToaster, toast } from '@samline/notify'
+import '@samline/notify/styles.css'
+
+createToaster({ richColors: true })
+toast.success('Notify is ready')
+```
+
+### Browser global
+
+```html
+<button id="save" type="button">Save</button>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@samline/notify@3.2.0/dist/styles.css" />
+<script src="https://cdn.jsdelivr.net/npm/@samline/notify@3.2.0/dist/browser/global.global.js"></script>
+<script>
+  const notify = window.Notify.default ?? window.Notify
+
+  document.querySelector('#save').addEventListener('click', () => {
+    notify.toast.success('Saved')
+  })
+</script>
+```
+
+## 2. `toast.promise` with `fetch`
 
 ```ts
 import { toast } from '@samline/notify'
 
-async function saveProfile(patch: object) {
+async function saveProfile(patch: object): Promise<{ name: string }> {
   const response = await fetch('/api/profile', {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
@@ -30,13 +85,11 @@ toast.promise(saveProfile({ name: 'Sam' }), {
 })
 ```
 
-The `loading` toast appears immediately. Once the promise settles, the same `<li data-notify-toast data-id="<id>">` updates in place to `data-type="success"` or `data-type="error"`. The id you get back from `toast.promise()` is the same id used for both phases.
+The loading toast appears immediately. Once the promise settles, the same list item updates in place to the success or error type. The id returned by `toast.promise()` is the same id used for both phases.
 
-If the `Response` is not `ok`, the `success` callback never runs — the runtime detects `response.ok === false` and routes to `error` automatically. Pass a thunk for the `loading` toast (`toast.promise(() => fetch(...), { ... })`) when the work should be deferred (e.g. behind a debounce).
+If the resolved value is a response whose `ok` is `false`, the runtime routes to `error` automatically. Call toast.promise from the click or debounced callback when the work should start there; a supplied thunk runs immediately when data is supplied.
 
----
-
-## 2. Undo with `action` and `cancel`
+## 3. Undo with `action` and `cancel`
 
 ```ts
 toast('Item deleted', {
@@ -53,35 +106,25 @@ toast('Item deleted', {
 })
 ```
 
-The toast renders two trailing buttons: `cancel` first (lighter style), `action` second. Both default to closing the toast on click (`closeOnClick: true`). Set `closeOnClick: false` on either to keep the toast open while a follow-up action runs.
+The toast renders two trailing buttons: `cancel` first, `action` second. Both close the toast on click by default. Set `closeOnClick: false` on either to keep the toast open while a follow-up action runs.
 
----
-
-## 3. Rich content with `toast.custom`
+## 4. Rich content with `toast.custom`
 
 ```ts
 toast.custom((container) => {
-  const img = document.createElement('img')
-  img.src = '/avatars/sam.png'
-  img.alt = ''
-  img.width = 32
-  img.height = 32
-  img.style.borderRadius = '50%'
+  const heading = document.createElement('strong')
+  heading.textContent = 'Build complete'
 
-  const text = document.createElement('div')
-  text.innerHTML = `
-    <div data-title>Sam liked your post</div>
-    <div data-description>5 minutes ago</div>
-  `
+  const detail = document.createElement('span')
+  detail.textContent = ' Production assets are ready.'
 
-  container.appendChild(img)
-  container.appendChild(text)
+  container.append(heading, detail)
 })
 ```
 
-The renderer creates a `<div data-custom>` for you and hands it to the callback. Append whatever DOM you own. Do **not** inject user-supplied HTML as `innerHTML` — the stylesheet scopes its visual treatment to `data-title` and `data-description` children, so wrapping your content in those attributes is enough to inherit the look.
+The renderer creates a mount element for you and hands it to the callback. Append whatever DOM you own. Do not inject user-supplied HTML as `innerHTML`.
 
-You can also pass a pre-built `HTMLElement`:
+You can also pass a pre-built element:
 
 ```ts
 const widget = document.createElement('div')
@@ -90,11 +133,7 @@ widget.textContent = 'Pre-built widget'
 toast.custom(widget, { duration: 8000 })
 ```
 
-The renderer appends `widget` directly without any wrapping — the toast body shows whatever the element renders to.
-
----
-
-## 4. Same-id updates in place
+## 5. Same-id updates in place
 
 ```ts
 const id = toast.loading('Uploading…', { id: 'upload-1' })
@@ -104,13 +143,11 @@ await uploadFile(file)
 toast.success('Upload complete', { id: 'upload-1' })
 ```
 
-The second `toast.success(..., { id: 'upload-1' })` updates the same `<li>` in place. The runtime fingerprints the content (type, title, description, action, cancel) and re-fills only when one of those fields changed. The auto-dismiss timer is also reset, so the toast stays visible for another 4 seconds after the success message replaces the loading message.
+The second call updates the same list item in place. The runtime fingerprints the content and re-fills only when the type, title, description, action, or cancel changed. The auto-dismiss timer is also reset, so the toast stays visible for another full duration after the success message replaces the loading message.
 
-This is the same mechanism `toast.promise` uses internally. You can do it manually when you want to drive the transition yourself.
+This is the same mechanism `toast.promise` uses internally.
 
----
-
-## 5. Live theme + position changes
+## 6. Live theme and position changes
 
 ```ts
 import { createToaster, getToaster } from '@samline/notify'
@@ -118,24 +155,14 @@ import '@samline/notify/styles.css'
 
 createToaster({ theme: 'light', position: 'bottom-right' })
 
-// User toggles dark mode.
 document.querySelector('#theme-toggle')?.addEventListener('click', () => {
   getToaster()?.update({ theme: 'dark' })
 })
-
-// User resizes to mobile.
-window.addEventListener('resize', () => {
-  if (window.matchMedia('(max-width: 600px)').matches) {
-    getToaster()?.update({ position: 'bottom-center' })
-  }
-})
 ```
 
-`toaster.update(options?)` re-applies the data-attributes and the CSS variables. The active timers are restarted at the new `duration` (if you changed it). Toasts in flight keep their `data-type` / `data-mounted` state — only the container's `data-notify-theme` and `data-{x,y}-position` flip.
+`toaster.update(options?)` re-applies the data attributes and the CSS variables. Omitted options keep their current value. Toasts already in flight keep their own type and mounted state.
 
----
-
-## 6. Mobile offsets
+## 7. Mobile offsets
 
 ```ts
 createToaster({
@@ -145,7 +172,7 @@ createToaster({
 })
 ```
 
-The runtime applies the mobile offset under `@media (hover: none) and (pointer: coarse)`. Pass an object to customize each side:
+The runtime applies the mobile offset on coarse pointers. Pass an object to customize each side:
 
 ```ts
 createToaster({
@@ -154,9 +181,9 @@ createToaster({
 })
 ```
 
----
+Numbers become pixels. Strings such as `'2rem'` are used verbatim.
 
-## 7. Multi-toaster UI
+## 8. Multi-toaster interface
 
 ```ts
 import { mountToaster } from '@samline/notify'
@@ -178,31 +205,30 @@ errors.element.dataset['notifyChannel'] = 'errors'
 banners.element.dataset['notifyChannel'] = 'banners'
 ```
 
-`mountToaster` accepts a `root` (the `<ol>` is appended to it), a `ToasterOptions`, and an optional `state` parameter (for tests). The two toasters are independent: their timers, their cleanups, and their DOM containers are isolated. `createToaster` / `getToaster` / `destroyToaster` only see the first one, so use `mountToaster` directly for the second and keep a reference yourself.
+`mountToaster` accepts a root, the toaster options, and an optional state object for tests. The two toasters have separate containers and separate cleanup.
 
----
+**Direct mounts share the global state**
 
-## 8. Per-toast custom testId
+Both mounts subscribe to the same global `ToastState`, so every published event reaches every
+renderer. The legacy `id` and `toasterId` fields filter that shared stream; they do not create
+isolated state, history, counters, or subscriptions. Keep one `createToaster()` singleton for
+normal integrations.
+
+## 9. Per-toast test hook
 
 ```ts
 toast.success('Profile saved', { testId: 'profile-save-success' })
 ```
 
-The runtime renders `data-testid="profile-save-success"` on the `<li>`. Pair this with your E2E selector to assert on specific toasts:
+The runtime renders `data-testid="profile-save-success"` on the list item, so an end-to-end selector can target one specific toast.
 
-```ts
-expect(screen.getByTestId('profile-save-success')).toHaveAttribute('data-type', 'success')
-```
-
----
-
-## 9. Persist a toast log
+## 10. Persist a toast log
 
 ```ts
 import { toast, ToastState } from '@samline/notify'
 
 ToastState.subscribe((event) => {
-  if ('dismiss' in event && event.dismiss) {
+  if ('dismiss' in event) {
     logEvent('toast_dismissed', { id: event.id })
   } else {
     logEvent('toast_created', { id: event.id, type: event.type })
@@ -210,58 +236,46 @@ ToastState.subscribe((event) => {
 })
 ```
 
-The `Observer` publishes one event per create / dismiss. `toast.promise` publishes two events (loading + settled). The subscriber fires synchronously inside `ToastState.publish()` — do not throw or block inside the callback.
+The observer publishes on creation, update and dismissal. A typical toast.promise with loading and a defined settled message publishes loading and settlement; optional messages and later dismissal change the total event count. Subscribers run synchronously inside the publish call, so keep them fast and do not throw.
 
----
+## 11. Custom CSS for the toaster
 
-## 10. Custom CSS for the toaster
+Use options for measured geometry and inline custom properties for a branded width and palette:
+
+```ts
+createToaster({
+  gap: 12,
+  offset: { bottom: 24 },
+  mobileOffset: { bottom: 24 },
+  style: { '--width': '24rem', '--normal-bg': '#fffdf8', '--normal-text': '#29231f' }
+})
+```
+
+The `style` width override works in 3.2.1. Published 3.2.0 overwrites it with its default width; use the scoped `!important` width recipe in [CSS styling](css-styling.md) with that version. Gap and measured offsets belong to their options so JavaScript stack measurements and CSS agree. Add ordinary cosmetic rules after the package stylesheet, using matching scope and specificity:
 
 ```css
-/* Brand-aligned toaster */
-[data-notify-toaster] {
-  --width: 360px;
-  --gap: 12px;
-  --offset-bottom: 24px;
-  --mobile-offset-bottom: 24px;
-  --normal-bg: white;
-  --normal-text: oklch(0.18 0.02 250);
-  --normal-border: oklch(0.9 0.01 250);
-  --success-bg: oklch(0.96 0.04 150);
-  --success-text: oklch(0.22 0.1 150);
-  --success-border: oklch(0.78 0.1 150);
-  --error-bg: oklch(0.96 0.04 25);
-  --error-text: oklch(0.22 0.1 25);
-  --error-border: oklch(0.78 0.1 25);
+[data-notify-toaster][data-notify-theme='light'] {
+  --success-bg: #ecfdf3;
+  --success-text: #086c3c;
+  --success-border: #a6e8c4;
   --border-radius: 10px;
-}
-
-[data-notify-toaster][data-notify-theme='dark'] {
-  --normal-bg: oklch(0.18 0.02 250);
-  --normal-text: oklch(0.96 0.01 250);
-  --normal-border: oklch(0.32 0.01 250);
 }
 ```
 
-The runtime never overrides these — it only sets the per-type defaults inside `[data-notify-toaster]`. Add your own stylesheet after `@samline/notify/styles.css` and your rules win on cascade order.
-
----
-
-## 11. Disable a specific toast's auto-dismiss
+## 12. Disable auto-dismiss for one toast
 
 ```ts
 toast.info('Heads up — check the server status', { duration: Infinity })
 ```
 
-`duration: Infinity` cancels the auto-dismiss. The user can still dismiss manually with the close button (when enabled) or by swiping (when the position allows it).
+`duration: Infinity` cancels the auto-dismiss. The user can still dismiss manually with the close button, when it is enabled, or by swiping, when the position allows it.
 
-`toast.loading` and `toast.promise` toasts are also non-auto-dismissing by design — the runtime never sets a timer for them.
+`toast.loading` and the loading state of `toast.promise` never schedule a timer by design.
 
----
-
-## 12. SPA cleanup on route change
+## 13. SPA cleanup on route change
 
 ```ts
-import { destroyToaster, createToaster } from '@samline/notify'
+import { createToaster, destroyToaster } from '@samline/notify'
 
 router.on('/profile', () => {
   createToaster({ position: 'bottom-right' })
@@ -272,13 +286,9 @@ router.off('/profile', () => {
 })
 ```
 
-`destroyToaster` is idempotent and a no-op if no toaster is mounted. Use it to guarantee a clean slate between routes.
+`destroyToaster()` is idempotent and a no-op when no toaster is mounted. If you used `mountToaster` for a multi-toaster interface, keep your own references and call `controller.destroy()` directly.
 
-If you used `mountToaster` for a multi-toaster UI, keep your own references and call `toaster.destroy()` directly.
-
----
-
-## 13. Read the current toasts
+## 14. Read the current toasts
 
 ```ts
 import { toast } from '@samline/notify'
@@ -287,14 +297,12 @@ const active = toast.getToasts()
 // [{ id: 1, type: 'success', title: 'Saved', ... }, ...]
 
 const history = toast.getHistory()
-// every toast since page load, including dismissed ones
+// the latest record for each id since the last reset, including dismissed records
 ```
 
-`toast.getToasts()` filters out ids in `dismissedToasts`. `toast.getHistory()` returns the unfiltered list. Both return fresh arrays on every call — safe to mutate.
+`getToasts()` filters out the ids in the dismissed set. `getHistory()` returns the unfiltered list. Both return defensive snapshots. Array and record changes stay local; callback functions, promises and custom DOM remain shared references.
 
----
-
-## 14. Reset everything (tests, dev tools)
+## 15. Reset everything
 
 ```ts
 import { resetToasts } from '@samline/notify'
@@ -302,14 +310,38 @@ import { resetToasts } from '@samline/notify'
 resetToasts()
 ```
 
-`resetToasts` drops every toast (active and dismissed) and rewinds the internal counter. Intended for tests and dev tools. In production you almost certainly want `toast.dismiss()` (which keeps the counter) or `destroyToaster()` (which also unmounts the container).
+`resetToasts()` drops every toast, active and dismissed, and rewinds the generated-id counter. It keeps the mounted renderer subscribed. In production you usually want `toast.dismiss()`, which keeps the counter, or `destroyToaster()`, which also unmounts the container.
 
----
+## Defensive snapshots
 
-## Next steps
+Arrays, each toast record, and nested action/cancel objects are cloned. Callback functions, promises, and custom DOM remain references. Mutating a snapshot does not update the runtime; reuse the id in a toast call instead.
 
-- Need a full options reference? See [docs/options.md](options.md).
-- Looking up an exact method signature? See [docs/api/index.md](api/index.md).
-- Working with TypeScript types? See [docs/typescript.md](typescript.md).
-- Setting up styling? See [docs/css-styling.md](css-styling.md).
-- Using the IIFE bundle? See [docs/browser.md](browser.md).
+```ts
+import type { ToastT } from '@samline/notify'
+
+const active: ToastT[] = toast.getToasts()
+const history: ToastT[] = toast.getHistory()
+active.splice(0)
+const first = history[0]
+if (first?.action) first.action.label = 'Local copy'
+```
+
+## Typed event subscriptions
+
+```ts
+import { ToastState } from '@samline/notify'
+import type { ToastToDismiss } from '@samline/notify'
+
+const unsubscribe = ToastState.subscribe((event) => {
+  if ('dismiss' in event) {
+    const dismissed: ToastToDismiss = event
+    console.log('Dismissed', dismissed.id)
+  } else {
+    console.log('Created or updated', event.title)
+  }
+})
+// During integration cleanup:
+unsubscribe()
+```
+
+Subscribers run synchronously. Avoid throwing and keep work small; the first exception is rethrown after delivery to the other current subscribers.

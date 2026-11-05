@@ -51,6 +51,8 @@ function updateTheme(theme: 'light' | 'dark') {
 }
 ```
 
+<span id="live-updates-from-a-router--store" class="legacy-fragment" aria-hidden="true"></span>
+
 ### Live updates from a store
 
 ```ts
@@ -69,6 +71,6 @@ store.subscribe(state => {
 
 ## Related
 
-- [`createToaster`](../../api/create-toaster/) — mount the singleton.
-- [`destroyToaster`](../../api/destroy-toaster/) — unmount the singleton.
+- [`createToaster`](../create-toaster/) — mount the singleton.
+- [`destroyToaster`](../destroy-toaster/) — unmount the singleton.
 - [Toast lifecycle](../../guides/toast-lifecycle/)

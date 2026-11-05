@@ -99,6 +99,8 @@ export function mountToaster(
     hotkey = ['altKey', 'KeyT']
   } = options
 
+  let destroyed = false
+
   // Mount the toaster container.
   const [yPart = 'bottom', xPart = 'right'] = position.split('-') as [string, string]
   const container = createEl('ol', {
@@ -159,17 +161,30 @@ export function mountToaster(
   // path (create, update, mouse-leave, visibility-resume) shares
   // the same logic.
   const startAutoDismiss = (id: ToastT['id'], durationOverride?: number): void => {
+    if (destroyed) return
     const target = activeMatchingToasts().find((t) => t.id === id)
     if (!target) return
     if ((target.type ?? 'normal') === 'loading') return
     const duration = durationOverride ?? target.duration ?? currentDuration ?? TOAST_LIFETIME
     if (duration === Infinity) return
     if (timers.has(id)) return
+    const interaction = interactions.get(id)
+    if (document.hidden) {
+      hiddenRemaining.set(id, duration)
+      return
+    }
+    if (interaction?.hovered || interaction?.focused) {
+      interaction.remainingMs ??= duration
+      return
+    }
     const handle = setTimeout(() => {
       timers.delete(id)
       const live = activeMatchingToasts().find((t) => t.id === id)
-      live?.onAutoClose?.(live)
-      dismissToast(id)
+      try {
+        live?.onAutoClose?.(live)
+      } finally {
+        dismissToast(id)
+      }
     }, duration)
     timers.set(id, { handle, deadline: Date.now() + duration })
   }
@@ -179,7 +194,9 @@ export function mountToaster(
   // can pass it to startAutoDismiss later.
   const pauseAutoDismiss = (id: ToastT['id']): number => {
     const record = timers.get(id)
-    if (!record) return 0
+    const paused = hiddenRemaining.get(id)
+    hiddenRemaining.delete(id)
+    if (!record) return paused ?? 0
     clearTimeout(record.handle)
     timers.delete(id)
     return Math.max(0, record.deadline - Date.now())
@@ -239,8 +256,9 @@ export function mountToaster(
 
   const removeListeners: Array<() => void> = []
 
-  const onContainerPointerDown = (): void => {
-    interacting = true
+  const onContainerPointerDown = (event: Event): void => {
+    const target = event.target as HTMLElement | null
+    interacting = target?.closest<HTMLElement>('[data-notify-toast]')?.dataset['swiping'] === 'true'
   }
   const onContainerPointerUp = (): void => {
     interacting = false
@@ -265,12 +283,29 @@ export function mountToaster(
       renderAll()
     }
   }
+  const onContainerFocusIn = (): void => {
+    if (activeMatchingToasts().length > 1) {
+      expanded = true
+      renderAll()
+    }
+  }
+  const onContainerFocusOut = (event: FocusEvent): void => {
+    if (event.relatedTarget instanceof window.Node && container.contains(event.relatedTarget))
+      return
+    if (!interacting && !container.matches(':hover')) {
+      expanded = false
+      renderAll()
+    }
+  }
   removeListeners.push(
     addListener(container, 'pointerdown', onContainerPointerDown),
     addListener(container, 'pointerup', onContainerPointerUp),
+    addListener(container, 'pointercancel', onContainerPointerUp),
     addListener(container, 'mouseenter', onContainerMouseEnter),
     addListener(container, 'mousemove', onContainerMouseMove),
-    addListener(container, 'mouseleave', onContainerMouseLeave)
+    addListener(container, 'mouseleave', onContainerMouseLeave),
+    addListener(container, 'focusin', onContainerFocusIn),
+    addListener(container, 'focusout', onContainerFocusOut as EventListener)
   )
 
   // Pause auto-dismiss timers while the document is hidden.
@@ -298,10 +333,8 @@ export function mountToaster(
       // that helper would clear the freshly-restored timers and
       // re-arm every one of them with the full duration, defeating
       // the whole point of stashing the remaining. Toasts that
-      // were created while the tab was hidden have already had
-      // their full-duration timer armed by `createToastElement`,
-      // so they don't need a separate restart path. See Fix 18 in
-      // the bug report.
+      // were created while hidden store their full duration in the
+      // same side-table; they also resume through this path.
       for (const [id, remaining] of (hiddenRemaining as Map<ToastT['id'], number>).entries()) {
         startAutoDismiss(id, remaining)
         hiddenRemaining.delete(id)
@@ -377,6 +410,10 @@ export function mountToaster(
     // Delete / Backspace: dismiss the focused toast.
     if ((event.key === 'Delete' || event.key === 'Backspace') && document.activeElement) {
       const active = document.activeElement as HTMLElement | null
+      if (
+        active?.closest('input, textarea, select, [contenteditable]:not([contenteditable="false"])')
+      )
+        return
       const toastNode = active?.closest<HTMLLIElement>('[data-notify-toast]')
       const toastKey = toastNode?.dataset['notifyKey']
       if (toastNode && toastKey) {
@@ -413,7 +450,9 @@ export function mountToaster(
       if (matches) {
         event.preventDefault()
         // Focus the front toast (or the container if no toasts).
-        const first = container.querySelector<HTMLLIElement>('[data-notify-toast]')
+        const first = container.querySelector<HTMLLIElement>(
+          '[data-notify-toast][data-front="true"][data-visible="true"]:not([data-removed="true"])'
+        )
         ;(first ?? container).focus()
       }
     }
@@ -514,6 +553,8 @@ export function mountToaster(
       'data-mounted': 'false',
       'data-removed': 'false',
       'data-visible': String(isVisible),
+      inert: !isVisible,
+      'aria-hidden': isVisible ? undefined : 'true',
       'data-y-position': y,
       'data-x-position': x,
       'data-index': String(index),
@@ -552,6 +593,7 @@ export function mountToaster(
 
     // Build inner content.
     fillToastContent(li, toast)
+    if (destroyed) return li
 
     // Bind interactions.
     bindToastInteractions(li, toast)
@@ -562,7 +604,8 @@ export function mountToaster(
       unstyled: currentUnstyled,
       invert: currentInvert,
       richColors: currentRichColors,
-      closeButtonAriaLabel: currentCloseButtonAriaLabel
+      closeButtonAriaLabel: currentCloseButtonAriaLabel,
+      position: currentPosition
     })
     li.dataset['type'] = type
     li.dataset['dismissible'] = String(dismissible)
@@ -588,7 +631,7 @@ export function mountToaster(
     // (same problem the legacy React build avoided by using `useEffect`,
     // which is async-after-paint).
     setTimeout(() => {
-      li.setAttribute('data-mounted', 'true')
+      if (!destroyed) li.setAttribute('data-mounted', 'true')
     }, 0)
 
     // Measure height once the browser lays the toast out. This runs in a
@@ -597,6 +640,7 @@ export function mountToaster(
     // starts. The renderAll call here is what also keeps
     // `--front-toast-height` in sync (Fix 3).
     queueMicrotask(() => {
+      if (destroyed || !container.contains(li)) return
       measureToastHeight(li, toast.id)
       renderAll()
     })
@@ -684,14 +728,16 @@ export function mountToaster(
     li.appendChild(content)
 
     // 4) Cancel + action buttons.
+    const actions = toast.cancel && toast.action ? createEl('div', { 'data-actions': '' }) : li
     if (toast.cancel) {
       const btn = buildActionButton(toast.cancel, 'data-cancel', toast, li)
-      li.appendChild(btn)
+      actions.appendChild(btn)
     }
     if (toast.action) {
       const btn = buildActionButton(toast.action, 'data-action', toast, li)
-      li.appendChild(btn)
+      actions.appendChild(btn)
     }
+    if (actions !== li) li.appendChild(actions)
   }
 
   const buildActionButton = (
@@ -709,10 +755,10 @@ export function mountToaster(
       btn.textContent = String(action.label)
     }
     btn.addEventListener('click', (event) => {
-      action.onClick?.(event)
-      const closeOnClick = action.closeOnClick !== false
-      if (closeOnClick) {
-        dismissToast(toast.id)
+      try {
+        action.onClick?.(event)
+      } finally {
+        if (action.closeOnClick !== false) dismissToast(toast.id)
       }
     })
     return btn
@@ -733,7 +779,7 @@ export function mountToaster(
       // also fired (every dismiss path goes through both). Now we let
       // the subscriber own the entire cleanup so it's only ever
       // scheduled once.
-      setAttrs(node, { 'data-removed': 'true' })
+      setAttrs(node, { 'data-removed': 'true', inert: true, 'aria-hidden': 'true' })
     }
     state.dismiss(id)
   }
@@ -749,6 +795,7 @@ export function mountToaster(
     // re-ran on every toast mutation.
     for (const record of timers.values()) clearTimeout(record.handle)
     timers.clear()
+    hiddenRemaining.clear()
 
     const toasts = activeMatchingToasts()
     for (const toast of toasts) {
@@ -787,7 +834,7 @@ export function mountToaster(
       if (disabled || !dismissible || !swipeEnabled) return
       swipeStartTime = Date.now()
       const target = event.target as HTMLElement | null
-      if (target?.tagName === 'BUTTON') return
+      if (target?.closest('button, a, input, textarea, select, [contenteditable]')) return
       try {
         li.setPointerCapture(event.pointerId)
       } catch {
@@ -865,7 +912,11 @@ export function mountToaster(
       const amount = swipeAxis === 'x' ? xAmount : yAmount
       const velocity = Math.abs(amount) / Math.max(timeTaken, 1)
 
-      if (Math.abs(amount) >= SWIPE_THRESHOLD || velocity > 0.11) {
+      const allowed =
+        swipeAxis === 'x'
+          ? swipeDirections.includes(xAmount > 0 ? 'right' : 'left')
+          : swipeDirections.includes(yAmount > 0 ? 'bottom' : 'top')
+      if (pointerStart && allowed && (Math.abs(amount) >= SWIPE_THRESHOLD || velocity > 0.11)) {
         const direction: 'left' | 'right' | 'up' | 'down' = (() => {
           if (swipeAxis === 'x') return xAmount > 0 ? 'right' : 'left'
           return yAmount > 0 ? 'down' : 'up'
@@ -901,7 +952,9 @@ export function mountToaster(
     }
 
     const onPointerCancel = (): void => {
-      setAttrs(li, { 'data-swiping': 'false' })
+      setAttrs(li, { 'data-swiping': 'false', 'data-swiped': 'false' })
+      li.style.setProperty('--swipe-amount-x', '0px')
+      li.style.setProperty('--swipe-amount-y', '0px')
       pointerStart = null
       swipeAxis = null
     }
@@ -960,7 +1013,7 @@ export function mountToaster(
     const onClick = (event: MouseEvent): void => {
       if (disabled || !toast.onClick) return
       const target = event.target as HTMLElement | null
-      if (target?.closest('button')) return
+      if (target?.closest('button, a, input, textarea, select, [contenteditable]')) return
       toast.onClick(event)
     }
     const onActivationKeyDown = (event: KeyboardEvent): void => {
@@ -1000,6 +1053,7 @@ export function mountToaster(
   // --- Diff + render ---------------------------------------------------
 
   const renderAll = (): void => {
+    if (destroyed) return
     const toasts = activeMatchingToasts()
 
     // a11y / ux: when the active list drops to 1 or 0, collapse the
@@ -1050,7 +1104,7 @@ export function mountToaster(
       const existingNode = existing.get(key)
       if (!existingNode) {
         const node = createToastElement(toast, index)
-        container.appendChild(node)
+        if (!destroyed) container.appendChild(node)
       } else {
         // Per contrato §4.3: the `<li>` body must be re-constructed when
         // `type` / `title` / `description` / `action` / `cancel` change
@@ -1063,7 +1117,8 @@ export function mountToaster(
           unstyled: currentUnstyled,
           invert: currentInvert,
           richColors: currentRichColors,
-          closeButtonAriaLabel: currentCloseButtonAriaLabel
+          closeButtonAriaLabel: currentCloseButtonAriaLabel,
+          position: currentPosition
         })
         if (previousSnapshot !== newSnapshot) {
           // Tear down the old interactions first so the next bindToastInteractions
@@ -1075,6 +1130,7 @@ export function mountToaster(
           }
           // Re-fill the inner content with the new fields.
           fillToastContent(existingNode, toast)
+          if (destroyed) return
           // Re-bind interactions (dismissible / type / position may have
           // changed — e.g. loading → success flips `disabled` to false).
           bindToastInteractions(existingNode, toast)
@@ -1161,6 +1217,8 @@ export function mountToaster(
           'data-index': String(index),
           'data-front': String(isFront),
           'data-visible': String(isVisible),
+          inert: !isVisible,
+          'aria-hidden': isVisible ? undefined : 'true',
           // See Fix 13 in the create-path edit — `currentExpand`
           // applies to every toast, not just the front one.
           'data-expanded': String(Boolean(expanded || currentExpand)),
@@ -1350,7 +1408,7 @@ export function mountToaster(
         `[data-notify-toast][data-notify-key="${cssEscape(getToastKey(event.id))}"]`
       )
       if (node) {
-        setAttrs(node, { 'data-removed': 'true' })
+        setAttrs(node, { 'data-removed': 'true', inert: true, 'aria-hidden': 'true' })
         const cancelExit = schedulePostExitRemoval(node, () => {
           exitCleanups.delete(event.id)
           node.remove()
@@ -1400,6 +1458,7 @@ export function mountToaster(
       return currentOptions
     },
     update: (next?: ToasterOptions) => {
+      if (destroyed) return controller
       if (next) {
         currentOptions = { ...currentOptions, ...next }
         if (next.id !== undefined) currentToasterId = next.id
@@ -1458,6 +1517,9 @@ export function mountToaster(
       return controller
     },
     destroy: () => {
+      if (destroyed) return
+      destroyed = true
+      hiddenRemaining.clear()
       // Clear all timers and cleanups.
       for (const record of timers.values()) clearTimeout(record.handle)
       timers.clear()
@@ -1492,6 +1554,13 @@ export function mountToaster(
     }
   }
 
+  // Render state that was published before mounting, not only future events.
+  try {
+    renderAll()
+  } catch (error) {
+    controller.destroy()
+    throw error
+  }
   return controller
 }
 
@@ -1511,6 +1580,7 @@ const applyContainerStyles = (
   for (const [key, value] of Object.entries(styles)) {
     container.style.setProperty(key, value)
   }
+  container.style.setProperty('--width', `${opts.width}px`)
   // Spread consumer-supplied CSS custom properties (e.g. `--width`,
   // `--normal-bg`) onto the container so themes can pin their own
   // design tokens. Restored from the legacy React build's
@@ -1520,7 +1590,7 @@ const applyContainerStyles = (
       container.style.setProperty(key, value)
     }
   }
-  container.style.setProperty('--width', `${opts.width}px`)
+  // Stack measurements and CSS must agree on geometry owned by options.
   container.style.setProperty('--gap', `${opts.gap}px`)
   container.style.setProperty('--front-toast-height', '0px')
 }
@@ -1572,6 +1642,7 @@ const getContentSnapshot = (
     invert: boolean
     richColors: boolean
     closeButtonAriaLabel: string
+    position: Position
   }
 ): string => {
   const resolvedCloseButton = toast.closeButton ?? defaults.closeButton
@@ -1607,7 +1678,7 @@ const getContentSnapshot = (
     custom: normalizeForSnapshot(toast.custom),
     onClick: normalizeForSnapshot(toast.onClick),
     duration: toast.duration,
-    position: toast.position,
+    position: toast.position ?? defaults.position,
     className: toast.className,
     descriptionClassName: toast.descriptionClassName,
     testId: toast.testId,

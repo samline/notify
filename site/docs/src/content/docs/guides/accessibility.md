@@ -10,6 +10,8 @@ sidebar:
 
 Notify supplies accessible mechanics, while the application remains responsible for content, timing, contrast, and testing with the assistive technologies it supports.
 
+<span id="semantics" class="legacy-fragment" aria-hidden="true"></span>
+
 ## Rendered semantics
 
 The toaster is an ordered list with an accessible label. It does not set `role="region"`, `role="status"`, or `role="alert"`.
@@ -36,13 +38,15 @@ Each toast is a focusable list item. Loading toasts set `aria-busy="true"`; the 
 - `Alt+T` is the default document-level hotkey. It focuses the newest toast, or the empty container.
 - The hotkey is ignored while typing in an input, textarea, select, or contenteditable element.
 - `hotkey: []` disables it. Another array changes the combination, and every entry has to match.
-- Focusing a toast pauses its auto-dismiss timer. Leaving it resumes the remaining time.
+- In 3.2.1, focusing within the stack expands it for reading. Focusing a toast pauses its auto-dismiss timer. Leaving it resumes the remaining time.
 - Enter or Space invokes `onClick` only when the toast list item itself is focused.
-- Delete or Backspace dismisses the focused toast when `dismissible` is not `false`.
+- Delete or Backspace dismisses the focused toast when `dismissible` is not `false`. In 3.2.1, edit keys in inputs, textareas, selects and editable content retain their normal editing behavior.
 - Escape collapses an expanded stack while focus is inside it. It does not dismiss.
 - Close, action, and cancel controls are native buttons with normal tab and activation behavior.
 
 The renderer restores the element that was focused when the toaster mounted, but only if focus is still inside that toaster when it is destroyed. It does not move focus into a toast when one appears.
+
+<span id="dismissal-and-timing" class="legacy-fragment" aria-hidden="true"></span>
 
 ## Close and dismissal rules
 
@@ -69,6 +73,8 @@ The packaged CSS removes Notify transitions and animations under `prefers-reduce
 
 If you replace the stylesheet or use `unstyled: true`, preserve visible focus, readable contrast, responsive placement, reduced-motion handling, and pointer targets of at least 24 by 24 CSS pixels for controls.
 
+<span id="reduced-motion-and-custom-content" class="legacy-fragment" aria-hidden="true"></span>
+
 ## Custom content
 
 `toast.custom()` mounts the DOM you provide and does not create the standard close button. Use semantic HTML, native controls, descriptive labels, and safe text assignment. Notify does not sanitize custom HTML and does not manage focus inside it.
@@ -79,4 +85,10 @@ For complex or mandatory interaction, use an inline disclosure or a dialog rathe
 
 - [Configuration](../../reference/configuration/)
 - [CSS styling](../../reference/css-styling/)
-- [Actions and custom content](../../guides/actions-and-custom-content/)
+- [Actions and custom content](../actions-and-custom-content/)
+
+## Interactive custom content
+
+`toast.custom` can host consumer-owned DOM, including a native form. Give each control a label, keep a dismissal action reachable and store an important result in persistent page content. In 3.2.1 pointer gestures ignore buttons, links and editable controls; changing position refreshes gesture eligibility on existing notifications. A canceled pointer gesture resets its transform instead of leaving the card displaced.
+
+The release-note example contains edit keys and pointer starts within its textarea for compatibility with published 3.2.0 as well. That consumer compatibility handling does not replace the package fixes. Prefer a dialog or an ordinary page form when content is long, a choice is blocking, or modal focus management is required.

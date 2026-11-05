@@ -1,16 +1,18 @@
-# Entrypoints and module formats
+# Package entrypoints
 
-Choose one primary JavaScript surface for an integration and load the stylesheet separately.
+Notify exposes separate surfaces for module consumers and script-tag consumers. Choose one primary surface for an integration and import the stylesheet separately.
 
 ## Decision table
 
-| Use case            | Load                                           | Global side effect       | Auto-mount |
-| ------------------- | ---------------------------------------------- | ------------------------ | ---------- |
-| ESM or TypeScript   | `import { toast } from '@samline/notify'`      | None                     | No         |
-| CommonJS            | `require('@samline/notify')`                   | None                     | No         |
-| Namespaced registry | `import { browser } from '@samline/notify'`    | None                     | No         |
-| Browser subpath     | `import Notify from '@samline/notify/browser'` | None                     | No         |
-| Script tag / CDN    | `dist/browser/global.global.js`                | Installs `window.Notify` | Yes        |
+| Use case                         | Load                                           | Global side effect       | Auto-mount                  |
+| -------------------------------- | ---------------------------------------------- | ------------------------ | --------------------------- |
+| ESM or TypeScript app            | `import { toast } from '@samline/notify'`      | none                     | no                          |
+| CommonJS app                     | `require('@samline/notify')`                   | none                     | no                          |
+| Registry object without a global | `import { browser } from '@samline/notify'`    | none                     | no                          |
+| Browser subpath                  | `import Notify from '@samline/notify/browser'` | none                     | no                          |
+| No bundler                       | `dist/browser/global.global.js`                | installs `window.Notify` | yes, when the body is ready |
+
+Every visual integration also needs `@samline/notify/styles.css`, or the matching `dist/styles.css` asset.
 
 ## Root entrypoint
 
@@ -22,11 +24,18 @@ createToaster()
 toast.success('Saved')
 ```
 
-The root is side-effect free. It exports the complete API, public types, constants, the `browser` registry, and advanced state helpers without installing a global or touching the DOM. CommonJS consumers receive the same public surface.
+The root is side-effect free: importing it does not install a global or touch the DOM. It exposes the complete API, the public types, the numeric constants, the `browser` registry object, and the advanced state exports.
+
+```js title="CommonJS"
+const { createToaster, toast } = require('@samline/notify')
+
+createToaster()
+toast.success('Saved')
+```
 
 ## Registry modules
 
-The root `browser` export and the default/named export of `@samline/notify/browser` expose the same `NotifyApi` shape. Module imports do not install `window.Notify` or auto-mount.
+The root `browser` export and the default and named exports of `@samline/notify/browser` expose the same `NotifyApi` shape. Module imports do not install `window.Notify` and do not auto-mount.
 
 ```ts
 import Notify, { browser } from '@samline/notify/browser'
@@ -36,20 +45,27 @@ Notify.toast.info('Ready')
 console.log(Notify === browser) // true
 ```
 
-## Standalone IIFE
+The subpath also exports the `NotifyApi` type:
+
+```ts
+import type { NotifyApi } from '@samline/notify/browser'
+```
+
+## Standalone build
 
 ```html
-<link rel="stylesheet" href="https://unpkg.com/@samline/notify@latest/dist/styles.css" />
-<script src="https://unpkg.com/@samline/notify@latest/dist/browser/global.global.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@samline/notify@3.2.0/dist/styles.css" />
+<script src="https://cdn.jsdelivr.net/npm/@samline/notify@3.2.0/dist/browser/global.global.js"></script>
 <script>
-  window.Notify.toast.success('Saved')
+  const notify = window.Notify.default ?? window.Notify
+  notify.toast.success('Saved')
 </script>
 ```
 
-The IIFE installs `window.Notify` and mounts the singleton when the body is ready. Pin a real published version in production and keep CSS and JavaScript versions aligned.
+The standalone build installs `window.Notify` and mounts the singleton immediately when `document.body` exists, or once on `DOMContentLoaded`. Pin a published version in production and keep the JavaScript and CSS versions aligned.
 
-## Next steps
+## Related
 
-- [Browser usage](browser.md)
-- [Getting started](getting-started.md)
+- [Browser builds](browser.md)
+- [Getting started](installation.md)
 - [TypeScript reference](typescript.md)

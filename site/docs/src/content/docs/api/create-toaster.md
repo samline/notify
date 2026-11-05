@@ -56,6 +56,8 @@ createToaster()
 
 The container is mounted at `bottom-right` with the `light` theme and every other default. The first `toast(...)` call now has somewhere to render.
 
+<span id="mount-a-custom-toaster" class="legacy-fragment" aria-hidden="true"></span>
+
 ### Mount a configured toaster
 
 ```ts
@@ -108,7 +110,7 @@ controller?.options // the current merged options
 
 ## Related
 
-- [`configureToaster`](../../api/configure-toaster/) — the intent-revealing alias.
-- [`destroyToaster`](../../api/destroy-toaster/) — unmount the singleton.
-- [`getToaster`](../../api/get-toaster/) — read the singleton.
+- [`configureToaster`](../configure-toaster/) — the intent-revealing alias.
+- [`destroyToaster`](../destroy-toaster/) — unmount the singleton.
+- [`getToaster`](../get-toaster/) — read the singleton.
 - [Configuration](../../reference/configuration/)

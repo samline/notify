@@ -8,12 +8,14 @@ sidebar:
   order: 7
 ---
 
+<span id="core-reference" class="legacy-fragment" aria-hidden="true"></span>
+
 ## Toast factory
 
 ### `toast(message, options?)`
 
 ```ts
-function toast(message: Renderable, options?: ToastOptions): ToastId
+function toast(message: RenderableOrFactory, options?: ToastOptions): ToastId
 ```
 
 Creates a normal toast and returns its number or string id. Text is assigned with `textContent`. Reusing an id updates the existing state item and the rendered element.
@@ -25,7 +27,7 @@ window.setTimeout(() => toast.success('Upload complete', { id }), 800)
 
 ### Variants
 
-All text variants accept `(message: Renderable, options?: ToastOptions)` and return a `ToastId`.
+All text variants accept `(message: RenderableOrFactory, options?: ToastOptions)` and return a `ToastId`.
 
 | Method            | Forced type    | Automatic dismissal                          |
 | ----------------- | -------------- | -------------------------------------------- |
@@ -41,7 +43,9 @@ The forced type of a variant overrides a `type` supplied in its options. Resolve
 ### `toast.custom(content, options?)`
 
 ```ts
-function toast.custom(content: CustomContent, options?: ToastOptions): ToastId
+declare namespace toast {
+  function custom(content: CustomContent, options?: ToastOptions): ToastId
+}
 ```
 
 Accepts an `HTMLElement` or a `(container: HTMLElement) => void` callback. The renderer mounts the custom DOM in a `[data-custom]` element and marks the toast unstyled. It does not sanitize your DOM, and custom toasts do not render the generated close button.
@@ -55,18 +59,22 @@ toast.custom(content, { duration: 6000 })
 ### `toast.promise(input, data?)`
 
 ```ts
-function toast.promise<Data>(
-  input: PromiseInput<Data>,
-  data?: PromiseData<Data>
-): { id: ToastId; unwrap: () => Promise<Data> } | { id?: undefined; unwrap: () => Promise<Data> }
+declare namespace toast {
+  function promise<Data>(
+    input: PromiseInput<Data>,
+    data?: PromiseData<Data>
+  ): { id: ToastId; unwrap: () => Promise<Data> } | { id?: undefined; unwrap: () => Promise<Data> }
+}
 ```
 
-The id is present only when an initial loading toast was created. The loading state, settled value forms, descriptions, HTTP behavior, `finally`, and `unwrap()` are documented in the [Promise API](../../reference/promises/).
+The id is present only when an initial loading toast was created. The loading state, settled value forms, descriptions, HTTP behavior, `finally`, and `unwrap()` are documented in the [Promise API](../promises/).
 
 ### `toast.dismiss(id?)`
 
 ```ts
-function toast.dismiss(id?: ToastId): ToastId | undefined
+declare namespace toast {
+  function dismiss(id?: ToastId): ToastId | undefined
+}
 ```
 
 With an id, it publishes one dismissal and returns that id. Without an id, it publishes a dismissal for every not-yet-dismissed state item and returns `undefined`. Dismissing the same id twice is ignored. The renderer marks matching elements as removed and deletes them after their exit transition.
@@ -76,7 +84,9 @@ Programmatic dismissal is allowed even when `dismissible` is false. Dismissed re
 ### `toast.getToasts()`
 
 ```ts
-function toast.getToasts(): ToastT[]
+declare namespace toast {
+  function getToasts(): ToastT[]
+}
 ```
 
 Returns the active records, newest first. Every call returns a new array and a new shallow object for each toast; the nested `action` and `cancel` objects are cloned too. Functions, promises, and DOM nodes naturally remain the same references.
@@ -84,7 +94,9 @@ Returns the active records, newest first. Every call returns a new array and a n
 ### `toast.getHistory()`
 
 ```ts
-function toast.getHistory(): ToastT[]
+declare namespace toast {
+  function getHistory(): ToastT[]
+}
 ```
 
 Returns all current history records, including dismissed records, with the same defensive snapshot behavior as `getToasts()`. Updating an existing id replaces its state record rather than appending a second history item.
@@ -141,6 +153,8 @@ function resetToasts(): void
 
 Publishes a dismissal for every active record, then clears the active records, the history, the dismissed ids, and the generated-id counter back to `1`. Mounted subscriptions are preserved, so the current toaster remains usable and future events still render. It is primarily useful for tests and development tools.
 
+<span id="controller-surface" class="legacy-fragment" aria-hidden="true"></span>
+
 ## Controller
 
 ```ts
@@ -156,6 +170,8 @@ interface ToasterController {
 - `options` returns the current shallow-merged options.
 - `update()` preserves omitted settings, updates the renderer attributes and styles, and returns the same controller.
 - `destroy()` removes timers, listeners, subscriptions, and the container. It is safe to call repeatedly.
+
+<span id="registry-helpers-vanilla" class="legacy-fragment" aria-hidden="true"></span>
 
 ## Browser registry
 
@@ -173,7 +189,9 @@ import { browser } from '@samline/notify'
 import browser, { browser as notifyBrowser } from '@samline/notify/browser'
 ```
 
-The subpath exports the same registry as both its default and its named export, plus the `NotifyApi` type. It is import-safe during server rendering and does not auto-mount. See [Browser builds](../../reference/browser/).
+The subpath exports the same registry as both its default and its named export, plus the `NotifyApi` type. It is import-safe during server rendering and does not auto-mount. See [Browser builds](../browser/).
+
+<span id="pure-helpers" class="legacy-fragment" aria-hidden="true"></span>
 
 ## Advanced exports
 
@@ -187,7 +205,7 @@ Without an injected state, every direct mount subscribes to the global `ToastSta
 
 ### `ToastState`
 
-The shared observer instance. Its public runtime surface includes `subscribers`, `toasts`, `dismissedToasts`, `subscribe`, `publish`, `create`, the variant methods, `promise`, `custom`, `dismiss`, `getActiveToasts`, `getHistory`, and `getToasts`. Subscribers run synchronously, and a thrown subscriber error interrupts publication.
+The shared observer instance. Its public runtime surface includes `subscribers`, `toasts`, `dismissedToasts`, `subscribe`, `publish`, `create`, the variant methods, `promise`, `custom`, `dismiss`, `getActiveToasts`, `getHistory`, and `getToasts`. Subscribers run synchronously, and all current subscribers receive the event before the first subscriber error is rethrown.
 
 ```ts
 import { ToastState, type ToastSubscriber } from '@samline/notify'
@@ -202,6 +220,8 @@ const unsubscribe = ToastState.subscribe(subscriber)
 ### `resetToastState()`
 
 A low-level destructive reset. It clears the records, the dismissed ids, and the counter, **and drops every subscriber**, including the mounted renderer subscriptions. Existing containers will no longer receive events. Prefer `resetToasts()`. If advanced code calls `resetToastState()`, destroy the stale controllers and mount again explicitly.
+
+<span id="usage-guides" class="legacy-fragment" aria-hidden="true"></span>
 
 ## Per-method pages
 

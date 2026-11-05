@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto'
 import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
 import { project } from '../shared/lib/project.mjs'
@@ -36,6 +37,7 @@ for (const group of ['integrations', 'scenarios']) {
       item.name && item.evidence && item.destination && item.reviewed === true,
       `Review each ${group} entry with source and a useful destination.`
     )
+    await readFile(new URL('../' + item.destination, import.meta.url))
   }
 }
 assert.equal(
@@ -56,6 +58,32 @@ for (const item of [...audit.sources, ...audit.publicExports]) {
   )
   await readFile(destination)
 }
+
+assert.equal(audit.migrationReview?.status, 'verified')
+assert.equal(audit.migrationReview?.unresolved, 0)
+assert.equal(audit.editorialReview?.status, 'verified')
+for (const source of audit.sources.filter(item => !item.revision)) {
+  const bytes = await readFile(new URL('../../' + source.source, import.meta.url))
+  assert.equal(
+    createHash('sha256').update(bytes).digest('hex'),
+    source.sha256,
+    `Source changed since review: ${source.source}`
+  )
+}
+
+assert.equal(audit.secondPass?.status, 'verified', 'Complete the second-pass validation.')
+assert.equal(audit.visualReview?.status, 'verified', 'Complete the controls and visual review.')
+assert.ok(audit.visualReview.sources?.length, 'Record the actual controls reviewed.')
+for (const item of audit.visualReview.sources) {
+  assert.ok(item.source.startsWith('shared/'), 'Visual sources belong to the shared site UI.')
+  const bytes = await readFile(new URL('../' + item.source, import.meta.url))
+  assert.equal(
+    createHash('sha256').update(bytes).digest('hex'),
+    item.sha256,
+    `Visual source changed since review: ${item.source}`
+  )
+}
+
 console.log(
-  'Release evidence is complete. Run npm run verify and manually review claims and copied examples.'
+  'Release inventory and reviewed source hashes are current. Local checks do not publish the package or site.'
 )

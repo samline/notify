@@ -15,7 +15,9 @@ import { resolve } from 'node:path'
 //   2. IIFE (`browser/global`) — loaded standalone via a single `<script>`
 //      tag. `clean: false` keeps the index entry's assets in place; the
 //      entry only adds its own files under `dist/browser/`. The
-//      `globalName: 'Notify'` matches `window.Notify` in the docs.
+//      entry itself installs `window.Notify`. Do not set globalName:
+//      an exported module namespace would overwrite that registry after
+//      the IIFE finishes executing as a classic browser script.
 //
 // `src/styles.css` is a static asset that ships as
 // `@samline/notify/styles.css` (see `package.json` exports). The
@@ -51,7 +53,6 @@ export default defineConfig([
     sourcemap: true,
     clean: false,
     target: 'es2020',
-    outDir: 'dist',
-    globalName: 'Notify'
+    outDir: 'dist'
   }
 ])

@@ -1,0 +1,28 @@
+<button type="button" data-notify-save>
+  Save changes
+</button>
+<script>
+  import { createToaster, destroyToaster, toast } from '@samline/notify'
+  import '@samline/notify/styles.css'
+  let cleanup: (() => void) | undefined
+  const mount = () => {
+    cleanup?.()
+    const buttons = document.querySelectorAll<HTMLButtonElement>('[data-notify-save]')
+    if (!buttons.length) return
+    const lifecycle = new AbortController()
+    createToaster({ richColors: true, closeButton: true })
+    buttons.forEach(button =>
+      button.addEventListener('click', () => toast.success('Changes saved'), {
+        signal: lifecycle.signal,
+      })
+    )
+    cleanup = () => {
+      lifecycle.abort()
+      destroyToaster()
+      cleanup = undefined
+    }
+  }
+  document.addEventListener('astro:before-swap', () => cleanup?.())
+  document.addEventListener('astro:page-load', mount)
+  mount()
+</script>

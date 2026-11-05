@@ -8,8 +8,6 @@ sidebar:
   order: 1
 ---
 
-import Callout from '../../../../../shared/components/Callout.astro'
-
 A toast is a state record observed by a mounted renderer. Keeping those two pieces separate explains most Notify behavior: `toast.*` publishes state, while `createToaster()` gives that state somewhere to render.
 
 ## The complete flow
@@ -71,12 +69,12 @@ Both snapshots are clones: the array, each record, and nested `action` and `canc
 | `destroyToaster()`  | no                             | no                             | yes               |
 | `resetToastState()` | yes                            | **no**; drops every subscriber | no                |
 
-<Callout title="Prefer resetToasts() in tests">
-  `resetToasts()` clears the records, the dismissed ids, and the generated-id counter while keeping
-  the mounted renderer subscribed, so the next toast still renders. `resetToastState()` is a
-  low-level escape hatch: it drops every subscriber, so existing containers become stale and must be
-  destroyed and remounted.
-</Callout>
+**Prefer resetToasts() in tests**
+
+`resetToasts()` clears the records, the dismissed ids, and the generated-id counter while keeping
+the mounted renderer subscribed, so the next toast still renders. `resetToastState()` is a
+low-level escape hatch: it drops every subscriber, so existing containers become stale and must be
+destroyed and remounted.
 
 ## Timers that pause
 

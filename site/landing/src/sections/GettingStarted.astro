@@ -9,6 +9,9 @@ import SectionHeading from '../components/SectionHeading.astro'
 import CodeBlock from '../components/CodeBlock.astro'
 import StepCard from '../components/StepCard.astro'
 import Installer from '../../../shared/components/Installer.astro'
+import Tabs from '../../../shared/components/Tabs.astro'
+import TabPanel from '../../../shared/components/TabPanel.astro'
+import { initialization } from '../i18n/translations/en/sections'
 const i18n = getI18n(Astro)
 const t = i18n.sections.gettingStarted
 const headingId = `section-heading-${crypto.randomUUID()}`
@@ -49,12 +52,20 @@ const headingId = `section-heading-${crypto.randomUUID()}`
       </StepCard>
 
       <StepCard number={3} title={t.steps.initialize}>
-        <CodeBlock
-          filename={t.examples.script.filename}
-          code={t.examples.script.code}
-          language={t.examples.script.language}
-          class:list={['mt-4']}
-        />
+        <Tabs
+          id="initialization"
+          label="Initialization method"
+          items={[
+            { id: 'esm', label: 'Package / ESM' },
+            { id: 'cdn', label: 'HTML / CDN' },
+          ]}
+        >
+          {(['esm', 'cdn'] as const).map(mode => (
+            <TabPanel id={mode} label={mode === 'esm' ? 'Package / ESM' : 'HTML / CDN'}>
+              <CodeBlock filename="main.js" code={initialization[mode]} language="javascript" />
+            </TabPanel>
+          ))}
+        </Tabs>
         <TextLink
           compact
           href={`${import.meta.env.BASE_URL}docs/getting-started/#working-starter-files`}

@@ -7,23 +7,23 @@
 // without React internals.
 
 import { ToastState } from '../core/state'
-import type { Renderable, ToastId, ToastOptions, ToastT } from '../core/types'
+import type { RenderableOrFactory, ToastId, ToastOptions, ToastT } from '../core/types'
 
 /**
  * The main toast factory. Returns a `ToastId` you can pass to
  * `toast.dismiss()` to remove a specific toast early.
  */
-const toastFunction = (message: Renderable, options?: ToastOptions): ToastId =>
+const toastFunction = (message: RenderableOrFactory, options?: ToastOptions): ToastId =>
   ToastState.create({ ...(options ?? {}), message })
 
 export interface ToastApi {
-  (message: Renderable, options?: ToastOptions): ToastId
-  success: (message: Renderable, options?: ToastOptions) => ToastId
-  error: (message: Renderable, options?: ToastOptions) => ToastId
-  info: (message: Renderable, options?: ToastOptions) => ToastId
-  warning: (message: Renderable, options?: ToastOptions) => ToastId
-  loading: (message: Renderable, options?: ToastOptions) => ToastId
-  message: (message: Renderable, options?: ToastOptions) => ToastId
+  (message: RenderableOrFactory, options?: ToastOptions): ToastId
+  success: (message: RenderableOrFactory, options?: ToastOptions) => ToastId
+  error: (message: RenderableOrFactory, options?: ToastOptions) => ToastId
+  info: (message: RenderableOrFactory, options?: ToastOptions) => ToastId
+  warning: (message: RenderableOrFactory, options?: ToastOptions) => ToastId
+  loading: (message: RenderableOrFactory, options?: ToastOptions) => ToastId
+  message: (message: RenderableOrFactory, options?: ToastOptions) => ToastId
   custom: typeof ToastState.custom
   promise: typeof ToastState.promise
   dismiss: (id?: ToastId) => ToastId | undefined

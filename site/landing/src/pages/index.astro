@@ -11,10 +11,25 @@ import CallToAction from '../sections/CallToAction.astro'
 
 <Main>
   <Hero />
+  <span id="why-notify" class:list={['legacy-home-fragment']} aria-hidden="true"></span>
   <Features />
   <Runtimes />
+  <span id="choose-a-path" class:list={['legacy-home-fragment']} aria-hidden="true"></span>
   <GettingStarted />
   <Recipes />
   <Faq />
+  <span
+    id="what-should-i-read-next"
+    class:list={['legacy-home-fragment']}
+    aria-hidden="true"
+  ></span>
   <CallToAction />
 </Main>
+
+<style>
+  .legacy-home-fragment {
+    display: block;
+    height: 0;
+    scroll-margin-top: calc(var(--header-offset, 4.5rem) + 2.5rem);
+  }
+</style>

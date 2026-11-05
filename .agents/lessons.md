@@ -5,5 +5,23 @@
 - `ToasterController.update()` is partial: omitted offsets, gaps, styles, and subscriptions must remain unchanged.
 - Tests for browser globals and package exports must execute built artifacts, not only TypeScript source modules.
 - CDN examples must reference an actually published version or `latest`; a package version in Git does not imply npm availability.
-- GitHub only discovers Actions workflows under the repository-root `.github/workflows`; documentation commands run from `example` and Pages uploads `example/dist`.
-- Astro 7 documentation jobs require Node.js 22.12.0 or newer; keep CI, Pages deployment, and `example` engine metadata aligned.
+- GitHub only discovers Actions workflows under the repository-root `.github/workflows`; website commands run from `site` and Pages uploads `site/landing/dist`.
+- Astro 7 documentation jobs require Node.js 22.12.0 or newer; keep CI, Pages deployment, and `site` engine metadata aligned.
+
+- Test standalone globals as classic scripts in a real browser: JSDOM eval can conceal a bundler namespace overwriting window.Notify.
+- Promise completion must retain record identity and reset epoch across async formatters; dismissal, reset, replacement and teardown revoke ownership.
+- Hidden and exiting toast actions must be inert; keyboard shortcuts target the front visible record.
+- Canonical docs live in docs/. Run site sync:docs after edits, check exact synchronization and historical route/fragment mappings, and execute the exact copied ESM/CDN sources.
+- A CSS fingerprint validates styles, not useful demos or complete documentation. Compare full compositions against Ticker/Drawer, review prose and exercise task outcomes and lifecycle cleanup.
+- Check visible documentation installers during delayed initialization, not only Home tabs. Render fallback panel labels inside noscript so assigning tabpanel roles does not remove a painted label and shift the first code frame. Preserve both no-JavaScript readability and protected styles.
+
+- For the Notify gallery, review capability → consumer task → observable outcome → copied source → lifecycle. A count of presets, export inventory, green link checks and style hashes cannot establish task depth or visual reading quality. Keep composed decisions, cancellation, results, editable custom content and stack interaction covered.
+- Responsive review must open notifications and inspect their usable text width, not only document overflow. Two actions previously reduced the message to about 60 px at 320 px despite passing overflow checks; keep the separate action row and built-browser reading-width regression.
+- Custom content factories can run again after controller updates. Each render must release its listeners; preserve draft state outside the factory and dispose render listeners on replacement, dismissal and integration teardown.
+
+- La auditoría de accesibilidad debe abrir las notificaciones y expandir las cinco variantes semánticas en ambos temas: una página sin toasts no detecta fallos de contraste del paquete. Las recetas deben compilar contra los tipos reales; un registro de exports o un import resuelto como any no comprueba su corrección.
+- En desarrollo, Docs usa otra base y origen. Comprobar los assets públicos referenciados (incluido favicon), además de los enlaces de navegación; producción combina ambos sitios bajo una sola base.
+
+- Los previews que siguen el tema de la página deben actualizar preferencias sin reenviar duration: enviarla reinicia los timers. Exigir que una regresión falle contra el artefacto anterior antes de aceptar su verde; la prueba final del plazo usa tiempo real.
+
+- La revisión visual no se cierra con fingerprints o tests verdes: comprobar inputs/selects reales, superficie semántica, fuente válida, flecha separada con padding reservado, cursores pointer/text/not-allowed, hover/foco y disabled. Revisar también el ancho útil del valor a 320 px y 200%: un campo sin overflow podía dejar solo 64 px para texto. Comparar las fuentes fijadas de Ticker/Drawer y revisar los archivos copiados además del preview.

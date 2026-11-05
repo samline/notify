@@ -15,9 +15,11 @@ const { id, label, anchor, class: className, ...attributes } = Astro.props
   aria-label={label}
   class:list={['tab-panel', className]}
 >
-  <p class:list={['fallback-label']} data-ui>
-    {label}
-  </p>
+  <noscript>
+    <p class:list={['fallback-label']} data-ui>
+      {label}
+    </p>
+  </noscript>
   <slot />
 </section>
 

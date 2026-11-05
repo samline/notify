@@ -1,5 +1,6 @@
 ---
-title: 'Troubleshooting'
+title: 'Troubleshooting guide'
+titleAccent: 'guide'
 description: 'Fix missing styles, DOM timing, SSR, duplicate mounts, CDN paths, CSP, and teardown issues.'
 locale: en
 sidebar:
@@ -19,6 +20,8 @@ if (!getToaster()) createToaster()
 
 `toast.*` updates the state even when no renderer exists, so the state is correct but nothing is on screen. If a toaster was destroyed, it does not auto-remount. Call `createToaster()` again.
 
+<span id="ssr-or-body-timing-errors" class="legacy-fragment" aria-hidden="true"></span>
+
 ## `document.body` error
 
 `createToaster()` throws before `document.body` exists. Use a module loaded after the body, `DOMContentLoaded`, or your framework's client mount hook.
@@ -27,7 +30,8 @@ if (!getToaster()) createToaster()
 document.addEventListener(
   'DOMContentLoaded',
   () => {
-    window.Notify.createToaster()
+    const notify = window.Notify.default ?? window.Notify
+    notify.createToaster()
   },
   { once: true }
 )
@@ -39,6 +43,8 @@ The standalone build already handles this for its own first automatic mount.
 
 Import `@samline/notify/styles.css` in a bundled client entry, or link `dist/styles.css` for the standalone build. Make sure the CSS version matches the JavaScript version, and inspect the network response for a 404 or an HTML fallback page.
 
+<span id="duplicate-notifications" class="legacy-fragment" aria-hidden="true"></span>
+
 ## Duplicate notifications or callbacks
 
 Look for multiple `mountToaster()` calls, or framework effects mounted in more than one root. Direct mounts share the global `ToastState` and receive the same events, so each renderer can display the toast and invoke `onDismiss`.
@@ -48,6 +54,8 @@ Repeated `createToaster()` calls alone do not create duplicates. They update the
 ## SSR failures
 
 Imports are safe, but mounting requires the browser. Move `createToaster()` or `mountToaster()` out of module scope and into a client lifecycle. Do not create toast state during server rendering, and never share that state between requests.
+
+<span id="cdn-global-is-undefined" class="legacy-fragment" aria-hidden="true"></span>
 
 ## The CDN global is undefined
 
@@ -60,6 +68,8 @@ Imports are safe, but mounting requires the browser. Move `createToaster()` or `
 ## Assets fail under a base path
 
 Use absolute CDN URLs, or include the application's public base in self-hosted paths. On a site hosted under `/my-app/`, `/vendor/notify.js` and `/my-app/vendor/notify.js` are different URLs. Verify the script and CSS URLs independently.
+
+<span id="teardown-reset-and-remount" class="legacy-fragment" aria-hidden="true"></span>
 
 ## Teardown and remount
 
@@ -74,6 +84,8 @@ toast.info('Mounted again')
 ```
 
 `resetToasts()` is different: it clears the active records, the history, and the generated-id counter while preserving the mounted subscribers. `resetToastState()` drops subscribers and leaves mounted containers stale, so advanced callers must destroy and remount afterwards.
+
+<span id="strict-csp-or-custom-visuals" class="legacy-fragment" aria-hidden="true"></span>
 
 ## Strict Content Security Policy or custom visuals
 
@@ -91,6 +103,6 @@ If you are migrating from a framework wrapper, replace the component or plugin w
 
 ## Related
 
-- [Entrypoints](../../reference/entrypoints/)
-- [CSS styling](../../reference/css-styling/)
+- [Entrypoints](../entrypoints/)
+- [CSS styling](../css-styling/)
 - [Framework integrations](../../guides/frameworks/)

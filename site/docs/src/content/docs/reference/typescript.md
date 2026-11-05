@@ -39,6 +39,13 @@ import type {
 } from '@samline/notify'
 ```
 
+<span id="toastid" class="legacy-fragment" aria-hidden="true"></span>
+<span id="toasttype" class="legacy-fragment" aria-hidden="true"></span>
+<span id="renderable" class="legacy-fragment" aria-hidden="true"></span>
+<span id="renderableorfactory" class="legacy-fragment" aria-hidden="true"></span>
+<span id="customcontent" class="legacy-fragment" aria-hidden="true"></span>
+<span id="toastaction" class="legacy-fragment" aria-hidden="true"></span>
+
 ## Toast primitives
 
 ```ts
@@ -63,6 +70,10 @@ interface ToastAction {
 ```
 
 `closeOnClick` defaults to true.
+
+<span id="toastoptions" class="legacy-fragment" aria-hidden="true"></span>
+<span id="toastt" class="legacy-fragment" aria-hidden="true"></span>
+<span id="toasttodismiss" class="legacy-fragment" aria-hidden="true"></span>
 
 ## Toast options and records
 
@@ -89,7 +100,7 @@ interface ToastOptions {
 }
 ```
 
-See [Configuration](../../reference/configuration/) for defaults and interactions.
+See [Configuration](../configuration/) for defaults and interactions.
 
 ```ts
 interface ToastT {
@@ -126,19 +137,21 @@ interface ToastToDismiss {
 
 `ToastT` is the state and snapshot shape returned by `getToasts()` and `getHistory()`. `ToastToDismiss` is the event shape sent to low-level subscribers.
 
-The `delete` field is an internal flag the runtime uses to mark a toast that has been dismissed. Most consumers should not read it; use `toast.getToasts()`, which filters on the dismissed set, instead.
+The `delete` field is a legacy record field; current dismissal tracking uses the separate dismissed-id set. Most consumers should not read it; use `toast.getToasts()`, which filters on the dismissed set, instead.
+
+<span id="toastapi" class="legacy-fragment" aria-hidden="true"></span>
 
 ## Toast API
 
 ```ts
 interface ToastApi {
-  (message: Renderable, options?: ToastOptions): ToastId
-  success(message: Renderable, options?: ToastOptions): ToastId
-  error(message: Renderable, options?: ToastOptions): ToastId
-  info(message: Renderable, options?: ToastOptions): ToastId
-  warning(message: Renderable, options?: ToastOptions): ToastId
-  loading(message: Renderable, options?: ToastOptions): ToastId
-  message(message: Renderable, options?: ToastOptions): ToastId
+  (message: RenderableOrFactory, options?: ToastOptions): ToastId
+  success(message: RenderableOrFactory, options?: ToastOptions): ToastId
+  error(message: RenderableOrFactory, options?: ToastOptions): ToastId
+  info(message: RenderableOrFactory, options?: ToastOptions): ToastId
+  warning(message: RenderableOrFactory, options?: ToastOptions): ToastId
+  loading(message: RenderableOrFactory, options?: ToastOptions): ToastId
+  message(message: RenderableOrFactory, options?: ToastOptions): ToastId
   custom: (content: CustomContent, options?: ToastOptions) => ToastId
   promise: <Data>(
     input: PromiseInput<Data>,
@@ -150,6 +163,14 @@ interface ToastApi {
   getToasts(): ToastT[]
 }
 ```
+
+<span id="toastercontroller" class="legacy-fragment" aria-hidden="true"></span>
+<span id="toasteroptions" class="legacy-fragment" aria-hidden="true"></span>
+<span id="position" class="legacy-fragment" aria-hidden="true"></span>
+<span id="theme" class="legacy-fragment" aria-hidden="true"></span>
+<span id="direction" class="legacy-fragment" aria-hidden="true"></span>
+<span id="offset" class="legacy-fragment" aria-hidden="true"></span>
+<span id="swipedirection" class="legacy-fragment" aria-hidden="true"></span>
 
 ## Toaster types
 
@@ -206,6 +227,11 @@ interface ToasterController {
 
 `Toaster` is a runtime alias of `createToaster`. There is no separate `Toaster` type and no framework component.
 
+<span id="promiseinput" class="legacy-fragment" aria-hidden="true"></span>
+<span id="promisevalue" class="legacy-fragment" aria-hidden="true"></span>
+<span id="promisedata" class="legacy-fragment" aria-hidden="true"></span>
+<span id="promiseextendedresult" class="legacy-fragment" aria-hidden="true"></span>
+
 ## Promise types
 
 ```ts
@@ -231,7 +257,10 @@ interface PromiseData<Data = unknown> extends Omit<ToastOptions, 'description'> 
 }
 ```
 
-See the [Promise API](../../reference/promises/) for the non-obvious id, description, HTTP, and `unwrap()` behavior.
+See the [Promise API](../promises/) for the non-obvious id, description, HTTP, and `unwrap()` behavior.
+
+<span id="toastinput" class="legacy-fragment" aria-hidden="true"></span>
+<span id="toastsubscriber" class="legacy-fragment" aria-hidden="true"></span>
 
 ## Advanced state types
 
@@ -246,7 +275,9 @@ interface ToastInput extends Omit<ToastOptions, 'description'> {
 type ToastSubscriber = (toast: ToastT | ToastToDismiss) => void
 ```
 
-These support direct `ToastState` and `mountToaster()` integrations. They share the global state unless advanced code injects another state object. Read the [API reference](../../reference/api/) before using them.
+These support direct `ToastState` and `mountToaster()` integrations. They share the global state unless advanced code injects another state object. Read the [API reference](../api/) before using them.
+
+<span id="notifyapi" class="legacy-fragment" aria-hidden="true"></span>
 
 ## Browser registry type
 
@@ -262,6 +293,8 @@ interface NotifyApi {
 ```
 
 The root `browser` export, the `@samline/notify/browser` default and named exports, and `window.Notify` expose this shape. `resetToasts` and the advanced exports are not properties of `NotifyApi`.
+
+<span id="numeric-constants" class="legacy-fragment" aria-hidden="true"></span>
 
 ## Public constants
 
@@ -282,6 +315,19 @@ import {
 
 ## Related
 
-- [Configuration](../../reference/configuration/)
-- [API reference](../../reference/api/)
-- [Browser builds](../../reference/browser/)
+- [Configuration](../configuration/)
+- [API reference](../api/)
+- [Browser builds](../browser/)
+
+## Type usage notes
+
+- ToastId is number | string. Numeric 1 and string '1' are different identities even when their data-id text is identical.
+- RenderableOrFactory callbacks are evaluated when a state record is created or updated; calling the factory again with the same id evaluates the new callback again. They are not a reactive subscription.
+- CustomContent mounts an owned element directly or invokes the callback with a div[data-custom] in the icon slot. Use textContent for untrusted text; provide cleanup for application listeners when the integration leaves.
+- ToastAction.closeOnClick defaults to true for action and cancel. Set false only when the action should leave the toast open.
+- ToasterController.element is the mounted ordered list; options is the current merged configuration. update returns the same controller. destroy clears listeners/timers and removes that container; use destroyToaster to publish global dismissals too.
+- Position determines swipe availability. Direction 'auto' reads document direction. Theme 'system' resolves and follows matchMedia changes in JavaScript, rather than relying on a stylesheet-only media query.
+- Offset numbers receive px; strings are forwarded. Omitted object sides use 24px desktop or 16px mobile defaults.
+- SwipeDirection describes the directions derived from a corner position. Centered positions disable swipe dismissal.
+- PromiseInput thunks with data run immediately; without data, each unwrap invocation runs the thunk. PromiseValue and PromiseExtendedResult let a settled message override toast options; finally waits for the rendering callback pipeline.
+- NotifyApi describes the registry, not the published 3.2.0 global namespace wrapper. Resolve the registry before applying that type.

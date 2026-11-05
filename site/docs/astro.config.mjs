@@ -1,3 +1,4 @@
+import { notifyAliases } from '../shared/lib/notify-runtime.mjs'
 import { defineConfig } from 'astro/config'
 import tailwind from '@tailwindcss/vite'
 import mdx from '@astrojs/mdx'
@@ -16,6 +17,7 @@ export default defineConfig({
   integrations: [mdx(), sitemap()],
   devToolbar: { enabled: false },
   vite: {
+    resolve: { alias: notifyAliases },
     plugins: [tailwind()],
     build: { assetsInlineLimit: inlineSmallStylesheets },
   },

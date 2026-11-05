@@ -69,7 +69,7 @@ The visual source of truth is [samline/ticker](https://github.com/samline/ticker
 
 ## API at a glance
 
-The template is configured through files and commands; it does not provide a package runtime API.
+This workspace configures and renders the Notify website. The package runtime API lives one directory above it.
 
 ### Where to edit
 
@@ -77,10 +77,10 @@ The template is configured through files and commands; it does not provide a pac
 | ----------------------------------------------------------------------------------------- | ----------------------------------------------------- |
 | Name, npm name, version, description, URLs, theme storage namespace and two accent colors | `project.config.json`                                 |
 | Landing copy, FAQ and navigation                                                          | `landing/src/i18n/translations/en/`                   |
-| Shared control messages and neutral demo source                                           | `shared/i18n/translations/en/`                        |
+| Shared control messages and scenario copy                                                 | `shared/i18n/translations/en/`                        |
 | Docs shell messages and page labels                                                       | `docs/src/i18n/translations/en/`                      |
-| Guides, references and MDX compositions                                                   | `docs/src/content/docs/`                              |
-| Single release-note source                                                                | `CHANGELOG.md`, loaded into the collection            |
+| Generated guides, references and MDX compositions                                         | `docs/src/content/docs/`                              |
+| Single release-note source                                                                | `../CHANGELOG.md`, loaded into the collection         |
 | Shared UI, highlighting and design tokens                                                 | `shared/components/`, `shared/styles/`, `shared/lib/` |
 | Package evidence and semantic coverage                                                    | `brief/`, `content-audit.json`                        |
 
@@ -97,6 +97,10 @@ Use `site.template: true` while writing the package content: generated metadata 
 
 ## Documentation
 
+Edit package reference prose in `../docs/`, then run `npm run sync:docs`. `documentation-map.json` defines the 22 source-to-article mappings; `check:docs` rejects drift. The migration inventory in `brief/documentation-migration.json` preserves 35 historical articles and 323 sections, including meaningful fragment destinations.
+
+The eleven task scenarios and their ESM/CDN copies share `demo-behavior.js`, scenario markup and scoped styles. Framework files have separate compiler checks; CMS fixtures exercise lifecycle behavior locally, without claiming a hosted Shopify or WordPress deployment. The live site uses the local 3.2.1 runtime; CDN files intentionally use published 3.2.0 with namespace resolution.
+
 Start with [ADAPTATION.md](ADAPTATION.md). Maintenance conventions live in [AGENTS.md](AGENTS.md); the committed visual reference is recorded in [REFERENCE.md](REFERENCE.md).
 
 ### Checks
@@ -110,7 +114,7 @@ This runs configuration/contrast checks, both Astro checks, formatting, unit tes
 
 ### Deploy
 
-The workflows under `.github/workflows/` validate changes and publish **one** Pages artifact. Set GitHub Pages to **GitHub Actions**, set `site.url` to the actual public root, then run the Deploy workflow. Deployment is opt-in; add a main push trigger only when the new package site is ready. Both a repository base (`/my-package/`) and a domain root (`/`) are supported; Docs always lives below the configured root at `docs/`. Never hardcode the old template base in links, search paths, metadata, tests or redirects.
+The workflows under `../.github/workflows/` validate changes and publish **one** Pages artifact. Set GitHub Pages to **GitHub Actions**, set `site.url` to the actual public root, then run the Deploy workflow. Deployment is opt-in; add a main push trigger only when the new package site is ready. Both a repository base (`/my-package/`) and a domain root (`/`) are supported; Docs always lives below the configured root at `docs/`. Never hardcode the old template base in links, search paths, metadata, tests or redirects.
 
 This repository is a private npm workspace (`private: true`) and is not intended for npm publication. When embedded in a public package, preserve its runtime-only `files` allowlist and exclude all website/tooling directories from npm. [LICENSE.md](LICENSE.md) covers the theme; bundled font licenses are under `shared/assets/fonts/` and included in the generated font-licenses directory.
 
@@ -122,7 +126,39 @@ The permanent policy is the [PageSpeed performance contract](AGENTS.md#pagespeed
 
 Record the commit/dirty state, date, route, browser/Lighthouse versions, device, throttling and cache state, then compare medians from at least three equivalent cold mobile runs before/after a performance change. Track FCP/LCP/TBT/CLS/Speed Index, compressed HTML/CSS/JS/fonts, requests and repeat navigation. Measure a representative article separately from Home and Examples. Use the same environment and avoid concurrent builds/tests while timing.
 
-The upstream ports passed configuration, type, source convention, build/link and browser regressions; these checks are not PageSpeed measurements. No new Lighthouse/PageSpeed score was collected for this template during synchronization. Ticker's dated measurements remain upstream evidence. After an authorized deployment, verify its exact commit and live assets before recording HTTPS mobile/desktop scores. Missing field data and failed diagnostics stay unknown.
+#### Notify measurements — 2026-10-31
+
+Lighthouse 13.6.0, Chromium 151, Node 24.14.0, production artifacts served by identical local HTTP gzip fixtures. Mobile uses the simulated Moto G Power profile (412 × 823, 4× CPU, 150 ms RTT, 1,638.4 Kbps). Each row is the median of three fresh-browser, cold-cache runs without concurrent builds or tests. The baseline was reconstructed from commit `5150f4e` with the same website toolchain after editing; it was not measured before the work began. The final artifact is the dirty working tree on that commit. This comparison includes content expansion, not an isolated performance optimization.
+
+| Route    | Performance before → after | FCP/LCP before → after | TBT  | CLS before → after  | Speed Index before → after | Requests | Transfer before → after |
+| -------- | -------------------------- | ---------------------- | ---- | ------------------- | -------------------------- | -------- | ----------------------- |
+| home     | 100 → 100                  | 0.911 → 0.908 s        | 0 ms | 0.000023 → 0.000023 | 1.132 → 1.016 s            | 15 → 15  | 157.5 → 156.9 KiB       |
+| examples | 100 → 98                   | 0.902 → 1.802 s        | 0 ms | 0.000023 → 0.000023 | 0.902 → 1.802 s            | 15 → 15  | 154.5 → 334.1 KiB       |
+| docs     | 100 → 100                  | 0.837 → 1.023 s        | 0 ms | 0.007072 → 0.000780 | 0.837 → 1.023 s            | 16 → 16  | 147.9 → 165.6 KiB       |
+
+Accessibility, best practices and SEO scored 100 on all mobile runs. No audit returned an internal error. These are automated lab checks, not complete accessibility certification or field Core Web Vitals.
+
+Desktop checks (one cold run per final route, not medians):
+
+- home: performance 100, accessibility 100, best practices 100, SEO 100.
+- examples: performance 100, accessibility 100, best practices 100, SEO 100.
+- docs: performance 100, accessibility 100, best practices 100, SEO 100.
+
+An initial desktop Docs run scored 97 with CLS 0.108. Moving fallback tab labels into noscript preserved the final design and eliminated the first code-frame initialization shift; the added geometry regression passes. The final desktop observation is CLS 0.029 and performance 100, not zero CLS.
+
+The gallery increases from one demonstration to eight scenarios with static highlighted ESM/CDN separate and complete files. Its larger document explains the transfer and FCP/LCP regression despite unchanged request counts and zero TBT. That cost is retained to preserve readable, exactly copyable no-JavaScript source while exceeding the 95 mobile target; it is not a measured speedup. Installation similarly gains complete files in both modes. Home becomes smaller.
+
+| Route    | Gzip HTML before → after | Gzip external JS before → after | Gzip external CSS before → after | WOFF2    |
+| -------- | ------------------------ | ------------------------------- | -------------------------------- | -------- |
+| home     | 21.3 → 19.1 KiB          | 26.8 → 28.1 KiB                 | 10.0 → 10.3 KiB                  | 96.4 KiB |
+| examples | 18.3 → 196.2 KiB         | 26.8 → 28.1 KiB                 | 10.0 → 10.3 KiB                  | 96.4 KiB |
+| docs     | 28.0 → 45.6 KiB          | 20.1 → 20.1 KiB                 | 0.0 → 0.0 KiB                    | 96.4 KiB |
+
+Docs CSS is inlined and included in HTML size. Raw Lighthouse JSON, per-run metrics and encoded-size summaries were retained locally outside Git. This fixture does not verify deployed compression, cache headers or HTTPS behavior. No cache policy changed; no repeat-navigation caching improvement is claimed. Verify an authorized deployment’s exact commit and live assets before recording PageSpeed or field results. Missing field data stays unknown. Ticker’s measurements remain evidence for Ticker only.
+
+### Second-pass quality review — 2026-11-04
+
+[The capability matrix and review](brief/notify-second-pass-2026-11-04.md) records user tasks, observable outcomes, limitations and reproduced fixes. Decisions, cancelable CSV output, editable custom DOM and the live stack exercise combinations of capabilities rather than filling a preset count. Live and copied integrations share one behavior source; copied files retain only their used helpers and messages. Existing historical fragments remain covered by the migration gate. The dated measurements above describe the earlier eight-scenario artifact; current measurements are recorded separately.
 
 ### Adaptation quality lessons
 
@@ -148,7 +184,9 @@ The release notes are the package's own [`../CHANGELOG.md`](../CHANGELOG.md) —
 
 ## AI agent skill
 
-**For agents:** this workspace ships the maintained [package-site skill](.agents/skills/package-site/SKILL.md) as a local file. It carries the full adaptation and maintenance contracts for this website. No global installation is required.
+For agents integrating Notify, use the public [`../skills/notify/SKILL.md`](../skills/notify/SKILL.md), also served at `/skills/notify/SKILL.md`.
+
+**For website maintenance:** this workspace ships the maintained [package-site skill](.agents/skills/package-site/SKILL.md) as a local file. It carries the full adaptation and maintenance contracts for this website. No global installation is required.
 
 Open a session in the package root and send:
 
@@ -163,3 +201,53 @@ The repository includes the maintained package-site adaptation skill plus ten lo
 ## License
 
 MIT — [LICENSE.md](LICENSE.md). Bundled font licenses are documented under [shared/assets/fonts/](shared/assets/fonts/).
+
+### Final measurements — 2026-11-04 (Mexico time)
+
+Lighthouse 13.6.0, Chromium 151, Node 26.13.0 and Bun 1.4.4. Production artifacts use identical local HTTP gzip fixtures. The baseline was reconstructed from `5150f4e` after repair work began, with the same website toolchain; the final artifact is the uncommitted working tree on that HEAD. This compares a substantial content expansion, not an isolated performance optimization or a remote deployment.
+
+Mobile: 412 × 823, device scale 1.75, simulated 4× CPU, 150 ms RTT and 1638.4 Kbps. Each mobile result is the median of three fresh-browser, cold-cache runs without concurrent builds or tests. Desktop uses Lighthouse’s explicit desktop config, verified in the reports, with one cold sample per route. Final samples follow the last theme-lifetime fix. The October 31 measurements remain historical.
+
+| Route    | Performance before → final | FCP/LCP before → final | TBT before → final | CLS before → final  | Speed Index before → final | Requests | Transfer before → final |
+| -------- | -------------------------- | ---------------------- | ------------------ | ------------------- | -------------------------- | -------- | ----------------------- |
+| home     | 100 → 100                  | 0.905 → 0.907 s        | 0 → 0 ms           | 0.000023 → 0.000023 | 0.952 → 1.014 s            | 15 → 15  | 157.2 → 159.1 KiB       |
+| examples | 100 → 97                   | 0.905 → 2.105 s        | 0 → 5.5 ms         | 0.000023 → 0.000023 | 0.905 → 2.105 s            | 15 → 15  | 154.3 → 406.8 KiB       |
+| docs     | 100 → 100                  | 0.830 → 1.021 s        | 0 → 0 ms           | 0.007072 → 0.000780 | 0.830 → 1.021 s            | 16 → 16  | 147.7 → 165.3 KiB       |
+
+Accessibility, best practices and SEO scored 100 in every final mobile sample and all three desktop checks. Desktop performance is 100 on Home, Examples and Docs. Observed desktop Docs CLS is 0.028842, not zero. No final audit returned an internal error. These lab results do not certify all accessibility or provide real-user Core Web Vitals.
+
+| Route    | Gzip HTML before → final | Gzip JS external before → final | Gzip CSS external before → final | WOFF2    |
+| -------- | ------------------------ | ------------------------------- | -------------------------------- | -------- |
+| home     | 21.3 → 19.4 KiB          | 26.8 → 30.1 KiB                 | 10.0 → 10.5 KiB                  | 96.4 KiB |
+| examples | 18.3 → 267.1 KiB         | 26.8 → 30.1 KiB                 | 10.0 → 10.5 KiB                  | 96.4 KiB |
+| docs     | 27.9 → 45.6 KiB          | 20.1 → 20.1 KiB                 | 0.0 → 0.0 KiB                    | 96.4 KiB |
+
+The gallery expands from the original single demonstration to eleven tasks, with statically highlighted ESM/CDN separate and complete files. This explains the transfer and FCP/LCP regression; final mobile performance remains above the 95 target. Copied sources omit unrelated helpers, messages and selectors while retaining all tasks and readable no-JavaScript code. Docs CSS is included in HTML, without counting it twice.
+
+One repeated final navigation per route retained browser storage: Home 100/14 requests/158.8 KiB, Examples 97/14 requests/406.5 KiB, Docs 100/15 requests/164.9 KiB. The fixture sets no cache TTL, so this does not establish a hosting cache improvement. Cache policy and the CSS inlining threshold remain unchanged. Deployed compression, HTTPS and headers were not verified because nothing was published.
+
+The 24 final raw reports (18 cold mobile samples, three repeated and three desktop), medians.json, sizes.json, conditions and fixture are retained outside Git in `notify-audit/second-pass/performance`. Intermediate files are separate and excluded from final medians.
+
+### Controls and visual review — 2026-11-05
+
+The previous visual closure was insufficient: protected component fingerprints did not cover the example-specific form CSS. [The controls review](brief/notify-controls-audit-2026-11-05.md) records the source comparison, defects, repairs and current validation. Preserve native select semantics, reserve logical space for its decorative arrow, use pointer/text/not-allowed cursors by state, and use field surfaces and valid font tokens from the shared theme. Keep useful reading space when text is enlarged; checking outer overflow alone misses a compressed value area. Live previews and copied files share demo-source.ts and demo-styles.css. The release gate also checks the reviewed visual source hashes.
+
+Earlier Lighthouse tables describe their dated artifacts. The latest measurements belong to the controls review; do not quote the earlier gallery score as the current result.
+
+### Controls artifact measurements — 2026-11-05
+
+Lighthouse 13.6.0, Chromium 151, Node 26.13.0 and Bun 1.4.4; identical local HTTP/gzip fixtures. Fresh cold mobile medians (three per route/artifact), 412 × 823, 4× simulated CPU, 150 ms RTT, 1638.4 Kbps, without concurrent builds or tests. Baseline `5150f4e` was reconstructed after work began using the same toolchain; current artifact is the uncommitted working tree. The baseline samples were taken again this date; current samples follow the final enlarged-text padding fix. This includes the expansion from one demonstration to eleven tasks, not an isolated optimization.
+
+| Route    | Performance baseline → current | FCP/LCP baseline → current | TBT        | CLS baseline → current | Speed Index baseline → current | Requests | Transfer baseline → current |
+| -------- | ------------------------------ | -------------------------- | ---------- | ---------------------- | ------------------------------ | -------- | --------------------------- |
+| home     | 100 → 100                      | 0.905 → 0.907 s            | 0 → 0 ms   | 0.000023 → 0.000023    | 0.926 → 0.917 s                | 15 → 15  | 157.2 → 159.7 KiB           |
+| examples | 100 → 95                       | 0.905 → 2.405 s            | 0 → 8.5 ms | 0.000023 → 0.000023    | 0.905 → 2.405 s                | 15 → 15  | 154.3 → 452.8 KiB           |
+| docs     | 100 → 100                      | 0.829 → 1.032 s            | 0 → 0 ms   | 0.007072 → 0.000780    | 0.829 → 1.032 s                | 16 → 16  | 147.7 → 169.4 KiB           |
+
+| Route    | Gzip HTML current | Gzip JS external | Gzip CSS external | WOFF2    |
+| -------- | ----------------- | ---------------- | ----------------- | -------- |
+| home     | 19.4 KiB          | 30.1 KiB         | 11.0 KiB          | 96.4 KiB |
+| examples | 312.5 KiB         | 30.1 KiB         | 11.0 KiB          | 96.4 KiB |
+| docs     | 49.7 KiB          | 20.1 KiB         | 0.0 KiB           | 96.4 KiB |
+
+Desktop performance is 100 on all three routes (one cold check per route, explicit desktop config). Accessibility, best practices and SEO score 100 in all final mobile and desktop samples. Desktop Docs CLS is 0.028842, not zero. The current gallery score is 95 mobile; its static highlighted complete sources increase transfer and LCP. Do not cite the previous 97 as this artifact’s result. Cache policy and CSS inlining threshold remain unchanged. Three repeated navigations, raw reports, metrics and conditions are retained in controls-review/performance outside Git. These are local lab results, without publication, hosting or field verification.

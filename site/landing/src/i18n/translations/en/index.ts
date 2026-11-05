@@ -11,7 +11,7 @@ export default {
     skipContent: 'Skip to content',
     mobile: {
       title: `Explore ${project.name}`,
-      introduction: 'One live demo, six ways to load it, and the reference when you need it.',
+      introduction: 'Try a notification flow, find your setup, and explore the complete reference.',
       resources: 'Around the package',
       label: 'Mobile navigation',
       open: 'Open navigation menu',
@@ -24,7 +24,7 @@ export default {
       project: 'Package',
       setup: 'Installation guide',
       examples: 'Live examples',
-      skill: 'Website adaptation skill',
+      skill: 'Notify skill for AI agents',
       changelog: 'Changelog',
       backToTop: 'Back to top',
       credit: `${project.author} · Made for the open web.`,
@@ -62,13 +62,13 @@ export default {
     title: `${project.name} examples.`,
     accent: 'examples.',
     description:
-      'One live preview running the real package, with independently copyable files. The same demo appears on Home, on Examples and in the documentation.',
+      'Useful notification flows to try, understand and adapt. Every example includes the live package and complete HTML / CDN and Package / ESM source.',
     possibilities:
       'This gallery shows a few of the flows Notify supports. The rest are yours to combine: pair the toast factory with your own content, your own layout and your own interactions, and build the notification experience your product actually needs.',
     guide: 'Read the example guide',
     navigation: 'Choose an example',
     accessibility:
-      'Every control is a real button, every toast is announced by the package, and the copied files behave exactly like the preview.',
-    skill: 'Download the website adaptation skill',
+      'Read the outcome on the page as well as in the toast. Previews share one toaster; the active example controls its preferences. Keyboard, swipe and reduced-motion behavior come from Notify.',
+    skill: 'Download the Notify integration skill',
   },
 } as const

@@ -16,7 +16,11 @@ import '@samline/notify/styles.css'
 
 The standalone build does not bundle CSS. Load `dist/styles.css` with a `link` element instead. Without it, the renderer still creates an ordered live list, but it has no fixed layout, no stack transitions, no palette, and no built-in button presentation.
 
+<span id="importing-the-stylesheet" class="legacy-fragment" aria-hidden="true"></span>
+
 ## Three styling mechanisms
+
+<span id="brand-aligned-success-color" class="legacy-fragment" aria-hidden="true"></span>
 
 ### CSS custom properties
 
@@ -52,11 +56,14 @@ createToaster({
 })
 ```
 
-It is not the same as declaring custom properties in CSS. It can contain ordinary CSS names, it has inline-style cascade priority, and it applies to one mount. The renderer writes `--width`, `--gap`, and `--front-toast-height` after this map, so set width and gap through the toaster options or through external CSS instead. Updating the map does not automatically remove older inline keys that are omitted.
+It is not the same as declaring custom properties in CSS. It can contain ordinary CSS names, it has inline-style cascade priority, and it applies to one mount. In 3.2.1 the style map can override the default `--width`. The renderer reserves `--gap` and `--front-toast-height` after this map so CSS agrees with measured stack geometry; set spacing with the numeric `gap` option. Published 3.2.0 also overwrites `--width`: use the scoped external CSS recipe below with that version. There is no `width` toaster option. Replacing the map does not remove omitted ordinary declarations or palette keys; width and measured geometry are recomputed. To change one palette value while keeping a custom width, spread the existing `controller.options.style` into the new map.
 
 ### Classes and `unstyled`
 
 `ToasterOptions.className`, `ToastOptions.className`, and `ToastOptions.descriptionClassName` attach your classes. `unstyled: true` writes `data-styled="false"`, which disables the built-in toast-body presentation while retaining the renderer layout and state attributes. `toast.custom()` is always unstyled.
+
+<span id="toaster-container" class="legacy-fragment" aria-hidden="true"></span>
+<span id="data-attributes" class="legacy-fragment" aria-hidden="true"></span>
 
 ## Container contract
 
@@ -68,7 +75,7 @@ The renderer appends this ordered list to the supplied root.
 | `data-notify-theme`   | `'light' \| 'dark'`                 | Resolved theme. The `system` option is converted to the current preference.        |
 | `data-y-position`     | `'top' \| 'bottom'`                 | Vertical anchor.                                                                   |
 | `data-x-position`     | `'left' \| 'right' \| 'center'`     | Horizontal anchor.                                                                 |
-| `data-lifted`         | `'true' \| 'false'`                 | Whether pointer expansion currently lifts the stack.                               |
+| `data-lifted`         | `'true' \| 'false'`                 | Whether pointer or focus expansion currently lifts the stack.                      |
 | `data-rich-colors`    | `'true' \| 'false'`                 | Toaster rich-color default.                                                        |
 | `dir`                 | `'ltr' \| 'rtl'`                    | Resolved direction.                                                                |
 | `class`               | consumer string                     | Present when `className` is set.                                                   |
@@ -79,6 +86,9 @@ The renderer appends this ordered list to the supplied root.
 | `aria-atomic`         | `'false'`                           | Allows changed descendants rather than forcing the whole list as one announcement. |
 
 Generated container custom properties are `--offset-top`, `--offset-right`, `--offset-bottom`, `--offset-left`, their four `--mobile-offset-*` equivalents, `--width`, `--gap`, and `--front-toast-height`. Direction rules provide icon, SVG, button, and close-button margin and position properties.
+
+<span id="toast-item" class="legacy-fragment" aria-hidden="true"></span>
+<span id="data-attributes-1" class="legacy-fragment" aria-hidden="true"></span>
 
 ## Toast item contract
 
@@ -127,10 +137,13 @@ Renderer-owned item properties include `--index`, `--toasts-before`, `--z-index`
 | `[data-content]`                               | Title and description wrapper.                                                                                                             |
 | `[data-title]`                                 | Primary text.                                                                                                                              |
 | `[data-description]`                           | Optional secondary text.                                                                                                                   |
+| `[data-actions]`                               | Flexible action row created when both cancel and action exist; keeps the message width readable.                                           |
 | `[data-button][data-cancel]`                   | Native cancel button.                                                                                                                      |
 | `[data-button][data-action]`                   | Native action button.                                                                                                                      |
 
 The loading markup also uses `.notify-loading-wrapper`, `.notify-spinner`, `.notify-loading-bar`, and `.notify-loader`. These are the only built-in class selectors; consumer toast and container classes are optional.
+
+<span id="accessibility" class="legacy-fragment" aria-hidden="true"></span>
 
 ## Responsive and motion behavior
 
@@ -140,6 +153,70 @@ Use `duration: Infinity` or longer durations when content needs extra reading or
 
 ## Related
 
-- [Configuration](../../reference/configuration/)
+- [Configuration](../configuration/)
 - [Getting started](../../getting-started/)
 - [Accessibility](../../guides/accessibility/)
+
+<span id="recipes" class="legacy-fragment" aria-hidden="true"></span>
+<span id="common-pitfalls" class="legacy-fragment" aria-hidden="true"></span>
+
+## Practical styling recipes
+
+<span id="border-only-no-background" class="legacy-fragment" aria-hidden="true"></span>
+
+### A quieter, border-only toast
+
+Load this rule after the package stylesheet. Retain a visible border and focus treatment.
+
+```css
+[data-notify-toast][data-styled='true'] {
+  background: transparent;
+  box-shadow: none;
+}
+```
+
+<span id="tighter-stack-wider-toasts" class="legacy-fragment" aria-hidden="true"></span>
+<span id="mobile-offset-tweak" class="legacy-fragment" aria-hidden="true"></span>
+
+### A tighter stack
+
+Use the controller for the runtime-owned gap and offsets. Width is a container variable that can be overridden with an explicit, scoped CSS rule; the renderer writes its default inline.
+
+```ts
+createToaster({ gap: 10, offset: { bottom: 24 }, mobileOffset: { bottom: 80 } })
+```
+
+```css
+[data-notify-toaster].wide-notifications {
+  --width: 26.25rem !important;
+}
+```
+
+Pass className: 'wide-notifications' to opt into that width. Check it at narrow widths; the packaged mobile rules use the mobile offsets.
+
+### Loading spinner color
+
+The loading state uses the normal palette. Target the generated bar inside a loading notification when a custom spinner color is needed.
+
+```css
+[data-notify-toast][data-type='loading'] .notify-loading-bar {
+  background: currentColor;
+}
+```
+
+<span id="css-custom-properties-1" class="legacy-fragment" aria-hidden="true"></span>
+
+### Direction and layout variables
+
+The stylesheet derives --toast-icon-margin-start, --toast-icon-margin-end, --toast-svg-margin-start, --toast-svg-margin-end, --toast-button-margin-start, --toast-button-margin-end, --toast-close-button-start, --toast-close-button-end and --toast-close-button-transform from direction. Prefer dir: 'rtl' or 'ltr' over overriding this internal presentation family.
+
+The stack also derives --y, --lift, --lift-amount and --scale from position and state. These are presentation internals, not controller options. Leave renderer-owned measurements and swipe amounts alone.
+
+<span id="theme-variables" class="legacy-fragment" aria-hidden="true"></span>
+<span id="per-type-color-slots" class="legacy-fragment" aria-hidden="true"></span>
+<span id="grayscale-ramp" class="legacy-fragment" aria-hidden="true"></span>
+<span id="border-radius" class="legacy-fragment" aria-hidden="true"></span>
+
+### Palette slots
+
+Each of normal, success, info, warning and error has --TYPE-bg, --TYPE-text and --TYPE-border variables, with TYPE replaced by the slot name. There is no dedicated loading color slot: loading uses normal. The grayscale ramp --gray1 through --gray12 supplies the neutral theme. Set --border-radius on the container to change the toast corners.

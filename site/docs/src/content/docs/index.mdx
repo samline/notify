@@ -8,11 +8,9 @@ sidebar:
   order: 1
 ---
 
-import CardGrid from '../../../../shared/components/CardGrid.astro'
-import LinkCard from '../../../../shared/components/LinkCard.astro'
-import { href } from '../../lib/routes'
-
 `@samline/notify` turns a function call into a live, accessible toast. No runtime dependencies, no framework runtime, no build step. Import `toast`, mount one renderer, and every call becomes a list item inside a polite live region.
+
+<span id="what-this-package-is" class="legacy-fragment" aria-hidden="true"></span>
 
 ## Three ideas
 
@@ -22,15 +20,17 @@ Every toast lives in one module-level observer. The `toast` factory pushes a rec
 
 ### A vanilla renderer
 
-A mounted toaster creates a single `ol` with the `data-notify-toaster` attribute and one `li` with the `data-notify-toast` attribute per active toast. Every transition is a CSS rule driven by a `data-*` attribute, so the JavaScript only sets attributes and text.
+A mounted toaster creates a single `ol` with the `data-notify-toaster` attribute and one `li` with the `data-notify-toast` attribute per active toast. The renderer drives CSS transitions through attributes and custom properties, measures the stack and handles pointer and keyboard interactions.
 
 ### Two module entrypoints
 
 `@samline/notify` is the complete ESM and CommonJS API. `@samline/notify/browser` exposes the same surface as a single registry object. The standalone build at `dist/browser/global.global.js` registers that surface as `window.Notify`.
 
+<span id="why-notify" class="legacy-fragment" aria-hidden="true"></span>
+
 ## What it solves
 
-Notification libraries usually arrive with one of three problems: a wrapper that only works inside one framework, a stylesheet you cannot theme, or an API that hides when a toast actually goes away. Notify answers each one directly.
+Use Notify when you want ordinary DOM integration, CSS you control and an observable notification lifecycle.
 
 - **No framework lock-in.** The package is vanilla DOM. `Toaster` is a function alias of `createToaster()`, not a component, so React, Vue, Svelte, Astro and plain HTML all use the same code.
 - **Themeable without fighting the library.** The stylesheet targets `data-*` attributes and CSS custom properties. Override `--normal-bg` and the palette follows; override `--width` and the layout follows.
@@ -48,21 +48,49 @@ toast.success('Profile saved', {
 })
 ```
 
+<span id="choose-a-path" class="legacy-fragment" aria-hidden="true"></span>
+<span id="what-should-i-read-next" class="legacy-fragment" aria-hidden="true"></span>
+
 ## Choose your next step
 
-<CardGrid columns={2}>
-  <LinkCard href={href('getting-started')} title="Installation">
-    Install the package, import the stylesheet, and send your first toast.
-  </LinkCard>
-  <LinkCard href={href('guides/examples')} title="Examples">
-    End-to-end recipes for the flows you will build first.
-  </LinkCard>
-  <LinkCard href={href('reference/configuration')} title="Configuration">
-    Every toaster and toast option, with its default and its effect.
-  </LinkCard>
-  <LinkCard href={href('reference/api')} title="API reference">
-    The complete public surface, one function at a time.
-  </LinkCard>
-</CardGrid>
+- [Installation](getting-started/) — Install the package, load its stylesheet, and send your first toast.
+- [Examples](guides/examples/) — Complete working files and recipes for common notification flows.
+- [Configuration](reference/configuration/) — Every toaster and toast option, with defaults and effects.
+- [API reference](reference/api/) — The public functions and their lifecycle contracts.
 
 Release notes for every published version live in the [changelog](changelog/).
+
+## When to use each entrypoint
+
+Use the root ESM or CommonJS entry with a bundler. The browser module collects the same singleton helpers without installing a global. Plain HTML and CMS templates can load the standalone script and the separate stylesheet. Direct mounts are advanced: default mounts share state, and separate containers are not independent notification systems.
+
+<span id="index" class="legacy-fragment" aria-hidden="true"></span>
+<span id="file-by-file-map" class="legacy-fragment" aria-hidden="true"></span>
+
+## Documentation map
+
+- [Getting started](getting-started/)
+- [Runtime contract](reference/runtime-contract/)
+- [Accessibility](guides/accessibility/)
+- [Framework integrations](guides/frameworks/)
+- [Examples and recipes](guides/examples/)
+- [Toast configuration](reference/configuration/)
+- [Package entrypoints](reference/entrypoints/)
+- [Promise API](reference/promises/)
+- [CSS styling](reference/css-styling/)
+- [TypeScript reference](reference/typescript/)
+- [Browser builds](reference/browser/)
+- [Troubleshooting](reference/troubleshooting/)
+- [API reference](reference/api/)
+- [Toast lifecycle](guides/toast-lifecycle/)
+- [Actions and custom content](guides/actions-and-custom-content/)
+- [toast](api/toast/)
+- [createToaster](api/create-toaster/)
+- [configureToaster](api/configure-toaster/)
+- [destroyToaster](api/destroy-toaster/)
+- [getToaster](api/get-toaster/)
+- [resetToasts](api/reset-toasts/)
+
+## Versioning
+
+The current checkout prepares patch 3.2.1; it has not been published. Published 3.2.0 remains the CDN pin. Patch 3.2.1 repairs the global and lifecycle bugs without removing exports or introducing new required options. See the package changelog for the exact changes.

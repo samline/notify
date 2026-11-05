@@ -1,42 +1,111 @@
 # Framework integrations
 
-`@samline/notify` is a vanilla DOM package. It exports no React component, Vue plugin, or Svelte component; `Toaster` is a function alias of `createToaster()`.
+`@samline/notify` is a vanilla DOM package. It does not export a React component, a Vue plugin, a Svelte component, or a framework-specific context. `Toaster` is a function alias of `createToaster()`.
 
-Import CSS once, mount one singleton from client lifecycle code, and call `toast.*` from normal application code.
+Import the stylesheet once, mount the singleton from client lifecycle code, and use the exported `toast` object from event handlers or application services.
 
 ## React
 
 ```tsx
-useEffect(() => {
-  createToaster({ position: 'bottom-right' })
-  return () => destroyToaster()
-}, [])
+import { useEffect } from 'react'
+import { createToaster, destroyToaster, toast } from '@samline/notify'
+import '@samline/notify/styles.css'
+
+export function Notifications() {
+  useEffect(() => {
+    createToaster({ position: 'bottom-right' })
+    return () => destroyToaster()
+  }, [])
+
+  return (
+    <button type="button" onClick={() => toast.success('Saved')}>
+      Save
+    </button>
+  )
+}
 ```
 
-Mount this once near the client root. React Strict Mode can repeat the development setup/cleanup cycle; avoid placing it in multiple layout branches.
+Mount this integration once near the client root. React Strict Mode may run the development effect setup and cleanup cycle more than once; creating and destroying the singleton is safe, but destruction publishes dismissals. Avoid mounting the effect in multiple layout branches.
 
 ## Vue
 
-```ts
-onMounted(() => createToaster())
+```vue
+<script setup lang="ts">
+import { onMounted, onUnmounted } from 'vue'
+import { createToaster, destroyToaster, toast } from '@samline/notify'
+import '@samline/notify/styles.css'
+
+onMounted(() => createToaster({ position: 'bottom-right' }))
 onUnmounted(() => destroyToaster())
+
+function save() {
+  toast.success('Saved')
+}
+</script>
+
+<template>
+  <button type="button" @click="save">Save</button>
+</template>
 ```
+
+Use a single root or layout component rather than installing one toaster per view.
 
 ## Svelte
 
-```ts
-onMount(() => {
-  createToaster()
-  return destroyToaster
-})
+```svelte
+<script lang="ts">
+  import { onMount } from 'svelte'
+  import { createToaster, destroyToaster, toast } from '@samline/notify'
+  import '@samline/notify/styles.css'
+
+  onMount(() => {
+    createToaster({ position: 'bottom-right' })
+    return destroyToaster
+  })
+</script>
+
+<button type="button" onclick={() => toast.success('Saved')}>Save</button>
 ```
+
+`onMount` does not run during server rendering, which keeps DOM mounting on the client.
 
 ## SSR and hydration
 
-Root and browser-registry imports are safe without a DOM. Mounting is not: `createToaster()` requires a ready `document.body`, and `mountToaster()` requires an explicit DOM root. Do not create toast state during server rendering or share it between requests.
+The root entrypoint and the browser registry are safe to import without a DOM. Mounting is not: `createToaster()` requires a DOM and a ready `document.body`, and `mountToaster()` requires a DOM and an explicit root.
 
-## One renderer by default
+For Astro, Next.js, Nuxt, SvelteKit, and similar systems:
 
-Direct `mountToaster()` calls subscribe to global `ToastState` unless advanced code injects another state. Multiple default mounts can duplicate notifications and callbacks. Use the singleton lifecycle for normal integrations.
+- import the CSS through the framework's supported client or global stylesheet path,
+- call `createToaster()` in client-only lifecycle code,
+- avoid calling `toast.*` during server rendering, because state created on the server has no client renderer and should not be shared between requests,
+- destroy only when the application actually tears down the integration, then remount explicitly if client navigation needs it again.
 
-See [Getting started](getting-started.md), [Browser](browser.md), and [Troubleshooting](troubleshooting.md).
+## Shared state, not channels
+
+Do not create one direct mount per framework subtree. `mountToaster()` defaults to the global `ToastState`, so every such renderer receives the same events and can display duplicates. The legacy `id` and `toasterId` fields filter that shared stream; they do not isolate state, history, counters, or subscriptions, and they should not be treated as framework routing.
+
+If an application truly needs independently owned notification systems, use separate package instances or build contexts, or design an advanced integration with an injected state object.
+
+## Related
+
+- [Getting started](installation.md)
+- [Browser builds](browser.md)
+- [Troubleshooting](troubleshooting.md)
+
+## Complete integration files
+
+Mount the framework component once near the client root. React Strict Mode can repeat setup and cleanup in development; the root owns the singleton. Avoid competing owners that destroy a toaster still in use elsewhere.
+
+<!-- notify:frameworks -->
+
+## Astro navigation
+
+The Astro component mounts native buttons after page load and cleans up before a client-side page swap. Include it in the root layout. Server rendering must not create toast state or mount a renderer.
+
+## Shopify and WordPress
+
+Copy the matching published JavaScript and CSS assets into the theme as notify.global.js and notify.css. The CMS examples remain pinned to published 3.2.0 until 3.2.1 ships. Add notify-hosts.js once after the package script. Shopify assets belong in the layout rather than being loaded once per section; WordPress dependency handles establish execution order.
+
+Each data-notify-host scope owns its listeners. Multiple scopes share one toaster; removing the final owner destroys it. Shopify section load/unload and DOM replacement release the affected listeners. Do not use the preview's saved message as proof of a server-side save: call the notification only after your real submission succeeds.
+
+The Liquid and PHP files are integration fixtures, not certified deployments on a real store or WordPress installation. The shared host JavaScript is executed with multiple scopes, editor unload/reload and cleanup in Chromium; framework files are compiler checked locally.

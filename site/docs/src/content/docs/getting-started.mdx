@@ -9,10 +9,13 @@ sidebar:
 ---
 
 import Installer from '../../../../shared/components/Installer.astro'
-import Callout from '../../../../shared/components/Callout.astro'
 import DemoCode from '../../../../shared/components/DemoCode.astro'
 
-This page walks through the whole setup: install, stylesheet, first toast, and the lifecycle each public method participates in.
+Start with one mounted toaster and one notification. Choose package imports for a bundled app, or the complete HTML / CDN file for a page without a build step.
+
+This checkout prepares **3.2.1**, which is not yet published. The live preview uses that local source. npm and the pinned CDN files currently supply **3.2.0**; the CDN examples resolve its namespace wrapper.
+
+<span id="prerequisites" class="legacy-fragment" aria-hidden="true"></span>
 
 ## Install
 
@@ -30,6 +33,8 @@ import '@samline/notify/styles.css'
 
 Without the stylesheet the runtime still produces a semantic live list, but it has no fixed layout, no stack transitions, and no built-in button presentation.
 
+<span id="mount-and-notify" class="legacy-fragment" aria-hidden="true"></span>
+
 ## Mount one toaster
 
 `createToaster()` mounts the singleton renderer on `document.body`. Call it once, from client-side code, after the document body exists.
@@ -45,17 +50,21 @@ toast.success('Notify is ready')
 
 Calling `createToaster()` again does not append a second container. It applies the new options to the existing toaster and returns the same controller.
 
-<Callout title="Mounting needs a DOM">
-  `createToaster()` throws when there is no `document`, and throws again when `document.body` is not
-  ready yet. Move the call into your framework's client lifecycle hook, or wait for
-  `DOMContentLoaded`. The standalone build already handles this for its own first mount.
-</Callout>
+**Mounting needs a DOM**
+
+`createToaster()` throws when there is no `document`, and throws again when `document.body` is not
+ready yet. Move the call into your framework's client lifecycle hook, or wait for
+`DOMContentLoaded`. The standalone build already handles this for its own first mount.
+
+<span id="no-bundler" class="legacy-fragment" aria-hidden="true"></span>
 
 ## Working starter files
 
 Everything above, in one folder. The complete example loads the published browser build, mounts one toaster, and sends real toasts — no install and no build step.
 
 <DemoCode />
+
+<span id="one-shared-state" class="legacy-fragment" aria-hidden="true"></span>
 
 ## The lifecycle
 
@@ -66,23 +75,10 @@ Everything above, in one folder. The complete example loads the published browse
 5. **Dismiss.** Toasts auto-dismiss after their `duration`. `toast.dismiss(id)` ends one early, `toast.dismiss()` ends them all.
 6. **Destroy.** `destroyToaster()` unmounts the container, clears every timer, and clears the singleton. Nothing remounts it for you — call `createToaster()` again when you need it back.
 
-## What each method touches
-
-| Method                                     | DOM                                  | Timers                    | Subscribers                | Toaster state         |
-| ------------------------------------------ | ------------------------------------ | ------------------------- | -------------------------- | --------------------- |
-| `toast(...)` and variants                  | adds a list item                     | starts auto-dismiss       | notified                   | untouched             |
-| `toast.promise(...)`                       | adds a loading item, then updates it | none on the loading state | notified twice on settle   | untouched             |
-| `toast.custom(...)`                        | mounts the element you provide       | starts auto-dismiss       | notified                   | untouched             |
-| `toast.dismiss(id?)`                       | marks the item removed               | clears the pending timer  | notified                   | untouched             |
-| `toast.getToasts()` / `toast.getHistory()` | none                                 | none                      | not notified               | untouched             |
-| `createToaster(options?)`                  | mounts the container                 | none                      | subscribes once            | sets the singleton    |
-| `createToaster(options?)` again            | updates in place                     | restarted                 | not notified               | updates the singleton |
-| `toaster.update(options?)`                 | re-applies attributes and variables  | restarted                 | not notified               | updates the options   |
-| `destroyToaster()`                         | removes the container                | clears all timers         | notified per dropped toast | clears the singleton  |
-| `resetToasts()`                            | drops every item                     | clears all timers         | notified per dropped toast | untouched             |
-
 ## Next steps
 
 - The [toast lifecycle guide](../guides/toast-lifecycle/) explains how state, timers, and the DOM stay in sync.
 - [Configuration](../reference/configuration/) lists every option with its default.
 - [Browser builds](../reference/browser/) covers the `window.Notify` global for pages without a bundler.
+
+For the observer, DOM attributes, method side effects and advanced direct mounts, read the [Runtime contract](../reference/runtime-contract/).

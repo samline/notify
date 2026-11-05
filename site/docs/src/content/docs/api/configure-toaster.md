@@ -53,10 +53,10 @@ configureToaster({ theme: 'dark' })
 
 ## Edge cases
 
-Identical to [`createToaster`](../../api/create-toaster/). It throws in a non-DOM context, it is idempotent against an existing singleton, and it does not touch controllers created by `mountToaster`.
+Identical to [`createToaster`](../create-toaster/). It throws in a non-DOM context, it is idempotent against an existing singleton, and it does not touch controllers created by `mountToaster`.
 
 ## Related
 
-- [`createToaster`](../../api/create-toaster/) — the canonical entry.
-- [`destroyToaster`](../../api/destroy-toaster/) — unmount.
-- [`getToaster`](../../api/get-toaster/) — read.
+- [`createToaster`](../create-toaster/) — the canonical entry.
+- [`destroyToaster`](../destroy-toaster/) — unmount.
+- [`getToaster`](../get-toaster/) — read.

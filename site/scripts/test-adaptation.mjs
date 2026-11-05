@@ -22,6 +22,8 @@ try {
   await cp(root, workspace, { recursive: true, filter: path => !ignored.has(basename(path)) })
   await symlink(join(root, 'node_modules'), join(workspace, 'node_modules'), 'dir')
   await writeFile(join(temporary, 'CHANGELOG.md'), '# Fixture changelog\n')
+  await cp(join(root, '../skills'), join(temporary, 'skills'), { recursive: true })
+  await cp(join(root, '../docs'), join(temporary, 'docs'), { recursive: true })
   const config = JSON.parse(await readFile(join(workspace, 'project.config.json'), 'utf8'))
   config.package = {
     ...config.package,

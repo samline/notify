@@ -8,8 +8,6 @@ sidebar:
   order: 8
 ---
 
-import Callout from '../../../../../shared/components/Callout.astro'
-
 Notify has three related browser-facing forms. They share a `NotifyApi` shape but differ in loading and side effects.
 
 | Form                                                       | Installs `window.Notify` | Auto-mounts | Intended use                               |
@@ -18,9 +16,12 @@ Notify has three related browser-facing forms. They share a `NotifyApi` shape bu
 | Default and named `browser` from `@samline/notify/browser` | no                       | no          | Dedicated bundler subpath                  |
 | `dist/browser/global.global.js`                            | yes, in a DOM            | yes, once   | Classic script-tag usage without a bundler |
 
+<span id="global-object" class="legacy-fragment" aria-hidden="true"></span>
+<span id="surface-reference" class="legacy-fragment" aria-hidden="true"></span>
+
 ## The registry shape
 
-Both the module registries and the standalone global expose the same six members:
+The module registries and the resolved standalone registry expose the same six members:
 
 ```ts
 interface NotifyApi {
@@ -34,6 +35,9 @@ interface NotifyApi {
 ```
 
 `resetToasts` is a root export of the package, but it is not a member of the browser registry. Import it from `@samline/notify` when you need it.
+
+<span id="custom-toaster" class="legacy-fragment" aria-hidden="true"></span>
+<span id="using-the-same-shape-from-a-bundler" class="legacy-fragment" aria-hidden="true"></span>
 
 ## Root registry
 
@@ -59,6 +63,10 @@ browser.toast.info('Both names refer to the same registry')
 
 The subpath exports `browser` as both its default and its named export, and exports the `NotifyApi` type. It does not include the stylesheet and it does not mount automatically.
 
+<span id="script-tag" class="legacy-fragment" aria-hidden="true"></span>
+<span id="minimal-example" class="legacy-fragment" aria-hidden="true"></span>
+<span id="standalone-iife" class="legacy-fragment" aria-hidden="true"></span>
+
 ## Standalone build
 
 The standalone file `dist/browser/global.global.js` is a built artifact, not the `@samline/notify/browser` module export. Load the stylesheet separately, then load the script.
@@ -80,10 +88,11 @@ The standalone file `dist/browser/global.global.js` is a built artifact, not the
 
     <script src="https://cdn.jsdelivr.net/npm/@samline/notify@3.2.0/dist/browser/global.global.js"></script>
     <script>
-      window.Notify.configureToaster({ richColors: true, position: 'top-right' })
+      const notify = window.Notify.default ?? window.Notify
+      notify.configureToaster({ richColors: true, position: 'top-right' })
 
       document.querySelector('#notify').addEventListener('click', () => {
-        window.Notify.toast.promise(
+        notify.toast.promise(
           () => new Promise(resolve => window.setTimeout(() => resolve('ready'), 700)),
           {
             loading: 'Saving changes',
@@ -101,11 +110,11 @@ Do not combine a deferred external script with an immediately executing classic 
 
 Pin a published version in production, and keep the script and the stylesheet on the same version.
 
-<Callout title="The global is the module namespace">
-  The standalone bundle is a module, so the value it installs on `window.Notify` is the module
-  namespace: it holds `Notify`, `browser` and `default`. The registry is the default export, so
-  `window.Notify.default` and `window.Notify.Notify` are the same object. Resolve it once and
-  keep using the registry:
+**The global is the module namespace**
+
+Published 3.2.0 assigns the module namespace to `window.Notify`: it holds `Notify`, `browser` and `default`. The corrected local build exposes the registry directly; that fix has not yet been published. The registry is the default export, so
+`window.Notify.default` and `window.Notify.Notify` are the same object. Resolve it once and
+keep using the registry:
 
 ```js
 const notify = window.Notify.default ?? window.Notify
@@ -115,7 +124,9 @@ notify.toast.success('Ready')
 
 The resolution works whether the global is the namespace or the registry itself.
 
-</Callout>
+<span id="lifecycle-helpers" class="legacy-fragment" aria-hidden="true"></span>
+<span id="controller-methods" class="legacy-fragment" aria-hidden="true"></span>
+<span id="iife-lifecycle" class="legacy-fragment" aria-hidden="true"></span>
 
 ## Standalone lifecycle
 
@@ -124,18 +135,23 @@ When the standalone build is evaluated in a browser, it assigns `window.Notify`.
 The automatic mount happens only during the initialization of the script. After `Notify.destroyToaster()`, or after `Notify.getToaster().destroy()`, call `Notify.createToaster()` again before sending more visible notifications.
 
 ```js
-window.Notify.destroyToaster()
+const notify = window.Notify.default ?? window.Notify
+notify.destroyToaster()
 
 // Later, remount explicitly.
-window.Notify.createToaster({ position: 'bottom-left' })
-window.Notify.toast.success('Mounted again')
+notify.createToaster({ position: 'bottom-left' })
+notify.toast.success('Mounted again')
 ```
+
+<span id="ssr-safety" class="legacy-fragment" aria-hidden="true"></span>
 
 ## Server-side safety
 
 Importing the root entrypoint or the `@samline/notify/browser` registry does not access the DOM. The calls that mount are DOM-only and must run in client lifecycle code.
 
 The standalone build checks for a DOM before it does anything. In a runtime without a DOM it does not install a global and it does not mount. A server-side evaluation does not arrange a later client mount either: the browser has to load or hydrate the client entry separately.
+
+<span id="common-pitfalls" class="legacy-fragment" aria-hidden="true"></span>
 
 ## Hosting and base paths
 
@@ -154,6 +170,8 @@ Prefer self-hosted assets under a strict policy. Otherwise allow the chosen CDN 
 
 The renderer creates inline `style` declarations for layout and custom properties, so a policy that blocks style attributes may require a change to the policy or a custom integration. The `unstyled` option disables the built-in toast presentation but does not stop the renderer layout declarations.
 
+<span id="typescript-users" class="legacy-fragment" aria-hidden="true"></span>
+
 ## TypeScript global declaration
 
 ```ts
@@ -161,15 +179,15 @@ import type { NotifyApi } from '@samline/notify'
 
 declare global {
   interface Window {
-    Notify?: NotifyApi
+    Notify?: NotifyApi | { default: NotifyApi; Notify: NotifyApi; browser: NotifyApi }
   }
 }
 ```
 
-Check `window.Notify` when third-party script loading can fail. For the behavior of each member, see the [API reference](../../reference/api/).
+Check `window.Notify` when third-party script loading can fail. For the behavior of each member, see the [API reference](../api/).
 
 ## Related
 
-- [Entrypoints](../../reference/entrypoints/)
+- [Entrypoints](../entrypoints/)
 - [Getting started](../../getting-started/)
-- [Troubleshooting](../../reference/troubleshooting/)
+- [Troubleshooting](../troubleshooting/)

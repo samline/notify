@@ -1,6 +1,6 @@
 {
   "name": "@samline/notify",
-  "version": "3.2.0",
+  "version": "3.2.1",
   "description": "Accessible, dependency-free toast notifications for JavaScript and TypeScript, with ESM, CommonJS, and browser builds.",
   "type": "module",
   "license": "MIT",
@@ -77,20 +77,25 @@
     "site:configure": "npm --prefix site run configure",
     "site:check:design": "npm --prefix site run check:design",
     "site:check:release": "npm --prefix site run check:release",
-    "prepublishOnly": "npm run clean && npm run build && npm run typecheck && npm test && npm run test:package"
+    "prepublishOnly": "npm run clean && npm run build && npm run typecheck && npm test && npm run test:package",
+    "test:package:browser": "node test/package-browser.mjs"
   },
   "overrides": {
     "esbuild": "0.28.2",
     "nanoid": "3.3.18",
-    "postcss": "8.5.28"
+    "postcss": "8.5.28",
+    "vite": "7.3.7",
+    "source-map-js": "1.2.2"
   },
   "devDependencies": {
-    "@types/node": "^24.13.5",
-    "@vitest/coverage-v8": "^5.0.1",
+    "@playwright/test": "1.62.1",
+    "@types/node": "^24.19.2",
+    "@vitest/coverage-v8": "^5.0.5",
     "jsdom": "^26.1.0",
-    "prettier": "^3.9.7",
+    "prettier": "^3.9.10",
     "tsup": "^8.5.1",
     "typescript": "^5.9.3",
-    "vitest": "^5.0.1"
+    "vite": "7.3.7",
+    "vitest": "^5.0.5"
   }
 }

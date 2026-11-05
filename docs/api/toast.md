@@ -1,23 +1,23 @@
-# `toast`
+# toast
 
-The main toast factory. Pushes a new toast into the `Observer` and returns the id. The renderer reconciles a `<li data-notify-toast>` for the id on the next event-loop tick.
+The main toast factory. It pushes a new toast into the shared observer and returns its id. The subscribed renderer reconciles that id synchronously; the browser paints afterward.
 
 ## Signature
 
 ```ts
-function toast(message: Renderable, options?: ToastOptions): ToastId
+function toast(message: RenderableOrFactory, options?: ToastOptions): ToastId
 ```
 
 ## Parameters
 
-| Name      | Type                                         | Required | Description                                                                                                    |
-| --------- | -------------------------------------------- | -------- | -------------------------------------------------------------------------------------------------------------- |
-| `message` | [`Renderable`](../typescript.md#renderable)  | yes      | The title text. Strings and numbers render as `textContent`; `null` / `undefined` / `false` render as nothing. |
-| `options` | [`ToastOptions`](../options.md#toastoptions) | no       | Per-toast options — `id`, `description`, `type`, `duration`, `action`, `cancel`, etc.                          |
+| Name      | Type           | Required | Description                                                                                                        |
+| --------- | -------------- | -------- | ------------------------------------------------------------------------------------------------------------------ |
+| `message` | `Renderable`   | yes      | The title text. Strings and numbers render as `textContent`; `null`, `undefined`, and `false` render as nothing.   |
+| `options` | `ToastOptions` | no       | Per-toast options: `id`, `description`, `type`, `duration`, `action`, `cancel`, and the rest of the toast options. |
 
 ## Returns
 
-A [`ToastId`](../typescript.md#toastid) — `number | string`. Use it to dismiss the toast early or to update it in place.
+A `ToastId`, which is `number | string`. Use it to dismiss the toast early or to update it in place.
 
 ## Examples
 
@@ -61,54 +61,52 @@ await uploadFile(file)
 toast.success('Upload complete', { id })
 ```
 
-The second call reuses the same id, so the same `<li data-notify-toast data-id="<id>">` is updated in place — no second `<li>` is rendered. The auto-dismiss timer is also reset.
-
----
+The second call reuses the same id, so the same element is updated in place. No second item is rendered, and the auto-dismiss timer is reset.
 
 ## `toast.variants`
 
-The variant helpers are sugar for `toast(message, { ...options, type: 'X' })`. Every one returns a `ToastId` and accepts the same `ToastOptions` shape (minus `type`, which the variant forces).
+The variant helpers are sugar for `toast(message, { ...options, type: 'X' })`. Every one returns a `ToastId` and accepts the same `ToastOptions` shape.
 
 ```ts
-toast.success(message, options?)
-toast.error(message, options?)
-toast.info(message, options?)
-toast.warning(message, options?)
-toast.loading(message, options?)
-toast.message(message, options?)  // alias of the callable form
+toast.success('Saved', options)
+toast.error('Save failed', options)
+toast.info('An update is available', options)
+toast.warning('Review your changes', options)
+toast.loading('Saving…', options)
+toast.message('Changes received', options) // alias of the callable form
 ```
 
-The only difference between the variants is the `type` they set:
+The only difference between the variants is the type they set:
 
-| Variant         | Forced `type` | Auto-dismiss                                                                    |
-| --------------- | ------------- | ------------------------------------------------------------------------------- |
-| `toast.success` | `'success'`   | yes                                                                             |
-| `toast.error`   | `'error'`     | yes                                                                             |
-| `toast.info`    | `'info'`      | yes                                                                             |
-| `toast.warning` | `'warning'`   | yes                                                                             |
-| `toast.loading` | `'loading'`   | **no** — resolved manually with `toast.success({ id })` / `toast.error({ id })` |
-| `toast.message` | `'normal'`    | yes                                                                             |
-| `toast(...)`    | `'normal'`    | yes                                                                             |
+| Variant         | Forced `type` | Auto-dismiss                                 |
+| --------------- | ------------- | -------------------------------------------- |
+| `toast.success` | `'success'`   | yes                                          |
+| `toast.error`   | `'error'`     | yes                                          |
+| `toast.info`    | `'info'`      | yes                                          |
+| `toast.warning` | `'warning'`   | yes                                          |
+| `toast.loading` | `'loading'`   | **no**; resolve it manually with the same id |
+| `toast.message` | `'normal'`    | yes                                          |
+| `toast(...)`    | `'normal'`    | yes                                          |
 
-You can still pass `duration: Infinity` on a non-loading variant to suppress the auto-dismiss.
+You can still pass `duration: Infinity` on a non-loading variant to suppress the auto-dismiss:
 
 ```ts
 toast.info('Long heads up', { duration: Infinity })
 ```
 
----
-
 ## `toast.custom`
 
-Mount rich content inside a toast. Accepts either an `HTMLElement` you own or a callback that fills a container.
+Mount rich content inside a toast. It accepts either an `HTMLElement` you own or a callback that fills a container.
 
-## Signature
+### Signature
 
 ```ts
-function toast.custom(content: CustomContent, options?: ToastOptions): ToastId
+declare namespace toast {
+  function custom(content: CustomContent, options?: ToastOptions): ToastId
+}
 ```
 
-`CustomContent` is `HTMLElement | ((container: HTMLElement) => void)` — see [`typescript.md`](../typescript.md#customcontent).
+`CustomContent` is `HTMLElement | ((container: HTMLElement) => void)`.
 
 ### Pre-built element
 
@@ -119,7 +117,7 @@ widget.textContent = 'Pre-built widget'
 toast.custom(widget, { duration: 8000 })
 ```
 
-The renderer appends `widget` directly. The toast body shows whatever the element renders to. The runtime does not wrap the element in any additional container.
+The renderer appends the element inside its div[data-custom] mount point.
 
 ### Callback
 
@@ -130,7 +128,6 @@ toast.custom((container) => {
   img.alt = ''
   img.width = 32
   img.height = 32
-  img.style.borderRadius = '50%'
 
   const text = document.createElement('div')
   text.innerHTML = `
@@ -143,44 +140,31 @@ toast.custom((container) => {
 })
 ```
 
-The renderer creates a `<div data-custom>` for you and passes it as the only argument. Your callback fills it with whatever DOM you own.
-
-> **Security note:** do not interpolate user-supplied HTML as `innerHTML`. Build DOM nodes (`createElement`, `textContent`) instead. The runtime does not sanitize custom content.
+The renderer creates the mount element and passes it as the only argument. Your callback fills it with whatever DOM you own.
 
 ### Caveats
 
-- The icon slot is replaced by the custom content — no icon, no loader.
-- The close button is rendered as usual (when `closeButton` is enabled), so consumers can still dismiss the toast.
-- The custom element is removed when the toast is dismissed and the unmount grace period (`TIME_BEFORE_UNMOUNT` = 200ms) elapses.
-
----
+- The custom content replaces the icon slot, so there is no icon and no loader.
+- No close button is generated for custom content, even when `closeButton` is enabled. Give the content its own dismissal control if it needs one.
+- The custom element is removed when the toast is dismissed and the unmount grace period elapses.
+- The runtime does not sanitize your DOM. Never interpolate user-supplied HTML as `innerHTML`.
 
 ## `toast.promise`
 
-Tie a loading → success/error transition to a real `Promise`. Reuses one id, so the DOM updates in place.
+Tie a loading to success or error transition to a real promise. It reuses one id, so the DOM updates in place.
 
-## Signature
-
-```ts
-function toast.promise<Data>(
-  promise: PromiseInput<Data>,
-  data?: PromiseData<Data>
-): { id?: ToastId; unwrap: () => Promise<Data> }
-```
-
-`PromiseInput` is `Promise<Data> | (() => Promise<Data>)`. The thunk form defers the work until after the loading toast is rendered.
-
-`PromiseData` is:
+### Signature
 
 ```ts
-interface PromiseData<ToastData = unknown> extends Omit<ToastOptions, 'description'> {
-  loading?: Renderable
-  success?: PromiseValue<ToastData>
-  error?: PromiseValue
-  description?: Renderable | ((data: ToastData | unknown) => Renderable | Promise<Renderable>)
-  finally?: () => void | Promise<void>
+declare namespace toast {
+  function promise<Data>(
+    input: PromiseInput<Data>,
+    data?: PromiseData<Data>
+  ): { id?: ToastId; unwrap: () => Promise<Data> }
 }
 ```
+
+`PromiseInput` is `Promise<Data> | (() => Promise<Data>)`. When data is supplied, the thunk is invoked synchronously after the loading state is published, without waiting for a browser paint. With no data, each unwrap() call invokes the thunk.
 
 ### Basic flow
 
@@ -192,15 +176,15 @@ toast.promise(fetchProfile(), {
 })
 ```
 
-The `loading` toast appears immediately (or not at all if you omit it). Once the promise settles, the same id is updated in place:
+The loading toast appears immediately, or not at all if you omit it. Once the promise settles, the same id is updated in place:
 
-- If the response is `Response.ok === false` or the value is an `Error`, `error` is invoked.
-- Otherwise `success` is invoked with the resolved value.
-- `finally` runs after the settled toast renders, regardless of outcome.
+- If the resolved value is a response whose `ok` is `false`, or it is an `Error`, the `error` value is used.
+- Otherwise the `success` value is used with the resolved value.
+- `finally` runs after the settled toast renders, regardless of the outcome.
 
 ### Return shape
 
-`toast.promise` returns `{ id, unwrap }` when `data.loading` is set; otherwise `{ unwrap }`. The `id` is the same id used for the loading and settled toasts. `unwrap` resolves to the original `Promise`'s resolved value, or rejects with the rejection reason. Use it when you need to await the outcome yourself.
+`toast.promise` returns an object with an `id` and an `unwrap` function. The `id` is present only when `data.loading` is set; it is the same id used for the loading and the settled toast. `unwrap` resolves to the original promise's value, or rejects with the original rejection reason.
 
 ```ts
 const { id, unwrap } = toast.promise(saveProfile(patch), {
@@ -218,9 +202,9 @@ try {
 }
 ```
 
-### `success` / `error` callbacks
+### `success` and `error` callbacks
 
-Each of `success` and `error` accepts either a `Renderable` (the message), a [`PromiseExtendedResult`](../typescript.md#promiseextendedresult) (an options-shaped object that lets you set `type`, `description`, `duration`, `action`, etc.), or a callback returning either:
+Each of `success` and `error` accepts either a `Renderable` message, a `PromiseExtendedResult` object that lets you set `type`, `description`, `duration`, `action`, and the rest of the toast options, or a callback returning either form:
 
 ```ts
 toast.promise(saveProfile(patch), {
@@ -249,31 +233,36 @@ toast.promise(() => fetch('/api/profile').then((r) => r.json()), {
 })
 ```
 
-The thunk form runs after the loading toast is on screen. Use it when the work should be deferred (e.g. behind a debounce or a click).
+With data supplied, the thunk runs immediately after loading is published. It does not wait for a paint, click, or debounce. Defer work in your application when that is required.
 
 ### Skip the loading toast
 
-Drop the `loading` key to only render the settled toast:
+Drop the `loading` key to render only the settled toast:
 
 ```ts
 toast.promise(
   fetch('/api/profile').then((r) => r.json()),
-  { success: (p) => `Loaded ${p.name}`, error: 'Failed' }
+  {
+    success: (p) => `Loaded ${p.name}`,
+    error: 'Failed'
+  }
 )
 ```
 
-The return shape in that case is `{ unwrap }` (no `id`).
+The return shape in that case has no `id`.
 
----
+See the [Promise API](../promises.md) for the full behavior of the id, the description, HTTP values, and `unwrap()`.
 
 ## `toast.dismiss`
 
 Drop one toast or every active toast.
 
-## Signature
+### Signature
 
 ```ts
-function toast.dismiss(id?: ToastId): ToastId | undefined
+declare namespace toast {
+  function dismiss(id?: ToastId): ToastId | undefined
+}
 ```
 
 ### Examples
@@ -287,69 +276,65 @@ const id = toast('Saved')
 toast.dismiss(id)
 ```
 
-The `<li>` is marked `data-removed="true"` so the exit transition runs. The actual DOM removal is scheduled after `TIME_BEFORE_UNMOUNT` (200ms by default). The id remains in the history returned by `toast.getHistory()`.
-
----
+The element is marked as removed so the exit transition runs, and the actual DOM removal is scheduled after the exit grace period. The id remains in the history returned by `toast.getHistory()`.
 
 ## `toast.getHistory`
 
-Read-only snapshot of every toast since page load, including dismissed ones.
+A defensive snapshot of the latest record for each id since the last reset, including dismissed records.
 
-## Signature
+### Signature
 
 ```ts
-function toast.getHistory(): ToastT[]
+declare namespace toast {
+  function getHistory(): ToastT[]
+}
 ```
 
-## Returns
+### Returns
 
-A fresh array of [`ToastT`](../typescript.md#toastt). Safe to mutate. The internal array is left intact.
+A fresh array of `ToastT` records. Safe to mutate. The internal array is left intact.
 
 ```ts
 const all = toast.getHistory()
 
-console.log(`There have been ${all.length} toasts since page load.`)
+console.log(`There are ${all.length} records since the last reset.`)
 ```
-
----
 
 ## `toast.getToasts`
 
-Read-only snapshot of every active toast (not yet dismissed).
+A read-only snapshot of every active toast that has not been dismissed.
 
-## Signature
+### Signature
 
 ```ts
-function toast.getToasts(): ToastT[]
+declare namespace toast {
+  function getToasts(): ToastT[]
+}
 ```
 
-## Returns
+### Returns
 
-A fresh array of [`ToastT`](../typescript.md#toastt). Safe to mutate. This is what the renderer iterates over on every event.
+A fresh array of `ToastT` records, newest first. Safe to mutate. This is what the renderer iterates over on every event.
 
 ```ts
 const active = toast.getToasts()
 
 if (active.length >= 3) {
-  toast.dismiss(active[0].id) // Drop the oldest to make room.
+  toast.dismiss(active.at(-1)!.id) // Drop the oldest to make room.
 }
 ```
 
----
-
 ## Edge cases
 
-- **Auto-increment id**: when `options.id` is omitted, the runtime assigns the next integer. The counter starts at 1 and is rewound by [`resetToasts()`](reset-toasts.md).
-- **Same id with different type**: re-using an id updates the existing toast in place. The runtime fingerprints the content (type, title, description, action, cancel) and re-fills only when one of those fields changed.
-- **Empty title**: `toast('')` or `toast(undefined)` renders a `<li>` with an empty `[data-title]`. The stylesheet still applies the visual treatment.
-- **Function title**: a `RenderableOrFactory` is invoked once on creation. The result is persisted on the toast, so the function is only called once per toast.
-- **Loading variant never auto-dismisses**: `toast.loading` does not schedule a timer. Resolve it manually with `toast.success(..., { id })` or `toast.error(..., { id })`.
-- **Promise responses**: when the resolved value is a `Response` with `ok === false`, the runtime routes to the `error` callback instead of `success`. Non-Response errors are caught and routed to `error` as well.
+- **Auto-increment id.** When `options.id` is omitted, the runtime assigns the next integer. The counter starts at `1` and is rewound by `resetToasts()`.
+- **Same id with a different type.** Reusing an id updates the existing toast in place. The runtime fingerprints the content and re-fills only when the type, title, description, action, or cancel changed.
+- **Empty title.** `toast('')` or `toast(undefined)` renders an item with an empty title element. The stylesheet still applies the visual treatment.
+- **Function title.** A `RenderableOrFactory` is invoked once on creation, and the result is persisted on the toast, so the function is only called once per toast.
+- **Loading never auto-dismisses.** `toast.loading` does not schedule a timer. Resolve it manually with `toast.success(..., { id })` or `toast.error(..., { id })`.
+- **Promise responses.** When the resolved value is a response whose `ok` is `false`, the runtime routes to the `error` callback instead of `success`.
 
 ## Related
 
-- [`toast.success` / `error` / `info` / `warning` / `loading` / `message`](#toastvariants) — sugar for `toast(..., { type })`.
-- [`toast.custom`](#toastcustom) — rich content.
-- [`toast.promise`](#toastpromise) — async transitions.
-- [`toast.dismiss`](#toastdismiss) — early dismiss.
 - [`createToaster`](create-toaster.md) — the toaster controller that renders the DOM.
+- [Promise API](../promises.md)
+- [Configuration](../options.md)

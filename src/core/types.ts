@@ -11,7 +11,7 @@ export type ToastType =
  *
  * - `string` / `number` — rendered as textContent.
  * - `boolean` — `true` renders as "true", `false`/`null`/`undefined` renders as nothing.
- * - `HTMLElement` / callback — for `custom()` rich content; the renderer mounts it.
+ * - DOM elements use the separate `CustomContent` type and `toast.custom()`.
  *
  * No JSX, no `ReactNode` — this is the vanilla/browser contract.
  */
@@ -69,7 +69,7 @@ export interface ToastOptions {
   onAutoClose?: (toast: ToastT) => void
   /**
    * Fires when the user clicks the toast body (NOT the close,
-   * action, or cancel buttons). Mirrors the legacy React
+   * action, cancel buttons, links, or editable controls). Mirrors the legacy React
    * `onClick` contract; the vanilla refactor dropped the click
    * handler entirely. Skipped while the toast is in `loading`
    * state (use the promise `success` / `error` callbacks for

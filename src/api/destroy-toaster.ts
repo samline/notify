@@ -9,7 +9,11 @@ export function destroyToaster(): void {
   if (!current) return
   // Publish dismissal events while the renderer is still subscribed so
   // lifecycle callbacks run before the singleton is unmounted.
-  toast.dismiss()
-  current.destroy()
-  clearToaster()
+  try {
+    toast.dismiss()
+  } finally {
+    current.destroy()
+    // A dismissal callback may have installed a replacement controller.
+    if (getToasterInstance() === current) clearToaster()
+  }
 }

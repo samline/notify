@@ -1,4 +1,3 @@
-import { demoFiles } from '../../../../../shared/lib/demo-files'
 import { project } from '../../../../../shared/lib/project.mjs'
 const text = (value: string) => [{ kind: 'text' as const, value }]
 const heading = (prefix: string, accent: string) => [
@@ -10,231 +9,171 @@ const code = (filename: string, source: string, language: 'html' | 'javascript' 
   code: source,
   language,
 })
-const source = await demoFiles
+export const initialization = {
+  esm: `import { createToaster, toast } from '@samline/notify'\nimport '@samline/notify/styles.css'\n\nconst toaster = createToaster({ richColors: true })\n\ndocument.querySelector('#save').addEventListener('click', () => {\n  toast.success('Changes saved')\n})`,
+  cdn: `// Load the CDN stylesheet and script first.\nconst notify = window.Notify.default ?? window.Notify\nconst toaster = notify.createToaster({ richColors: true })\n\ndocument.querySelector('#save').addEventListener('click', () => {\n  notify.toast.success('Changes saved')\n})`,
+}
 export default {
   hero: {
-    kicker: 'Dependency-free toast notifications',
+    kicker: 'Small library. Clear feedback.',
     title: project.name,
-    titleAccent: 'Every outcome, announced.',
-    description: project.description,
-    descriptionContinuation: '',
-    footnotes: [
-      'No runtime dependencies',
-      'ESM, CommonJS and browser builds',
-      'Typed for TypeScript',
-    ],
-    compatibilityLabel: 'What the package ships',
+    titleAccent: 'Keep people in the loop.',
+    description: 'Toast notifications for the moments that matter.',
+    descriptionContinuation: 'Confirm a save, follow a promise, or offer a way back.',
+    footnotes: ['Zero runtime dependencies', 'JavaScript & TypeScript', 'MIT licensed'],
+    compatibilityLabel: 'One small package. Right at home in your stack.',
     platforms: [
-      'ESM and CommonJS builds',
-      'Browser build, no bundler',
-      'TypeScript types included',
+      'JavaScript',
+      'TypeScript',
+      'React',
+      'Vue',
+      'Svelte',
+      'Astro',
+      'Shopify',
+      'WordPress',
     ],
   },
   features: {
-    eyebrow: '01 / The package at a glance',
-    title: 'Everything a toast needs.',
-    titleAccent: 'Nothing it does not.',
+    eyebrow: '01 / Feedback that fits',
+    title: 'A small moment.',
+    titleAccent: 'A clear next step.',
     items: {
       dependencies: {
-        title: 'The problem it solves',
+        title: 'Just the package',
         description: text(
-          'A saved form, an uploaded file, a failed request: Notify turns each outcome into one typed call, with no runtime dependency to ship.'
+          'No framework runtime or peer dependency. Import the toast API and its stylesheet, then mount one renderer.'
         ),
       },
       accessibility: {
-        title: 'Accessibility responsibilities',
+        title: 'Made to be read',
         description: text(
-          'Notify provides the live region, focusable toasts and keyboard controls. Your app still owns the wording, the timing and the contrast.'
+          'Polite live updates, keyboard controls and focus-paused timers. Your app chooses readable content, contrast and enough time to act.'
         ),
       },
       lifecycle: {
-        title: 'A clear lifecycle',
+        title: 'One place to mount',
         description: text(
-          'Mount one toaster, call the toast factory anywhere, update the options when the page changes, then destroy it on unmount.'
+          'Create one toaster at your client root. Keep its controller to update preferences, and destroy it when the integration leaves.'
         ),
       },
       entrypoints: {
-        title: 'Real entrypoints',
+        title: 'Package or script tag',
         description: text(
-          'One API in six delivery modes: the ESM package, the CommonJS build, the browser registry, the standalone global, the public types and the stylesheet.'
+          'Use ESM or CommonJS in your build, or a standalone browser script. The stylesheet is a separate asset in either setup.'
         ),
       },
       frameworks: {
-        title: 'Fits your workflow',
+        title: 'Your application, your flow',
         description: text(
-          'No React, Vue or Svelte component ships with the package. Mount the toaster from your client lifecycle and call toast from anywhere.'
+          'Use the ordinary DOM API from React, Vue, Svelte, Astro or a CMS. No framework-specific component or adapter is required.'
         ),
       },
       markup: {
-        title: 'Useful examples',
+        title: 'More than a success message',
         description: text(
-          'Four real flows run in the demo above: a success toast, an error toast, a promise that resolves, and a toast with an action.'
+          'Follow cancelable work, chain review and decision actions, keep a live activity stack, or build an editable card with your own DOM.'
         ),
       },
     },
   },
   runtimes: {
-    eyebrow: '02 / Choose your integration',
-    heading: heading('One API.', 'Six ways to load it.'),
+    eyebrow: '02 / Fit it into your stack',
+    heading: heading('Two ways in.', 'One toast API.'),
     description:
-      'Every entrypoint exposes the same toast factory and the same toaster lifecycle. Pick the module format your build expects, or load the standalone bundle in a page with no bundler.',
+      'Choose package imports or a plain script tag. The module registry is optional; types and styles are supporting resources.',
     items: {
       main: {
-        label: 'Package',
+        label: 'Package / ESM + CommonJS',
         entrypoint: '@samline/notify',
         description:
-          'The main entrypoint for bundlers. The ESM and CommonJS builds export the toast factory, the toaster lifecycle, the public types and the numeric constants, and install no global.',
-      },
-      vanilla: {
-        label: 'CommonJS',
-        entrypoint: "require('@samline/notify')",
-        description:
-          'The same public surface in a CommonJS build, for Node scripts and bundlers that still consume CJS. It installs no global either.',
+          'The toast factory, singleton lifecycle, types and advanced exports. Module imports do not install a global or mount a renderer.',
       },
       browser: {
-        label: 'Browser registry',
+        label: 'Optional module registry',
         entrypoint: '@samline/notify/browser',
         description:
-          'The importable browser registry: the same NotifyApi shape as a module-level singleton, for bundlers that want the browser ergonomics without a global.',
+          'The same singleton toast and toaster helpers collected in one object. This import does not create window.Notify.',
       },
       global: {
-        label: 'Standalone build',
+        label: 'HTML / CDN',
         entrypoint: 'window.Notify',
         description:
-          'The standalone bundle registers a window.Notify global and mounts a default toaster, so a plain HTML page can send a toast with no bundler at all.',
-      },
-      core: {
-        label: 'Types',
-        entrypoint: 'Public TypeScript declarations',
-        description:
-          'Every public type is exported and typed: ToastOptions, ToasterOptions, ToastT, ToastId, Renderable, CustomContent and the promise result types.',
+          'Load the standalone script and stylesheet. The script mounts a default toaster when the body is ready. Published 3.2.0 requires resolving its default registry.',
       },
       style: {
         label: 'Styles',
         entrypoint: '@samline/notify/styles.css',
         description:
-          'The renderer expects the packaged stylesheet. Import it once at your entry point so the data-attribute contract resolves into the design you see.',
+          'The required layout, stack, color and reduced-motion styles. Import once, then add your own CSS after the package stylesheet.',
       },
     },
   },
   gettingStarted: {
-    eyebrow: '03 / From install to interaction',
-    heading: heading('Three steps.', 'A real toast.'),
+    eyebrow: '03 / From install to feedback',
+    heading: heading('One button.', 'Your first toast.'),
     integrationDescription:
-      'Notify installs as one dependency-free package. Import the toast factory and the stylesheet, mount a single toaster at your entry point, and every call renders in the same place.',
-    integrationLabel: 'Read the getting started guide',
-    steps: {
-      install: 'Install the package',
-      markup: 'Add the triggers',
-      initialize: 'Send a toast',
-    },
-    installLabel: 'Choose your package manager',
-    installTabs: [
-      { id: 'npm', label: 'npm', code: `npm install ${project.npmName}` },
-      { id: 'pnpm', label: 'pnpm', code: `pnpm add ${project.npmName}` },
-      { id: 'yarn', label: 'yarn', code: `yarn add ${project.npmName}` },
-      { id: 'bun', label: 'bun', code: `bun add ${project.npmName}` },
-    ],
-    fullExampleLabel: 'Copy the complete example files',
-    markupDescription:
-      'The markup only marks where the user acts. Notify renders the toast itself, in the corner of the viewport, with its own stylesheet.',
+      'Install the package or load the CDN assets. Choose the matching initializer after the body is ready. Load main.js as a module for ESM, or with defer after the deferred CDN script.',
+    integrationLabel: 'Read the installation guide',
+    steps: { install: 'Load Notify', markup: 'Add a trigger', initialize: 'Mount and notify' },
+    fullExampleLabel: 'Copy complete working files',
+    markupDescription: 'Use a native button. Notify creates the notification markup for you.',
     examples: {
-      markup: code('index.html', source.markup, 'html'),
-      script: code('main.js', source.files[2].code, 'javascript'),
+      markup: code('index.html', '<button id="save" type="button">Save changes</button>', 'html'),
+      script: code('main.js', initialization.esm, 'javascript'),
     },
     docs: {
       description:
-        'Continue with the option reference when you need to change the position, the theme, the duration or the stylesheet variables.',
+        'Mount once near the client root. The examples below continue with this toaster; complete standalone files are available in the guide.',
       label: 'Explore the configuration reference',
     },
   },
   recipes: {
-    eyebrow: '04 / Useful patterns',
-    title: 'Three real flows.',
-    titleAccent: 'Copy them as they are.',
+    eyebrow: '04 / After the first toast',
+    title: 'Keep the feedback useful.',
+    titleAccent: 'Keep ownership clear.',
     description:
-      'Each recipe solves one task you will meet in a real app. The code is the API you would write, not a mock-up.',
-    examplesLabel: 'Explore the live examples',
+      'Continue from the instance above. Use the same toast id for progress, update the existing controller, and clean up when the application tears down.',
+    examplesLabel: 'Try the complete working examples',
     items: [
       {
-        title: 'Report a failed request',
-        context: 'Async feedback',
+        title: 'Update a notification in place',
+        context: 'Progress',
         docsRoute: 'api' as const,
-        docsLabel: 'Read the toast reference',
+        docsLabel: 'Read the toast API',
         description: text(
-          'A rejected request is not a console error. toast.promise ties the loading, success and error states to one id, so the same toast updates in place.'
+          'Keep the id returned by a loading toast. Replace its message and type when the task completes; loading itself has no automatic timeout.'
         ),
         code: code(
-          'toast-promise.js',
-          `import { createToaster, toast } from '@samline/notify'
-
-createToaster({
-  position: 'bottom-right',
-  richColors: true,
-  theme: 'system'
-})
-
-toast.promise(saveProfile(patch), {
-  loading: 'Saving profile…',
-  success: profile => \`Saved as \${profile.name}\`,
-  error: 'Could not save your profile'
-})`,
+          'progress.js',
+          `const id = toast.loading('Preparing your report…')\n\n// When your application finishes the work:\ntoast.success('Your report is ready', { id })`,
           'javascript'
         ),
       },
       {
-        title: 'Undo a destructive action',
-        context: 'Recoverable steps',
+        title: 'Change preferences without remounting',
+        context: 'Controller',
         docsRoute: 'options' as const,
-        docsLabel: 'Read the option reference',
-        description: text(
-          'Deleting something deserves a way back. The action option renders a native button inside the toast, and the toast stays on screen long enough to use it.'
-        ),
-        code: code(
-          'toast-action.js',
-          `import { createToaster, toast } from '@samline/notify'
-
-createToaster({
-  position: 'bottom-right',
-  richColors: true,
-  theme: 'system'
-})
-
-toast('Message archived', {
-  type: 'action',
-  duration: 8000,
-  action: {
-    label: 'Undo',
-    onClick: () => restoreMessage(id)
-  }
-})`,
-          'javascript'
-        ),
-      },
-      {
-        title: 'Own the toaster in one place',
-        context: 'Lifecycle',
-        docsRoute: 'lifecycle' as const,
         docsLabel: 'Read the configuration reference',
         description: text(
-          'Mount the singleton once at your app entry and destroy it when the view unmounts. createToaster is idempotent, so a second call updates the same toaster instead of duplicating it.'
+          'Update the existing toaster when your theme or layout changes. Omitted options keep their current values.'
         ),
         code: code(
-          'toaster-lifecycle.js',
-          `import { createToaster, destroyToaster, toast } from '@samline/notify'
-
-const toaster = createToaster({
-  position: 'bottom-right',
-  richColors: true,
-  theme: 'system'
-})
-
-toast.success('Changes saved')
-
-toaster.update({ duration: 8000 })
-
-// When the view unmounts:
-destroyToaster()`,
+          'preferences.js',
+          `toaster.update({\n  theme: 'dark',\n  position: 'top-right',\n  closeButton: true,\n})`,
+          'javascript'
+        ),
+      },
+      {
+        title: 'Leave the page clean',
+        context: 'Lifecycle',
+        docsRoute: 'lifecycle' as const,
+        docsLabel: 'Understand cleanup and remounting',
+        description: text(
+          'At application teardown, destroy the singleton and publish its dismissals. Mount again explicitly if the integration returns.'
+        ),
+        code: code(
+          'cleanup.js',
+          `import { destroyToaster } from '@samline/notify'\n\n// In your application or component cleanup:\ndestroyToaster()`,
           'javascript'
         ),
       },
@@ -244,32 +183,62 @@ destroyToaster()`,
     eyebrow: '05 / Before you build',
     heading: heading('A few details.', 'Clearly answered.'),
     items: {
-      docs: {
-        question: text('Where is the full documentation?'),
+      mount: {
+        question: text('Do I need a toaster before calling toast?'),
         answer: text(
-          'The documentation site holds the guides, the complete option reference and one page per public method. It is updated in the same release as the package.'
+          'Yes, for visible feedback. Module imports do not mount anything: call createToaster once after document.body exists. The standalone script auto-mounts once. Calling createToaster again updates the same singleton.'
         ),
       },
-      copy: {
-        question: text('Can I copy the examples?'),
+      frameworks: {
+        question: text('Can I use it with my framework or CMS?'),
         answer: text(
-          'Yes. Each example is copyable as separate files or as one complete document. The complete document loads Notify from the published CDN build, so it runs by opening index.html with no install and no build step.'
+          'Yes. Mount from the client lifecycle and load the stylesheet once. React, Vue, Svelte, Astro, Shopify and WordPress use the same DOM API; the integration guide explains cleanup and the limits of the CMS fixtures.'
         ),
       },
-      changes: {
-        question: text('How are changes documented?'),
+      promise: {
+        question: text('What does toast.promise return?'),
         answer: text(
-          'One changelog lists every release and marks the breaking ones. New options and methods appear in the API reference before the version that ships them is published.'
+          'An object with unwrap(), plus an id when a loading message was supplied. unwrap preserves the input outcome. A fulfilled HTTP error response can show an error notification while unwrap still fulfills with that response.'
+        ),
+      },
+      timer: {
+        question: text('Will people have enough time to read or act?'),
+        answer: text(
+          'Timers pause on hover, keyboard focus and a hidden document. Choose a duration suited to the content. Use Infinity with a usable close action for persistent notices; keep essential errors and actions in the page too.'
+        ),
+      },
+      style: {
+        question: text('Can I change the design or supply my own content?'),
+        answer: text(
+          'Yes. Override CSS variables, add classes, or supply DOM through toast.custom. Custom content is unstyled and has no generated close button, so your integration provides its appearance, labels and dismissal control.'
+        ),
+      },
+      multiple: {
+        question: text('Does each component need its own toaster?'),
+        answer: text(
+          'No. Mount the singleton near your application root. Direct mounts share global state unless you deliberately inject another state object; multiple mounts can display duplicates and repeat dismissal callbacks.'
+        ),
+      },
+      browser: {
+        question: text('Why do the CDN examples resolve Notify.default?'),
+        answer: text(
+          'Published 3.2.0 wraps its registry in a module namespace. The examples resolve that shape and the direct registry shape used by the corrected build. The correction is local until a new package release is published.'
+        ),
+      },
+      accessible: {
+        question: text('What accessibility work remains with my app?'),
+        answer: text(
+          'Notify supplies a polite live list, keyboard interaction and reduced-motion styles. You still own meaningful messages, contrast, timing, custom controls and testing with the assistive technologies your application supports.'
         ),
       },
     },
   },
   callToAction: {
-    eyebrow: 'Build with Notify',
-    heading: heading('Ready for the details?', 'Start here.'),
-    description: 'Install the package, or look up the exact option you need.',
+    eyebrow: 'A little feedback goes a long way',
+    heading: heading('Make the next step', 'a clear one.'),
+    description: 'Try an interaction, then bring it into your application.',
     docs: {
-      description: 'Guides, the full option reference and one page per public method.',
+      description: 'Installation, practical guides and the complete API for Notify.',
       label: 'Read the documentation',
     },
   },

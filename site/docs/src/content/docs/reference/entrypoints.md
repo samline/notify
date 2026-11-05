@@ -1,5 +1,6 @@
 ---
-title: 'Entrypoints'
+title: 'Package entrypoints'
+titleAccent: 'entrypoints'
 description: 'Choose between ESM, CommonJS, the root browser registry, the browser subpath, and the standalone build.'
 locale: en
 sidebar:
@@ -40,6 +41,8 @@ createToaster()
 toast.success('Saved')
 ```
 
+<span id="registry-object" class="legacy-fragment" aria-hidden="true"></span>
+
 ## Registry modules
 
 The root `browser` export and the default and named exports of `@samline/notify/browser` expose the same `NotifyApi` shape. Module imports do not install `window.Notify` and do not auto-mount.
@@ -58,20 +61,25 @@ The subpath also exports the `NotifyApi` type:
 import type { NotifyApi } from '@samline/notify/browser'
 ```
 
+<span id="standalone-iife" class="legacy-fragment" aria-hidden="true"></span>
+
 ## Standalone build
 
 ```html
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@samline/notify@3.2.0/dist/styles.css" />
 <script src="https://cdn.jsdelivr.net/npm/@samline/notify@3.2.0/dist/browser/global.global.js"></script>
 <script>
-  window.Notify.toast.success('Saved')
+  const notify = window.Notify.default ?? window.Notify
+  notify.toast.success('Saved')
 </script>
 ```
 
 The standalone build installs `window.Notify` and mounts the singleton immediately when `document.body` exists, or once on `DOMContentLoaded`. Pin a published version in production and keep the JavaScript and CSS versions aligned.
 
+<span id="next-steps" class="legacy-fragment" aria-hidden="true"></span>
+
 ## Related
 
-- [Browser builds](../../reference/browser/)
+- [Browser builds](../browser/)
 - [Getting started](../../getting-started/)
-- [TypeScript reference](../../reference/typescript/)
+- [TypeScript reference](../typescript/)

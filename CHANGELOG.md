@@ -17,6 +17,34 @@ marked as unpublished have a Git tag but are not present in the npm registry.
 
 - Moved the documentation from the retired Starlight app in `example/` to `site/docs/`, and redirected the previous public routes (`/getting-started/`, `/reference/*`, `/guides/*`) to their new location under `/docs/`.
 
+## [3.2.1] - Unreleased
+
+### Fixed
+
+- The standalone IIFE now exposes the registry directly as `window.Notify`; the bundler no longer overwrites it with the module namespace. ESM and CommonJS exports remain unchanged.
+- Promise notifications no longer reappear after dismissal, reset or singleton teardown, and an older promise cannot overwrite a newer same-id notification. Async formatters check ownership again after awaiting. `unwrap()` still preserves the original promise outcome.
+- Settled-only promise notifications retain their toast options. Omitted or failed result formatters dismiss their loading state instead of leaving it indefinitely.
+- Mounting renders buffered toast state immediately. Destroyed controllers and queued measurements cannot rearm timers. New notifications pause while the document is hidden.
+- Singleton teardown and reset complete even when consumer dismissal callbacks throw. Subscription dispatch tolerates a subscriber removing itself.
+
+- Hidden and exiting notifications are inert, and the keyboard shortcut focuses the newest visible notification. Lazy message factories now have matching public TypeScript types.
+
+- Custom width overrides now apply through the style map. Position updates refresh swipe direction and eligibility on existing notifications; canceled or opposite-direction gestures no longer displace or dismiss them.
+- Editable controls retain Backspace/Delete and text-selection gestures. Keyboard focus expands the stack for reading, and updated durations take effect while the document is hidden.
+
+- Rich-color success, information, warning and error messages meet normal-text contrast requirements in the default light palette.
+
+- Two-action notifications now place their controls below the message instead of squeezing the description into a narrow column. Long labels can wrap without overflowing.
+
+### Maintenance
+
+- Updated compatible development dependencies and pinned corrected Vite and source-map-js resolutions after the dependency audit. The runtime remains dependency-free.
+
+### Documentation
+
+- Rebuilt the notification examples and onboarding around working consumer tasks, with ESM and CDN files, historical fragment preservation, synchronized Markdown sources and complete host integration examples.
+- Version 3.2.1 is prepared locally and has not been published. CDN recipes remain pinned to published 3.2.0 and resolve its namespace compatibility issue explicitly.
+
 ## [3.2.0] - 2026-09-23
 
 ### Added

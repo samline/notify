@@ -1,6 +1,6 @@
-# `configureToaster(options?)`
+# configureToaster
 
-Intent-revealing alias of [`createToaster`](create-toaster.md). Same signature, same return type, same behaviour.
+The intent-revealing alias of `createToaster`. It has the same signature, the same return type, and the same behavior.
 
 ## Signature
 
@@ -12,10 +12,10 @@ function configureToaster(options?: ToasterOptions): ToasterController
 
 The two names exist to express intent at the call site:
 
-- `createToaster` — "I want to mount a fresh toaster (or update the existing one)."
+- `createToaster` — "I want to mount a toaster, or update the existing one."
 - `configureToaster` — "I want to tweak the existing toaster's configuration."
 
-In practice they are the same function — the singleton is mounted if missing, and updated in place if present. Pick the name that reads better in your call site:
+In practice they are the same function. The singleton is mounted if it is missing, and updated in place if it is present. Pick the name that reads better in your call site:
 
 ```ts
 // At app entry — "create the toaster."
@@ -27,7 +27,7 @@ configureToaster({ duration: 8000 })
 
 ## Returns
 
-A [`ToasterController`](../typescript.md#toastercontroller). The same instance every call.
+A `ToasterController`. It is the same instance on every call.
 
 ## Examples
 
@@ -40,13 +40,13 @@ configureToaster({
   richColors: true
 })
 
-// Update on theme change.
+// Update on a theme change.
 configureToaster({ theme: 'dark' })
 ```
 
 ## Edge cases
 
-Identical to [`createToaster`](create-toaster.md). Throws on non-DOM, idempotent on existing singletons, and does not touch `mountToaster` controllers.
+Identical to [`createToaster`](create-toaster.md). It throws in a non-DOM context, it is idempotent against an existing singleton, and it does not touch controllers created by `mountToaster`.
 
 ## Related
 

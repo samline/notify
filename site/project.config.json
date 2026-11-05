@@ -2,7 +2,7 @@
   "package": {
     "name": "Notify",
     "npmName": "@samline/notify",
-    "version": "3.2.0",
+    "version": "3.2.1",
     "description": "Accessible, dependency-free toast notifications for JavaScript and TypeScript, with ESM, CommonJS, and browser builds.",
     "author": "Samuel Olvera",
     "license": "MIT",

@@ -1,5 +1,6 @@
 ---
 title: 'Promise API'
+titleAccent: 'API'
 description: 'Complete toast.promise behavior for input thunks, loading and settled states, HTTP values, and unwrap.'
 locale: en
 sidebar:
@@ -12,10 +13,12 @@ sidebar:
 ## Signature
 
 ```ts
-function toast.promise<Data>(
-  input: Promise<Data> | (() => Promise<Data>),
-  data?: PromiseData<Data>
-): { id: ToastId; unwrap: () => Promise<Data> } | { id?: undefined; unwrap: () => Promise<Data> }
+declare namespace toast {
+  function promise<Data>(
+    input: Promise<Data> | (() => Promise<Data>),
+    data?: PromiseData<Data>
+  ): { id: ToastId; unwrap: () => Promise<Data> } | { id?: undefined; unwrap: () => Promise<Data> }
+}
 ```
 
 The input can be an already-started promise or a thunk. When `data` is supplied, a thunk is called immediately and synchronous throws become promise rejections. When `data` is omitted, no toast is rendered and the thunk is deferred until `unwrap()` is called.
@@ -36,6 +39,8 @@ const result = toast.promise(
 
 const profile = await result.unwrap()
 ```
+
+<span id="loading-and-settled-states" class="legacy-fragment" aria-hidden="true"></span>
 
 ## Loading and result ids
 
@@ -87,6 +92,8 @@ toast.promise(Promise.resolve({ name: 'Sam' }), {
 
 An extended result is spread into the settled toast. Its options can override the default settled `type`, duration, action, classes, and other `ToastOptions` fields.
 
+<span id="description-finally-and-unwrap" class="legacy-fragment" aria-hidden="true"></span>
+
 ## Description behavior
 
 `PromiseData.description` has two distinct forms:
@@ -95,6 +102,8 @@ An extended result is spread into the settled toast. Its options can override th
 - A function is not shown during loading. It is called only on the error path with the error value and may return a promise. It is not called for success.
 
 If an extended result also includes a `description`, the top-level resolved promise description is applied afterwards and takes precedence when it is defined.
+
+<span id="http-and-error-values" class="legacy-fragment" aria-hidden="true"></span>
 
 ## HTTP `Response` and `Error` values
 
@@ -128,6 +137,8 @@ Errors thrown by the success or error rendering callbacks, or by `finally`, do n
 
 Calling `unwrap()` more than once observes the same already-created outcome when `data` was provided. In the special no-`data` thunk form, each `unwrap()` invocation calls the thunk again, because no input promise was created up front.
 
+<span id="guidance" class="legacy-fragment" aria-hidden="true"></span>
+
 ## Loading-state guidance
 
 - Use a loading toast only when the operation is likely to last long enough to notice.
@@ -139,4 +150,10 @@ Calling `unwrap()` more than once observes the same already-created outcome when
 
 - [`toast.promise`](../../api/toast/)
 - [Examples](../../guides/examples/)
-- [TypeScript reference](../../reference/typescript/)
+- [TypeScript reference](../typescript/)
+
+## Ownership and cleanup in 3.2.1
+
+Dismissing the loading toast, resetting global state, destroying the singleton, or replacing the same id prevents the pending operation from publishing a late result. This does not cancel your network request or change unwrap(): it still returns or throws the original outcome. Formatters are checked for ownership again after awaiting. If the selected result message is omitted or its formatter throws, the owned loading notification is dismissed.
+
+These safeguards are part of the prepared 3.2.1 patch. Published 3.2.0 does not contain them. Keep your application's cancellation and cleanup explicit until that release is available.

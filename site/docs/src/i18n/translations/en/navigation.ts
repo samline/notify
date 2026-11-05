@@ -31,6 +31,7 @@ export default {
     'reference/troubleshooting': 'Troubleshooting',
     'reference/api': 'API reference',
     'reference/browser': 'Browser builds',
+    'reference/runtime-contract': 'Runtime contract',
     'api/toast': 'toast',
     'api/create-toaster': 'createToaster',
     'api/destroy-toaster': 'destroyToaster',

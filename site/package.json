@@ -13,9 +13,9 @@
   ],
   "scripts": {
     "dev": "node scripts/assets.mjs && node scripts/dev.mjs",
-    "build": "node scripts/assets.mjs && npm run build --workspace docs && npm run build --workspace landing && node scripts/assemble.mjs && node scripts/check-site.mjs",
+    "build": "node scripts/assets.mjs && npm run build --workspace docs && npm run build --workspace landing && node scripts/assemble.mjs && node scripts/check-site.mjs && npm run check:migration",
     "preview": "npm run preview --workspace landing -- --host 127.0.0.1 --port 4330",
-    "check": "node scripts/check-config.mjs && npm run check:design && npm run check --workspace landing && npm run check --workspace docs",
+    "check": "npm run check:docs && npm run check:integrations && node scripts/check-config.mjs && npm run check:design && npm run check --workspace landing && npm run check --workspace docs",
     "format": "prettier --plugin prettier-plugin-astro --write .",
     "format:check": "prettier --plugin prettier-plugin-astro --check .",
     "test": "node --test tests/*.test.mjs",
@@ -25,12 +25,22 @@
     "postinstall": "node scripts/assets.mjs",
     "check:release": "node scripts/check-release.mjs",
     "test:adaptation": "node scripts/test-adaptation.mjs",
-    "check:design": "node scripts/check-design.mjs"
+    "check:design": "node scripts/check-design.mjs",
+    "sync:docs": "node scripts/sync-docs.mjs",
+    "check:docs": "node scripts/sync-docs.mjs --check",
+    "check:integrations": "node scripts/check-integrations.mjs && node scripts/check-recipe-types.mjs",
+    "check:migration": "node scripts/check-migration.mjs"
   },
   "devDependencies": {
     "@playwright/test": "1.62.1",
+    "@types/react": "^19.3.0",
+    "@vue/compiler-sfc": "^3.5.44",
     "axe-core": "^4.14.0",
+    "esbuild": "^0.28.2",
+    "postcss": "8.5.28",
     "prettier": "^3.9.10",
-    "prettier-plugin-astro": "^1.1.1"
+    "prettier-plugin-astro": "^1.1.1",
+    "react": "^19.3.1",
+    "svelte": "^5.57.3"
   }
 }

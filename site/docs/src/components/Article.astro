@@ -32,6 +32,11 @@ const t = getI18n(Astro)
 </script>
 
 <style>
+  .article :global(.legacy-fragment) {
+    display: block;
+    height: 0;
+    scroll-margin-top: calc(var(--docs-header-height, 4.5rem) + 2.5rem);
+  }
   .article {
     display: block;
     min-width: 0;

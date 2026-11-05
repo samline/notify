@@ -101,9 +101,9 @@ test('Home, Examples and Docs share the title font pairing and actual preview', 
   }
   for (const path of ['', 'examples/', 'docs/guides/examples/']) {
     await page.goto(path || './')
-    const demo = page.locator('package-site-demo')
-    await demo.getByRole('button', { name: 'Show success', exact: true }).click()
-    await expect(demo.locator('output')).toHaveText('1')
+    const demo = page.locator('package-site-demo[data-preset=save]').first()
+    await demo.getByRole('button', { name: 'Save changes', exact: true }).click()
+    await expect(demo.locator('[data-demo-result]')).toContainText('Profile saved')
     await expect(page.locator('li[data-notify-toast][data-type="success"]')).toBeVisible()
   }
 })
@@ -114,8 +114,8 @@ test('file tabs copy exact highlighted source and feedback resets independently'
   await context.grantPermissions(['clipboard-read', 'clipboard-write'])
   for (const path of ['examples/', 'docs/guides/examples/']) {
     await page.goto(path || './')
-    await page.getByText('Explore the code', { exact: true }).click()
-    const viewer = page.locator('[data-code-files]')
+    await page.getByText('Explore the code', { exact: true }).first().click()
+    const viewer = page.locator('[data-code-files]').filter({ visible: true }).first()
     for (const label of ['HTML', 'CSS', 'JavaScript', 'Complete file']) {
       await viewer.getByRole('tab', { name: label, exact: true }).click()
       const panel = viewer.getByRole('tabpanel', { name: label, exact: true })
@@ -131,8 +131,8 @@ test('file tabs copy exact highlighted source and feedback resets independently'
 })
 test('copied files and complete document actually run', async ({ page, context }) => {
   await page.goto('examples/')
-  await page.getByText('Explore the code', { exact: true }).click()
-  const viewer = page.locator('[data-code-files]')
+  await page.getByText('Explore the code', { exact: true }).first().click()
+  const viewer = page.locator('[data-code-files]').filter({ visible: true }).first()
   const files: Record<string, string> = {}
   for (const label of ['HTML', 'CSS', 'JavaScript', 'Complete file']) {
     await viewer.getByRole('tab', { name: label, exact: true }).click()
@@ -179,7 +179,9 @@ test('copied files and complete document actually run', async ({ page, context }
     })
     if (mode === 'separate') await example.goto('https://example.test/index.html')
     else await example.setContent(files['Complete file'])
-    await example.getByRole('button', { name: 'Show success', exact: true }).click()
+    await example.getByRole('button', { name: 'Save changes', exact: true }).click()
+    await expect(example.getByRole('button', { name: 'Save changes', exact: true })).toBeEnabled()
+    await expect(example.locator('[data-demo-result]')).toContainText('Profile saved')
     await expect(example.locator('li[data-notify-toast]')).toHaveCount(1)
     await example.evaluate(() => (window.Notify.default ?? window.Notify).toast.dismiss())
     await expect(example.locator('li[data-notify-toast]')).toHaveCount(0)
@@ -187,14 +189,16 @@ test('copied files and complete document actually run', async ({ page, context }
       window.dispatchEvent(new PageTransitionEvent('pagehide', { persisted: true }))
       window.dispatchEvent(new PageTransitionEvent('pageshow', { persisted: true }))
     })
-    await example.getByRole('button', { name: 'Show success', exact: true }).click()
+    await example.getByRole('button', { name: 'Save changes', exact: true }).click()
+    await expect(example.getByRole('button', { name: 'Save changes', exact: true })).toBeEnabled()
+    await expect(example.locator('[data-demo-result]')).toContainText('Profile saved')
     await expect(example.locator('li[data-notify-toast]')).toHaveCount(1)
     await example.evaluate(() => (window.Notify.default ?? window.Notify).toast.dismiss())
     await expect(example.locator('li[data-notify-toast]')).toHaveCount(0)
     await example.evaluate(() =>
       window.dispatchEvent(new PageTransitionEvent('pagehide', { persisted: false }))
     )
-    await example.getByRole('button', { name: 'Show success', exact: true }).click()
+    await example.getByRole('button', { name: 'Save changes', exact: true }).click()
     await expect(example.locator('li[data-notify-toast]')).toHaveCount(0)
     expect(errors, mode).toEqual([])
     await example.close()
@@ -280,7 +284,7 @@ test('highlighting has the same computed palette across all three routes', async
       await page.evaluate(theme => {
         document.documentElement.dataset.theme = theme
       }, theme)
-      if (path) await page.getByText('Explore the code', { exact: true }).click()
+      if (path) await page.getByText('Explore the code', { exact: true }).first().click()
       const code = path
         ? page.locator('[data-code-files] pre[data-language=html]:visible').first()
         : page.locator('#how pre[data-language=html]:visible').first()

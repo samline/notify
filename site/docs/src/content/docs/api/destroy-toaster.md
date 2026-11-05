@@ -29,6 +29,8 @@ The state history is not cleared by this call. `toast.getToasts()` returns an em
 
 ## Examples
 
+<span id="spa-route-cleanup" class="legacy-fragment" aria-hidden="true"></span>
+
 ### Router cleanup
 
 ```ts
@@ -70,10 +72,10 @@ destroyToaster()
 
 - **No-op when nothing is mounted.** It does not throw, it returns immediately.
 - **Nothing remounts afterwards.** Call `createToaster()` again before you show more visible toasts.
-- **Controllers from `mountToaster` are not affected.** A second toaster built with `mountToaster` is independent of the singleton, so call `controller.destroy()` directly on it.
+- **Direct-mount containers are not destroyed.** Global-state mounts still receive the dismissals published by this function. Keep each direct controller and call its destroy() when its container should also be removed. Injected state can isolate a mount from global dismissals.
 
 ## Related
 
-- [`createToaster`](../../api/create-toaster/) — mount the singleton.
-- [`getToaster`](../../api/get-toaster/) — read the singleton.
-- [`resetToasts`](../../api/reset-toasts/) — drop toasts without unmounting the container.
+- [`createToaster`](../create-toaster/) — mount the singleton.
+- [`getToaster`](../get-toaster/) — read the singleton.
+- [`resetToasts`](../reset-toasts/) — drop toasts without unmounting the container.

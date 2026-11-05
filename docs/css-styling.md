@@ -1,213 +1,147 @@
 # CSS styling
 
-The runtime ships a single stylesheet (`@samline/notify/styles.css`) that the renderer expects. The stylesheet does not target any class names — it targets the `data-*` attributes the vanilla renderer writes on every element. Theme by overriding CSS variables; layout by overriding other variables; the rest follows.
-
-This page documents the full data-attribute contract and shows how to layer your own theming on top.
-
----
-
-## Importing the stylesheet
+Import the packaged stylesheet once in a client entrypoint:
 
 ```ts
 import '@samline/notify/styles.css'
 ```
 
-You only need to import it once. Importing it multiple times is harmless (the rules cascade over each other in source order). If you are using the IIFE bundle, copy the file from `dist/styles.css` to your own static asset and add a `<link rel="stylesheet" href="…">` instead.
+The standalone build does not bundle CSS. Load `dist/styles.css` with a `link` element instead. Without it, the renderer still creates an ordered live list, but it has no fixed layout, no stack transitions, no palette, and no built-in button presentation.
 
-The stylesheet expects the host page to use the CSS `--gap` math. The runtime sets a handful of CSS custom properties on the `<ol data-notify-toaster>` element — your stylesheet only needs to read them.
-
----
-
-## Toaster container
-
-One `<ol data-notify-toaster>` is appended to `document.body` when [`createToaster()`](api/create-toaster.md) is called.
-
-### Data-attributes
-
-| Attribute             | Values                          | Written from                                                                          | Description                                                                                                   |
-| --------------------- | ------------------------------- | ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
-| `data-notify-toaster` | `''`                            | always                                                                                | Marker — the stylesheet scopes every rule below this element.                                                 |
-| `data-notify-theme`   | `'light' \| 'dark' \| 'system'` | [`ToasterOptions.theme`](options.md#toasteroptions)                                   | Theme the stylesheet should use. `'system'` resolves via `prefers-color-scheme`.                              |
-| `data-x-position`     | `'left' \| 'right' \| 'center'` | derived from `position`                                                               | Horizontal anchor.                                                                                            |
-| `data-y-position`     | `'top' \| 'bottom'`             | derived from `position`                                                               | Vertical anchor.                                                                                              |
-| `data-lifted`         | `'true'`                        | always (when motion is allowed)                                                       | The container lifts on `hover: none + pointer: coarse` devices. The stylesheet flips it to suppress the lift. |
-| `data-rich-colors`    | `'true' \| 'false'`             | [`ToasterOptions.richColors`](options.md#toasteroptions)                              | When `true`, the per-type color slots use the rich background.                                                |
-| `dir`                 | `'ltr' \| 'rtl' \| 'auto'`      | [`ToasterOptions.dir`](options.md#toasteroptions)                                     | Text direction.                                                                                               |
-| `tabIndex`            | `-1`                            | always                                                                                | Container is focusable programmatically (not via tab) so screen readers can reach the list.                   |
-| `aria-label`          | `string`                        | [`ToasterOptions.containerAriaLabel`](options.md#toasteroptions) or `customAriaLabel` | Region label for assistive tech.                                                                              |
-| `class`               | `string`                        | [`ToasterOptions.className`](options.md#toasteroptions)                               | Optional extra class names.                                                                                   |
+## Three styling mechanisms
 
 ### CSS custom properties
 
-| Property                                                    | Default                           | Description                                                           |
-| ----------------------------------------------------------- | --------------------------------- | --------------------------------------------------------------------- |
-| `--offset-top`                                              | `VIEWPORT_OFFSET` (`24px`)        | Distance from the top edge.                                           |
-| `--offset-right`                                            | `VIEWPORT_OFFSET` (`24px`)        | Distance from the right edge.                                         |
-| `--offset-bottom`                                           | `VIEWPORT_OFFSET` (`24px`)        | Distance from the bottom edge.                                        |
-| `--offset-left`                                             | `VIEWPORT_OFFSET` (`24px`)        | Distance from the left edge.                                          |
-| `--mobile-offset-top`                                       | `MOBILE_VIEWPORT_OFFSET` (`16px`) | Distance from the top edge on coarse pointers.                        |
-| `--mobile-offset-right`                                     | `MOBILE_VIEWPORT_OFFSET` (`16px`) | Distance from the right edge on coarse pointers.                      |
-| `--mobile-offset-bottom`                                    | `MOBILE_VIEWPORT_OFFSET` (`16px`) | Distance from the bottom edge on coarse pointers.                     |
-| `--mobile-offset-left`                                      | `MOBILE_VIEWPORT_OFFSET` (`16px`) | Distance from the left edge on coarse pointers.                       |
-| `--width`                                                   | `TOAST_WIDTH` (`356`)             | Width of each toast.                                                  |
-| `--gap`                                                     | `GAP` (`14`)                      | Vertical gap between stacked toasts (in `px`).                        |
-| `--front-toast-height`                                      | `0px`                             | Height of the front-most toast; the renderer updates it after layout. |
-| `--toast-icon-margin-start` / `--toast-icon-margin-end`     | derived from `dir`                | Margin around the icon (`ltr` vs `rtl` aware).                        |
-| `--toast-svg-margin-start` / `--toast-svg-margin-end`       | derived from `dir`                | Margin around the SVG inside the icon.                                |
-| `--toast-button-margin-start` / `--toast-button-margin-end` | derived from `dir`                | Margin around the action/cancel button.                               |
-| `--toast-close-button-start` / `--toast-close-button-end`   | derived from `dir`                | Anchor of the close button.                                           |
-| `--toast-close-button-transform`                            | derived from `dir`                | Translate of the close button.                                        |
-
-You can override any of these on a per-page or per-mount basis:
+Override design tokens in your stylesheet after the package CSS:
 
 ```css
 [data-notify-toaster] {
-  --offset-bottom: 32px;
-  --gap: 16px;
-  --width: 380px;
+  --border-radius: 10px;
+  --normal-bg: #ffffff;
+  --normal-text: #172033;
+  --normal-border: #d8deea;
+  --success-bg: #ecfdf3;
+  --success-text: #086c3c;
+  --success-border: #a6e8c4;
 }
 ```
 
----
+This is usually the best theme mechanism. The built-in light and dark rules define the `normal`, `success`, `info`, `warning`, and `error` slots. Loading, action, and default types use the normal slots. Rich colors switch the typed toast backgrounds, borders, and text to their corresponding slots.
 
-## Toast item
+The stylesheet also uses a 12-step grayscale ramp, from `--gray1` to `--gray12`, on the container. Override those on `[data-notify-toaster]` to retheme the entire runtime at once.
 
-One `<li data-notify-toast>` per active toast id.
+### The `style` option
 
-### Data-attributes
+`ToasterOptions.style` is a JavaScript record applied to the container as inline declarations:
 
-| Attribute              | Values                                | Written from                                   | Description                                                                                                          |
-| ---------------------- | ------------------------------------- | ---------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
-| `data-notify-toast`    | `''`                                  | always                                         | Marker.                                                                                                              |
-| `data-id`              | `string`                              | `ToastOptions.id` (stringified)                | The toast id, stringified for the attribute selector.                                                                |
-| `data-type`            | `ToastType`                           | [`ToastOptions.type`](options.md#toastoptions) | Variant — `'normal' \| 'action' \| 'success' \| 'info' \| 'warning' \| 'error' \| 'loading' \| 'default'`.           |
-| `data-styled`          | `'true'`                              | always                                         | Gate for the built-in visual treatment. The stylesheet only applies the bg/border/color rules when this is `'true'`. |
-| `data-rich-colors`     | `'true' \| 'false'`                   | per-toast override or toaster default          | Whether this toast uses the rich color treatment.                                                                    |
-| `data-mounted`         | `'true' \| 'false'`                   | always (after mount)                           | Animation gate — the stylesheet flips `--y` to `translateY(0)` and `opacity` to `1` when this is `true`.             |
-| `data-removed`         | `'true' \| 'false'`                   | set to `'true'` on dismiss                     | The exit transition uses this attribute.                                                                             |
-| `data-visible`         | `'true' \| 'false'`                   | per index vs `visibleToasts`                   | `'false'` makes the toast invisible (`opacity: 0`, `pointer-events: none`).                                          |
-| `data-front`           | `'true' \| 'false'`                   | `index === 0`                                  | Whether this toast is the front-most of the stack.                                                                   |
-| `data-expanded`        | `'true' \| 'false'`                   | on hover / focus / `expand: true`              | Whether the stack is expanded.                                                                                       |
-| `data-y-position`      | `'top' \| 'bottom'`                   | derived from `position`                        | Vertical anchor of this toast (matches the toaster).                                                                 |
-| `data-x-position`      | `'left' \| 'right' \| 'center'`       | derived from `position`                        | Horizontal anchor.                                                                                                   |
-| `data-index`           | `string`                              | `index`                                        | Position in the visible stack.                                                                                       |
-| `data-swiping`         | `'true' \| 'false'`                   | during swipe                                   | Touch-swipe is in progress. The stylesheet suppresses the transition.                                                |
-| `data-swiped`          | `'true' \| 'false'`                   | after a real swipe                             | Disables text selection during swipe.                                                                                |
-| `data-swipe-out`       | `'true' \| 'false'`                   | set on swipe-dismiss                           | Triggers the `swipe-out-*` keyframe animation.                                                                       |
-| `data-swipe-direction` | `'left' \| 'right' \| 'up' \| 'down'` | swipe axis                                     | Which keyframe the stylesheet plays.                                                                                 |
-| `data-dismissible`     | `'true' \| 'false'`                   | `ToastOptions.dismissible`                     | Whether the close button is shown.                                                                                   |
-| `data-invert`          | `'true' \| 'false'`                   | `ToastOptions.invert`                          | Whether to flip fg/bg.                                                                                               |
-| `data-promise`         | `'true' \| 'false'`                   | `toast.promise` (internal)                     | Whether the toast is a `toast.promise` toast.                                                                        |
-| `data-disabled`        | `'true' \| 'false'`                   | type is `'loading'`                            | Whether the toast is in a non-interactive state.                                                                     |
-| `data-testid`          | `string`                              | `ToastOptions.testId`                          | E2E test hook.                                                                                                       |
-| `tabIndex`             | `0`                                   | always                                         | Toast is focusable so it can receive `focusin` / `focusout` to pause the auto-dismiss timer.                         |
-
-### CSS custom properties
-
-| Property                                | Default                                                 | Description                                                                                                                    |
-| --------------------------------------- | ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| `--y`                                   | `translateY(100%)` (or `translateY(-100%)` for `top-*`) | The translate transform applied by the stack layout. The stylesheet overrides this when `data-mounted` or `data-removed` flip. |
-| `--lift`                                | `1` (top) / `-1` (bottom)                               | Sign of the y-axis lift.                                                                                                       |
-| `--lift-amount`                         | `calc(var(--lift) * var(--gap))`                        | Distance to lift each stacked toast.                                                                                           |
-| `--scale`                               | `var(--toasts-before) * 0.05 + 1`                       | Per-toast scale, only applied to non-front stacked toasts.                                                                     |
-| `--index`                               | `0`                                                     | The toast's position in the visible stack.                                                                                     |
-| `--toasts-before`                       | `0`                                                     | How many toasts are in front of this one.                                                                                      |
-| `--z-index`                             | `1000 - index`                                          | Stack order.                                                                                                                   |
-| `--initial-height`                      | `auto`                                                  | The height captured at mount.                                                                                                  |
-| `--offset`                              | `0`                                                     | The runtime offset for stacked toasts (sum of front heights).                                                                  |
-| `--swipe-amount-x` / `--swipe-amount-y` | `0px`                                                   | Live translation during a swipe gesture.                                                                                       |
-
-### Inner elements
-
-The renderer mounts these inner elements in order:
-
-| Element                                        | Data-attribute      | When                                                                                               |
-| ---------------------------------------------- | ------------------- | -------------------------------------------------------------------------------------------------- |
-| `<button data-close-button data-disabled="…">` | `data-close-button` | When `closeButton` is true and the toast is not a `loading` toast.                                 |
-| `<div data-icon>…</div>`                       | `data-icon`         | Always (for the icon slot). Holds the SVG icon, the loader markup, or a `[data-custom]` container. |
-| `<div data-content>`                           | `data-content`      | Wrapper for the title + description.                                                               |
-| `<div data-title>`                             | `data-title`        | The primary text node.                                                                             |
-| `<div data-description>`                       | `data-description`  | When `ToastOptions.description` is set.                                                            |
-| `<button data-button data-cancel>`             | `data-cancel`       | When `ToastOptions.cancel` is set.                                                                 |
-| `<button data-button data-action>`             | `data-action`       | When `ToastOptions.action` is set.                                                                 |
-
----
-
-## Theme variables
-
-The stylesheet reads these per-theme color variables off the toaster and the toast itself. Override them on the matching selector to retheme the runtime.
-
-### Per-type color slots
-
-Every toast has four color slots that the stylesheet reads. They are the only colors you need to override to retheme the runtime:
-
-| Variable                                             | Used by                                       |
-| ---------------------------------------------------- | --------------------------------------------- |
-| `--normal-bg`, `--normal-text`, `--normal-border`    | `type: 'normal'`, `'action'`, `'default'`     |
-| `--success-bg`, `--success-text`, `--success-border` | `type: 'success'`                             |
-| `--info-bg`, `--info-text`, `--info-border`          | `type: 'info'`                                |
-| `--warning-bg`, `--warning-text`, `--warning-border` | `type: 'warning'`                             |
-| `--error-bg`, `--error-text`, `--error-border`       | `type: 'error'`                               |
-| `--loading-bg`, `--loading-text`, `--loading-border` | `type: 'loading'` (defaults to `--normal-bg`) |
-
-When `data-rich-colors="true"` the background is the rich color, the border is the rich color, and the text is the contrasting slot. Otherwise the background is a soft tint and the text is `--gray12`.
-
-### Grayscale ramp
-
-The stylesheet also uses a 12-step grayscale ramp on the toaster:
-
-| Variable   | Default             | Purpose           |
-| ---------- | ------------------- | ----------------- |
-| `--gray1`  | `hsl(0, 0%, 99%)`   | Page white.       |
-| `--gray2`  | `hsl(0, 0%, 97.3%)` | Hover background. |
-| `--gray3`  | `hsl(0, 0%, 95.1%)` | —                 |
-| `--gray4`  | `hsl(0, 0%, 93%)`   | —                 |
-| `--gray5`  | `hsl(0, 0%, 90.9%)` | Hover border.     |
-| `--gray6`  | `hsl(0, 0%, 88.7%)` | —                 |
-| `--gray7`  | `hsl(0, 0%, 85.8%)` | —                 |
-| `--gray8`  | `hsl(0, 0%, 78%)`   | —                 |
-| `--gray9`  | `hsl(0, 0%, 56.1%)` | Disabled fg.      |
-| `--gray10` | `hsl(0, 0%, 52.3%)` | —                 |
-| `--gray11` | `hsl(0, 0%, 43.5%)` | Muted text.       |
-| `--gray12` | `hsl(0, 0%, 9%)`    | Primary text.     |
-
-Override these on `[data-notify-toaster]` to retheme the entire runtime.
-
-### Border radius
-
-```css
-[data-notify-toaster] {
-  --border-radius: 8px;
-}
+```ts
+createToaster({
+  style: {
+    '--normal-bg': '#fffdf8',
+    '--border-radius': '12px',
+    'font-family': 'Inter, sans-serif'
+  }
+})
 ```
 
-The toast itself inherits `--border-radius` from the toaster, so a single override retheme every toast.
+It is not the same as declaring custom properties in CSS. It can contain ordinary CSS names, it has inline-style cascade priority, and it applies to one mount. In 3.2.1 the style map can override the default `--width`. The renderer reserves `--gap` and `--front-toast-height` after this map so CSS agrees with measured stack geometry; set spacing with the numeric `gap` option. Published 3.2.0 also overwrites `--width`: use the scoped external CSS recipe below with that version. There is no `width` toaster option. Replacing the map does not remove omitted ordinary declarations or palette keys; width and measured geometry are recomputed. To change one palette value while keeping a custom width, spread the existing `controller.options.style` into the new map.
 
----
+### Classes and `unstyled`
 
-## Recipes
+`ToasterOptions.className`, `ToastOptions.className`, and `ToastOptions.descriptionClassName` attach your classes. `unstyled: true` writes `data-styled="false"`, which disables the built-in toast-body presentation while retaining the renderer layout and state attributes. `toast.custom()` is always unstyled.
 
-### Brand-aligned success color
+## Container contract
 
-```css
-[data-notify-toaster] {
-  --success-bg: oklch(0.96 0.04 150);
-  --success-text: oklch(0.22 0.1 150);
-  --success-border: oklch(0.78 0.1 150);
-}
-```
+The renderer appends this ordered list to the supplied root.
 
-### Tighter stack, wider toasts
+| Attribute             | Values                              | Meaning                                                                            |
+| --------------------- | ----------------------------------- | ---------------------------------------------------------------------------------- |
+| `data-notify-toaster` | empty marker                        | Stylesheet scope.                                                                  |
+| `data-notify-theme`   | `'light' \| 'dark'`                 | Resolved theme. The `system` option is converted to the current preference.        |
+| `data-y-position`     | `'top' \| 'bottom'`                 | Vertical anchor.                                                                   |
+| `data-x-position`     | `'left' \| 'right' \| 'center'`     | Horizontal anchor.                                                                 |
+| `data-lifted`         | `'true' \| 'false'`                 | Whether pointer or focus expansion currently lifts the stack.                      |
+| `data-rich-colors`    | `'true' \| 'false'`                 | Toaster rich-color default.                                                        |
+| `dir`                 | `'ltr' \| 'rtl'`                    | Resolved direction.                                                                |
+| `class`               | consumer string                     | Present when `className` is set.                                                   |
+| `tabindex`            | `-1`                                | Allows programmatic focus without adding the container to the normal tab order.    |
+| `aria-label`          | consumer label or `'Notifications'` | Container name.                                                                    |
+| `aria-live`           | `'polite'`                          | Announces non-urgent changes.                                                      |
+| `aria-relevant`       | `'additions text'`                  | Announces additions and changed text, not removals.                                |
+| `aria-atomic`         | `'false'`                           | Allows changed descendants rather than forcing the whole list as one announcement. |
 
-```css
-[data-notify-toaster] {
-  --gap: 10px;
-  --width: 420px;
-  --offset-bottom: 24px;
-}
-```
+Generated container custom properties are `--offset-top`, `--offset-right`, `--offset-bottom`, `--offset-left`, their four `--mobile-offset-*` equivalents, `--width`, `--gap`, and `--front-toast-height`. Direction rules provide icon, SVG, button, and close-button margin and position properties.
 
-### Border-only (no background)
+## Toast item contract
+
+Each active state id has one toast item.
+
+| Attribute              | Values                                         | Meaning                                                                              |
+| ---------------------- | ---------------------------------------------- | ------------------------------------------------------------------------------------ |
+| `data-notify-toast`    | empty marker                                   | Toast selector.                                                                      |
+| `data-id`              | stringified id                                 | Public id for inspection; number and string ids can serialize identically.           |
+| `data-notify-key`      | type-prefixed internal id                      | Renderer lookup key that preserves the number and string distinction.                |
+| `data-type`            | `ToastType`                                    | Current variant.                                                                     |
+| `data-styled`          | `'true' \| 'false'`                            | Built-in presentation gate. False for custom content or `unstyled`.                  |
+| `data-rich-colors`     | `'true' \| 'false'`                            | Resolved toast and toaster setting.                                                  |
+| `data-promise`         | `'true' \| 'false'`                            | Whether the state record came from `toast.promise()`.                                |
+| `data-mounted`         | `'true' \| 'false'`                            | Entry-transition state.                                                              |
+| `data-removed`         | `'true' \| 'false'`                            | Exit-transition state.                                                               |
+| `data-visible`         | `'true' \| 'false'`                            | Whether the item is inside `visibleToasts`.                                          |
+| `data-front`           | `'true' \| 'false'`                            | Newest, front item.                                                                  |
+| `data-expanded`        | `'true' \| 'false'`                            | Expanded-stack state.                                                                |
+| `data-y-position`      | `'top' \| 'bottom'`                            | Resolved item position.                                                              |
+| `data-x-position`      | `'left' \| 'right' \| 'center'`                | Resolved item position.                                                              |
+| `data-index`           | integer string                                 | Newest-first stack index.                                                            |
+| `data-swiping`         | `'true' \| 'false'`                            | Active pointer swipe.                                                                |
+| `data-swiped`          | `'true' \| 'false'` when set                   | Whether pointer movement produced a swipe.                                           |
+| `data-swipe-out`       | `'true' \| 'false'`                            | Swipe-dismiss animation gate.                                                        |
+| `data-swipe-direction` | `'left' \| 'right' \| 'up' \| 'down'` when set | Dismissal animation direction.                                                       |
+| `data-dismissible`     | `'true' \| 'false'`                            | User-dismiss interaction gate.                                                       |
+| `data-invert`          | `'true' \| 'false'`                            | Resolved inversion.                                                                  |
+| `data-testid`          | consumer string                                | Optional test selector.                                                              |
+| `data-snapshot`        | internal serialized value                      | Renderer change-detection cache. Do not depend on its format.                        |
+| `data-duration`        | number or `'Infinity'` string                  | Renderer timer cache.                                                                |
+| `tabindex`             | `0`                                            | Makes the toast focusable for reading, pausing, keyboard activation, and dismissal.  |
+| `aria-busy`            | `'true' \| 'false'`                            | True for the loading type.                                                           |
+| `aria-label`           | variant prefix plus title, except for normal   | Exposes typed state such as `success: Saved`. Normal toasts rely on descendant text. |
+
+Renderer-owned item properties include `--index`, `--toasts-before`, `--z-index`, `--initial-height`, `--offset`, `--swipe-amount-x`, and `--swipe-amount-y`. Avoid overriding them.
+
+## Inner elements
+
+| Selector                                       | Element and condition                                                                                                                      |
+| ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `[data-close-button]`                          | Native button when close is requested and the content is neither loading nor custom. It also receives `data-disabled` and an `aria-label`. |
+| `[data-icon]`                                  | Icon wrapper for typed icons, the loading spinner, or custom content. Generated decorative icons are `aria-hidden`.                        |
+| `.notify-loading-wrapper[data-visible="true"]` | Loading spinner wrapper. The packaged renderer creates it as visible; the stylesheet also supports a false exit state.                     |
+| `[data-custom]`                                | Custom callback or element mount point.                                                                                                    |
+| `[data-content]`                               | Title and description wrapper.                                                                                                             |
+| `[data-title]`                                 | Primary text.                                                                                                                              |
+| `[data-description]`                           | Optional secondary text.                                                                                                                   |
+| `[data-actions]`                               | Flexible action row created when both cancel and action exist; keeps the message width readable.                                           |
+| `[data-button][data-cancel]`                   | Native cancel button.                                                                                                                      |
+| `[data-button][data-action]`                   | Native action button.                                                                                                                      |
+
+The loading markup also uses `.notify-loading-wrapper`, `.notify-spinner`, `.notify-loading-bar`, and `.notify-loader`. These are the only built-in class selectors; consumer toast and container classes are optional.
+
+## Responsive and motion behavior
+
+At a maximum width of 600 pixels, the stylesheet makes the toaster full-width within the mobile offsets. Under `prefers-reduced-motion`, it removes the Notify transitions and animations, including the spinner animation. JavaScript auto-dismiss timing is unchanged, and DOM cleanup uses its fallback delay.
+
+Use `duration: Infinity` or longer durations when content needs extra reading or interaction time. Reduced motion does not imply extended timing. See [Accessibility](accessibility.md).
+
+## Related
+
+- [Configuration](options.md)
+- [Getting started](installation.md)
+- [Accessibility](accessibility.md)
+
+## Practical styling recipes
+
+### A quieter, border-only toast
+
+Load this rule after the package stylesheet. Retain a visible border and focus treatment.
 
 ```css
 [data-notify-toast][data-styled='true'] {
@@ -216,36 +150,38 @@ The toast itself inherits `--border-radius` from the toaster, so a single overri
 }
 ```
 
+### A tighter stack
+
+Use the controller for the runtime-owned gap and offsets. Width is a container variable that can be overridden with an explicit, scoped CSS rule; the renderer writes its default inline.
+
+```ts
+createToaster({ gap: 10, offset: { bottom: 24 }, mobileOffset: { bottom: 80 } })
+```
+
+```css
+[data-notify-toaster].wide-notifications {
+  --width: 26.25rem !important;
+}
+```
+
+Pass className: 'wide-notifications' to opt into that width. Check it at narrow widths; the packaged mobile rules use the mobile offsets.
+
 ### Loading spinner color
 
+The loading state uses the normal palette. Target the generated bar inside a loading notification when a custom spinner color is needed.
+
 ```css
-[data-notify-toast][data-type='loading'] [data-icon] .notify-loading-bar {
-  background: var(--loading-text);
+[data-notify-toast][data-type='loading'] .notify-loading-bar {
+  background: currentColor;
 }
 ```
 
-### Mobile offset tweak
+### Direction and layout variables
 
-```css
-[data-notify-toaster] {
-  --mobile-offset-bottom: 24px;
-}
-```
+The stylesheet derives --toast-icon-margin-start, --toast-icon-margin-end, --toast-svg-margin-start, --toast-svg-margin-end, --toast-button-margin-start, --toast-button-margin-end, --toast-close-button-start, --toast-close-button-end and --toast-close-button-transform from direction. Prefer dir: 'rtl' or 'ltr' over overriding this internal presentation family.
 
----
+The stack also derives --y, --lift, --lift-amount and --scale from position and state. These are presentation internals, not controller options. Leave renderer-owned measurements and swipe amounts alone.
 
-## Accessibility
+### Palette slots
 
-The runtime does not announce anything to assistive tech. It applies `role="region"` (implicit via the `<ol>` with `aria-label`) on the container and `aria-label="Close toast"` on each close button. If you need richer screen-reader feedback (e.g. a live region that announces every new toast), add your own `<div aria-live="polite">` next to the toaster and append a hidden copy of every new title to it.
-
-`prefers-reduced-motion` is honored — the stylesheet suppresses the entry/exit transitions, the swipe-out keyframes, and the lift effect. The runtime still schedules the dismiss timer at the same pace; only the visual animation is skipped.
-
----
-
-## Common pitfalls
-
-- **Do not write your own CSS that targets class names.** The renderer does not set any class names. Target the `data-*` attributes instead, or override the CSS variables.
-- **The data-attributes are the source of truth, not the rendered text.** Re-theming a single toast should go through `ToastOptions.className` + your own `data-` selector — do not reach into the `<li>` and edit `textContent`.
-- **`data-rich-colors` cascades.** A toast that sets `richColors: true` only opts in that toast. The toaster default (`ToasterOptions.richColors`) opts in every toast that does not override it.
-- **Swipe-to-dismiss is disabled for centered positions.** There is no data-attribute you can set to re-enable it — it is a renderer-level decision driven by `position`.
-- **`prefers-reduced-motion` is honored only by the stylesheet.** The runtime still schedules the auto-dismiss timer at the normal pace.
+Each of normal, success, info, warning and error has --TYPE-bg, --TYPE-text and --TYPE-border variables, with TYPE replaced by the slot name. There is no dedicated loading color slot: loading uses normal. The grayscale ramp --gray1 through --gray12 supplies the neutral theme. Set --border-radius on the container to change the toast corners.

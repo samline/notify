@@ -39,14 +39,14 @@ test('delayed scripts reserve command and tab geometry without hiding source', a
     await page.locator('footer').waitFor({ state: 'attached' })
     await page.evaluate(() => Promise.all(Array.from(document.fonts, font => font.load())))
     const command = page.locator('.install-shortcut')
-    const tabs = page.locator('package-site-demo [data-tabs]').first()
+    const tabs = page.locator('#demo [data-tabs]').first()
     for (const control of [command.locator('button'), tabs]) {
       await expect(control).toHaveAttribute('inert', '')
       await expect(control).toBeHidden()
       expect((await control.boundingBox())!.height).toBeGreaterThan(0)
     }
     const before = await command.boundingBox()
-    const header = page.locator('package-site-demo .studio-header')
+    const header = page.locator('#demo .studio-header')
     const headerBefore = await header.boundingBox()
     release()
     await page.waitForLoadState('networkidle')
@@ -54,7 +54,7 @@ test('delayed scripts reserve command and tab geometry without hiding source', a
     await expect(tabs).toBeVisible()
     expect(await command.boundingBox()).toEqual(before)
     expect(await header.boundingBox()).toEqual(headerBefore)
-    await expect(page.locator('package-site-demo [data-panel]:visible')).toHaveCount(1)
+    await expect(page.locator('#demo [data-panel]:visible')).toHaveCount(1)
   } finally {
     release()
   }
@@ -72,7 +72,7 @@ test('initial tab selection has no color transition, with normal keyboard intera
     })
   })
   await page.goto('./')
-  const tabs = page.locator('package-site-demo [data-tabs]').first()
+  const tabs = page.locator('#demo [data-tabs]').first()
   await expect(tabs).toBeVisible()
   await page.waitForTimeout(250)
   expect(await page.evaluate(() => Reflect.get(window, 'initialTabTransitions'))).toEqual([])
@@ -125,20 +125,20 @@ test('scopes reconnect once and an open drawer releases its lock on same-batch r
 }) => {
   await page.setViewportSize({ width: 390, height: 900 })
   await page.goto('./')
-  const demo = page.locator('package-site-demo')
+  const demo = page.locator('package-site-demo[data-preset=save]').first()
   await expect(demo).toHaveAttribute('data-mounted', 'true')
-  await demo.getByRole('button', { name: 'Show success', exact: true }).click()
-  await expect(demo.locator('output')).toHaveText('1')
+  await demo.getByRole('button', { name: 'Save changes', exact: true }).click()
+  await expect(demo.locator('[data-demo-result]')).toContainText('Profile saved')
   await page.evaluate(() => {
-    const root = document.querySelector('package-site-demo')!
+    const root = document.querySelector('package-site-demo[data-preset=save]')!
     const parent = root.parentNode!
     const next = root.nextSibling
     root.remove()
     parent.insertBefore(root, next)
   })
-  await expect(demo.locator('output')).toHaveText('0')
-  await demo.getByRole('button', { name: 'Show success', exact: true }).click()
-  await expect(demo.locator('output')).toHaveText('1')
+  await expect(demo.locator('[data-demo-action]')).toBeEnabled()
+  await demo.getByRole('button', { name: 'Save changes', exact: true }).click()
+  await expect(demo.locator('[data-demo-result]')).toContainText('Profile saved')
   const trigger = page.locator('[data-menu-trigger]')
   await trigger.click()
   await expect(trigger).toHaveAttribute('aria-expanded', 'true')
@@ -209,3 +209,29 @@ for (const control of ['menu', 'search']) {
     await expect(trigger).toBeFocused()
   })
 }
+
+test('Docs installation preserves the first code frame position while tabs initialize', async ({
+  page,
+}) => {
+  let release!: () => void
+  const ready = new Promise<void>(resolve => {
+    release = resolve
+  })
+  await page.route('**/_astro/*.js', async route => {
+    await ready
+    await route.continue()
+  })
+  try {
+    await page.goto('docs/getting-started/', { waitUntil: 'commit' })
+    const tabs = page.locator('package-site-tabs').first()
+    const frame = tabs.locator('[data-panel]').first().locator('.code-frame')
+    await frame.waitFor({ state: 'visible' })
+    await page.evaluate(() => document.fonts.ready)
+    const before = await frame.boundingBox()
+    release()
+    await expect(tabs.locator('[data-tabs]')).not.toHaveAttribute('inert')
+    expect(await frame.boundingBox()).toEqual(before)
+  } finally {
+    release()
+  }
+})

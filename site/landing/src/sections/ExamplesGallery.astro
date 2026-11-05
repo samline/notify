@@ -9,7 +9,8 @@ import Playground from '../../../shared/components/Playground.astro'
 import TextLink from '../../../shared/components/TextLink.astro'
 import { getI18n } from '../i18n/utils'
 import { project } from '../../../shared/lib/project.mjs'
-import demo from '../../../shared/i18n/translations/en/demo'
+import { presets, type DemoPreset } from '../../../shared/i18n/translations/en/demo'
+const recipes = Object.entries(presets) as [DemoPreset, (typeof presets)[DemoPreset]][]
 const t = getI18n(Astro).examples
 ---
 
@@ -25,7 +26,7 @@ const t = getI18n(Astro).examples
       align="center"
     />
     <div class:list={['gallery-actions']}>
-      <Button context="hero" href="#interaction" variant="primary">
+      <Button context="hero" href="#save" variant="primary">
         {t.exploreAction}
         <span aria-hidden="true">↓</span>
       </Button>
@@ -40,26 +41,30 @@ const t = getI18n(Astro).examples
     <div class:list={['gallery-index']}>
       <p class:list={['navigation-label']}>{t.navigation}</p>
       <nav aria-label={t.navigation} class:list={['recipe-navigation']}>
-        <Button variant="secondary" href="#interaction" class:list={['recipe-link']}>
-          {demo.title}
-          <span aria-hidden="true">↓</span>
-        </Button>
+        {recipes.map(([id, recipe]) => (
+          <Button variant="secondary" href={`#${id}`} class:list={['recipe-link']}>
+            {recipe.label}
+            <span aria-hidden="true">↓</span>
+          </Button>
+        ))}
       </nav>
     </div>
-    <section id="interaction" aria-labelledby="interaction-title" class:list={['recipe']}>
-      <SectionHeading
-        headingId="interaction-title"
-        eyebrow={t.recipeEyebrow}
-        class:list={['recipe-heading']}
-      >
-        {demo.title}
-      </SectionHeading>
-      <Playground showCode />
-    </section>
+    {recipes.map(([preset, recipe], index) => (
+      <section id={preset} aria-labelledby={`${preset}-title`} class:list={['recipe']}>
+        <SectionHeading
+          headingId={`${preset}-title`}
+          eyebrow={`${String(index + 1).padStart(2, '0')} / ${recipe.label}`}
+          class:list={['recipe-heading']}
+        >
+          {recipe.title}
+        </SectionHeading>
+        <Playground preset={preset} showCode />
+      </section>
+    ))}
     <div class:list={['resources']}>
       <p class:list={['basis-full', 'text-center', 'text-pretty']}>{t.possibilities}</p>
       <TextLink href={`${project.docsBase}guides/examples/`}>{t.guide}</TextLink>
-      <TextLink href={`${project.base}skills/package-site/SKILL.md`} download="SKILL.md">
+      <TextLink href={`${project.base}skills/notify/SKILL.md`} download="SKILL.md">
         {t.skill}
       </TextLink>
     </div>

@@ -1,6 +1,6 @@
-# `getToaster()`
+# getToaster
 
-Return the singleton toaster controller, or `null` if none is mounted.
+Return the singleton toaster controller, or `null` when none is mounted.
 
 ## Signature
 
@@ -10,7 +10,7 @@ function getToaster(): ToasterController | null
 
 ## Returns
 
-A [`ToasterController`](../typescript.md#toastercontroller) when one is mounted, or `null` otherwise. The reference is the same instance every call — there is exactly one singleton per page.
+A `ToasterController` when one is mounted, or `null` otherwise. The reference is the same instance on every call, because there is exactly one singleton per page. This function never mounts anything.
 
 ## Examples
 
@@ -23,8 +23,8 @@ import '@samline/notify/styles.css'
 createToaster({ position: 'bottom-right' })
 
 const controller = getToaster()
-controller?.element // <ol data-notify-toaster ...>
-controller?.options // { position: 'bottom-right', ... }
+controller?.element // the mounted container element
+controller?.options // the current merged options
 ```
 
 ### Guard before calling
@@ -44,7 +44,7 @@ function updateTheme(theme: 'light' | 'dark') {
 }
 ```
 
-### Live updates from a router / store
+### Live updates from a store
 
 ```ts
 import { getToaster } from '@samline/notify'
@@ -56,12 +56,12 @@ store.subscribe((state) => {
 
 ## Edge cases
 
-- **`null` when no toaster is mounted.** The function does not auto-mount — call `createToaster()` first.
-- **`mountToaster` controllers are not returned.** `getToaster` only sees the singleton. If you built a second toaster with `mountToaster`, keep your own reference.
-- **The reference is stable across calls.** The returned object is the same `ToasterController` instance for the lifetime of the toaster. `toaster.update(...)` mutates its internal state but the reference does not change.
+- **`null` when no toaster is mounted.** Call `createToaster()` first.
+- **Controllers from `mountToaster` are not returned.** `getToaster` only sees the singleton. If you built a second toaster with `mountToaster`, keep your own reference.
+- **The reference is stable across calls.** `toaster.update(...)` mutates its internal state, but the reference does not change.
 
 ## Related
 
 - [`createToaster`](create-toaster.md) — mount the singleton.
 - [`destroyToaster`](destroy-toaster.md) — unmount the singleton.
-- [`mountToaster`](../getting-started.md#browser-registry-helpers) — lower-level factory for multi-toaster UIs.
+- [Toast lifecycle](../guides/toast-lifecycle.md)

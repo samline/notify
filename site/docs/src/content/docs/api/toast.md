@@ -7,12 +7,12 @@ sidebar:
   order: 1
 ---
 
-The main toast factory. It pushes a new toast into the shared observer and returns its id. The renderer reconciles one list item for that id on the next event-loop tick.
+The main toast factory. It pushes a new toast into the shared observer and returns its id. The subscribed renderer reconciles that id synchronously; the browser paints afterward.
 
 ## Signature
 
 ```ts
-function toast(message: Renderable, options?: ToastOptions): ToastId
+function toast(message: RenderableOrFactory, options?: ToastOptions): ToastId
 ```
 
 ## Parameters
@@ -75,12 +75,12 @@ The second call reuses the same id, so the same element is updated in place. No 
 The variant helpers are sugar for `toast(message, { ...options, type: 'X' })`. Every one returns a `ToastId` and accepts the same `ToastOptions` shape.
 
 ```ts
-toast.success(message, options?)
-toast.error(message, options?)
-toast.info(message, options?)
-toast.warning(message, options?)
-toast.loading(message, options?)
-toast.message(message, options?) // alias of the callable form
+toast.success('Saved', options)
+toast.error('Save failed', options)
+toast.info('An update is available', options)
+toast.warning('Review your changes', options)
+toast.loading('Saving…', options)
+toast.message('Changes received', options) // alias of the callable form
 ```
 
 The only difference between the variants is the type they set:
@@ -108,7 +108,9 @@ Mount rich content inside a toast. It accepts either an `HTMLElement` you own or
 ### Signature
 
 ```ts
-function toast.custom(content: CustomContent, options?: ToastOptions): ToastId
+declare namespace toast {
+  function custom(content: CustomContent, options?: ToastOptions): ToastId
+}
 ```
 
 `CustomContent` is `HTMLElement | ((container: HTMLElement) => void)`.
@@ -122,7 +124,7 @@ widget.textContent = 'Pre-built widget'
 toast.custom(widget, { duration: 8000 })
 ```
 
-The renderer appends the element directly, without an extra wrapper.
+The renderer appends the element inside its div[data-custom] mount point.
 
 ### Callback
 
@@ -161,13 +163,15 @@ Tie a loading to success or error transition to a real promise. It reuses one id
 ### Signature
 
 ```ts
-function toast.promise<Data>(
-  input: PromiseInput<Data>,
-  data?: PromiseData<Data>
-): { id?: ToastId; unwrap: () => Promise<Data> }
+declare namespace toast {
+  function promise<Data>(
+    input: PromiseInput<Data>,
+    data?: PromiseData<Data>
+  ): { id?: ToastId; unwrap: () => Promise<Data> }
+}
 ```
 
-`PromiseInput` is `Promise<Data> | (() => Promise<Data>)`. The thunk form defers the work until the loading toast has been rendered.
+`PromiseInput` is `Promise<Data> | (() => Promise<Data>)`. When data is supplied, the thunk is invoked synchronously after the loading state is published, without waiting for a browser paint. With no data, each unwrap() call invokes the thunk.
 
 ### Basic flow
 
@@ -205,6 +209,8 @@ try {
 }
 ```
 
+<span id="success--error-callbacks" class="legacy-fragment" aria-hidden="true"></span>
+
 ### `success` and `error` callbacks
 
 Each of `success` and `error` accepts either a `Renderable` message, a `PromiseExtendedResult` object that lets you set `type`, `description`, `duration`, `action`, and the rest of the toast options, or a callback returning either form:
@@ -236,7 +242,7 @@ toast.promise(() => fetch('/api/profile').then(r => r.json()), {
 })
 ```
 
-The thunk form runs after the loading toast is on screen. Use it when the work should be deferred.
+With data supplied, the thunk runs immediately after loading is published. It does not wait for a paint, click, or debounce. Defer work in your application when that is required.
 
 ### Skip the loading toast
 
@@ -263,7 +269,9 @@ Drop one toast or every active toast.
 ### Signature
 
 ```ts
-function toast.dismiss(id?: ToastId): ToastId | undefined
+declare namespace toast {
+  function dismiss(id?: ToastId): ToastId | undefined
+}
 ```
 
 ### Examples
@@ -281,12 +289,14 @@ The element is marked as removed so the exit transition runs, and the actual DOM
 
 ## `toast.getHistory`
 
-A read-only snapshot of every toast since page load, including the dismissed ones.
+A defensive snapshot of the latest record for each id since the last reset, including dismissed records.
 
 ### Signature
 
 ```ts
-function toast.getHistory(): ToastT[]
+declare namespace toast {
+  function getHistory(): ToastT[]
+}
 ```
 
 ### Returns
@@ -296,7 +306,7 @@ A fresh array of `ToastT` records. Safe to mutate. The internal array is left in
 ```ts
 const all = toast.getHistory()
 
-console.log(`There have been ${all.length} toasts since page load.`)
+console.log(`There are ${all.length} records since the last reset.`)
 ```
 
 ## `toast.getToasts`
@@ -306,7 +316,9 @@ A read-only snapshot of every active toast that has not been dismissed.
 ### Signature
 
 ```ts
-function toast.getToasts(): ToastT[]
+declare namespace toast {
+  function getToasts(): ToastT[]
+}
 ```
 
 ### Returns
@@ -317,7 +329,7 @@ A fresh array of `ToastT` records, newest first. Safe to mutate. This is what th
 const active = toast.getToasts()
 
 if (active.length >= 3) {
-  toast.dismiss(active[0].id) // Drop the oldest to make room.
+  toast.dismiss(active.at(-1)!.id) // Drop the oldest to make room.
 }
 ```
 
@@ -332,6 +344,6 @@ if (active.length >= 3) {
 
 ## Related
 
-- [`createToaster`](../../api/create-toaster/) — the toaster controller that renders the DOM.
+- [`createToaster`](../create-toaster/) — the toaster controller that renders the DOM.
 - [Promise API](../../reference/promises/)
 - [Configuration](../../reference/configuration/)

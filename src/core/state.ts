@@ -24,6 +24,7 @@ import type {
 } from './types'
 
 let toastsCounter = 1
+let resetEpoch = 0
 
 type TitleInput = RenderableOrFactory
 
@@ -55,7 +56,16 @@ class Observer {
   }
 
   publish = (data: ToastT | ToastToDismiss): void => {
-    for (const subscriber of this.subscribers) subscriber(data)
+    const errors: unknown[] = []
+    for (const subscriber of [...this.subscribers]) {
+      if (!this.subscribers.includes(subscriber)) continue
+      try {
+        subscriber(data)
+      } catch (error) {
+        errors.push(error)
+      }
+    }
+    if (errors.length) throw errors[0]
   }
 
   addToast = (data: ToastT): void => {
@@ -69,7 +79,9 @@ class Observer {
     this.publish(data)
   }
 
-  create = (data: ToastInput): ToastId => {
+  create = (data: ToastInput): ToastId => this.createRecord(data).id
+
+  private createRecord = (data: ToastInput): { id: ToastId; record: ToastT } => {
     const { message, custom, description, ...rest } = data
     let id: ToastId
     if (typeof data.id === 'number' || (typeof data.id === 'string' && data.id.length > 0)) {
@@ -93,7 +105,7 @@ class Observer {
 
     if (existingIndex >= 0) {
       const existing = this.toasts[existingIndex]
-      if (!existing) return id
+      if (!existing) throw new Error('Toast record disappeared during creation')
       const merged: ToastT = {
         ...existing,
         ...rest,
@@ -105,7 +117,7 @@ class Observer {
       }
       this.toasts = this.toasts.map((toast, index) => (index === existingIndex ? merged : toast))
       this.publish(merged)
-      return id
+      return { id, record: merged }
     }
 
     const next: ToastT = {
@@ -117,7 +129,7 @@ class Observer {
       ...(custom !== undefined ? { custom } : {})
     }
     this.addToast(next)
-    return id
+    return { id, record: next }
   }
 
   dismiss = (id?: ToastId): ToastId | undefined => {
@@ -131,11 +143,18 @@ class Observer {
       this.dismissedToasts.add(id)
       this.publish({ id, dismiss: true })
     } else {
+      resetEpoch += 1
+      const errors: unknown[] = []
       for (const toast of this.toasts) {
         if (this.dismissedToasts.has(toast.id)) continue
         this.dismissedToasts.add(toast.id)
-        this.publish({ id: toast.id, dismiss: true })
+        try {
+          this.publish({ id: toast.id, dismiss: true })
+        } catch (error) {
+          errors.push(error)
+        }
       }
+      if (errors.length) throw errors[0]
     }
     return id
   }
@@ -180,6 +199,8 @@ class Observer {
       }
     }
 
+    const epoch = resetEpoch
+    let ownedRecord: ToastT | undefined
     let id: ToastId | undefined
     if (data.loading !== undefined) {
       const description = typeof data.description === 'function' ? undefined : data.description
@@ -198,9 +219,16 @@ class Observer {
         message: data.loading,
         ...(description !== undefined ? { description } : {})
       }
-      id = this.create(loadingPayload)
+      const created = this.createRecord(loadingPayload)
+      id = created.id
+      ownedRecord = created.record
     }
 
+    const isCurrent = (): boolean =>
+      resetEpoch === epoch &&
+      (id === undefined ||
+        (!this.dismissedToasts.has(id) &&
+          this.toasts.find((record) => record.id === id) === ownedRecord))
     const resolved = resolveInput()
 
     const state: { result: ['resolve', ToastData] | ['reject', unknown] | null } = { result: null }
@@ -209,12 +237,10 @@ class Observer {
       value: PromiseValue<unknown> | undefined,
       type: K
     ): Promise<void> => {
-      if (value === undefined) return
+      if (value === undefined || !isCurrent()) return
       const errorInfo = state.result?.[1]
       const resolvedValue =
-        typeof value === 'function'
-          ? await (value as (data: unknown) => unknown)(errorInfo ?? null)
-          : value
+        typeof value === 'function' ? await (value as (data: unknown) => unknown)(errorInfo) : value
 
       // Fix 17: the `PromiseData.description` field accepts a function
       // form (`(data) => Renderable`) but the vanilla renderer never
@@ -233,15 +259,31 @@ class Observer {
       const descStatic = descFn === null ? (data.description as Renderable | undefined) : undefined
       let resolvedDescription: Renderable | undefined
       if (type === 'error' && descFn) {
-        resolvedDescription = await descFn(errorInfo ?? null)
+        resolvedDescription = await descFn(errorInfo)
       } else if (descStatic !== undefined) {
         resolvedDescription = descStatic
       }
       // success path + function form: no description (matches legacy).
 
+      if (!isCurrent()) return
+
+      const {
+        loading: _loading,
+        success: _success,
+        error: _error,
+        finally: _finally,
+        description: _description,
+        ...settledOptions
+      } = data
+      void _loading
+      void _success
+      void _error
+      void _finally
+      void _description
       if (isExtendedResult(resolvedValue)) {
         const { message: extendedMessage, ...rest } = resolvedValue
         const payload: ToastInput = {
+          ...settledOptions,
           ...(id !== undefined ? { id } : {}),
           type,
           ...rest,
@@ -252,6 +294,7 @@ class Observer {
         return
       }
       const payload: ToastInput = {
+        ...settledOptions,
         ...(id !== undefined ? { id } : {}),
         type,
         message: resolvedValue as Renderable,
@@ -281,7 +324,12 @@ class Observer {
         }
       })
       .finally(async () => {
-        await data.finally?.()
+        // Omitted/failed formatters must not strand an immortal loading toast.
+        try {
+          if (id !== undefined && isCurrent() && ownedRecord?.type === 'loading') this.dismiss(id)
+        } finally {
+          await data.finally?.()
+        }
       })
     const renderingHandled = rendering.catch(() => undefined)
 
@@ -353,6 +401,7 @@ export const toast = Object.assign(toastFunction, {
  * each scenario starts from a clean counter and empty queues.
  */
 export function resetToastState(): void {
+  resetEpoch += 1
   ToastState.subscribers = []
   ToastState.toasts = []
   ToastState.dismissedToasts = new Set()

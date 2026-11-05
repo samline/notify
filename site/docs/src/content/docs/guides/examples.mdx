@@ -8,23 +8,47 @@ sidebar:
   order: 3
 ---
 
-import Tabs from '../../../../../shared/components/Tabs.astro'
-import TabPanel from '../../../../../shared/components/TabPanel.astro'
-import Callout from '../../../../../shared/components/Callout.astro'
 import Playground from '../../../../../shared/components/Playground.astro'
 
-End-to-end patterns that combine multiple methods. Each recipe is self-contained and can be dropped into a real project.
+End-to-end patterns that combine multiple methods. Mount a toaster and load its stylesheet first. The complete file viewer is standalone; the shorter recipes continue an existing application integration.
+
+<span id="promise-with-a-timer" class="legacy-fragment" aria-hidden="true"></span>
 
 ## Try it
 
 <Playground showCode />
 
-The preview runs the published package. The code disclosure holds the same source as separate files and as one complete document.
+The live preview uses the local 3.2.1 runtime. Its disclosure contains separate files and a complete document for package imports and published CDN 3.2.0. The CDN build predates the 3.2.1 fixes; the example resolves its namespace and contains the edit keys inside the custom form.
+
+## Explore the possibilities
+
+Choose a task by the behavior you want to build, not the notification color:
+
+| Task                      | What to try                                                | Capabilities composed                                                            |
+| ------------------------- | ---------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| Save a profile            | Change the name, save, then repeat                         | Loading → success on the same id; form feedback                                  |
+| Recover delivery          | Fail once, then retry from the notification                | Persistent error, description and actionable recovery                            |
+| Track an upload           | Watch one message update while progress advances           | Manual loading and same-id terminal update                                       |
+| Undo an archive           | Remove an item, then restore the same item                 | State restoration from a toast action                                            |
+| Keep an invitation        | Read at your own pace, then dismiss                        | Infinite duration and explicit close controls                                    |
+| Write a release note      | Edit inside a custom card and save to the page             | Consumer DOM factory, styling and native form controls                           |
+| Change preferences        | Change theme, direction and position while a toast is open | Partial controller updates, system theme and RTL                                 |
+| Inspect activity          | Dismiss a record and compare active/history snapshots      | Lazy message factory and defensive state reads                                   |
+| Review and decide         | Review access, then join or defer                          | action + cancel, closeOnClick: false and multi-step same-id content              |
+| Follow workspace activity | Change visibility/expansion, focus, swipe or wait          | Normal and typed variants, stack geometry, paused timers and lifecycle callbacks |
+| Export a report           | Succeed, fail, cancel, then view the CSV                   | Promise outcome, extended result action, unwrap, AbortController and finally     |
+
+Every task is available in the [interactive gallery](https://samline.github.io/notify/examples/) with the exact complete and split source. Keep important outcomes on the page as well as in the toast. The gallery simulates local work; its messages do not claim a real save, invitation acceptance or server export.
+
+The previews deliberately share one application-level toaster. The most recently used preview controls its global preferences. Use the preview reset to dismiss only its owned notifications; do not mount independent singleton owners for every application component.
+
+Low-level `ToastState` subscriptions, injected state and direct mounts are module APIs for advanced integrations; they are documented below and in the API reference. They are not extra isolated channels or members of the standalone browser registry.
+
+<span id="minimal-setup" class="legacy-fragment" aria-hidden="true"></span>
 
 ## 1. Minimal setup
 
-<Tabs id="notify-runtime" label="Runtime" items={[{ id: 'bundler', label: 'Bundler' }, { id: 'browser', label: 'Browser global' }]}>
-  <TabPanel id="bundler" label="Bundler">
+### Bundler
 
 ```ts
 import { createToaster, toast } from '@samline/notify'
@@ -34,8 +58,7 @@ createToaster({ richColors: true })
 toast.success('Notify is ready')
 ```
 
-  </TabPanel>
-  <TabPanel id="browser" label="Browser global">
+### Browser global
 
 ```html
 <button id="save" type="button">Save</button>
@@ -50,15 +73,14 @@ toast.success('Notify is ready')
 </script>
 ```
 
-  </TabPanel>
-</Tabs>
+<span id="1-toastpromise-with-fetch" class="legacy-fragment" aria-hidden="true"></span>
 
 ## 2. `toast.promise` with `fetch`
 
 ```ts
 import { toast } from '@samline/notify'
 
-async function saveProfile(patch: object) {
+async function saveProfile(patch: object): Promise<{ name: string }> {
   const response = await fetch('/api/profile', {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
@@ -81,7 +103,10 @@ toast.promise(saveProfile({ name: 'Sam' }), {
 
 The loading toast appears immediately. Once the promise settles, the same list item updates in place to the success or error type. The id returned by `toast.promise()` is the same id used for both phases.
 
-If the resolved value is a response whose `ok` is `false`, the runtime routes to `error` automatically. Pass a thunk when the work should be deferred behind a debounce or a click.
+If the resolved value is a response whose `ok` is `false`, the runtime routes to `error` automatically. Call toast.promise from the click or debounced callback when the work should start there; a supplied thunk runs immediately when data is supplied.
+
+<span id="2-undo-with-action-and-cancel" class="legacy-fragment" aria-hidden="true"></span>
+<span id="undo-action" class="legacy-fragment" aria-hidden="true"></span>
 
 ## 3. Undo with `action` and `cancel`
 
@@ -101,6 +126,9 @@ toast('Item deleted', {
 ```
 
 The toast renders two trailing buttons: `cancel` first, `action` second. Both close the toast on click by default. Set `closeOnClick: false` on either to keep the toast open while a follow-up action runs.
+
+<span id="3-rich-content-with-toastcustom" class="legacy-fragment" aria-hidden="true"></span>
+<span id="safe-custom-dom" class="legacy-fragment" aria-hidden="true"></span>
 
 ## 4. Rich content with `toast.custom`
 
@@ -127,6 +155,9 @@ widget.textContent = 'Pre-built widget'
 toast.custom(widget, { duration: 8000 })
 ```
 
+<span id="4-same-id-updates-in-place" class="legacy-fragment" aria-hidden="true"></span>
+<span id="manual-same-id-update" class="legacy-fragment" aria-hidden="true"></span>
+
 ## 5. Same-id updates in place
 
 ```ts
@@ -140,6 +171,9 @@ toast.success('Upload complete', { id: 'upload-1' })
 The second call updates the same list item in place. The runtime fingerprints the content and re-fills only when the type, title, description, action, or cancel changed. The auto-dismiss timer is also reset, so the toast stays visible for another full duration after the success message replaces the loading message.
 
 This is the same mechanism `toast.promise` uses internally.
+
+<span id="5-live-theme--position-changes" class="legacy-fragment" aria-hidden="true"></span>
+<span id="theme-and-hotkey-update" class="legacy-fragment" aria-hidden="true"></span>
 
 ## 6. Live theme and position changes
 
@@ -155,6 +189,8 @@ document.querySelector('#theme-toggle')?.addEventListener('click', () => {
 ```
 
 `toaster.update(options?)` re-applies the data attributes and the CSS variables. Omitted options keep their current value. Toasts already in flight keep their own type and mounted state.
+
+<span id="6-mobile-offsets" class="legacy-fragment" aria-hidden="true"></span>
 
 ## 7. Mobile offsets
 
@@ -176,6 +212,8 @@ createToaster({
 ```
 
 Numbers become pixels. Strings such as `'2rem'` are used verbatim.
+
+<span id="7-multi-toaster-ui" class="legacy-fragment" aria-hidden="true"></span>
 
 ## 8. Multi-toaster interface
 
@@ -201,12 +239,14 @@ banners.element.dataset['notifyChannel'] = 'banners'
 
 `mountToaster` accepts a root, the toaster options, and an optional state object for tests. The two toasters have separate containers and separate cleanup.
 
-<Callout title="Direct mounts share the global state">
-  Both mounts subscribe to the same global `ToastState`, so every published event reaches every
-  renderer. The legacy `id` and `toasterId` fields filter that shared stream; they do not create
-  isolated state, history, counters, or subscriptions. Keep one `createToaster()` singleton for
-  normal integrations.
-</Callout>
+**Direct mounts share the global state**
+
+Both mounts subscribe to the same global `ToastState`, so every published event reaches every
+renderer. The legacy `id` and `toasterId` fields filter that shared stream; they do not create
+isolated state, history, counters, or subscriptions. Keep one `createToaster()` singleton for
+normal integrations.
+
+<span id="8-per-toast-custom-testid" class="legacy-fragment" aria-hidden="true"></span>
 
 ## 9. Per-toast test hook
 
@@ -216,13 +256,15 @@ toast.success('Profile saved', { testId: 'profile-save-success' })
 
 The runtime renders `data-testid="profile-save-success"` on the list item, so an end-to-end selector can target one specific toast.
 
+<span id="9-persist-a-toast-log" class="legacy-fragment" aria-hidden="true"></span>
+
 ## 10. Persist a toast log
 
 ```ts
 import { toast, ToastState } from '@samline/notify'
 
 ToastState.subscribe(event => {
-  if ('dismiss' in event && event.dismiss) {
+  if ('dismiss' in event) {
     logEvent('toast_dismissed', { id: event.id })
   } else {
     logEvent('toast_created', { id: event.id, type: event.type })
@@ -230,31 +272,39 @@ ToastState.subscribe(event => {
 })
 ```
 
-The observer publishes one event per create or dismiss. `toast.promise` publishes two events, one for the loading state and one for the settled state. Subscribers run synchronously inside the publish call, so keep them fast and do not throw.
+The observer publishes on creation, update and dismissal. A typical toast.promise with loading and a defined settled message publishes loading and settlement; optional messages and later dismissal change the total event count. Subscribers run synchronously inside the publish call, so keep them fast and do not throw.
+
+<span id="10-custom-css-for-the-toaster" class="legacy-fragment" aria-hidden="true"></span>
 
 ## 11. Custom CSS for the toaster
 
+Use options for measured geometry and inline custom properties for a branded width and palette:
+
+```ts
+createToaster({
+  gap: 12,
+  offset: { bottom: 24 },
+  mobileOffset: { bottom: 24 },
+  style: { '--width': '24rem', '--normal-bg': '#fffdf8', '--normal-text': '#29231f' },
+})
+```
+
+The `style` width override works in 3.2.1. Published 3.2.0 overwrites it with its default width; use the scoped `!important` width recipe in [CSS styling](../../reference/css-styling/) with that version. Gap and measured offsets belong to their options so JavaScript stack measurements and CSS agree. Add ordinary cosmetic rules after the package stylesheet, using matching scope and specificity:
+
 ```css
-/* Brand-aligned toaster */
-[data-notify-toaster] {
-  --width: 360px;
-  --gap: 12px;
-  --offset-bottom: 24px;
-  --mobile-offset-bottom: 24px;
-  --normal-bg: white;
-  --normal-text: oklch(0.18 0.02 250);
-  --normal-border: oklch(0.9 0.01 250);
-  --success-bg: oklch(0.96 0.04 150);
-  --success-text: oklch(0.22 0.1 150);
-  --success-border: oklch(0.78 0.1 150);
-  --error-bg: oklch(0.96 0.04 25);
-  --error-text: oklch(0.22 0.1 25);
-  --error-border: oklch(0.78 0.1 25);
+[data-notify-toaster][data-notify-theme='light'] {
+  --success-bg: #ecfdf3;
+  --success-text: #086c3c;
+  --success-border: #a6e8c4;
   --border-radius: 10px;
 }
 ```
 
-The runtime only sets the per-type defaults inside the container. Add your own stylesheet after `@samline/notify/styles.css` and your rules win on cascade order.
+<span
+  id="11-disable-a-specific-toasts-auto-dismiss"
+  class="legacy-fragment"
+  aria-hidden="true"
+></span>
 
 ## 12. Disable auto-dismiss for one toast
 
@@ -265,6 +315,9 @@ toast.info('Heads up — check the server status', { duration: Infinity })
 `duration: Infinity` cancels the auto-dismiss. The user can still dismiss manually with the close button, when it is enabled, or by swiping, when the position allows it.
 
 `toast.loading` and the loading state of `toast.promise` never schedule a timer by design.
+
+<span id="12-spa-cleanup-on-route-change" class="legacy-fragment" aria-hidden="true"></span>
+<span id="teardown-and-explicit-remount" class="legacy-fragment" aria-hidden="true"></span>
 
 ## 13. SPA cleanup on route change
 
@@ -282,6 +335,8 @@ router.off('/profile', () => {
 
 `destroyToaster()` is idempotent and a no-op when no toaster is mounted. If you used `mountToaster` for a multi-toaster interface, keep your own references and call `controller.destroy()` directly.
 
+<span id="13-read-the-current-toasts" class="legacy-fragment" aria-hidden="true"></span>
+
 ## 14. Read the current toasts
 
 ```ts
@@ -291,10 +346,13 @@ const active = toast.getToasts()
 // [{ id: 1, type: 'success', title: 'Saved', ... }, ...]
 
 const history = toast.getHistory()
-// every toast since page load, including dismissed ones
+// the latest record for each id since the last reset, including dismissed records
 ```
 
-`getToasts()` filters out the ids in the dismissed set. `getHistory()` returns the unfiltered list. Both return fresh arrays on every call, so they are safe to mutate.
+`getToasts()` filters out the ids in the dismissed set. `getHistory()` returns the unfiltered list. Both return defensive snapshots. Array and record changes stay local; callback functions, promises and custom DOM remain shared references.
+
+<span id="14-reset-everything-tests-dev-tools" class="legacy-fragment" aria-hidden="true"></span>
+<span id="reset-for-a-test" class="legacy-fragment" aria-hidden="true"></span>
 
 ## 15. Reset everything
 
@@ -305,3 +363,42 @@ resetToasts()
 ```
 
 `resetToasts()` drops every toast, active and dismissed, and rewinds the generated-id counter. It keeps the mounted renderer subscribed. In production you usually want `toast.dismiss()`, which keeps the counter, or `destroyToaster()`, which also unmounts the container.
+
+<span id="snapshot-without-mutation-leaks" class="legacy-fragment" aria-hidden="true"></span>
+
+## Defensive snapshots
+
+Arrays, each toast record, and nested action/cancel objects are cloned. Callback functions, promises, and custom DOM remain references. Mutating a snapshot does not update the runtime; reuse the id in a toast call instead.
+
+```ts
+import type { ToastT } from '@samline/notify'
+
+const active: ToastT[] = toast.getToasts()
+const history: ToastT[] = toast.getHistory()
+active.splice(0)
+const first = history[0]
+if (first?.action) first.action.label = 'Local copy'
+```
+
+<span id="next-steps" class="legacy-fragment" aria-hidden="true"></span>
+<span id="typed-low-level-event-narrowing" class="legacy-fragment" aria-hidden="true"></span>
+
+## Typed event subscriptions
+
+```ts
+import { ToastState } from '@samline/notify'
+import type { ToastToDismiss } from '@samline/notify'
+
+const unsubscribe = ToastState.subscribe(event => {
+  if ('dismiss' in event) {
+    const dismissed: ToastToDismiss = event
+    console.log('Dismissed', dismissed.id)
+  } else {
+    console.log('Created or updated', event.title)
+  }
+})
+// During integration cleanup:
+unsubscribe()
+```
+
+Subscribers run synchronously. Avoid throwing and keep work small; the first exception is rethrown after delivery to the other current subscribers.

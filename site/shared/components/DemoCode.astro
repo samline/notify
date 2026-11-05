@@ -1,8 +1,30 @@
 ---
 import CodeFiles from './CodeFiles.astro'
-import { demoFiles } from '../lib/demo-files'
-import t from '../i18n/translations/en/demo'
-const { files, complete } = await demoFiles
+import Tabs from './Tabs.astro'
+import TabPanel from './TabPanel.astro'
+import { createDemoFiles } from '../lib/demo-files'
+import t, { type DemoPreset } from '../i18n/translations/en/demo'
+interface Props {
+  preset?: DemoPreset
+}
+const { preset = 'save' } = Astro.props
+const modes = await Promise.all(
+  t.modes.map(async mode => ({ ...mode, ...(await createDemoFiles(preset, mode.id)) }))
+)
 ---
 
-<CodeFiles files={files} complete={{ code: complete.code, copyLabel: t.copyComplete }} />
+<Tabs
+  data-demo-modes
+  id={`source-${preset}-${crypto.randomUUID()}`}
+  label="Example loading mode"
+  items={t.modes}
+>
+  {modes.map(mode => (
+    <TabPanel id={mode.id} label={mode.label}>
+      <CodeFiles
+        files={mode.files}
+        complete={{ code: mode.complete.code, copyLabel: t.copyComplete }}
+      />
+    </TabPanel>
+  ))}
+</Tabs>

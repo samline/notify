@@ -1,6 +1,6 @@
 # Landing and Examples
 
-These are one product surface. src/layouts/Main.astro composes shared metadata/fonts/theme, Header and Footer. Complete blocks are in src/sections; the shared Playground appears on Home, Examples and a Docs article. Its neutral counter is infrastructure, not a claimed package API. Replace that one owner with the target package integration.
+These are one product surface. src/layouts/Main.astro composes shared metadata/fonts/theme, Header and Footer. Complete blocks are in src/sections; the shared Playground appears on Home, Examples and a Docs article. Its task integrations use Notify directly. Scenario copy, markup and behavior are shared with the gallery and complete copied files; maintain observable application outcomes and exact source execution. See ../brief/notify-second-pass-2026-11-04.md.
 
 Editable interface/content copy is in src/i18n/translations/en. The project config owns identity, version, URLs and accents. Section/Box own layout; never add competing gutters or maximum widths.
 

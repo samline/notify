@@ -1,6 +1,6 @@
-# `createToaster(options?)`
+# createToaster
 
-Mount (or update) the singleton toaster and return its controller. Idempotent: calling it twice with different options applies the diff via `controller.update()`.
+Mount, or update, the singleton toaster and return its controller. It is idempotent: calling it twice with different options applies the difference through `controller.update()`.
 
 ## Signature
 
@@ -10,30 +10,31 @@ function createToaster(options?: ToasterOptions): ToasterController
 
 ## Parameters
 
-| Name      | Type                                             | Required | Description                                           |
-| --------- | ------------------------------------------------ | -------- | ----------------------------------------------------- |
-| `options` | [`ToasterOptions`](../options.md#toasteroptions) | no       | The toaster configuration. Every field has a default. |
+| Name      | Type             | Required | Description                                           |
+| --------- | ---------------- | -------- | ----------------------------------------------------- |
+| `options` | `ToasterOptions` | no       | The toaster configuration. Every field has a default. |
 
 ## Returns
 
-A [`ToasterController`](../typescript.md#toastercontroller). The same instance every call — there is exactly one singleton per page.
+A `ToasterController`. It is the same instance on every call, because there is exactly one singleton per page.
 
 ## Throws
 
-- `Error('createToaster() requires a DOM environment (browser)')` when called in a non-DOM context (e.g. server-side rendering with no `window`).
+- `Error('createToaster() requires a DOM environment (browser)')` when it is called in a context without a DOM, such as server-side rendering.
+- `Error('createToaster() requires document.body; call it after DOMContentLoaded')` when `document.body` does not exist yet.
 
 ## Behaviour
 
 ### First call
 
-1. Mounts a `<ol data-notify-toaster>` on `document.body` (or whatever root you pass to `mountToaster`).
-2. Applies the data-attributes (`data-x-position`, `data-y-position`, `data-notify-theme`, `data-rich-colors`, `data-lifted`) and the CSS variables (`--offset-*`, `--mobile-offset-*`, `--width`, `--gap`).
-3. Subscribes to the shared `Observer`. Every toast create / update / dismiss is rendered to the DOM.
+1. Mounts the container with the `data-notify-toaster` attribute on `document.body`.
+2. Applies the data attributes and the CSS custom properties the stylesheet reads, including the offsets, the width, and the gap.
+3. Subscribes to the shared observer. Every toast create, update, and dismiss is rendered to the DOM.
 4. Stores the controller in the singleton slot.
 
 ### Subsequent calls
 
-If a controller is already mounted, `createToaster` calls `controller.update(options)` with the new options and returns the same controller. The existing `<ol>` and its active toasts stay in place — only the data-attributes and CSS variables change.
+If a controller is already mounted, `createToaster` calls `controller.update(options)` with the new options and returns the same controller. The existing container and its active toasts stay in place. Only the data attributes, the CSS variables, and the timers change.
 
 ## Examples
 
@@ -46,9 +47,9 @@ import '@samline/notify/styles.css'
 createToaster()
 ```
 
-The container is mounted at `bottom-right` with `theme: 'light'`, `richColors: false`, and the rest of the defaults. The first `toast(...)` call has somewhere to render.
+The container is mounted at `bottom-right` with the `light` theme and every other default. The first `toast(...)` call now has somewhere to render.
 
-### Mount a custom toaster
+### Mount a configured toaster
 
 ```ts
 import { createToaster } from '@samline/notify'
@@ -72,10 +73,10 @@ import { createToaster } from '@samline/notify'
 
 const toaster = createToaster({ position: 'bottom-right' })
 
-// User toggles dark mode.
+// The user toggles dark mode.
 toaster.update({ theme: 'dark' })
 
-// User resizes to a small viewport.
+// The user resizes to a small viewport.
 toaster.update({ position: 'bottom-center' })
 ```
 
@@ -87,20 +88,20 @@ import { createToaster, getToaster } from '@samline/notify'
 createToaster({ position: 'bottom-right' })
 
 const controller = getToaster()
-controller?.element // <ol data-notify-toaster data-x-position="right" data-y-position="bottom" ...>
-controller?.options // { position: 'bottom-right', ... }
+controller?.element // the mounted container element
+controller?.options // the current merged options
 ```
 
 ## Edge cases
 
-- **Server-side rendering**: throws. The IIFE bundle guards the same call against `canUseDOM()` and skips it.
-- **Multiple toasters on the same page**: the singleton is the only one `createToaster` knows about. For multi-toaster UIs, use `mountToaster` directly and keep your own map of controllers.
-- **`mountToaster` vs `createToaster`**: `mountToaster` is the lower-level escape hatch — it accepts a `root`, returns a fresh controller per call, and does not touch the singleton. `createToaster` is the high-level entry point that routes through the singleton.
-- **Re-using the singleton across `createToaster` calls**: the active timers and the existing `<li>` elements are kept. New options take effect immediately on the next render.
+- **Server-side rendering.** It throws. The standalone build guards the same call against a missing DOM and skips it.
+- **Multiple toasters on the same page.** The singleton is the only one `createToaster` knows about. For a multi-toaster interface, call `mountToaster` directly and keep your own map of controllers.
+- **`mountToaster` versus `createToaster`.** `mountToaster` is the lower-level escape hatch: it accepts a root, returns a fresh controller per call, and does not touch the singleton. `createToaster` is the high-level entry point that routes through the singleton.
+- **Reusing the singleton.** The active timers and the existing elements are kept. New options take effect immediately.
 
 ## Related
 
-- [`configureToaster`](configure-toaster.md) — intent-revealing alias of `createToaster`.
+- [`configureToaster`](configure-toaster.md) — the intent-revealing alias.
 - [`destroyToaster`](destroy-toaster.md) — unmount the singleton.
 - [`getToaster`](get-toaster.md) — read the singleton.
-- [`mountToaster`](../getting-started.md#browser-registry-helpers) — lower-level factory for multi-toaster UIs.
+- [Configuration](../options.md)

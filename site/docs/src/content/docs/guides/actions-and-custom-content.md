@@ -68,7 +68,7 @@ widget.textContent = 'Pre-built widget'
 toast.custom(widget, { duration: 8000 })
 ```
 
-The renderer appends that element directly, without an extra wrapper.
+The renderer appends that element inside its div[data-custom] mount point.
 
 ## Safety and accessibility checklist
 
@@ -86,6 +86,6 @@ Use `message` plus `description`, `action`, `cancel`, `closeButton`, `className`
 ## Related
 
 - [Configuration](../../reference/configuration/)
-- [Accessibility](../../guides/accessibility/)
+- [Accessibility](../accessibility/)
 - [CSS styling](../../reference/css-styling/)
-- [Examples](../../guides/examples/)
+- [Examples](../examples/)

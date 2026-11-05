@@ -19,8 +19,11 @@ const css = await readFile(new URL('../dist/styles.css', import.meta.url), 'utf8
 assert.match(css, /\[data-notify-toaster\]/)
 
 const iife = await readFile(new URL('../dist/browser/global.global.js', import.meta.url), 'utf8')
-const dom = new JSDOM('<!doctype html><html><body></body></html>', { runScripts: 'dangerously' })
-dom.window.eval(iife)
+// Execute as a classic script. eval() has different top-level var semantics
+// and previously hid an IIFE namespace overwriting the public registry.
+const dom = new JSDOM(`<!doctype html><html><body><script>${iife}</script></body></html>`, {
+  runScripts: 'dangerously'
+})
 assert.equal(typeof dom.window.Notify?.toast, 'function')
 assert.ok(dom.window.document.querySelector('[data-notify-toaster]'))
 dom.window.Notify.destroyToaster()

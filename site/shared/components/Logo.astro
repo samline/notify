@@ -20,6 +20,7 @@ const i18n = getI18n(Astro)
   <span class:list={['logo-name font-mono text-[0.95rem]']}>{i18n.common.packageName}</span>
   {version && (
     <span
+      aria-hidden="true"
       class:list={[
         'ml-1 hidden rounded-full border-[0.0625rem] border-border bg-surface px-2 py-0.5 font-mono text-[0.65rem] text-text-muted sm:inline-block',
       ]}

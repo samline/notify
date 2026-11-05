@@ -1,6 +1,6 @@
-# `destroyToaster()`
+# destroyToaster
 
-Unmount the singleton toaster and drop all in-flight toasts. No-op if no toaster is mounted.
+Unmount the singleton toaster and drop the toasts it was rendering. It is a no-op when no toaster is mounted.
 
 ## Signature
 
@@ -10,17 +10,19 @@ function destroyToaster(): void
 
 ## Returns
 
-`void`. Idempotent.
+`void`. The call is idempotent.
 
 ## Behaviour
 
-1. Calls `toaster.destroy()` on the singleton — clears every active timer, removes every event listener, and removes the `<ol data-notify-toaster>` from the DOM.
-2. Clears the singleton slot so `getToaster()` returns `null` afterwards.
-3. Calls `toast.dismiss()` to drop every toast in the `Observer` (active and dismissed). This is what the IIFE auto-mount expects — a fresh toaster should start with an empty list.
+1. Calls `toast.dismiss()` while the renderer is still subscribed, so every active toast publishes its dismissal and the dismissal callbacks run before the listeners go away.
+2. Calls `controller.destroy()` on the singleton. That clears every active timer, removes every event listener, and removes the container from the DOM.
+3. Clears the singleton slot, so `getToaster()` returns `null` afterwards.
+
+The state history is not cleared by this call. `toast.getToasts()` returns an empty array, while `toast.getHistory()` still lists the dismissed records until `resetToasts()` runs.
 
 ## Examples
 
-### SPA route cleanup
+### Router cleanup
 
 ```ts
 import { createToaster, destroyToaster } from '@samline/notify'
@@ -44,7 +46,7 @@ beforeEach(() => {
 })
 ```
 
-`destroyToaster` is a no-op if no toaster is mounted, so it is safe to call at the top of every test.
+`destroyToaster` is a no-op when no toaster is mounted, so it is safe to call at the top of every test.
 
 ### Manual unmount
 
@@ -59,9 +61,9 @@ destroyToaster()
 
 ## Edge cases
 
-- **No-op when nothing is mounted.** `destroyToaster` does not throw; it returns immediately.
-- **Drops all in-flight toasts.** After `destroyToaster`, `toast.getToasts()` returns `[]`. The history (`toast.getHistory()`) is also empty because `toast.dismiss()` (called internally) marks every id as dismissed, but the next call to `resetToasts()` rewinds the counter for the next mount.
-- **`mountToaster` controllers are not affected.** If you built a second toaster with `mountToaster`, it is independent of the singleton and `destroyToaster` does not touch it. Call `controller.destroy()` directly on the second one.
+- **No-op when nothing is mounted.** It does not throw, it returns immediately.
+- **Nothing remounts afterwards.** Call `createToaster()` again before you show more visible toasts.
+- **Direct-mount containers are not destroyed.** Global-state mounts still receive the dismissals published by this function. Keep each direct controller and call its destroy() when its container should also be removed. Injected state can isolate a mount from global dismissals.
 
 ## Related
 

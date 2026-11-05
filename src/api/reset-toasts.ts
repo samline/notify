@@ -5,10 +5,13 @@
 import { resetToastState, ToastState } from '../core/state'
 
 export function resetToasts(): void {
-  ToastState.dismiss()
-  const subscribers = ToastState.subscribers
-  resetToastState()
-  ToastState.subscribers = subscribers
+  try {
+    ToastState.dismiss()
+  } finally {
+    const subscribers = ToastState.subscribers
+    resetToastState()
+    ToastState.subscribers = subscribers
+  }
 }
 
 export { ToastState }

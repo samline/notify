@@ -1,0 +1,17 @@
+export const legacyRoutes = {
+  'getting-started': 'getting-started',
+  'guides/toast-lifecycle': 'guides/toast-lifecycle',
+  'guides/actions-and-custom-content': 'guides/actions-and-custom-content',
+  reference: 'reference/api',
+  'reference/accessibility': 'guides/accessibility',
+  'reference/api': 'reference/api',
+  'reference/browser': 'reference/browser',
+  'reference/configuration': 'reference/configuration',
+  'reference/css-styling': 'reference/css-styling',
+  'reference/entrypoints': 'reference/entrypoints',
+  'reference/examples': 'guides/examples',
+  'reference/frameworks': 'guides/frameworks',
+  'reference/promises': 'reference/promises',
+  'reference/troubleshooting': 'reference/troubleshooting',
+  'reference/typescript': 'reference/typescript',
+}

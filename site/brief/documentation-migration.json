@@ -1,0 +1,1783 @@
+{
+  "revision": "765438b36ab73236c4e6b941509a7669e5bbfdf3",
+  "sources": [
+    {
+      "source": "docs/README.md",
+      "revision": "765438b36ab73236c4e6b941509a7669e5bbfdf3",
+      "sha256": "c4023d1a44c0f0b9ab504ce03f6cd1a16d471a155e649efe556daf5c0f073087",
+      "destination": "docs/src/content/docs/index.mdx",
+      "sections": [
+        {
+          "fragment": "index",
+          "destination": "/#documentation-map"
+        },
+        {
+          "fragment": "what-this-package-is",
+          "destination": "/#three-ideas"
+        },
+        {
+          "fragment": "when-to-use-each-entrypoint",
+          "destination": "/#when-to-use-each-entrypoint"
+        },
+        {
+          "fragment": "file-by-file-map",
+          "destination": "/#documentation-map"
+        },
+        {
+          "fragment": "versioning",
+          "destination": "/#versioning"
+        }
+      ],
+      "reviewed": true
+    },
+    {
+      "source": "docs/accessibility.md",
+      "revision": "765438b36ab73236c4e6b941509a7669e5bbfdf3",
+      "sha256": "28a408b8277115c6a3417e33c889b4bd74ca2c44bbdf206099ff488de188d256",
+      "destination": "docs/src/content/docs/guides/accessibility.md",
+      "sections": [
+        {
+          "fragment": "semantics",
+          "destination": "guides/accessibility/#rendered-semantics"
+        },
+        {
+          "fragment": "keyboard-behavior",
+          "destination": "guides/accessibility/#keyboard-behavior"
+        },
+        {
+          "fragment": "dismissal-and-timing",
+          "destination": "guides/accessibility/#close-and-dismissal-rules"
+        },
+        {
+          "fragment": "reduced-motion-and-custom-content",
+          "destination": "guides/accessibility/#custom-content"
+        }
+      ],
+      "reviewed": true
+    },
+    {
+      "source": "docs/api/configure-toaster.md",
+      "revision": "765438b36ab73236c4e6b941509a7669e5bbfdf3",
+      "sha256": "9377777c3b2f2ee52e0ea635355d0253dbb3c6cef86d410ddae4b9ccd37b887a",
+      "destination": "docs/src/content/docs/api/configure-toaster.md",
+      "sections": [
+        {
+          "fragment": "signature",
+          "destination": "api/configure-toaster/#signature"
+        },
+        {
+          "fragment": "when-to-use-it",
+          "destination": "api/configure-toaster/#when-to-use-it"
+        },
+        {
+          "fragment": "returns",
+          "destination": "api/configure-toaster/#returns"
+        },
+        {
+          "fragment": "examples",
+          "destination": "api/configure-toaster/#examples"
+        },
+        {
+          "fragment": "edge-cases",
+          "destination": "api/configure-toaster/#edge-cases"
+        },
+        {
+          "fragment": "related",
+          "destination": "api/configure-toaster/#related"
+        }
+      ],
+      "reviewed": true
+    },
+    {
+      "source": "docs/api/create-toaster.md",
+      "revision": "765438b36ab73236c4e6b941509a7669e5bbfdf3",
+      "sha256": "7c0ee81c8be3b753e069a9682ae60c8798aae6b06047b21a736fd78018715f2e",
+      "destination": "docs/src/content/docs/api/create-toaster.md",
+      "sections": [
+        {
+          "fragment": "signature",
+          "destination": "api/create-toaster/#signature"
+        },
+        {
+          "fragment": "parameters",
+          "destination": "api/create-toaster/#parameters"
+        },
+        {
+          "fragment": "returns",
+          "destination": "api/create-toaster/#returns"
+        },
+        {
+          "fragment": "throws",
+          "destination": "api/create-toaster/#throws"
+        },
+        {
+          "fragment": "behaviour",
+          "destination": "api/create-toaster/#behaviour"
+        },
+        {
+          "fragment": "first-call",
+          "destination": "api/create-toaster/#first-call"
+        },
+        {
+          "fragment": "subsequent-calls",
+          "destination": "api/create-toaster/#subsequent-calls"
+        },
+        {
+          "fragment": "examples",
+          "destination": "api/create-toaster/#examples"
+        },
+        {
+          "fragment": "mount-a-default-toaster",
+          "destination": "api/create-toaster/#mount-a-default-toaster"
+        },
+        {
+          "fragment": "mount-a-custom-toaster",
+          "destination": "api/create-toaster/#mount-a-configured-toaster"
+        },
+        {
+          "fragment": "update-later",
+          "destination": "api/create-toaster/#update-later"
+        },
+        {
+          "fragment": "use-the-returned-controller",
+          "destination": "api/create-toaster/#use-the-returned-controller"
+        },
+        {
+          "fragment": "edge-cases",
+          "destination": "api/create-toaster/#edge-cases"
+        },
+        {
+          "fragment": "related",
+          "destination": "api/create-toaster/#related"
+        }
+      ],
+      "reviewed": true
+    },
+    {
+      "source": "docs/api/destroy-toaster.md",
+      "revision": "765438b36ab73236c4e6b941509a7669e5bbfdf3",
+      "sha256": "abce0ab37d38615f8406a4ed0feb5005ca2971894b28cf406b74829ee3142d20",
+      "destination": "docs/src/content/docs/api/destroy-toaster.md",
+      "sections": [
+        {
+          "fragment": "signature",
+          "destination": "api/destroy-toaster/#signature"
+        },
+        {
+          "fragment": "returns",
+          "destination": "api/destroy-toaster/#returns"
+        },
+        {
+          "fragment": "behaviour",
+          "destination": "api/destroy-toaster/#behaviour"
+        },
+        {
+          "fragment": "examples",
+          "destination": "api/destroy-toaster/#examples"
+        },
+        {
+          "fragment": "spa-route-cleanup",
+          "destination": "api/destroy-toaster/#router-cleanup"
+        },
+        {
+          "fragment": "test-setup",
+          "destination": "api/destroy-toaster/#test-setup"
+        },
+        {
+          "fragment": "manual-unmount",
+          "destination": "api/destroy-toaster/#manual-unmount"
+        },
+        {
+          "fragment": "edge-cases",
+          "destination": "api/destroy-toaster/#edge-cases"
+        },
+        {
+          "fragment": "related",
+          "destination": "api/destroy-toaster/#related"
+        }
+      ],
+      "reviewed": true
+    },
+    {
+      "source": "docs/api/get-toaster.md",
+      "revision": "765438b36ab73236c4e6b941509a7669e5bbfdf3",
+      "sha256": "2975e0482f248314d31c03035c870206b9df490fe0061b9c7371ff3fcf08d8b1",
+      "destination": "docs/src/content/docs/api/get-toaster.md",
+      "sections": [
+        {
+          "fragment": "signature",
+          "destination": "api/get-toaster/#signature"
+        },
+        {
+          "fragment": "returns",
+          "destination": "api/get-toaster/#returns"
+        },
+        {
+          "fragment": "examples",
+          "destination": "api/get-toaster/#examples"
+        },
+        {
+          "fragment": "inspect-the-mounted-toaster",
+          "destination": "api/get-toaster/#inspect-the-mounted-toaster"
+        },
+        {
+          "fragment": "guard-before-calling",
+          "destination": "api/get-toaster/#guard-before-calling"
+        },
+        {
+          "fragment": "live-updates-from-a-router--store",
+          "destination": "api/get-toaster/#live-updates-from-a-store"
+        },
+        {
+          "fragment": "edge-cases",
+          "destination": "api/get-toaster/#edge-cases"
+        },
+        {
+          "fragment": "related",
+          "destination": "api/get-toaster/#related"
+        }
+      ],
+      "reviewed": true
+    },
+    {
+      "source": "docs/api/index.md",
+      "revision": "765438b36ab73236c4e6b941509a7669e5bbfdf3",
+      "sha256": "f92e7a73e67ab0f2a0ba5ed0f0ddb0770fbae38c9b986a57bb4bffe61ff3e9e4",
+      "destination": "docs/src/content/docs/reference/api.md",
+      "sections": [
+        {
+          "fragment": "toast-factory",
+          "destination": "reference/api/#toast-factory"
+        },
+        {
+          "fragment": "toaster-lifecycle",
+          "destination": "reference/api/#toaster-lifecycle"
+        },
+        {
+          "fragment": "controller-surface",
+          "destination": "reference/api/#controller"
+        },
+        {
+          "fragment": "registry-helpers-vanilla",
+          "destination": "reference/api/#browser-registry"
+        },
+        {
+          "fragment": "pure-helpers",
+          "destination": "reference/api/#advanced-exports"
+        }
+      ],
+      "reviewed": true
+    },
+    {
+      "source": "docs/api/reset-toasts.md",
+      "revision": "765438b36ab73236c4e6b941509a7669e5bbfdf3",
+      "sha256": "58be44f6568716a8e751187149c9d7203697299ec6ebd6225f176f553d770326",
+      "destination": "docs/src/content/docs/api/reset-toasts.md",
+      "sections": [
+        {
+          "fragment": "signature",
+          "destination": "api/reset-toasts/#signature"
+        },
+        {
+          "fragment": "returns",
+          "destination": "api/reset-toasts/#returns"
+        },
+        {
+          "fragment": "behaviour",
+          "destination": "api/reset-toasts/#behaviour"
+        },
+        {
+          "fragment": "examples",
+          "destination": "api/reset-toasts/#examples"
+        },
+        {
+          "fragment": "test-setup",
+          "destination": "api/reset-toasts/#test-setup"
+        },
+        {
+          "fragment": "dev-tools",
+          "destination": "api/reset-toasts/#development-tools"
+        },
+        {
+          "fragment": "edge-cases",
+          "destination": "api/reset-toasts/#edge-cases"
+        },
+        {
+          "fragment": "related",
+          "destination": "api/reset-toasts/#related"
+        }
+      ],
+      "reviewed": true
+    },
+    {
+      "source": "docs/api/toast.md",
+      "revision": "765438b36ab73236c4e6b941509a7669e5bbfdf3",
+      "sha256": "569792cdf637a1cfe6fb5ebce2aa4a68c702b895da4f0ff09613ddfcff6e88b8",
+      "destination": "docs/src/content/docs/api/toast.md",
+      "sections": [
+        {
+          "fragment": "signature",
+          "destination": "api/toast/#signature"
+        },
+        {
+          "fragment": "parameters",
+          "destination": "api/toast/#parameters"
+        },
+        {
+          "fragment": "returns",
+          "destination": "api/toast/#returns"
+        },
+        {
+          "fragment": "examples",
+          "destination": "api/toast/#examples"
+        },
+        {
+          "fragment": "minimal",
+          "destination": "api/toast/#minimal"
+        },
+        {
+          "fragment": "with-description-and-type",
+          "destination": "api/toast/#with-description-and-type"
+        },
+        {
+          "fragment": "with-action",
+          "destination": "api/toast/#with-action"
+        },
+        {
+          "fragment": "update-in-place",
+          "destination": "api/toast/#update-in-place"
+        },
+        {
+          "fragment": "toastvariants",
+          "destination": "api/toast/#toastvariants"
+        },
+        {
+          "fragment": "toastcustom",
+          "destination": "api/toast/#toastcustom"
+        },
+        {
+          "fragment": "signature-1",
+          "destination": "api/toast/#signature-1"
+        },
+        {
+          "fragment": "pre-built-element",
+          "destination": "api/toast/#pre-built-element"
+        },
+        {
+          "fragment": "callback",
+          "destination": "api/toast/#callback"
+        },
+        {
+          "fragment": "caveats",
+          "destination": "api/toast/#caveats"
+        },
+        {
+          "fragment": "toastpromise",
+          "destination": "api/toast/#toastpromise"
+        },
+        {
+          "fragment": "signature-2",
+          "destination": "api/toast/#signature-2"
+        },
+        {
+          "fragment": "basic-flow",
+          "destination": "api/toast/#basic-flow"
+        },
+        {
+          "fragment": "return-shape",
+          "destination": "api/toast/#return-shape"
+        },
+        {
+          "fragment": "success--error-callbacks",
+          "destination": "api/toast/#success-and-error-callbacks"
+        },
+        {
+          "fragment": "deferred-work",
+          "destination": "api/toast/#deferred-work"
+        },
+        {
+          "fragment": "skip-the-loading-toast",
+          "destination": "api/toast/#skip-the-loading-toast"
+        },
+        {
+          "fragment": "toastdismiss",
+          "destination": "api/toast/#toastdismiss"
+        },
+        {
+          "fragment": "signature-3",
+          "destination": "api/toast/#signature-3"
+        },
+        {
+          "fragment": "examples-1",
+          "destination": "api/toast/#examples-1"
+        },
+        {
+          "fragment": "toastgethistory",
+          "destination": "api/toast/#toastgethistory"
+        },
+        {
+          "fragment": "signature-4",
+          "destination": "api/toast/#signature-4"
+        },
+        {
+          "fragment": "returns-1",
+          "destination": "api/toast/#returns-1"
+        },
+        {
+          "fragment": "toastgettoasts",
+          "destination": "api/toast/#toastgettoasts"
+        },
+        {
+          "fragment": "signature-5",
+          "destination": "api/toast/#signature-5"
+        },
+        {
+          "fragment": "returns-2",
+          "destination": "api/toast/#returns-2"
+        },
+        {
+          "fragment": "edge-cases",
+          "destination": "api/toast/#edge-cases"
+        },
+        {
+          "fragment": "related",
+          "destination": "api/toast/#related"
+        }
+      ],
+      "reviewed": true
+    },
+    {
+      "source": "docs/browser.md",
+      "revision": "765438b36ab73236c4e6b941509a7669e5bbfdf3",
+      "sha256": "667b645a9cec51aad8e135ecc7320d3d2eaa5b0c461ea31149d9de19542bc553",
+      "destination": "docs/src/content/docs/reference/browser.mdx",
+      "sections": [
+        {
+          "fragment": "script-tag",
+          "destination": "reference/browser/#standalone-build"
+        },
+        {
+          "fragment": "global-object",
+          "destination": "reference/browser/#the-registry-shape"
+        },
+        {
+          "fragment": "minimal-example",
+          "destination": "reference/browser/#standalone-build"
+        },
+        {
+          "fragment": "custom-toaster",
+          "destination": "reference/browser/#root-registry"
+        },
+        {
+          "fragment": "lifecycle-helpers",
+          "destination": "reference/browser/#standalone-lifecycle"
+        },
+        {
+          "fragment": "surface-reference",
+          "destination": "reference/browser/#the-registry-shape"
+        },
+        {
+          "fragment": "controller-methods",
+          "destination": "reference/browser/#standalone-lifecycle"
+        },
+        {
+          "fragment": "typescript-users",
+          "destination": "reference/browser/#typescript-global-declaration"
+        },
+        {
+          "fragment": "using-the-same-shape-from-a-bundler",
+          "destination": "reference/browser/#root-registry"
+        },
+        {
+          "fragment": "common-pitfalls",
+          "destination": "reference/browser/#hosting-and-base-paths"
+        }
+      ],
+      "reviewed": true
+    },
+    {
+      "source": "docs/css-styling.md",
+      "revision": "765438b36ab73236c4e6b941509a7669e5bbfdf3",
+      "sha256": "ef44bfcb5bcd6bb4037dcecfc3ecaa6d6bb25f809c7ab60463f8c394866a0108",
+      "destination": "docs/src/content/docs/reference/css-styling.md",
+      "sections": [
+        {
+          "fragment": "importing-the-stylesheet",
+          "destination": "reference/css-styling/#three-styling-mechanisms"
+        },
+        {
+          "fragment": "toaster-container",
+          "destination": "reference/css-styling/#container-contract"
+        },
+        {
+          "fragment": "data-attributes",
+          "destination": "reference/css-styling/#container-contract"
+        },
+        {
+          "fragment": "css-custom-properties",
+          "destination": "reference/css-styling/#css-custom-properties"
+        },
+        {
+          "fragment": "toast-item",
+          "destination": "reference/css-styling/#toast-item-contract"
+        },
+        {
+          "fragment": "data-attributes-1",
+          "destination": "reference/css-styling/#toast-item-contract"
+        },
+        {
+          "fragment": "css-custom-properties-1",
+          "destination": "reference/css-styling/#direction-and-layout-variables"
+        },
+        {
+          "fragment": "inner-elements",
+          "destination": "reference/css-styling/#inner-elements"
+        },
+        {
+          "fragment": "theme-variables",
+          "destination": "reference/css-styling/#palette-slots"
+        },
+        {
+          "fragment": "per-type-color-slots",
+          "destination": "reference/css-styling/#palette-slots"
+        },
+        {
+          "fragment": "grayscale-ramp",
+          "destination": "reference/css-styling/#palette-slots"
+        },
+        {
+          "fragment": "border-radius",
+          "destination": "reference/css-styling/#palette-slots"
+        },
+        {
+          "fragment": "recipes",
+          "destination": "reference/css-styling/#practical-styling-recipes"
+        },
+        {
+          "fragment": "brand-aligned-success-color",
+          "destination": "reference/css-styling/#css-custom-properties"
+        },
+        {
+          "fragment": "tighter-stack-wider-toasts",
+          "destination": "reference/css-styling/#a-tighter-stack"
+        },
+        {
+          "fragment": "border-only-no-background",
+          "destination": "reference/css-styling/#a-quieter-border-only-toast"
+        },
+        {
+          "fragment": "loading-spinner-color",
+          "destination": "reference/css-styling/#loading-spinner-color"
+        },
+        {
+          "fragment": "mobile-offset-tweak",
+          "destination": "reference/css-styling/#a-tighter-stack"
+        },
+        {
+          "fragment": "accessibility",
+          "destination": "reference/css-styling/#responsive-and-motion-behavior"
+        },
+        {
+          "fragment": "common-pitfalls",
+          "destination": "reference/css-styling/#practical-styling-recipes"
+        }
+      ],
+      "reviewed": true
+    },
+    {
+      "source": "docs/entrypoints.md",
+      "revision": "765438b36ab73236c4e6b941509a7669e5bbfdf3",
+      "sha256": "465a6711da0a223bd71e23ffdcf507b480970fc8bf2b0b2e63775ee00ebb2e61",
+      "destination": "docs/src/content/docs/reference/entrypoints.md",
+      "sections": [
+        {
+          "fragment": "decision-table",
+          "destination": "reference/entrypoints/#decision-table"
+        },
+        {
+          "fragment": "root-entrypoint",
+          "destination": "reference/entrypoints/#root-entrypoint"
+        },
+        {
+          "fragment": "registry-modules",
+          "destination": "reference/entrypoints/#registry-modules"
+        },
+        {
+          "fragment": "standalone-iife",
+          "destination": "reference/entrypoints/#standalone-build"
+        },
+        {
+          "fragment": "next-steps",
+          "destination": "reference/entrypoints/#related"
+        }
+      ],
+      "reviewed": true
+    },
+    {
+      "source": "docs/frameworks.md",
+      "revision": "765438b36ab73236c4e6b941509a7669e5bbfdf3",
+      "sha256": "4fcab584fcfa700d4253a94750a7df1653d07d544247ef836cb34d53adcebd3a",
+      "destination": "docs/src/content/docs/guides/frameworks.mdx",
+      "sections": [
+        {
+          "fragment": "react",
+          "destination": "guides/frameworks/#react"
+        },
+        {
+          "fragment": "vue",
+          "destination": "guides/frameworks/#vue"
+        },
+        {
+          "fragment": "svelte",
+          "destination": "guides/frameworks/#svelte"
+        },
+        {
+          "fragment": "ssr-and-hydration",
+          "destination": "guides/frameworks/#ssr-and-hydration"
+        },
+        {
+          "fragment": "one-renderer-by-default",
+          "destination": "guides/frameworks/#shared-state-not-channels"
+        }
+      ],
+      "reviewed": true
+    },
+    {
+      "source": "docs/getting-started.md",
+      "revision": "765438b36ab73236c4e6b941509a7669e5bbfdf3",
+      "sha256": "f43c547447399d66ccefa91e8c9a9be91adfa8b06b73d992dfed3a93d771435f",
+      "destination": "docs/src/content/docs/reference/runtime-contract.md",
+      "sections": [
+        {
+          "fragment": "when-to-use-this-variant",
+          "destination": "reference/runtime-contract/#when-to-use-the-runtime-directly"
+        },
+        {
+          "fragment": "anatomy-of-the-runtime",
+          "destination": "reference/runtime-contract/#anatomy-of-the-runtime"
+        },
+        {
+          "fragment": "observable-contract",
+          "destination": "reference/runtime-contract/#observable-contract"
+        },
+        {
+          "fragment": "lifecycle",
+          "destination": "reference/runtime-contract/#lifecycle"
+        },
+        {
+          "fragment": "side-effects-per-method",
+          "destination": "reference/runtime-contract/#side-effects-per-method"
+        },
+        {
+          "fragment": "recommended-usage-patterns",
+          "destination": "reference/runtime-contract/#recommended-usage-patterns"
+        },
+        {
+          "fragment": "browser-registry-helpers",
+          "destination": "reference/runtime-contract/#browser-registry-helpers"
+        },
+        {
+          "fragment": "submission-examples",
+          "destination": "reference/runtime-contract/#submission-examples"
+        },
+        {
+          "fragment": "toastpromise-with-fetch",
+          "destination": "reference/runtime-contract/#toastpromise-with-fetch"
+        },
+        {
+          "fragment": "next-steps",
+          "destination": "reference/runtime-contract/#next-steps"
+        }
+      ],
+      "reviewed": true
+    },
+    {
+      "source": "docs/options.md",
+      "revision": "765438b36ab73236c4e6b941509a7669e5bbfdf3",
+      "sha256": "bebd2eeecda9a8dde196f748eb35bfa17fdf9ddd444087a9fa755549bec234fd",
+      "destination": "docs/src/content/docs/reference/configuration.md",
+      "sections": [
+        {
+          "fragment": "toasteroptions",
+          "destination": "reference/configuration/#toaster-options"
+        },
+        {
+          "fragment": "field-reference",
+          "destination": "reference/configuration/#toaster-options"
+        },
+        {
+          "fragment": "position",
+          "destination": "reference/configuration/#toaster-options"
+        },
+        {
+          "fragment": "offset",
+          "destination": "reference/configuration/#offset-values"
+        },
+        {
+          "fragment": "theme",
+          "destination": "reference/configuration/#toaster-options"
+        },
+        {
+          "fragment": "direction",
+          "destination": "reference/configuration/#toaster-options"
+        },
+        {
+          "fragment": "toastoptions",
+          "destination": "reference/configuration/#toast-options"
+        },
+        {
+          "fragment": "field-reference-1",
+          "destination": "reference/configuration/#toast-options"
+        },
+        {
+          "fragment": "renderable",
+          "destination": "reference/configuration/#toast-options"
+        },
+        {
+          "fragment": "renderableorfactory",
+          "destination": "reference/configuration/#toast-options"
+        },
+        {
+          "fragment": "toasttype",
+          "destination": "reference/configuration/#toast-options"
+        },
+        {
+          "fragment": "toastaction",
+          "destination": "reference/configuration/#actions"
+        },
+        {
+          "fragment": "defaults-at-a-glance",
+          "destination": "reference/configuration/#toaster-options"
+        }
+      ],
+      "reviewed": true
+    },
+    {
+      "source": "docs/promises.md",
+      "revision": "765438b36ab73236c4e6b941509a7669e5bbfdf3",
+      "sha256": "f158ecd504688f7890f24facc47587014f76390bc980ec502f411dfe9d9fd50f",
+      "destination": "docs/src/content/docs/reference/promises.md",
+      "sections": [
+        {
+          "fragment": "signature",
+          "destination": "reference/promises/#signature"
+        },
+        {
+          "fragment": "loading-and-settled-states",
+          "destination": "reference/promises/#loading-and-result-ids"
+        },
+        {
+          "fragment": "http-and-error-values",
+          "destination": "reference/promises/#http-response-and-error-values"
+        },
+        {
+          "fragment": "description-finally-and-unwrap",
+          "destination": "reference/promises/#description-behavior"
+        },
+        {
+          "fragment": "guidance",
+          "destination": "reference/promises/#loading-state-guidance"
+        }
+      ],
+      "reviewed": true
+    },
+    {
+      "source": "docs/recipes.md",
+      "revision": "765438b36ab73236c4e6b941509a7669e5bbfdf3",
+      "sha256": "6588f8c11089b59ee0ad7d19cfc47d3c3f2eff8ee432dce30ad35e7731251d12",
+      "destination": "docs/src/content/docs/guides/examples.mdx",
+      "sections": [
+        {
+          "fragment": "1-toastpromise-with-fetch",
+          "destination": "guides/examples/#2-toastpromise-with-fetch"
+        },
+        {
+          "fragment": "2-undo-with-action-and-cancel",
+          "destination": "guides/examples/#3-undo-with-action-and-cancel"
+        },
+        {
+          "fragment": "3-rich-content-with-toastcustom",
+          "destination": "guides/examples/#4-rich-content-with-toastcustom"
+        },
+        {
+          "fragment": "4-same-id-updates-in-place",
+          "destination": "guides/examples/#5-same-id-updates-in-place"
+        },
+        {
+          "fragment": "5-live-theme--position-changes",
+          "destination": "guides/examples/#6-live-theme-and-position-changes"
+        },
+        {
+          "fragment": "6-mobile-offsets",
+          "destination": "guides/examples/#7-mobile-offsets"
+        },
+        {
+          "fragment": "7-multi-toaster-ui",
+          "destination": "guides/examples/#8-multi-toaster-interface"
+        },
+        {
+          "fragment": "8-per-toast-custom-testid",
+          "destination": "guides/examples/#9-per-toast-test-hook"
+        },
+        {
+          "fragment": "9-persist-a-toast-log",
+          "destination": "guides/examples/#10-persist-a-toast-log"
+        },
+        {
+          "fragment": "10-custom-css-for-the-toaster",
+          "destination": "guides/examples/#11-custom-css-for-the-toaster"
+        },
+        {
+          "fragment": "11-disable-a-specific-toasts-auto-dismiss",
+          "destination": "guides/examples/#12-disable-auto-dismiss-for-one-toast"
+        },
+        {
+          "fragment": "12-spa-cleanup-on-route-change",
+          "destination": "guides/examples/#13-spa-cleanup-on-route-change"
+        },
+        {
+          "fragment": "13-read-the-current-toasts",
+          "destination": "guides/examples/#14-read-the-current-toasts"
+        },
+        {
+          "fragment": "14-reset-everything-tests-dev-tools",
+          "destination": "guides/examples/#15-reset-everything"
+        },
+        {
+          "fragment": "next-steps",
+          "destination": "guides/examples/#typed-event-subscriptions"
+        }
+      ],
+      "reviewed": true
+    },
+    {
+      "source": "docs/troubleshooting.md",
+      "revision": "765438b36ab73236c4e6b941509a7669e5bbfdf3",
+      "sha256": "c1e54ad9a655129a17f155b4506ec79c3adce4d726e80c2386aa41ab16da2e4f",
+      "destination": "docs/src/content/docs/reference/troubleshooting.md",
+      "sections": [
+        {
+          "fragment": "toasts-do-not-appear",
+          "destination": "reference/troubleshooting/#toasts-do-not-appear"
+        },
+        {
+          "fragment": "toasts-look-like-a-plain-list",
+          "destination": "reference/troubleshooting/#toasts-look-like-a-plain-list"
+        },
+        {
+          "fragment": "duplicate-notifications-or-callbacks",
+          "destination": "reference/troubleshooting/#duplicate-notifications-or-callbacks"
+        },
+        {
+          "fragment": "ssr-or-body-timing-errors",
+          "destination": "reference/troubleshooting/#documentbody-error"
+        },
+        {
+          "fragment": "cdn-global-is-undefined",
+          "destination": "reference/troubleshooting/#the-cdn-global-is-undefined"
+        },
+        {
+          "fragment": "teardown-reset-and-remount",
+          "destination": "reference/troubleshooting/#teardown-and-remount"
+        },
+        {
+          "fragment": "strict-csp-or-custom-visuals",
+          "destination": "reference/troubleshooting/#strict-content-security-policy-or-custom-visuals"
+        }
+      ],
+      "reviewed": true
+    },
+    {
+      "source": "docs/typescript.md",
+      "revision": "765438b36ab73236c4e6b941509a7669e5bbfdf3",
+      "sha256": "1f3f70416b4128419776851da8c05b4b6f9eff58c84d9b227c3e46bdfd26052d",
+      "destination": "docs/src/content/docs/reference/typescript.md",
+      "sections": [
+        {
+          "fragment": "toastapi",
+          "destination": "reference/typescript/#toast-api"
+        },
+        {
+          "fragment": "toastid",
+          "destination": "reference/typescript/#toast-primitives"
+        },
+        {
+          "fragment": "toasttype",
+          "destination": "reference/typescript/#toast-primitives"
+        },
+        {
+          "fragment": "renderable",
+          "destination": "reference/typescript/#toast-primitives"
+        },
+        {
+          "fragment": "renderableorfactory",
+          "destination": "reference/typescript/#toast-primitives"
+        },
+        {
+          "fragment": "customcontent",
+          "destination": "reference/typescript/#toast-primitives"
+        },
+        {
+          "fragment": "toastaction",
+          "destination": "reference/typescript/#toast-primitives"
+        },
+        {
+          "fragment": "toastoptions",
+          "destination": "reference/typescript/#toast-options-and-records"
+        },
+        {
+          "fragment": "toastt",
+          "destination": "reference/typescript/#toast-options-and-records"
+        },
+        {
+          "fragment": "toasttodismiss",
+          "destination": "reference/typescript/#toast-options-and-records"
+        },
+        {
+          "fragment": "toastinput",
+          "destination": "reference/typescript/#advanced-state-types"
+        },
+        {
+          "fragment": "toastsubscriber",
+          "destination": "reference/typescript/#advanced-state-types"
+        },
+        {
+          "fragment": "toastercontroller",
+          "destination": "reference/typescript/#toaster-types"
+        },
+        {
+          "fragment": "toasteroptions",
+          "destination": "reference/typescript/#toaster-types"
+        },
+        {
+          "fragment": "position",
+          "destination": "reference/typescript/#toaster-types"
+        },
+        {
+          "fragment": "theme",
+          "destination": "reference/typescript/#toaster-types"
+        },
+        {
+          "fragment": "direction",
+          "destination": "reference/typescript/#toaster-types"
+        },
+        {
+          "fragment": "offset",
+          "destination": "reference/typescript/#toaster-types"
+        },
+        {
+          "fragment": "swipedirection",
+          "destination": "reference/typescript/#toaster-types"
+        },
+        {
+          "fragment": "promiseinput",
+          "destination": "reference/typescript/#promise-types"
+        },
+        {
+          "fragment": "promisevalue",
+          "destination": "reference/typescript/#promise-types"
+        },
+        {
+          "fragment": "promisedata",
+          "destination": "reference/typescript/#promise-types"
+        },
+        {
+          "fragment": "promiseextendedresult",
+          "destination": "reference/typescript/#promise-types"
+        },
+        {
+          "fragment": "notifyapi",
+          "destination": "reference/typescript/#browser-registry-type"
+        },
+        {
+          "fragment": "numeric-constants",
+          "destination": "reference/typescript/#public-constants"
+        }
+      ],
+      "reviewed": true
+    },
+    {
+      "source": "example/src/content/docs/getting-started.mdx",
+      "revision": "765438b36ab73236c4e6b941509a7669e5bbfdf3",
+      "sha256": "4ad2d667d42261b893cfdfed8dcf6aa23e4742f7550c3d52a708bdde9ef2db87",
+      "destination": "docs/src/content/docs/getting-started.mdx",
+      "sections": [
+        {
+          "fragment": "prerequisites",
+          "destination": "getting-started/#install"
+        },
+        {
+          "fragment": "install",
+          "destination": "getting-started/#install"
+        },
+        {
+          "fragment": "mount-and-notify",
+          "destination": "getting-started/#mount-one-toaster"
+        },
+        {
+          "fragment": "no-bundler",
+          "destination": "getting-started/#working-starter-files"
+        },
+        {
+          "fragment": "one-shared-state",
+          "destination": "getting-started/#the-lifecycle"
+        },
+        {
+          "fragment": "next-steps",
+          "destination": "getting-started/#next-steps"
+        }
+      ],
+      "reviewed": true
+    },
+    {
+      "source": "example/src/content/docs/guides/actions-and-custom-content.md",
+      "revision": "765438b36ab73236c4e6b941509a7669e5bbfdf3",
+      "sha256": "3acc14b4e694ba62066221b9d408fe8883126f0bcfe9936f7946f0affe788c8b",
+      "destination": "docs/src/content/docs/guides/actions-and-custom-content.md",
+      "sections": [
+        {
+          "fragment": "action-and-cancel-buttons",
+          "destination": "guides/actions-and-custom-content/#action-and-cancel-buttons"
+        },
+        {
+          "fragment": "custom-dom",
+          "destination": "guides/actions-and-custom-content/#custom-dom"
+        },
+        {
+          "fragment": "safety-and-accessibility-checklist",
+          "destination": "guides/actions-and-custom-content/#safety-and-accessibility-checklist"
+        },
+        {
+          "fragment": "when-a-normal-toast-is-enough",
+          "destination": "guides/actions-and-custom-content/#when-a-normal-toast-is-enough"
+        },
+        {
+          "fragment": "related",
+          "destination": "guides/actions-and-custom-content/#related"
+        }
+      ],
+      "reviewed": true
+    },
+    {
+      "source": "example/src/content/docs/guides/toast-lifecycle.mdx",
+      "revision": "765438b36ab73236c4e6b941509a7669e5bbfdf3",
+      "sha256": "39cedfa3e8bd8f4dfe866aa038936e440d65b734b6a375fe144de3ac92ce85de",
+      "destination": "docs/src/content/docs/guides/toast-lifecycle.mdx",
+      "sections": [
+        {
+          "fragment": "the-complete-flow",
+          "destination": "guides/toast-lifecycle/#the-complete-flow"
+        },
+        {
+          "fragment": "active-state-versus-history",
+          "destination": "guides/toast-lifecycle/#active-state-versus-history"
+        },
+        {
+          "fragment": "reset-versus-teardown",
+          "destination": "guides/toast-lifecycle/#reset-versus-teardown"
+        },
+        {
+          "fragment": "avoid-duplicate-renderers",
+          "destination": "guides/toast-lifecycle/#avoid-duplicate-renderers"
+        },
+        {
+          "fragment": "related",
+          "destination": "guides/toast-lifecycle/#related"
+        }
+      ],
+      "reviewed": true
+    },
+    {
+      "source": "example/src/content/docs/index.mdx",
+      "revision": "765438b36ab73236c4e6b941509a7669e5bbfdf3",
+      "sha256": "10a3c1ef578a50de5f68a5af4e704ce052072b2479c310b92a2fd2a478efd0d6",
+      "destination": "docs/src/content/docs/index.mdx",
+      "sections": [
+        {
+          "fragment": "why-notify",
+          "destination": "/#what-it-solves"
+        },
+        {
+          "fragment": "choose-a-path",
+          "destination": "/#choose-your-next-step"
+        },
+        {
+          "fragment": "what-should-i-read-next",
+          "destination": "/#choose-your-next-step"
+        }
+      ],
+      "reviewed": true
+    },
+    {
+      "source": "example/src/content/docs/reference/accessibility.md",
+      "revision": "765438b36ab73236c4e6b941509a7669e5bbfdf3",
+      "sha256": "f10f00687f9108ab1a629e58f5a76545ed22fc31811c76ff98c7848babe4a7e1",
+      "destination": "docs/src/content/docs/guides/accessibility.md",
+      "sections": [
+        {
+          "fragment": "rendered-semantics",
+          "destination": "guides/accessibility/#rendered-semantics"
+        },
+        {
+          "fragment": "keyboard-behavior",
+          "destination": "guides/accessibility/#keyboard-behavior"
+        },
+        {
+          "fragment": "close-and-dismissal-rules",
+          "destination": "guides/accessibility/#close-and-dismissal-rules"
+        },
+        {
+          "fragment": "content-and-timing-guidance",
+          "destination": "guides/accessibility/#content-and-timing-guidance"
+        },
+        {
+          "fragment": "reduced-motion",
+          "destination": "guides/accessibility/#reduced-motion"
+        },
+        {
+          "fragment": "custom-content",
+          "destination": "guides/accessibility/#custom-content"
+        }
+      ],
+      "reviewed": true
+    },
+    {
+      "source": "example/src/content/docs/reference/api.md",
+      "revision": "765438b36ab73236c4e6b941509a7669e5bbfdf3",
+      "sha256": "43995141946e16eb33aba0204016f05df8a6e2c9261472252a9ff80161567fca",
+      "destination": "docs/src/content/docs/reference/api.md",
+      "sections": [
+        {
+          "fragment": "toast-factory",
+          "destination": "reference/api/#toast-factory"
+        },
+        {
+          "fragment": "toastmessage-options",
+          "destination": "reference/api/#toastmessage-options"
+        },
+        {
+          "fragment": "variants",
+          "destination": "reference/api/#variants"
+        },
+        {
+          "fragment": "toastcustomcontent-options",
+          "destination": "reference/api/#toastcustomcontent-options"
+        },
+        {
+          "fragment": "toastpromiseinput-data",
+          "destination": "reference/api/#toastpromiseinput-data"
+        },
+        {
+          "fragment": "toastdismissid",
+          "destination": "reference/api/#toastdismissid"
+        },
+        {
+          "fragment": "toastgettoasts",
+          "destination": "reference/api/#toastgettoasts"
+        },
+        {
+          "fragment": "toastgethistory",
+          "destination": "reference/api/#toastgethistory"
+        },
+        {
+          "fragment": "toaster-lifecycle",
+          "destination": "reference/api/#toaster-lifecycle"
+        },
+        {
+          "fragment": "createtoasteroptions",
+          "destination": "reference/api/#createtoasteroptions"
+        },
+        {
+          "fragment": "toasteroptions",
+          "destination": "reference/api/#toasteroptions"
+        },
+        {
+          "fragment": "configuretoasteroptions",
+          "destination": "reference/api/#configuretoasteroptions"
+        },
+        {
+          "fragment": "gettoaster",
+          "destination": "reference/api/#gettoaster"
+        },
+        {
+          "fragment": "destroytoaster",
+          "destination": "reference/api/#destroytoaster"
+        },
+        {
+          "fragment": "resettoasts",
+          "destination": "reference/api/#resettoasts"
+        },
+        {
+          "fragment": "controller",
+          "destination": "reference/api/#controller"
+        },
+        {
+          "fragment": "browser-registry",
+          "destination": "reference/api/#browser-registry"
+        },
+        {
+          "fragment": "root-browser",
+          "destination": "reference/api/#root-browser"
+        },
+        {
+          "fragment": "samlinenotifybrowser",
+          "destination": "reference/api/#samlinenotifybrowser"
+        },
+        {
+          "fragment": "advanced-exports",
+          "destination": "reference/api/#advanced-exports"
+        },
+        {
+          "fragment": "mounttoasterroot-options-state",
+          "destination": "reference/api/#mounttoasterroot-options-state"
+        },
+        {
+          "fragment": "toaststate",
+          "destination": "reference/api/#toaststate"
+        },
+        {
+          "fragment": "resettoaststate",
+          "destination": "reference/api/#resettoaststate"
+        }
+      ],
+      "reviewed": true
+    },
+    {
+      "source": "example/src/content/docs/reference/browser.md",
+      "revision": "765438b36ab73236c4e6b941509a7669e5bbfdf3",
+      "sha256": "5e94905531a7fb09c13441c947d73ed447851e627105484dec18f52710fa2559",
+      "destination": "docs/src/content/docs/reference/browser.mdx",
+      "sections": [
+        {
+          "fragment": "root-registry",
+          "destination": "reference/browser/#root-registry"
+        },
+        {
+          "fragment": "browser-subpath",
+          "destination": "reference/browser/#browser-subpath"
+        },
+        {
+          "fragment": "standalone-iife",
+          "destination": "reference/browser/#standalone-build"
+        },
+        {
+          "fragment": "iife-lifecycle",
+          "destination": "reference/browser/#standalone-lifecycle"
+        },
+        {
+          "fragment": "ssr-safety",
+          "destination": "reference/browser/#server-side-safety"
+        },
+        {
+          "fragment": "hosting-and-base-paths",
+          "destination": "reference/browser/#hosting-and-base-paths"
+        },
+        {
+          "fragment": "content-security-policy",
+          "destination": "reference/browser/#content-security-policy"
+        },
+        {
+          "fragment": "typescript-global-declaration",
+          "destination": "reference/browser/#typescript-global-declaration"
+        }
+      ],
+      "reviewed": true
+    },
+    {
+      "source": "example/src/content/docs/reference/configuration.md",
+      "revision": "765438b36ab73236c4e6b941509a7669e5bbfdf3",
+      "sha256": "5dec4edbecf4438a0a21a895d5b91e7ad37b487eca7161a80aeda1605be139a4",
+      "destination": "docs/src/content/docs/reference/configuration.md",
+      "sections": [
+        {
+          "fragment": "toaster-options",
+          "destination": "reference/configuration/#toaster-options"
+        },
+        {
+          "fragment": "offset-values",
+          "destination": "reference/configuration/#offset-values"
+        },
+        {
+          "fragment": "toast-options",
+          "destination": "reference/configuration/#toast-options"
+        },
+        {
+          "fragment": "actions",
+          "destination": "reference/configuration/#actions"
+        },
+        {
+          "fragment": "inheritance-example",
+          "destination": "reference/configuration/#inheritance-example"
+        }
+      ],
+      "reviewed": true
+    },
+    {
+      "source": "example/src/content/docs/reference/css-styling.md",
+      "revision": "765438b36ab73236c4e6b941509a7669e5bbfdf3",
+      "sha256": "e7e508e3f89fc2d4602667eb3a923cbbdd15e118f8e64dff8c0596c9b4b91776",
+      "destination": "docs/src/content/docs/reference/css-styling.md",
+      "sections": [
+        {
+          "fragment": "three-styling-mechanisms",
+          "destination": "reference/css-styling/#three-styling-mechanisms"
+        },
+        {
+          "fragment": "css-custom-properties",
+          "destination": "reference/css-styling/#css-custom-properties"
+        },
+        {
+          "fragment": "the-style-option",
+          "destination": "reference/css-styling/#the-style-option"
+        },
+        {
+          "fragment": "classes-and-unstyled",
+          "destination": "reference/css-styling/#classes-and-unstyled"
+        },
+        {
+          "fragment": "container-contract",
+          "destination": "reference/css-styling/#container-contract"
+        },
+        {
+          "fragment": "toast-item-contract",
+          "destination": "reference/css-styling/#toast-item-contract"
+        },
+        {
+          "fragment": "inner-elements",
+          "destination": "reference/css-styling/#inner-elements"
+        },
+        {
+          "fragment": "responsive-and-motion-behavior",
+          "destination": "reference/css-styling/#responsive-and-motion-behavior"
+        }
+      ],
+      "reviewed": true
+    },
+    {
+      "source": "example/src/content/docs/reference/entrypoints.md",
+      "revision": "765438b36ab73236c4e6b941509a7669e5bbfdf3",
+      "sha256": "ce9efd57a5237732e5fd15a6b72b7757508b5cbc96b6fc0aefb17a27fb3e7434",
+      "destination": "docs/src/content/docs/reference/entrypoints.md",
+      "sections": [
+        {
+          "fragment": "decision-table",
+          "destination": "reference/entrypoints/#decision-table"
+        },
+        {
+          "fragment": "root-entrypoint",
+          "destination": "reference/entrypoints/#root-entrypoint"
+        },
+        {
+          "fragment": "registry-object",
+          "destination": "reference/entrypoints/#registry-modules"
+        },
+        {
+          "fragment": "standalone-iife",
+          "destination": "reference/entrypoints/#standalone-build"
+        },
+        {
+          "fragment": "related",
+          "destination": "reference/entrypoints/#related"
+        }
+      ],
+      "reviewed": true
+    },
+    {
+      "source": "example/src/content/docs/reference/examples.mdx",
+      "revision": "765438b36ab73236c4e6b941509a7669e5bbfdf3",
+      "sha256": "e04783bf4a88af78402a3e653f50d00c8885a34000c3796259359c0552b94709",
+      "destination": "docs/src/content/docs/guides/examples.mdx",
+      "sections": [
+        {
+          "fragment": "minimal-setup",
+          "destination": "guides/examples/#1-minimal-setup"
+        },
+        {
+          "fragment": "promise-with-a-timer",
+          "destination": "guides/examples/#try-it"
+        },
+        {
+          "fragment": "manual-same-id-update",
+          "destination": "guides/examples/#5-same-id-updates-in-place"
+        },
+        {
+          "fragment": "undo-action",
+          "destination": "guides/examples/#3-undo-with-action-and-cancel"
+        },
+        {
+          "fragment": "safe-custom-dom",
+          "destination": "guides/examples/#4-rich-content-with-toastcustom"
+        },
+        {
+          "fragment": "snapshot-without-mutation-leaks",
+          "destination": "guides/examples/#defensive-snapshots"
+        },
+        {
+          "fragment": "typed-low-level-event-narrowing",
+          "destination": "guides/examples/#typed-event-subscriptions"
+        },
+        {
+          "fragment": "theme-and-hotkey-update",
+          "destination": "guides/examples/#6-live-theme-and-position-changes"
+        },
+        {
+          "fragment": "reset-for-a-test",
+          "destination": "guides/examples/#15-reset-everything"
+        },
+        {
+          "fragment": "teardown-and-explicit-remount",
+          "destination": "guides/examples/#13-spa-cleanup-on-route-change"
+        }
+      ],
+      "reviewed": true
+    },
+    {
+      "source": "example/src/content/docs/reference/frameworks.md",
+      "revision": "765438b36ab73236c4e6b941509a7669e5bbfdf3",
+      "sha256": "3d18f7a20eec6cc30abbbbbcffac662e5d31e7b97bfc1c0b728c40a6050913ec",
+      "destination": "docs/src/content/docs/guides/frameworks.mdx",
+      "sections": [
+        {
+          "fragment": "react",
+          "destination": "guides/frameworks/#react"
+        },
+        {
+          "fragment": "vue",
+          "destination": "guides/frameworks/#vue"
+        },
+        {
+          "fragment": "svelte",
+          "destination": "guides/frameworks/#svelte"
+        },
+        {
+          "fragment": "ssr-and-hydration",
+          "destination": "guides/frameworks/#ssr-and-hydration"
+        },
+        {
+          "fragment": "shared-state-not-channels",
+          "destination": "guides/frameworks/#shared-state-not-channels"
+        }
+      ],
+      "reviewed": true
+    },
+    {
+      "source": "example/src/content/docs/reference/index.md",
+      "revision": "765438b36ab73236c4e6b941509a7669e5bbfdf3",
+      "sha256": "733ce517da76c5a12275bc581973f32c0e2e3328d00ae9b0a0c6195cea06d6c4",
+      "destination": "docs/src/content/docs/reference/api.md",
+      "sections": [
+        {
+          "fragment": "core-reference",
+          "destination": "reference/api/#toast-factory"
+        },
+        {
+          "fragment": "usage-guides",
+          "destination": "reference/api/#per-method-pages"
+        }
+      ],
+      "reviewed": true
+    },
+    {
+      "source": "example/src/content/docs/reference/promises.md",
+      "revision": "765438b36ab73236c4e6b941509a7669e5bbfdf3",
+      "sha256": "d5221dc30aafc5f98d5319dae448f32dfeeac2a60c4b400105228b0556eb11cc",
+      "destination": "docs/src/content/docs/reference/promises.md",
+      "sections": [
+        {
+          "fragment": "signature",
+          "destination": "reference/promises/#signature"
+        },
+        {
+          "fragment": "loading-and-result-ids",
+          "destination": "reference/promises/#loading-and-result-ids"
+        },
+        {
+          "fragment": "success-and-error-values",
+          "destination": "reference/promises/#success-and-error-values"
+        },
+        {
+          "fragment": "description-behavior",
+          "destination": "reference/promises/#description-behavior"
+        },
+        {
+          "fragment": "http-response-and-error-values",
+          "destination": "reference/promises/#http-response-and-error-values"
+        },
+        {
+          "fragment": "finally-and-unwrap",
+          "destination": "reference/promises/#finally-and-unwrap"
+        },
+        {
+          "fragment": "loading-state-guidance",
+          "destination": "reference/promises/#loading-state-guidance"
+        }
+      ],
+      "reviewed": true
+    },
+    {
+      "source": "example/src/content/docs/reference/troubleshooting.md",
+      "revision": "765438b36ab73236c4e6b941509a7669e5bbfdf3",
+      "sha256": "c57bcb177df9c84ffba0d2208efdc4ca39a801e26f5f3b9d8d8fe244233a5ac9",
+      "destination": "docs/src/content/docs/reference/troubleshooting.md",
+      "sections": [
+        {
+          "fragment": "toasts-do-not-appear",
+          "destination": "reference/troubleshooting/#toasts-do-not-appear"
+        },
+        {
+          "fragment": "documentbody-error",
+          "destination": "reference/troubleshooting/#documentbody-error"
+        },
+        {
+          "fragment": "toasts-look-like-a-plain-list",
+          "destination": "reference/troubleshooting/#toasts-look-like-a-plain-list"
+        },
+        {
+          "fragment": "duplicate-notifications",
+          "destination": "reference/troubleshooting/#duplicate-notifications-or-callbacks"
+        },
+        {
+          "fragment": "ssr-failures",
+          "destination": "reference/troubleshooting/#ssr-failures"
+        },
+        {
+          "fragment": "cdn-global-is-undefined",
+          "destination": "reference/troubleshooting/#the-cdn-global-is-undefined"
+        },
+        {
+          "fragment": "assets-fail-under-a-base-path",
+          "destination": "reference/troubleshooting/#assets-fail-under-a-base-path"
+        },
+        {
+          "fragment": "teardown-and-remount",
+          "destination": "reference/troubleshooting/#teardown-and-remount"
+        },
+        {
+          "fragment": "strict-csp-or-custom-visuals",
+          "destination": "reference/troubleshooting/#strict-content-security-policy-or-custom-visuals"
+        },
+        {
+          "fragment": "callbacks-run-more-than-once",
+          "destination": "reference/troubleshooting/#callbacks-run-more-than-once"
+        },
+        {
+          "fragment": "framework-migration",
+          "destination": "reference/troubleshooting/#framework-migration"
+        }
+      ],
+      "reviewed": true
+    },
+    {
+      "source": "example/src/content/docs/reference/typescript.md",
+      "revision": "765438b36ab73236c4e6b941509a7669e5bbfdf3",
+      "sha256": "87ee93e1a6b2e0fc2ccbe05eabd9261209f452a2df57c0a162576e45478f1ba2",
+      "destination": "docs/src/content/docs/reference/typescript.md",
+      "sections": [
+        {
+          "fragment": "toast-primitives",
+          "destination": "reference/typescript/#toast-primitives"
+        },
+        {
+          "fragment": "toast-options-and-records",
+          "destination": "reference/typescript/#toast-options-and-records"
+        },
+        {
+          "fragment": "toast-api",
+          "destination": "reference/typescript/#toast-api"
+        },
+        {
+          "fragment": "toaster-types",
+          "destination": "reference/typescript/#toaster-types"
+        },
+        {
+          "fragment": "promise-types",
+          "destination": "reference/typescript/#promise-types"
+        },
+        {
+          "fragment": "advanced-state-types",
+          "destination": "reference/typescript/#advanced-state-types"
+        },
+        {
+          "fragment": "browser-registry-type",
+          "destination": "reference/typescript/#browser-registry-type"
+        },
+        {
+          "fragment": "public-constants",
+          "destination": "reference/typescript/#public-constants"
+        }
+      ],
+      "reviewed": true
+    }
+  ],
+  "aliases": {
+    "": {
+      "index": "documentation-map",
+      "what-this-package-is": "three-ideas",
+      "file-by-file-map": "documentation-map",
+      "why-notify": "what-it-solves",
+      "choose-a-path": "choose-your-next-step",
+      "what-should-i-read-next": "choose-your-next-step"
+    },
+    "guides/accessibility": {
+      "semantics": "rendered-semantics",
+      "dismissal-and-timing": "close-and-dismissal-rules",
+      "reduced-motion-and-custom-content": "custom-content"
+    },
+    "api/create-toaster": {
+      "mount-a-custom-toaster": "mount-a-configured-toaster"
+    },
+    "api/destroy-toaster": {
+      "spa-route-cleanup": "router-cleanup"
+    },
+    "api/get-toaster": {
+      "live-updates-from-a-router--store": "live-updates-from-a-store"
+    },
+    "reference/api": {
+      "controller-surface": "controller",
+      "registry-helpers-vanilla": "browser-registry",
+      "pure-helpers": "advanced-exports",
+      "core-reference": "toast-factory",
+      "usage-guides": "per-method-pages"
+    },
+    "api/reset-toasts": {
+      "dev-tools": "development-tools"
+    },
+    "api/toast": {
+      "success--error-callbacks": "success-and-error-callbacks"
+    },
+    "reference/browser": {
+      "script-tag": "standalone-build",
+      "global-object": "the-registry-shape",
+      "minimal-example": "standalone-build",
+      "custom-toaster": "root-registry",
+      "lifecycle-helpers": "standalone-lifecycle",
+      "surface-reference": "the-registry-shape",
+      "controller-methods": "standalone-lifecycle",
+      "typescript-users": "typescript-global-declaration",
+      "using-the-same-shape-from-a-bundler": "root-registry",
+      "common-pitfalls": "hosting-and-base-paths",
+      "standalone-iife": "standalone-build",
+      "iife-lifecycle": "standalone-lifecycle",
+      "ssr-safety": "server-side-safety"
+    },
+    "reference/css-styling": {
+      "importing-the-stylesheet": "three-styling-mechanisms",
+      "toaster-container": "container-contract",
+      "data-attributes": "container-contract",
+      "toast-item": "toast-item-contract",
+      "data-attributes-1": "toast-item-contract",
+      "css-custom-properties-1": "direction-and-layout-variables",
+      "theme-variables": "palette-slots",
+      "per-type-color-slots": "palette-slots",
+      "grayscale-ramp": "palette-slots",
+      "border-radius": "palette-slots",
+      "recipes": "practical-styling-recipes",
+      "brand-aligned-success-color": "css-custom-properties",
+      "tighter-stack-wider-toasts": "a-tighter-stack",
+      "border-only-no-background": "a-quieter-border-only-toast",
+      "mobile-offset-tweak": "a-tighter-stack",
+      "accessibility": "responsive-and-motion-behavior",
+      "common-pitfalls": "practical-styling-recipes"
+    },
+    "reference/entrypoints": {
+      "standalone-iife": "standalone-build",
+      "next-steps": "related",
+      "registry-object": "registry-modules"
+    },
+    "guides/frameworks": {
+      "one-renderer-by-default": "shared-state-not-channels"
+    },
+    "reference/runtime-contract": {
+      "when-to-use-this-variant": "when-to-use-the-runtime-directly"
+    },
+    "reference/configuration": {
+      "toasteroptions": "toaster-options",
+      "field-reference": "toaster-options",
+      "position": "toaster-options",
+      "offset": "offset-values",
+      "theme": "toaster-options",
+      "direction": "toaster-options",
+      "toastoptions": "toast-options",
+      "field-reference-1": "toast-options",
+      "renderable": "toast-options",
+      "renderableorfactory": "toast-options",
+      "toasttype": "toast-options",
+      "toastaction": "actions",
+      "defaults-at-a-glance": "toaster-options"
+    },
+    "reference/promises": {
+      "loading-and-settled-states": "loading-and-result-ids",
+      "http-and-error-values": "http-response-and-error-values",
+      "description-finally-and-unwrap": "description-behavior",
+      "guidance": "loading-state-guidance"
+    },
+    "guides/examples": {
+      "1-toastpromise-with-fetch": "2-toastpromise-with-fetch",
+      "2-undo-with-action-and-cancel": "3-undo-with-action-and-cancel",
+      "3-rich-content-with-toastcustom": "4-rich-content-with-toastcustom",
+      "4-same-id-updates-in-place": "5-same-id-updates-in-place",
+      "5-live-theme--position-changes": "6-live-theme-and-position-changes",
+      "6-mobile-offsets": "7-mobile-offsets",
+      "7-multi-toaster-ui": "8-multi-toaster-interface",
+      "8-per-toast-custom-testid": "9-per-toast-test-hook",
+      "9-persist-a-toast-log": "10-persist-a-toast-log",
+      "10-custom-css-for-the-toaster": "11-custom-css-for-the-toaster",
+      "11-disable-a-specific-toasts-auto-dismiss": "12-disable-auto-dismiss-for-one-toast",
+      "12-spa-cleanup-on-route-change": "13-spa-cleanup-on-route-change",
+      "13-read-the-current-toasts": "14-read-the-current-toasts",
+      "14-reset-everything-tests-dev-tools": "15-reset-everything",
+      "next-steps": "typed-event-subscriptions",
+      "minimal-setup": "1-minimal-setup",
+      "promise-with-a-timer": "try-it",
+      "manual-same-id-update": "5-same-id-updates-in-place",
+      "undo-action": "3-undo-with-action-and-cancel",
+      "safe-custom-dom": "4-rich-content-with-toastcustom",
+      "snapshot-without-mutation-leaks": "defensive-snapshots",
+      "typed-low-level-event-narrowing": "typed-event-subscriptions",
+      "theme-and-hotkey-update": "6-live-theme-and-position-changes",
+      "reset-for-a-test": "15-reset-everything",
+      "teardown-and-explicit-remount": "13-spa-cleanup-on-route-change"
+    },
+    "reference/troubleshooting": {
+      "ssr-or-body-timing-errors": "documentbody-error",
+      "cdn-global-is-undefined": "the-cdn-global-is-undefined",
+      "teardown-reset-and-remount": "teardown-and-remount",
+      "strict-csp-or-custom-visuals": "strict-content-security-policy-or-custom-visuals",
+      "duplicate-notifications": "duplicate-notifications-or-callbacks"
+    },
+    "reference/typescript": {
+      "toastapi": "toast-api",
+      "toastid": "toast-primitives",
+      "toasttype": "toast-primitives",
+      "renderable": "toast-primitives",
+      "renderableorfactory": "toast-primitives",
+      "customcontent": "toast-primitives",
+      "toastaction": "toast-primitives",
+      "toastoptions": "toast-options-and-records",
+      "toastt": "toast-options-and-records",
+      "toasttodismiss": "toast-options-and-records",
+      "toastinput": "advanced-state-types",
+      "toastsubscriber": "advanced-state-types",
+      "toastercontroller": "toaster-types",
+      "toasteroptions": "toaster-types",
+      "position": "toaster-types",
+      "theme": "toaster-types",
+      "direction": "toaster-types",
+      "offset": "toaster-types",
+      "swipedirection": "toaster-types",
+      "promiseinput": "promise-types",
+      "promisevalue": "promise-types",
+      "promisedata": "promise-types",
+      "promiseextendedresult": "promise-types",
+      "notifyapi": "browser-registry-type",
+      "numeric-constants": "public-constants"
+    },
+    "getting-started": {
+      "prerequisites": "install",
+      "mount-and-notify": "mount-one-toaster",
+      "no-bundler": "working-starter-files",
+      "one-shared-state": "the-lifecycle"
+    }
+  },
+  "unresolved": []
+}

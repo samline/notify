@@ -4,7 +4,7 @@ const routes = {
   setup: 'getting-started/',
   options: 'reference/configuration/',
   api: 'reference/api/',
-  lifecycle: 'reference/configuration/',
+  lifecycle: 'guides/toast-lifecycle/',
   accessibility: 'guides/accessibility/',
   examples: 'guides/examples/',
 } as const

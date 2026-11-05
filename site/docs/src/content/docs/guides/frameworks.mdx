@@ -8,6 +8,9 @@ sidebar:
   order: 5
 ---
 
+import FrameworkExamples from '../../../../../shared/components/FrameworkExamples.astro'
+import { frameworkGroups } from '../../../../../shared/lib/framework-files'
+
 `@samline/notify` is a vanilla DOM package. It does not export a React component, a Vue plugin, a Svelte component, or a framework-specific context. `Toaster` is a function alias of `createToaster()`.
 
 Import the stylesheet once, mount the singleton from client lifecycle code, and use the exported `toast` object from event handlers or application services.
@@ -88,6 +91,8 @@ For Astro, Next.js, Nuxt, SvelteKit, and similar systems:
 - avoid calling `toast.*` during server rendering, because state created on the server has no client renderer and should not be shared between requests,
 - destroy only when the application actually tears down the integration, then remount explicitly if client navigation needs it again.
 
+<span id="one-renderer-by-default" class="legacy-fragment" aria-hidden="true"></span>
+
 ## Shared state, not channels
 
 Do not create one direct mount per framework subtree. `mountToaster()` defaults to the global `ToastState`, so every such renderer receives the same events and can display duplicates. The legacy `id` and `toasterId` fields filter that shared stream; they do not isolate state, history, counters, or subscriptions, and they should not be treated as framework routing.
@@ -99,3 +104,21 @@ If an application truly needs independently owned notification systems, use sepa
 - [Getting started](../../getting-started/)
 - [Browser builds](../../reference/browser/)
 - [Troubleshooting](../../reference/troubleshooting/)
+
+## Complete integration files
+
+Mount the framework component once near the client root. React Strict Mode can repeat setup and cleanup in development; the root owns the singleton. Avoid competing owners that destroy a toaster still in use elsewhere.
+
+<FrameworkExamples label="Framework integration" groups={frameworkGroups} />
+
+## Astro navigation
+
+The Astro component mounts native buttons after page load and cleans up before a client-side page swap. Include it in the root layout. Server rendering must not create toast state or mount a renderer.
+
+## Shopify and WordPress
+
+Copy the matching published JavaScript and CSS assets into the theme as notify.global.js and notify.css. The CMS examples remain pinned to published 3.2.0 until 3.2.1 ships. Add notify-hosts.js once after the package script. Shopify assets belong in the layout rather than being loaded once per section; WordPress dependency handles establish execution order.
+
+Each data-notify-host scope owns its listeners. Multiple scopes share one toaster; removing the final owner destroys it. Shopify section load/unload and DOM replacement release the affected listeners. Do not use the preview's saved message as proof of a server-side save: call the notification only after your real submission succeeds.
+
+The Liquid and PHP files are integration fixtures, not certified deployments on a real store or WordPress installation. The shared host JavaScript is executed with multiple scopes, editor unload/reload and cleanup in Chromium; framework files are compiler checked locally.

@@ -1,33 +1,80 @@
-# Accessibility
+# Accessibility and behavior
 
-Notify provides accessible mechanics, while the application remains responsible for content, timing, contrast, and testing with its supported assistive technologies.
+Notify supplies accessible mechanics, while the application remains responsible for content, timing, contrast, and testing with the assistive technologies it supports.
 
-## Semantics
+## Rendered semantics
 
-The toaster is an ordered list with `aria-live="polite"`, `aria-relevant="additions text"`, and an accessible label. Each toast is a focusable list item. Loading items set `aria-busy="true"`; generated icons are decorative.
+The toaster is an ordered list with an accessible label. It does not set `role="region"`, `role="status"`, or `role="alert"`.
 
-Announcements vary across browser and screen-reader combinations. Never use a toast as the only presentation of a critical error or required action.
+```html
+<ol
+  data-notify-toaster
+  aria-label="Notifications"
+  aria-live="polite"
+  aria-relevant="additions text"
+  aria-atomic="false"
+  tabindex="-1"
+></ol>
+```
+
+New toast list items and changed text are eligible for polite announcement. Removals are not included by `aria-relevant`. Because announcements depend on the browser and screen-reader combination, and on timing, never use a toast as the only presentation of a critical error or a required action.
+
+Each toast is a focusable list item. Loading toasts set `aria-busy="true"`; the other types set it to `false`. Non-normal variants receive a label such as `success: Saved`, while normal toasts have no custom label and expose their descendant text. Generated icons are decorative and hidden from assistive technology.
+
+`customAriaLabel` is a historical toaster option: it replaces the **container's** accessible label. `containerAriaLabel` defaults to `Notifications`. Neither option changes the text of an individual toast.
 
 ## Keyboard behavior
 
-- `Alt+T` focuses the newest toast or empty container; `hotkey: []` disables it.
-- The hotkey is ignored while typing in an input, textarea, select, or editable element.
-- Focus pauses auto-dismiss and blur resumes the remaining time.
-- Enter or Space invokes body `onClick` when the list item itself is focused.
-- Delete or Backspace dismisses a dismissible focused toast.
-- Escape collapses an expanded stack.
-- Close, action, and cancel controls are native buttons.
+- `Alt+T` is the default document-level hotkey. It focuses the newest toast, or the empty container.
+- The hotkey is ignored while typing in an input, textarea, select, or contenteditable element.
+- `hotkey: []` disables it. Another array changes the combination, and every entry has to match.
+- In 3.2.1, focusing within the stack expands it for reading. Focusing a toast pauses its auto-dismiss timer. Leaving it resumes the remaining time.
+- Enter or Space invokes `onClick` only when the toast list item itself is focused.
+- Delete or Backspace dismisses the focused toast when `dismissible` is not `false`. In 3.2.1, edit keys in inputs, textareas, selects and editable content retain their normal editing behavior.
+- Escape collapses an expanded stack while focus is inside it. It does not dismiss.
+- Close, action, and cancel controls are native buttons with normal tab and activation behavior.
 
-## Dismissal and timing
+The renderer restores the element that was focused when the toaster mounted, but only if focus is still inside that toaster when it is destroyed. It does not move focus into a toast when one appears.
 
-`dismissible: false` blocks close, swipe, and keyboard dismissal, but not automatic or programmatic dismissal. Loading and custom toasts have no generated close button. Persistent content (`duration: Infinity`) needs an explicit recovery or dismissal path.
+## Close and dismissal rules
 
-Use concise outcome-first text, specific action labels, and longer durations for descriptions or controls. Do not rely on color or icons alone.
+A close button is generated only when close is enabled and the toast is neither loading nor custom. `closeButtonAriaLabel` defaults to `Close toast`; translate it and make its purpose clear in the page language.
 
-## Reduced motion and custom content
+`dismissible: false` disables close-button activation, swipe dismissal, and Delete or Backspace dismissal. It does **not** disable auto-close or programmatic `toast.dismiss()`. Avoid requesting a close button on a non-dismissible toast, because the renderer can show an inert button.
 
-The packaged CSS removes animations under `prefers-reduced-motion`, but JavaScript timing is unchanged. Custom or unstyled content must preserve visible focus, contrast, responsive placement, reduced motion, and adequate control sizes.
+Loading toasts do not auto-close, do not invoke the body `onClick`, do not swipe, and do not render close buttons. Always supply a terminal state, an explicit programmatic dismissal, or another recovery path.
 
-`toast.custom()` does not sanitize DOM or manage focus. Prefer semantic elements and `textContent`; use a page disclosure or dialog for complex mandatory interaction.
+## Content and timing guidance
 
-See [Options](options.md), [CSS styling](css-styling.md), and [Actions in recipes](recipes.md#2-undo-with-action-and-cancel).
+- Keep messages concise and put the outcome first: `Invoice uploaded`, not `Success`.
+- Do not communicate state through color or icon alone. Include meaningful text.
+- Use `error` and `warning` labels accurately, but keep urgent validation near the affected field as persistent content.
+- Choose durations based on reading length. Four seconds is the default, not a universal accessibility target.
+- Use a longer duration for descriptions and actions. Use `duration: Infinity` only when a clear close mechanism is available.
+- Give action buttons specific labels such as `Undo deletion` or `View invoice`.
+- Do not put essential actions only in a transient toast.
+- Avoid rapid streams of updates into the polite live region. Consolidate progress where possible.
+
+## Reduced motion
+
+The packaged CSS removes Notify transitions and animations under `prefers-reduced-motion`. The loading spinner stops animating too. JavaScript timers keep their configured durations, so reduced motion does not automatically provide more reading time.
+
+If you replace the stylesheet or use `unstyled: true`, preserve visible focus, readable contrast, responsive placement, reduced-motion handling, and pointer targets of at least 24 by 24 CSS pixels for controls.
+
+## Custom content
+
+`toast.custom()` mounts the DOM you provide and does not create the standard close button. Use semantic HTML, native controls, descriptive labels, and safe text assignment. Notify does not sanitize custom HTML and does not manage focus inside it.
+
+For complex or mandatory interaction, use an inline disclosure or a dialog rather than a toast.
+
+## Related
+
+- [Configuration](options.md)
+- [CSS styling](css-styling.md)
+- [Actions and custom content](guides/actions-and-custom-content.md)
+
+## Interactive custom content
+
+`toast.custom` can host consumer-owned DOM, including a native form. Give each control a label, keep a dismissal action reachable and store an important result in persistent page content. In 3.2.1 pointer gestures ignore buttons, links and editable controls; changing position refreshes gesture eligibility on existing notifications. A canceled pointer gesture resets its transform instead of leaving the card displaced.
+
+The release-note example contains edit keys and pointer starts within its textarea for compatibility with published 3.2.0 as well. That consumer compatibility handling does not replace the package fixes. Prefer a dialog or an ordinary page form when content is long, a choice is blocking, or modal focus management is required.

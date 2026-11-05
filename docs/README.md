@@ -1,75 +1,78 @@
-# Notify docs
+# Toast notifications for the web
 
-This is the markdown reference for `@samline/notify` 3.x — accessible, dependency-free toast notifications for JavaScript and TypeScript, with ESM, CommonJS, and browser builds. The same content is served as a Starlight site at [samline.github.io/notify](https://samline.github.io/notify); the markdown here is the source of truth.
+`@samline/notify` turns a function call into a live, accessible toast. No runtime dependencies, no framework runtime, no build step. Import `toast`, mount one renderer, and every call becomes a list item inside a polite live region.
 
----
+## Three ideas
 
-## Index
+### A tiny observable
 
-- [Getting started](getting-started.md) — concepts, lifecycle, side-effects, registry helpers.
-- [Options](options.md) — every `ToasterOptions` and `ToastOptions` field, with defaults.
-- [Entrypoints](entrypoints.md) — ESM, CommonJS, registry modules, the IIFE, and CSS loading.
-- [Promise API](promises.md) — loading and settled states, HTTP values, and `unwrap()`.
-- [CSS styling](css-styling.md) — the data-attributes the stylesheet expects, and how to theme it.
-- [TypeScript reference](typescript.md) — every exported type, callback, and helper shape.
-- [Accessibility](accessibility.md) — semantics, keyboard controls, timing, and content guidance.
-- [Framework integrations](frameworks.md) — React, Vue, Svelte, SSR, and safe mounting.
-- [API reference](api/index.md) — one page per public method.
-- [Recipes](recipes.md) — end-to-end patterns for the common flows.
-- [Browser](browser.md) — using `window.Notify` with a plain `<script>` tag.
-- [Troubleshooting](troubleshooting.md) — fixes for mounting, CSS, SSR, CDN, and teardown.
+Every toast lives in one module-level observer. The `toast` factory pushes a record into it and notifies subscribers synchronously; the renderer reconciles the DOM when that happens. There is no virtual DOM and no framework to adopt — one shared object per page.
 
----
+### A vanilla renderer
 
-## What this package is
+A mounted toaster creates a single `ol` with the `data-notify-toaster` attribute and one `li` with the `data-notify-toast` attribute per active toast. The renderer drives CSS transitions through attributes and custom properties, measures the stack and handles pointer and keyboard interactions.
 
-`@samline/notify` exposes a single `toast` factory plus a small toaster-controller surface. The runtime is built around three ideas:
+### Two module entrypoints
 
-- **A tiny observable.** Every toast lives in a module-level `Observer`; the renderer subscribes to it and re-renders the DOM on each event. No framework runtime, no virtual DOM.
-- **A vanilla renderer.** Each active toast becomes a `<li data-notify-toast>` inside a single `<ol data-notify-toaster>`. Every transition is a CSS rule driven by a `data-*` attribute; the JS only sets attributes.
-- **Two module entrypoints.** `@samline/notify` exposes the full ESM/CJS API and `@samline/notify/browser` exposes the browser registry. The standalone IIFE under `dist/browser/global.global.js` registers `window.Notify`.
+`@samline/notify` is the complete ESM and CommonJS API. `@samline/notify/browser` exposes the same surface as a single registry object. The standalone build at `dist/browser/global.global.js` registers that surface as `window.Notify`.
 
-If you have not read the rest of the docs, start with [Getting started](getting-started.md) — it walks through the lifecycle and the observable contract.
+## What it solves
 
----
+Use Notify when you want ordinary DOM integration, CSS you control and an observable notification lifecycle.
+
+- **No framework lock-in.** The package is vanilla DOM. `Toaster` is a function alias of `createToaster()`, not a component, so React, Vue, Svelte, Astro and plain HTML all use the same code.
+- **Themeable without fighting the library.** The stylesheet targets `data-*` attributes and CSS custom properties. Override `--normal-bg` and the palette follows; override `--width` and the layout follows.
+- **A lifecycle you can observe.** `toast.getToasts()` and `toast.getHistory()` return snapshots, `toast.dismiss(id)` ends a toast early, and every state change is published to subscribers.
+
+```ts
+import { createToaster, toast } from '@samline/notify'
+import '@samline/notify/styles.css'
+
+createToaster({ position: 'bottom-right', richColors: true })
+
+toast.success('Profile saved', {
+  description: 'Your changes are live.',
+  action: { label: 'View profile', onClick: () => location.assign('/profile') }
+})
+```
+
+## Choose your next step
+
+- [Installation](installation.md) — Install the package, load its stylesheet, and send your first toast.
+- [Examples](recipes.md) — Complete working files and recipes for common notification flows.
+- [Configuration](options.md) — Every toaster and toast option, with defaults and effects.
+- [API reference](api/index.md) — The public functions and their lifecycle contracts.
+
+Release notes for every published version live in the [changelog](../CHANGELOG.md).
 
 ## When to use each entrypoint
 
-| Situation                                                              | Use                                                                |
-| ---------------------------------------------------------------------- | ------------------------------------------------------------------ |
-| Modern app with a bundler (Vite, esbuild, Rollup, Webpack, Bun)        | `@samline/notify`                                                  |
-| Plain HTML page, WordPress, Shopify, classic templates                 | `dist/browser/global.global.js`                                    |
-| Type-checking the toaster controller from a CDN script                 | declare `window.Notify` against `NotifyApi` from `@samline/notify` |
-| You want the IIFE surface from a bundler (no `globalThis` side-effect) | `import { browser } from '@samline/notify'`                        |
-| You need multiple toasters in the same page                            | `import { mountToaster } from '@samline/notify'`                   |
+Use the root ESM or CommonJS entry with a bundler. The browser module collects the same singleton helpers without installing a global. Plain HTML and CMS templates can load the standalone script and the separate stylesheet. Direct mounts are advanced: default mounts share state, and separate containers are not independent notification systems.
 
----
+## Documentation map
 
-## File-by-file map
-
-| File                                                 | What is in it                                                                   |
-| ---------------------------------------------------- | ------------------------------------------------------------------------------- |
-| [getting-started.md](getting-started.md)             | Concepts, observable contract, lifecycle, registry helpers, side-effect table.  |
-| [options.md](options.md)                             | Every `ToasterOptions` and `ToastOptions` field, with defaults and rationale.   |
-| [entrypoints.md](entrypoints.md)                     | Module formats, registries, IIFE behavior, and stylesheet loading.              |
-| [promises.md](promises.md)                           | Complete `toast.promise()` behavior and original-outcome semantics.             |
-| [css-styling.md](css-styling.md)                     | The data-attribute contract the stylesheet expects; theming with CSS variables. |
-| [typescript.md](typescript.md)                       | Every exported type, callback signature, and helper return shape.               |
-| [accessibility.md](accessibility.md)                 | Rendered semantics, keyboard behavior, timing, and custom-content guidance.     |
-| [frameworks.md](frameworks.md)                       | Lifecycle-safe React, Vue, Svelte, and SSR integration patterns.                |
-| [api/index.md](api/index.md)                         | Overview of the public API.                                                     |
-| [api/toast.md](api/toast.md)                         | The `toast` factory and every variant.                                          |
-| [api/create-toaster.md](api/create-toaster.md)       | The toaster mount / idempotent update entry.                                    |
-| [api/destroy-toaster.md](api/destroy-toaster.md)     | The toaster unmount entry.                                                      |
-| [api/get-toaster.md](api/get-toaster.md)             | The toaster inspector entry.                                                    |
-| [api/configure-toaster.md](api/configure-toaster.md) | The `createToaster` alias, kept for intent.                                     |
-| [api/reset-toasts.md](api/reset-toasts.md)           | Drop every toast and rewind the internal counter.                               |
-| [recipes.md](recipes.md)                             | `toast.promise` with `fetch`, autoload, multi-toaster, theming, custom content. |
-| [browser.md](browser.md)                             | Using `window.Notify` from a plain `<script>` tag.                              |
-| [troubleshooting.md](troubleshooting.md)             | Mounting, styles, duplicate renderers, CDN, CSP, reset, and remount fixes.      |
-
----
+- [Getting started](installation.md)
+- [Runtime contract](getting-started.md)
+- [Accessibility](accessibility.md)
+- [Framework integrations](frameworks.md)
+- [Examples and recipes](recipes.md)
+- [Toast configuration](options.md)
+- [Package entrypoints](entrypoints.md)
+- [Promise API](promises.md)
+- [CSS styling](css-styling.md)
+- [TypeScript reference](typescript.md)
+- [Browser builds](browser.md)
+- [Troubleshooting](troubleshooting.md)
+- [API reference](api/index.md)
+- [Toast lifecycle](guides/toast-lifecycle.md)
+- [Actions and custom content](guides/actions-and-custom-content.md)
+- [toast](api/toast.md)
+- [createToaster](api/create-toaster.md)
+- [configureToaster](api/configure-toaster.md)
+- [destroyToaster](api/destroy-toaster.md)
+- [getToaster](api/get-toaster.md)
+- [resetToasts](api/reset-toasts.md)
 
 ## Versioning
 
-This documentation matches the current `@samline/notify` 3.x API. The previous multi-framework versions (1.x and 2.0.0–2.0.3) used a different API surface and are not covered here.
+The current checkout prepares patch 3.2.1; it has not been published. Published 3.2.0 remains the CDN pin. Patch 3.2.1 repairs the global and lifecycle bugs without removing exports or introducing new required options. See the package changelog for the exact changes.

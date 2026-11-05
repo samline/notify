@@ -1,0 +1,9 @@
+{% comment %} Add these assets once in theme.liquid, before </body>, in this order. {% endcomment %}
+{{ 'notify.css' | asset_url | stylesheet_tag }}
+{{ 'notify.global.js' | asset_url | script_tag }}
+{{ 'notify-hosts.js' | asset_url | script_tag }}
+
+{% comment %} Section markup: the host script handles editor replacement/unload. {% endcomment %}
+<section data-notify-host>
+  <button type="button" data-notify-save>Save changes</button>
+</section>

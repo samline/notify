@@ -2,7 +2,7 @@
 // accessible via `window.Notify` (or `globalThis.Notify`).
 //
 // This file is the IIFE bundle's source: tsup compiles it with
-// `format: 'iife'` and `globalName: 'Notify'`, producing a self-contained
+// `format: 'iife'` without a bundler-assigned global, producing a self-contained
 // `dist/browser/global.global.js` that can be loaded with a plain
 // `<script src="..."></script>` tag.
 //

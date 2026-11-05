@@ -1,34 +1,90 @@
-# Troubleshooting
+# Troubleshooting guide
 
 ## Toasts do not appear
 
-Mount the singleton with `createToaster()` after `document.body` exists. Toast calls still update state without a renderer, and destroying the toaster does not auto-remount it.
+Confirm that a toaster is mounted:
+
+```ts
+import { createToaster, getToaster } from '@samline/notify'
+
+if (!getToaster()) createToaster()
+```
+
+`toast.*` updates the state even when no renderer exists, so the state is correct but nothing is on screen. If a toaster was destroyed, it does not auto-remount. Call `createToaster()` again.
+
+## `document.body` error
+
+`createToaster()` throws before `document.body` exists. Use a module loaded after the body, `DOMContentLoaded`, or your framework's client mount hook.
+
+```js
+document.addEventListener(
+  'DOMContentLoaded',
+  () => {
+    const notify = window.Notify.default ?? window.Notify
+    notify.createToaster()
+  },
+  { once: true }
+)
+```
+
+The standalone build already handles this for its own first automatic mount.
 
 ## Toasts look like a plain list
 
-Import `@samline/notify/styles.css`, or load the matching `dist/styles.css` beside the IIFE. Check for 404 responses and mismatched JavaScript/CSS versions.
+Import `@samline/notify/styles.css` in a bundled client entry, or link `dist/styles.css` for the standalone build. Make sure the CSS version matches the JavaScript version, and inspect the network response for a 404 or an HTML fallback page.
 
 ## Duplicate notifications or callbacks
 
-Find multiple `mountToaster()` calls or framework effects mounted in several roots. Direct mounts share global state. Repeated `createToaster()` calls do not duplicate containers; they update the singleton.
+Look for multiple `mountToaster()` calls, or framework effects mounted in more than one root. Direct mounts share the global `ToastState` and receive the same events, so each renderer can display the toast and invoke `onDismiss`.
 
-## SSR or body-timing errors
+Repeated `createToaster()` calls alone do not create duplicates. They update the same registered controller.
 
-Keep mounting out of module scope and run it in client lifecycle code. Imports are SSR-safe, DOM operations are not. The standalone IIFE waits for `DOMContentLoaded` when necessary.
+## SSR failures
 
-## CDN global is undefined
+Imports are safe, but mounting requires the browser. Move `createToaster()` or `mountToaster()` out of module scope and into a client lifecycle. Do not create toast state during server rendering, and never share that state between requests.
 
-- Verify the URL returns JavaScript rather than a 404 page.
-- Load consumer code after the IIFE or wait for `DOMContentLoaded` when using `defer`.
-- Check CSP and browser console errors.
-- Pin a version that is actually published.
+## The CDN global is undefined
 
-## Teardown, reset, and remount
+- Open the exact standalone URL and verify it returns JavaScript.
+- Put your own script after a synchronous standalone script at the end of the body.
+- If the external script uses `defer`, wait for `DOMContentLoaded`. A following classic inline script is not deferred automatically.
+- Check the Content Security Policy and the browser console.
+- Pin a published version instead of assuming the repository version is already on the CDN.
 
-`destroyToaster()` removes the singleton and requires an explicit later `createToaster()`. `resetToasts()` clears toast records while preserving the renderer. Low-level `resetToastState()` also drops subscribers, so advanced callers must destroy stale containers and remount.
+## Assets fail under a base path
 
-## Strict CSP or custom visuals
+Use absolute CDN URLs, or include the application's public base in self-hosted paths. On a site hosted under `/my-app/`, `/vendor/notify.js` and `/my-app/vendor/notify.js` are different URLs. Verify the script and CSS URLs independently.
 
-The renderer writes inline layout properties; a CSP blocking style attributes can break placement. `unstyled: true` disables toast-body presentation, not renderer layout. Custom visuals must preserve focus, contrast, responsive behavior, and reduced motion.
+## Teardown and remount
 
-See [Entrypoints](entrypoints.md), [CSS styling](css-styling.md), and [Framework integrations](frameworks.md).
+`destroyToaster()` publishes dismissals while the renderer is still subscribed, removes the singleton container, and clears the registry. `controller.destroy()` removes that controller and clears the registry when it is the current singleton, but it does not publish dismissals itself.
+
+```ts
+destroyToaster()
+
+// Required before later notifications can render.
+createToaster({ position: 'bottom-right' })
+toast.info('Mounted again')
+```
+
+`resetToasts()` is different: it clears the active records, the history, and the generated-id counter while preserving the mounted subscribers. `resetToastState()` drops subscribers and leaves mounted containers stale, so advanced callers must destroy and remount afterwards.
+
+## Strict Content Security Policy or custom visuals
+
+The renderer writes inline layout and custom-property declarations. A policy that blocks style attributes can break positioning even when the stylesheet loads. Adjust the policy for the application, or build a controlled advanced renderer integration.
+
+`unstyled: true` disables the built-in toast-body presentation, not the renderer layout styles. When supplying your own visuals, preserve focus indicators, contrast, responsive width, reduced motion, and button target sizes.
+
+## Callbacks run more than once
+
+With one renderer, dismissal publication is de-duplicated by id. With duplicate direct mounts, each subscribed renderer processes the same event and can call `onDismiss`. Remove the duplicate mounts. Also make sure your own application callbacks do not register the same side effect repeatedly during framework development lifecycles.
+
+## Framework migration
+
+If you are migrating from a framework wrapper, replace the component or plugin with one client lifecycle call to `createToaster()`, import the stylesheet once, and keep the `toast.*` calls in ordinary application code. Do not render a `Toaster` component: this package's `Toaster` export is a function alias, not a component.
+
+## Related
+
+- [Entrypoints](entrypoints.md)
+- [CSS styling](css-styling.md)
+- [Framework integrations](frameworks.md)
