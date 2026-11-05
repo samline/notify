@@ -9,6 +9,12 @@ marked as unpublished have a Git tag but are not present in the npm registry.
 
 ## [Unreleased]
 
+## [4.0.1] - 2026-11-05
+
+### Fixed
+
+- Publish `CHANGELOG.md` in the npm tarball. 4.0.0 only shipped `dist`, so the changelog could not be read from the installed package (Drawer and Ticker already include it).
+
 ## [4.0.0] - 2026-11-05
 
 Includes every change prepared for 3.2.1, which was never published.

@@ -124,11 +124,11 @@
     "accentDark": "#fbbf24"
   },
   "status": "verified",
-  "packageVersion": "4.0.0",
+  "packageVersion": "4.0.1",
   "sources": [
     {
       "source": "CHANGELOG.md",
-      "sha256": "152ebdca5f0ab7f153b4853c242efef52d80c79836b476df5c09acbde604b06e",
+      "sha256": "8204ce14d39a4cb4eeefb41362e20cac8e5eefc5ccc95dae6a0e508d04c9a79a",
       "destination": "docs/src/content.config.ts",
       "reviewed": true
     },
@@ -415,7 +415,7 @@
     },
     {
       "source": "package.json",
-      "sha256": "cb0d6a971b8b04f1fd4c2de25c13abf71f939b240c05dea9cb3ff6a6a8867fb7",
+      "sha256": "14349baf4a4bf491862266eec8390bf8634e41f15280fe98656f14434d5ac04c",
       "destination": "project.config.json",
       "reviewed": true
     },

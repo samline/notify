@@ -15,6 +15,9 @@ assert.equal(typeof cjs.toast, 'function')
 assert.equal(typeof browserEsm.default.toast, 'function')
 assert.equal(typeof browserCjs.default.toast, 'function')
 
+const pkg = JSON.parse(await readFile(new URL('../package.json', import.meta.url), 'utf8'))
+assert.ok(pkg.files.includes('CHANGELOG.md'), 'CHANGELOG.md must be published in the tarball')
+
 const css = await readFile(new URL('../dist/styles.css', import.meta.url), 'utf8')
 assert.match(css, /\[data-notify-toaster\]/)
 
