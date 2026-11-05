@@ -3,7 +3,7 @@
 ## Completado — 2026-10-31
 
 - Corregido para 3.2.1 el global IIFE: el bundle conserva el registro asignado por `src/browser/global.ts`. Pruebas de script clásico en Chromium y JSDOM evitan que `eval()` oculte la regresión.
-- Sitio, documentación canónica, ejemplos e integraciones reconciliados. Mantener CDN 3.2.0 con `window.Notify.default ?? window.Notify` hasta una publicación autorizada; 3.2.1 está preparado, sin publicar.
+- Sitio, documentación canónica, ejemplos e integraciones reconciliados. (Histórico: superado por 4.0.0, cuyo CDN expone `window.Notify` directamente.)
 
 ## Resuelto — publicación
 
