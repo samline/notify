@@ -236,7 +236,7 @@
     },
     {
       "source": "docs/recipes.md",
-      "sha256": "cc37db0847bd6e035a67910d09a56028ad07c7fed11ff2ffa7a2fccddbbfad31",
+      "sha256": "2243ac0ae758a83fa04324237c5c29a9e621ca4b21c93b0c0ae210af536608f3",
       "destination": "docs/src/content/docs/guides/examples.mdx",
       "reviewed": true
     },

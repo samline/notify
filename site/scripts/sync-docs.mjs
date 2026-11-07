@@ -62,6 +62,12 @@ for (const entry of map) {
       return `<CardGrid>\n${cards.join('\n')}\n</CardGrid>\n`
     })
   }
+  // `<!-- notify:playground <preset> -->` shows one scenario with its code, so
+  // Docs readers copy files without leaving Docs. GitHub ignores the comment.
+  const presetMarker = /<!-- notify:playground ([a-z]+) -->/g
+  if (presetMarker.test(body) && !body.includes('<!-- notify:playground -->'))
+    imports.push("import Playground from '../../../../../shared/components/Playground.astro'")
+  body = body.replace(presetMarker, '<Playground preset="$1" showCode />')
   for (const [key, [name, component, markup]] of Object.entries(ui)) {
     if (!body.includes(`<!-- notify:${key} -->`)) continue
     imports.push(`import ${name} from '${component}'`)

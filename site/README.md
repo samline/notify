@@ -251,3 +251,19 @@ Lighthouse 13.6.0, Chromium 151, Node 26.13.0 and Bun 1.4.4; identical local HTT
 | docs     | 49.7 KiB          | 20.1 KiB         | 0.0 KiB           | 96.4 KiB |
 
 Desktop performance is 100 on all three routes (one cold check per route, explicit desktop config). Accessibility, best practices and SEO score 100 in all final mobile and desktop samples. Desktop Docs CLS is 0.028842, not zero. The current gallery score is 95 mobile; its static highlighted complete sources increase transfer and LCP. Do not cite the previous 97 as this artifact’s result. Cache policy and CSS inlining threshold remain unchanged. Three repeated navigations, raw reports, metrics and conditions are retained in controls-review/performance outside Git. These are local lab results, without publication, hosting or field verification.
+
+## Header synchronization — 2026-11-06
+
+The landing Header and shared Logo carry template `61cc0d8`'s responsive fix:
+GitHub is icon-only and the version badge hides from 64rem to 75rem, while
+GitHub keeps its accessible name and Get started remains visible. Preserve
+that compact range when synchronizing the theme. The header regression covers
+Home, Examples and Docs at 1024, 1100, 1200, 1280 and 1440 pixels, including
+the longest sibling package name; it fails on the previous build at 1024px.
+This changes the website only and requires no npm release.
+
+Validation: `npm run verify` and `npm run check:release` passed: both Astro
+checks, compiled integrations and typed recipes, formatting, eight tooling
+tests, alternate-base builds, 2,182 links across 40 pages, historical migration
+and all 78 Chromium tests. The canonical recipes review hash was refreshed
+after reviewing the new in-Docs previews and their generated source.

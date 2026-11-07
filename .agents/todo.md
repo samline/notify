@@ -39,3 +39,10 @@
 ## Pendiente
 
 - Nada abierto. Vigilar `e2e/power.spec.ts` (fallo intermitente una vez en CI el 2026-11-05: el reset del ejemplo custom no llegó a estar estable).
+
+## Cierre del handoff — 2026-11-06
+
+- Docs muestra los ejemplos con su código; la fuente Markdown, el generador y el MDX coinciden. El hash de revisión de docs/recipes.md se actualizó tras revisar el cambio.
+- Header y Logo sincronizados con la corrección 61cc0d8 de la plantilla; nueva regresión de Home, Examples y Docs a 1024–1440 px. La prueba reproduce el fallo anterior a 1024 px.
+- Verificación completa del sitio: checks de Astro e integraciones, formato, ocho pruebas de herramientas, dos bases alternativas, build con 2.182 enlaces y auditoría de migración; 78/78 pruebas de navegador aprobadas. check:release también pasa.
+- Cambios solo del sitio y documentación: no requieren una nueva publicación npm.

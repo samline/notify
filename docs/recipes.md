@@ -26,7 +26,67 @@ Choose a task by the behavior you want to build, not the notification color:
 | Follow workspace activity | Change visibility/expansion, focus, swipe or wait          | Normal and typed variants, stack geometry, paused timers and lifecycle callbacks |
 | Export a report           | Succeed, fail, cancel, then view the CSV                   | Promise outcome, extended result action, unwrap, AbortController and finally     |
 
-Every task is available in the [interactive gallery](https://samline.github.io/notify/examples/) with the exact complete and split source. Keep important outcomes on the page as well as in the toast. The gallery simulates local work; its messages do not claim a real save, invitation acceptance or server export.
+Every task below runs on the website with its code: open **Explore the code** to copy separate files or one complete document, for package imports and the CDN build. Keep important outcomes on the page as well as in the toast. The previews simulate local work; their messages do not claim a real save, invitation acceptance or server export.
+
+### Error and retry
+
+Send the October report. The first simulated request fails; retrying succeeds.
+
+<!-- notify:playground retry -->
+
+### Progress updates
+
+Upload campaign-cover.jpg, a 2.4 MB sample asset. Progress is simulated locally.
+
+<!-- notify:playground upload -->
+
+### Undo archive
+
+Archive the launch checklist. Use Undo in the notification to bring the same item back.
+
+<!-- notify:playground undo -->
+
+### Persistent notice
+
+Keep an invitation notice open while you read. Its details also remain on the page.
+
+<!-- notify:playground persistent -->
+
+### Custom content
+
+Open a release card, write a note inside the notification and save it back to the page. Your integration owns the DOM and appearance.
+
+<!-- notify:playground custom -->
+
+### Theme and position
+
+Choose position, theme and reading direction. Preview the same notification, then apply changes while it is still open.
+
+<!-- notify:playground position -->
+
+### Active and history
+
+Create a local activity entry, dismiss its notification, then compare the active state and history.
+
+<!-- notify:playground history -->
+
+### Review and decide
+
+Review an Editor invitation to Studio. Read its permissions, then join or choose Not now. This is a local decision preview.
+
+<!-- notify:playground decisions -->
+
+### Live activity stack
+
+Play a local sequence of uploads, comments and transfer alerts. The page retains the feed while notifications stack, expire or are dismissed.
+
+<!-- notify:playground stream -->
+
+### Cancelable CSV export
+
+Generate a small CSV from local sample data. Try success, a simulated server error, or cancel the pending operation. No request leaves this page.
+
+<!-- notify:playground task -->
 
 The previews deliberately share one application-level toaster. The most recently used preview controls its global preferences. Use the preview reset to dismiss only its owned notifications; do not mount independent singleton owners for every application component.
 
