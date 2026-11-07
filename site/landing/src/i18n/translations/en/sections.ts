@@ -15,6 +15,7 @@ export const initialization = {
 }
 export default {
   hero: {
+    seoTitle: 'Toast notifications for JavaScript',
     kicker: 'Small library. Clear feedback.',
     title: project.name,
     titleAccent: 'Keep people in the loop.',

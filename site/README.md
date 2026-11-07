@@ -267,3 +267,25 @@ checks, compiled integrations and typed recipes, formatting, eight tooling
 tests, alternate-base builds, 2,182 links across 40 pages, historical migration
 and all 78 Chromium tests. The canonical recipes review hash was refreshed
 after reviewing the new in-Docs previews and their generated source.
+
+## Shared identity convention — 2026-11-06
+
+The canonical convention lives in the template's .agents/identity.md. Runtime
+READMEs share section order, manager installation blocks, API/entrypoint and
+guide table roles, resource links and the maintained skill source/download.
+The scaffold at site/scripts/package-readme-template.md supplies the common structure;
+package-specific examples and API claims remain grounded in this package.
+
+Document, Open Graph and Twitter titles compose an unbranded subject with
+` — @samline/notify` once. Docs index uses Documentation and Examples uses Examples.
+The footer credits samline explicitly, separately from npm author metadata.
+Run check:identity against the combined artifact; keep the helper, checker/library
+and scaffold synchronized when porting template changes. Browser regressions
+cover title/social agreement, footer links and the real configured header name.
+These changes affect website/documentation only and require no npm release.
+
+Validation: full verify passed canonical Docs/type/compiler checks, both Astro
+checks, formatting, all 19 tooling tests, root/nested adaptation builds, combined
+build/link checks and all 79 Chromium tests. check:release passed, including the
+root runtime README and current content audit. Existing file execution, reset
+and open-state accessibility tests remain enabled.

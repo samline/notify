@@ -1,4 +1,5 @@
 import sections from './sections'
+import { footerCredit } from '../../../../../shared/lib/site-identity.mjs'
 import common from '../../../../../shared/i18n/translations/en/common'
 import controls from '../../../../../shared/i18n/translations/en/controls'
 import { project } from '../../../../../shared/lib/project.mjs'
@@ -21,13 +22,13 @@ export default {
       description: project.description,
       label: 'Footer navigation',
       explore: 'Explore',
-      project: 'Package',
+      project: 'Project',
       setup: 'Installation guide',
-      examples: 'Live examples',
+      examples: 'Working examples',
       skill: 'Notify skill for AI agents',
       changelog: 'Changelog',
       backToTop: 'Back to top',
-      credit: `${project.author} · Made for the open web.`,
+      credit: footerCredit(project.credit),
     },
     items: [
       {
@@ -60,6 +61,9 @@ export default {
     recipeEyebrow: '01 / A live interaction',
     eyebrow: 'Examples',
     title: `${project.name} examples.`,
+    seoTitle: 'Examples',
+    seoDescription:
+      'Try notification flows and copy complete or separate HTML, CSS and JavaScript files for package imports or a standalone browser script.',
     accent: 'examples.',
     description:
       'Useful notification flows to try, understand and adapt. Every example includes the live package and complete HTML / CDN and Package / ESM source.',

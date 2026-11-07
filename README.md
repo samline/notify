@@ -20,15 +20,15 @@ Accessible, dependency-free toast notifications for JavaScript, TypeScript and p
 
 ## Installation
 
-```bash
+```sh
 npm install @samline/notify
 ```
 
-```bash
+```sh
 pnpm add @samline/notify
 ```
 
-```bash
+```sh
 bun add @samline/notify
 ```
 
@@ -133,16 +133,16 @@ Custom factories can run again after controller updates: keep draft state outsid
 
 ## API at a glance
 
-| Group               | API                                                                                                                                                                                                                                                                                                                                                                                                              |
-| ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Toast factory       | [`toast()`](https://samline.github.io/notify/docs/api/toast/)                                                                                                                                                                                                                                                                                                                                                    |
-| Toast variants      | [`success()` · `error()` · `info()` · `warning()` · `loading()` · `message()`](https://samline.github.io/notify/docs/api/toast/#toastvariants)                                                                                                                                                                                                                                                                   |
-| Content and async   | [`toast.custom()`](https://samline.github.io/notify/docs/api/toast/#toastcustom) · [`toast.promise()`](https://samline.github.io/notify/docs/api/toast/#toastpromise)                                                                                                                                                                                                                                            |
-| Dismissal and state | [`toast.dismiss()`](https://samline.github.io/notify/docs/api/toast/#toastdismiss) · [`toast.getToasts()`](https://samline.github.io/notify/docs/api/toast/#toastgettoasts) · [`toast.getHistory()`](https://samline.github.io/notify/docs/api/toast/#toastgethistory)                                                                                                                                           |
-| Toaster lifecycle   | [`createToaster()`](https://samline.github.io/notify/docs/api/create-toaster/) · [`getToaster()`](https://samline.github.io/notify/docs/api/get-toaster/) · [`configureToaster()`](https://samline.github.io/notify/docs/api/configure-toaster/) · [`destroyToaster()`](https://samline.github.io/notify/docs/api/destroy-toaster/) · [`resetToasts()`](https://samline.github.io/notify/docs/api/reset-toasts/) |
-| Configuration       | [`ToasterOptions` and `ToastOptions`](https://samline.github.io/notify/docs/reference/configuration/)                                                                                                                                                                                                                                                                                                            |
-| Advanced rendering  | [`mountToaster()`, `ToastState` and runtime contract](https://samline.github.io/notify/docs/reference/runtime-contract/)                                                                                                                                                                                                                                                                                         |
-| Types               | [TypeScript reference](https://samline.github.io/notify/docs/reference/typescript/)                                                                                                                                                                                                                                                                                                                              |
+| API                                                                                                                                                                                                                                                                                                                                                                                                              | Purpose             |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------- |
+| [`toast()`](https://samline.github.io/notify/docs/api/toast/)                                                                                                                                                                                                                                                                                                                                                    | Toast factory       |
+| [`success()` · `error()` · `info()` · `warning()` · `loading()` · `message()`](https://samline.github.io/notify/docs/api/toast/#toastvariants)                                                                                                                                                                                                                                                                   | Toast variants      |
+| [`toast.custom()`](https://samline.github.io/notify/docs/api/toast/#toastcustom) · [`toast.promise()`](https://samline.github.io/notify/docs/api/toast/#toastpromise)                                                                                                                                                                                                                                            | Content and async   |
+| [`toast.dismiss()`](https://samline.github.io/notify/docs/api/toast/#toastdismiss) · [`toast.getToasts()`](https://samline.github.io/notify/docs/api/toast/#toastgettoasts) · [`toast.getHistory()`](https://samline.github.io/notify/docs/api/toast/#toastgethistory)                                                                                                                                           | Dismissal and state |
+| [`createToaster()`](https://samline.github.io/notify/docs/api/create-toaster/) · [`getToaster()`](https://samline.github.io/notify/docs/api/get-toaster/) · [`configureToaster()`](https://samline.github.io/notify/docs/api/configure-toaster/) · [`destroyToaster()`](https://samline.github.io/notify/docs/api/destroy-toaster/) · [`resetToasts()`](https://samline.github.io/notify/docs/api/reset-toasts/) | Toaster lifecycle   |
+| [`ToasterOptions` and `ToastOptions`](https://samline.github.io/notify/docs/reference/configuration/)                                                                                                                                                                                                                                                                                                            | Configuration       |
+| [`mountToaster()`, `ToastState` and runtime contract](https://samline.github.io/notify/docs/reference/runtime-contract/)                                                                                                                                                                                                                                                                                         | Advanced rendering  |
+| [TypeScript reference](https://samline.github.io/notify/docs/reference/typescript/)                                                                                                                                                                                                                                                                                                                              | Types               |
 
 The controller exposes `element` and an `options` snapshot. `update(options?)` is chainable and partial; `destroy()` removes that renderer, while `destroyToaster()` also dismisses active notifications. Direct `mountToaster()` calls share the default `ToastState` unless you supply another one, so separate containers are not independent channels.
 
@@ -183,9 +183,9 @@ const profile = await result.unwrap()
 
 ## Documentation
 
-Read the full guides and API reference in the **[documentation](https://samline.github.io/notify/docs/)**. Explore **[working examples](https://samline.github.io/notify/examples/)** with complete HTML / CDN and npm code to copy and adapt.
+Read the [documentation](https://samline.github.io/notify/docs/) for the full guides and API contracts, and explore [working examples](https://samline.github.io/notify/examples/) with complete and separate source files for both loading modes.
 
-| Doc                                                                                                    | Purpose                                                                |
+| Guide                                                                                                  | What it covers                                                         |
 | ------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------- |
 | [Getting started](https://samline.github.io/notify/docs/getting-started/)                              | Installation, stylesheet, first notification and ownership.            |
 | [Toast lifecycle](https://samline.github.io/notify/docs/guides/toast-lifecycle/)                       | Singleton mounting, updates, remounting and teardown.                  |
@@ -201,11 +201,9 @@ Read the full guides and API reference in the **[documentation](https://samline.
 | [Troubleshooting](https://samline.github.io/notify/docs/reference/troubleshooting/)                    | Mounting, CSS, duplicate renderers, CDN, CSP and teardown fixes.       |
 | [API reference](https://samline.github.io/notify/docs/reference/api/)                                  | Factory variants, singleton lifecycle, state and low-level rendering.  |
 
-The Markdown files in [`docs/`](docs/) are the source of truth for the package reference; the published site in [`site/`](site/) mirrors them.
-
 ## Changelog
 
-Read [CHANGELOG.md](CHANGELOG.md) or the [published changelog](https://samline.github.io/notify/docs/changelog/) for release history and explicitly marked breaking changes. Review the notes before upgrading.
+Read [CHANGELOG.md](CHANGELOG.md) or the [published changelog](https://samline.github.io/notify/docs/changelog/) for release history and explicitly marked breaking and behavior changes. Review the notes before upgrading.
 
 ### Upgrading to v4
 
@@ -216,6 +214,8 @@ V4 exposes the registry directly as `window.Notify` (3.2.0 and earlier wrapped i
 <a id="agent-integration"></a>
 
 The public [Notify skill](https://samline.github.io/notify/skills/notify/SKILL.md) teaches an agent how to mount one owned toaster, load CSS, match feedback to the task, manage custom content and clean up without inventing APIs. It is self-contained and describes v4.0.0; agents must verify their installed version.
+
+The maintained [repository source](skills/notify/SKILL.md) and website download are the same file.
 
 Download [SKILL.md](https://samline.github.io/notify/skills/notify/SKILL.md) into a `notify/` folder in your agent's supported skill directory. For agents that discover project skills from `.agents/skills/`:
 

@@ -20,16 +20,17 @@
     "format:check": "prettier --plugin prettier-plugin-astro --check .",
     "test": "node --test tests/*.test.mjs",
     "test:browser": "playwright test",
-    "verify": "npm run check && npm run format:check && npm test && npm run test:adaptation && npm run build && npm run test:browser",
+    "verify": "npm run check && npm run format:check && npm test && npm run test:adaptation && npm run build && npm run check:identity && npm run test:browser",
     "configure": "node scripts/configure.mjs",
     "postinstall": "node scripts/assets.mjs",
-    "check:release": "node scripts/check-release.mjs",
+    "check:release": "npm run check:identity && node scripts/check-release.mjs",
     "test:adaptation": "node scripts/test-adaptation.mjs",
     "check:design": "node scripts/check-design.mjs",
     "sync:docs": "node scripts/sync-docs.mjs",
     "check:docs": "node scripts/sync-docs.mjs --check",
     "check:integrations": "node scripts/check-integrations.mjs && node scripts/check-recipe-types.mjs",
-    "check:migration": "node scripts/check-migration.mjs"
+    "check:migration": "node scripts/check-migration.mjs",
+    "check:identity": "node scripts/check-identity.mjs --package-root .."
   },
   "devDependencies": {
     "@playwright/test": "1.62.1",

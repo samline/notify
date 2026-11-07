@@ -59,7 +59,12 @@ test('configuration inventories real evidence and never executes or modifies sou
     const isolated = join(directory, 'website')
     await mkdir(join(isolated, 'scripts'), { recursive: true })
     await mkdir(join(isolated, 'shared/lib'), { recursive: true })
-    for (const path of ['scripts/configure.mjs', 'shared/lib/project.mjs', 'project.config.json'])
+    for (const path of [
+      'scripts/configure.mjs',
+      'shared/lib/project.mjs',
+      'project.config.json',
+      'scripts/package-readme-template.md',
+    ])
       await cp(new URL('../' + path, import.meta.url), join(isolated, path))
     execFileSync(process.execPath, [
       join(isolated, 'scripts/configure.mjs'),

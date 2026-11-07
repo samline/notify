@@ -134,7 +134,7 @@
     },
     {
       "source": "README.md",
-      "sha256": "88b34b8cfd17d7aa892537d95e704081a477bdb399a29e65f9940e04de26b832",
+      "sha256": "1e1748b89726257a6f861e066e7e1af3261b0310f2d7d42c20bd9ee47e5c1dd2",
       "destination": "landing/src/i18n/translations/en/sections.ts",
       "reviewed": true
     },

@@ -22,7 +22,8 @@
     "url": "https://samline.github.io/notify/",
     "repository": "https://github.com/samline/notify",
     "namespace": "notify",
-    "template": false
+    "template": false,
+    "credit": "samline"
   },
   "theme": {
     "accentLight": "#b45309",
