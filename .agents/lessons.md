@@ -33,3 +33,5 @@
 - Playwright `grep` also matches the project name: never name a project with a word its own `grep` filters on.
 - Copied CDN examples are tested against this checkout's `dist/`, so the CI browser jobs build the package first.
 - Never add AI co-author or "Generated with" lines to commits, tags or PRs (maintainer rule, also in ~/.claude/CLAUDE.md).
+
+- At 320px and 200% text, a persistent custom toast can cover its underlying preview reset. Browser flows must use the card's own visible close control before clicking the page beneath it; never force the covered reset or hide the failure with retries/timeouts. Five repeated runs and the complete scenarios project verify this sequence.

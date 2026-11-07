@@ -79,6 +79,13 @@ test('all live task controls and editable custom content fit narrow enlarged lay
         await page.evaluate(() => document.documentElement.scrollWidth > innerWidth + 1),
         preset + theme
       ).toBe(false)
+      // The custom card persists until explicitly closed and can cover its
+      // preview's reset at 320px/200% text. Use its own visible close control
+      // before interacting with the page beneath it, as a pointer user would.
+      if (preset === 'custom') {
+        await page.getByRole('button', { name: 'Close release receipt', exact: true }).click()
+        await expect(page.locator('.notify-receipt')).toHaveCount(0)
+      }
       await scope.locator('[data-demo-reset]').click()
       await expect(page.locator('[data-notify-toast]')).toHaveCount(0)
     }

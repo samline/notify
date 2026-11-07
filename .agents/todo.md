@@ -38,7 +38,7 @@
 
 ## Pendiente
 
-- Nada abierto. Vigilar `e2e/power.spec.ts` (fallo intermitente una vez en CI el 2026-11-05: el reset del ejemplo custom no llegó a estar estable).
+- Resuelto el fallo intermitente de e2e/power.spec.ts: a 320px y texto al 200%, la tarjeta custom persistente podía cubrir el reset de la página. La prueba usa ahora el botón Close release receipt antes del reset, sin force clicks, retries ni aumentos de timeout. El caso pasó cinco veces seguidas y el proyecto completo de 22 escenarios pasó después.
 
 ## Cierre del handoff — 2026-11-06
 
@@ -46,3 +46,7 @@
 - Header y Logo sincronizados con la corrección 61cc0d8 de la plantilla; nueva regresión de Home, Examples y Docs a 1024–1440 px. La prueba reproduce el fallo anterior a 1024 px.
 - Verificación completa del sitio: checks de Astro e integraciones, formato, ocho pruebas de herramientas, dos bases alternativas, build con 2.182 enlaces y auditoría de migración; 78/78 pruebas de navegador aprobadas. check:release también pasa.
 - Cambios solo del sitio y documentación: no requieren una nueva publicación npm.
+
+## Seguimiento de CI — 2026-11-06
+
+El CI del primer push reprodujo el bloqueo de puntero descrito arriba. La tarjeta custom conserva su cierre propio; el recorrido de la prueba lo usa antes de resetear el preview subyacente. La corrección no cambia el paquete ni el sitio. Verificación: cinco repeticiones del caso en ambos temas y 22/22 escenarios; el build y los otros proyectos ya habían pasado para el mismo sitio.
