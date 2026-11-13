@@ -128,7 +128,7 @@
   "sources": [
     {
       "source": "CHANGELOG.md",
-      "sha256": "8204ce14d39a4cb4eeefb41362e20cac8e5eefc5ccc95dae6a0e508d04c9a79a",
+      "sha256": "a1ae7345a74d8b47e9d40888904e57a23603a4725f82d85c742479d0f3e25c2a",
       "destination": "docs/src/content.config.ts",
       "reviewed": true
     },
