@@ -7,8 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Dates for published releases are the UTC publication dates reported by npm. Versions
 marked as unpublished have a Git tag but are not present in the npm registry.
 
-## [Unreleased]
-
 ## [4.0.1] - 2026-11-05
 
 ### Fixed
@@ -379,7 +377,6 @@ Includes every change prepared for 3.2.1, which was never published.
 - Renamed the internal controller and package from Sileo to Notify.
 - Exposed `window.notify` while retaining the previous browser global as a compatibility alias.
 
-[Unreleased]: https://github.com/samline/notify/compare/v4.0.0...HEAD
 [4.0.0]: https://github.com/samline/notify/compare/v3.2.0...v4.0.0
 [3.2.0]: https://github.com/samline/notify/compare/v3.1.5...v3.2.0
 [3.1.5]: https://github.com/samline/notify/compare/v3.1.4...v3.1.5
