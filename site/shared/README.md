@@ -19,3 +19,5 @@ controls. Standalone files use the existing token fallback values and omit site
 Button selectors and decorative form transitions. Notify's stylesheet continues
 to own standard toast appearance, stacking, swipe and motion; only the custom
 receipt supplies notification presentation. Live previews retain the site theme.
+
+Copied examples place the loading-mode tabs directly above the file tabs, with no installation or delivery explanation between them. Keep setup instructions in the installation guide.
