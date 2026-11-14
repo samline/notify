@@ -820,7 +820,7 @@
       },
       {
         "source": "shared/lib/demo-files.ts",
-        "sha256": "5a44ca170a3c239355a8ca1c4de50fb5a63d4d12a6af35a716deda21e2a12a58"
+        "sha256": "ff3b3d203340e084b428e34b67c9a52eba139823b785f716f2e0886cd0ac0dda"
       },
       {
         "source": "shared/components/Playground.astro",
@@ -839,5 +839,10 @@
         "sha256": "6e89539f08b09183f96bb84b018082e884e81dbcf22407d99613584c2e66b6d0"
       }
     ]
+  },
+  "copiedCodeReview": {
+    "date": "2026-11-14",
+    "scope": "Explore the code: all eleven scenarios, ESM/CDN, split and complete files in Examples and Docs.",
+    "evidence": "brief/notify-copied-code-audit-2026-11-14.md"
   }
 }

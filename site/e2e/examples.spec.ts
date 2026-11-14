@@ -160,6 +160,15 @@ for (const preset of presets) {
           .locator('code')
           .textContent())!
       }
+      // Copied form CSS must not carry the website's tokens, components or motion.
+      expect(files.CSS).not.toMatch(/transition\s*:|var\(--|\.btn|prefers-reduced-motion/)
+      expect(files.CSS).not.toContain('[data-notify-toast]')
+      expect(files.CSS).not.toContain('[data-notify-toaster]')
+      expect(files.CSS.includes('.notify-receipt')).toBe(preset === 'custom')
+      for (const tag of ['input', 'select', 'textarea', 'progress']) {
+        if (!files.HTML.includes(`<${tag}`))
+          expect(files.CSS).not.toMatch(new RegExp(`\\b${tag}\\b`))
+      }
       if (mode === 'esm')
         expect(files.JavaScript.indexOf('@samline/notify/styles.css')).toBeLessThan(
           files.JavaScript.indexOf('./style.css')

@@ -165,7 +165,7 @@ export default {
     'Enable JavaScript to try the interaction. The explanation and all copied source files remain readable.',
   openCode: 'Explore the code',
   copyComplete: 'Copy the complete example',
-  note: 'HTML / CDN opens directly in a browser. Package / ESM uses a bundler such as Vite: install @samline/notify, then serve these files. Separate files and Complete file implement the same interaction.',
+  note: 'HTML / CDN opens directly in a browser. Package / ESM uses a bundler such as Vite: install @samline/notify, then serve these files. Separate files and Complete file implement the same interaction. The CSS styles the demo form; Notify supplies toast appearance and motion. Only Custom content supplies its own notification design.',
   modes: [
     { id: 'cdn', label: 'HTML / CDN' },
     { id: 'esm', label: 'Package / ESM' },

@@ -9,26 +9,50 @@ import { project } from './project.mjs'
 const options = await resolveConfig(process.cwd())
 export type DemoMode = 'cdn' | 'esm'
 const cssFor = (preset: DemoPreset) => {
+  const markup = htmlFor(preset)
+  const classes = new Set(
+    Array.from(markup.matchAll(/class="([^"]+)"/g)).flatMap(match => match[1].split(/\s+/))
+  )
   const sheet = postcss.parse(css)
   sheet.walkRules(rule => {
-    const selectors = rule.selectors.filter(selector => {
-      if (selector.includes('.notify-receipt')) return preset === 'custom'
-      if (selector.includes('.notify-demo-select'))
-        return ['position', 'stream', 'task'].includes(preset)
-      if (selector.includes(' .btn-')) return false
-      if (selector.includes('.notify-demo-feed') || selector.includes('.notify-demo-check'))
-        return preset === 'stream'
-      if (selector.includes('.notify-demo-output')) return preset === 'task'
-      if (selector.includes('.notify-demo-fields'))
-        return preset === 'stream' || preset === 'position'
-      if (selector.includes('.notify-demo-field'))
-        return ['save', 'upload', 'position', 'stream', 'task'].includes(preset)
-      if (selector.includes('.notify-demo-item')) return preset === 'undo'
-      return true
-    })
+    // Copies contain native controls, never the site's Button component.
+    const selectors = rule.selectors
+      .filter(selector => !selector.includes(' .btn-'))
+      .map(selector => selector.replaceAll(':not(.btn)', ''))
+      .filter(selector => {
+        const required = Array.from(selector.matchAll(/\.([\w-]+)/g), match => match[1])
+        if (!required.every(name => classes.has(name))) return false
+        // A field may contain a progress bar, input or select; copy only its control.
+        return ['input', 'select', 'textarea', 'progress'].every(
+          tag => !new RegExp(`\\b${tag}\\b`).test(selector) || markup.includes(`<${tag}`)
+        )
+      })
     if (selectors.length) rule.selectors = selectors
     else rule.remove()
   })
+  // The example teaches Notify, rather than the website's hover animation.
+  // Toast entry, exit, swipe and reduced motion remain in the package stylesheet.
+  sheet.walkDecls('transition', declaration => {
+    declaration.remove()
+  })
+  sheet.walkAtRules('media', rule => {
+    if (rule.params === '(prefers-reduced-motion: reduce)') rule.remove()
+  })
+  sheet.walkAtRules(rule => {
+    if (!rule.nodes?.length) rule.remove()
+  })
+  // The standalone document has no site theme tokens. Use their existing fallbacks.
+  sheet.walkDecls(declaration => {
+    declaration.value = declaration.value.replace(/var\(--[\w-]+,\s*([^()]+)\)/g, '$1')
+  })
+  sheet.prepend(
+    postcss.comment({
+      text:
+        preset === 'custom'
+          ? 'Demo form and custom receipt. Notify supplies positioning, stacking and motion.'
+          : 'Demo form only. Toast appearance and motion come from @samline/notify/styles.css.',
+    })
+  )
   return sheet.toString()
 }
 // Copy one `#region` of demo-behavior.js, so the files match the live preview.
