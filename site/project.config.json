@@ -4,7 +4,7 @@
     "npmName": "@samline/notify",
     "version": "4.0.1",
     "description": "Accessible, dependency-free toast notifications for JavaScript and TypeScript, with ESM, CommonJS, and browser builds.",
-    "author": "Samuel Olvera",
+    "author": "Samuel Olvera (samline)",
     "license": "MIT",
     "keywords": [
       "toast",
