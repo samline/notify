@@ -816,15 +816,15 @@
       },
       {
         "source": "shared/lib/demo-source.ts",
-        "sha256": "0c50c2656bb1f46146b0b81b8a0ba038a231c66b0db3e0ccb680af6b863a8e4f"
+        "sha256": "5b3de3a77c0c93efe173a9323a8f3901421d0fec6e1ecbe05b03769e40e05d76"
       },
       {
         "source": "shared/lib/demo-files.ts",
-        "sha256": "565a7cbdc4adeb0903da89f4bf7a212de125bc3cc5ca730a9064481d8458dae3"
+        "sha256": "398c958c0213233eebdba730b2bd55e374095eab05c250e5348aac2c57437dfa"
       },
       {
         "source": "shared/components/Playground.astro",
-        "sha256": "a1018ea3936b7bdc9c27dc5eb1d4b55dde6872519a06db45365d5a3c87579657"
+        "sha256": "27d32ee8b098cd35bf6a2c13c119d46dee842760b16aa0ed1d5d7f09847d98f9"
       },
       {
         "source": "shared/components/TextField.astro",

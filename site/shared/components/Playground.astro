@@ -72,14 +72,45 @@ const Frame = framed ? DemoStudio : 'div'
   import { mountElements } from '../lib/mount-elements'
   import { browser, destroyToaster } from '@samline/notify'
   import '@samline/notify/styles.css'
-  import { setupNotifyDemo } from '../lib/demo-behavior.js'
+  import { createDemo, scenarios } from '../lib/demo-behavior.js'
   import { messages } from '../i18n/translations/en/demo'
+
+  // All previews share the page's one toaster. Start every configuration from
+  // the same baseline, so a preview's position or direction never leaks into the
+  // next one, and follow the page theme unless a scenario chooses its own.
+  const pageTheme = () => (document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light')
+  let followsPage = true
+  const notify = {
+    ...browser,
+    createToaster: (options: Parameters<typeof browser.createToaster>[0] = {}) => {
+      followsPage = options.theme === undefined
+      return browser.createToaster({
+        position: 'bottom-right',
+        dir: 'ltr',
+        visibleToasts: 3,
+        expand: false,
+        style: { '--width': '22.25rem' },
+        ...options,
+        theme: options.theme ?? pageTheme(),
+      })
+    },
+  }
+  // Updating only the theme leaves the remaining lifetime of open toasts alone.
+  document.addEventListener('package-site:theme-change', () => {
+    if (followsPage) browser.getToaster()?.update({ theme: pageTheme() })
+  })
+
   let previews = 0
   mountElements('package-site-demo', element => {
     previews += 1
-    const cleanup = setupNotifyDemo(element, browser, messages)
+    const demo = createDemo(element, notify)
+    scenarios[element.dataset.preset as keyof typeof scenarios](demo, notify, messages)
+    demo.action.disabled = false
+    element.removeAttribute('inert')
+    element.dataset.ready = 'true'
     return () => {
-      cleanup()
+      demo.destroy()
+      element.dataset.ready = 'false'
       previews -= 1
       if (previews === 0) destroyToaster()
     }

@@ -35,3 +35,5 @@
 - Never add AI co-author or "Generated with" lines to commits, tags or PRs (maintainer rule, also in ~/.claude/CLAUDE.md).
 
 - At 320px and 200% text, a persistent custom toast can cover its underlying preview reset. Browser flows must use the card's own visible close control before clicking the page beneath it; never force the covered reset or hide the failure with retries/timeouts. Five repeated runs and the complete scenarios project verify this sequence.
+
+- Copied examples must read like code a visitor would write. `site/shared/lib/demo-behavior.js` holds one short `<preset>Demo` function per `#region` (plus the `demo` helper region); `demo-files.ts` copies the helper and the chosen region verbatim. Do not go back to one large shared handler pruned by an AST transform, and keep site-only concerns (page theme, baseline toaster options shared by previews) in the Playground host, not in the scenarios. Forms and Utils already use the same region pattern.

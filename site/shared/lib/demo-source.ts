@@ -1,8 +1,21 @@
-import t, { presets, fields, type DemoPreset } from '../i18n/translations/en/demo'
+import t, { presets, fields, messages, type DemoPreset } from '../i18n/translations/en/demo'
 const field = (label: string, input: string) =>
   `<label class="notify-demo-field">${label}${input}</label>`
 const select = (hook: string, entries: readonly (readonly [string, string])[]) =>
   `<span class="notify-demo-select"><select ${hook}>${entries.map(([value, label]) => `<option value="${value}">${label}</option>`).join('')}</select></span>`
+// The release card Notify renders through toast.custom(); the demo clones it.
+const receipt = `<template>
+<div class="notify-receipt">
+<strong>${messages.release}</strong>
+<p>${messages.releaseDetails}</p>
+<small>${messages.releaseStats}</small>
+<label>${messages.noteLabel}<textarea placeholder="${messages.notePlaceholder}" maxlength="160" rows="2"></textarea></label>
+<div class="notify-receipt-actions">
+<button type="button" data-save-note>${messages.saveNote}</button>
+<button type="button" data-close-receipt>${messages.closeReceipt}</button>
+</div>
+</div>
+</template>`
 export const bodyFor = (preset: DemoPreset) => {
   const copy = presets[preset]
   return `<p class="notify-demo-eyebrow">${copy.eyebrow}</p>
@@ -40,6 +53,7 @@ ${
       )}</div>`
     : ''
 }
+${preset === 'custom' ? receipt : ''}
 ${preset === 'decisions' ? '<p data-review-details hidden></p>' : ''}
 ${
   preset === 'stream'
