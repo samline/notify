@@ -200,8 +200,7 @@ test('copied files and complete document actually run', async ({ page, context }
     await example.evaluate(() =>
       window.dispatchEvent(new PageTransitionEvent('pagehide', { persisted: false }))
     )
-    await example.getByRole('button', { name: 'Save changes', exact: true }).click()
-    await expect(example.locator('li[data-notify-toast]')).toHaveCount(0)
+    await expect(example.locator('[data-notify-toaster]')).toHaveCount(0)
     expect(errors, mode).toEqual([])
     await example.close()
   }

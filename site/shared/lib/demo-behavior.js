@@ -1,182 +1,174 @@
-// One short function per scenario, shared by the live previews and the copied files.
-// demo-files.ts copies the `demo` region plus the region of the chosen scenario
-// into main.js (without `export`). Keep regions plain JavaScript and self-contained.
+// One self-contained function per scenario, shared by the live previews and the
+// copied files. demo-files.ts copies the region of the chosen scenario (and
+// `wait` when it uses it) into main.js without `export`. Keep regions plain
+// JavaScript. `signal` only lets the website detach a preview; a copied file
+// calls the function without it.
 
-// #region demo
-// Small helper shared by every scenario: the result line, the toasts the demo
-// owns, abortable waits and the reset button. It is not part of Notify.
-export const createDemo = (element, notify) => {
-  const lifecycle = new AbortController()
-  const output = element.querySelector('[data-demo-result]')
-  const initial = output.textContent
-  const ids = new Set()
-  const resets = []
-  let run = new AbortController()
-
-  // Listen to a control. An aborted wait() just ends the handler.
-  const on = (selector, handler) => {
-    element.querySelector(selector).addEventListener(
-      'click',
-      async () => {
-        try {
-          await handler()
-        } catch (error) {
-          if (error.name !== 'AbortError') throw error
-        }
+// #region wait
+// Resolves true after `ms`, or false as soon as `signal` aborts.
+const wait = (ms, signal) =>
+  new Promise(resolve => {
+    const timer = setTimeout(resolve, ms, true)
+    signal.addEventListener(
+      'abort',
+      () => {
+        clearTimeout(timer)
+        resolve(false)
       },
-      { signal: lifecycle.signal }
+      { once: true }
     )
-  }
-  const reset = () => {
-    run.abort()
-    run = new AbortController()
-    ids.forEach(id => notify.toast.dismiss(id))
-    ids.clear()
-    action.disabled = false
-    resets.forEach(callback => callback())
-    output.textContent = initial
-  }
-  const action = element.querySelector('[data-demo-action]')
-  on('[data-demo-reset]', reset)
-
-  return {
-    element,
-    action,
-    ids,
-    signal: lifecycle.signal,
-    // Aborted by reset, so work started before a reset can tell it is stale.
-    get run() {
-      return run.signal
-    },
-    on,
-    onAction: handler => on('[data-demo-action]', handler),
-    onReset: callback => resets.push(callback),
-    show: text => {
-      output.textContent = text
-    },
-    own: id => {
-      ids.add(id)
-      return id
-    },
-    dismissAll: () => ids.forEach(id => notify.toast.dismiss(id)),
-    // Resolves after `ms`; rejects with an AbortError when its signal aborts.
-    wait: (ms, signal = run.signal) =>
-      new Promise((resolve, reject) => {
-        if (signal.aborted) return reject(signal.reason)
-        const timer = setTimeout(resolve, ms)
-        signal.addEventListener(
-          'abort',
-          () => {
-            clearTimeout(timer)
-            reject(signal.reason)
-          },
-          { once: true }
-        )
-      }),
-    destroy: () => {
-      reset()
-      lifecycle.abort()
-    },
-  }
-}
-// #endregion demo
+  })
+// #endregion wait
 
 // #region save
-const saveDemo = (demo, notify, copy) => {
-  const input = demo.element.querySelector('input')
+const saveDemo = (element, notify, copy, signal) => {
+  const input = element.querySelector('input')
+  const action = element.querySelector('[data-demo-action]')
+  const result = element.querySelector('[data-demo-result]')
+  const initial = result.textContent
+  let pending = new AbortController()
 
-  demo.onAction(() => {
-    const name = input.value.trim()
-    if (!name) return input.reportValidity()
+  action.addEventListener(
+    'click',
+    () => {
+      const name = input.value.trim()
+      if (!name) return input.reportValidity()
 
-    notify.createToaster({ richColors: true, closeButton: true })
-    demo.action.disabled = true
-    const saving = demo.wait(1200).then(() => name)
-    const toast = notify.toast.promise(saving, {
-      loading: copy.saving,
-      success: saved => {
-        demo.show(`${copy.saved}: ${saved}`)
-        demo.action.disabled = false
-        return { message: copy.saved, description: saved }
-      },
-    })
-    demo.own(toast.id)
-  })
+      notify.createToaster({ richColors: true, closeButton: true })
+      action.disabled = true
+      const saving = wait(1200, pending.signal).then(done => {
+        if (!done) throw new DOMException('Reset', 'AbortError')
+        return name
+      })
+      notify.toast.promise(saving, {
+        loading: copy.saving,
+        success: saved => {
+          result.textContent = `${copy.saved}: ${saved}`
+          action.disabled = false
+          return { message: copy.saved, description: saved }
+        },
+      })
+    },
+    { signal }
+  )
+
+  element.querySelector('[data-demo-reset]').addEventListener(
+    'click',
+    () => {
+      pending.abort()
+      pending = new AbortController()
+      notify.toast.dismiss()
+      action.disabled = false
+      result.textContent = initial
+    },
+    { signal }
+  )
 }
 // #endregion save
 
 // #region retry
-const retryDemo = (demo, notify, copy) => {
+const retryDemo = (element, notify, copy, signal) => {
+  const action = element.querySelector('[data-demo-action]')
+  const result = element.querySelector('[data-demo-result]')
+  const initial = result.textContent
   let attempts = 0
-  demo.onReset(() => {
-    attempts = 0
-  })
 
   const send = () => {
     attempts += 1
     if (attempts === 1) {
-      demo.show(copy.notSent)
-      demo.own(
-        notify.toast.error(copy.sendFailed, {
-          description: copy.retryHint,
-          duration: Infinity,
-          action: { label: copy.retry, onClick: send },
-        })
-      )
+      result.textContent = copy.notSent
+      notify.toast.error(copy.sendFailed, {
+        description: copy.retryHint,
+        duration: Infinity,
+        action: { label: copy.retry, onClick: send },
+      })
     } else {
-      demo.show(copy.sent)
-      demo.own(notify.toast.success(copy.sent, { description: copy.sentHint }))
+      result.textContent = copy.sent
+      notify.toast.success(copy.sent, { description: copy.sentHint })
     }
   }
 
-  demo.onAction(() => {
-    notify.createToaster({ richColors: true, closeButton: true })
-    send()
-  })
+  action.addEventListener(
+    'click',
+    () => {
+      notify.createToaster({ richColors: true, closeButton: true })
+      send()
+    },
+    { signal }
+  )
+
+  element.querySelector('[data-demo-reset]').addEventListener(
+    'click',
+    () => {
+      attempts = 0
+      notify.toast.dismiss()
+      result.textContent = initial
+    },
+    { signal }
+  )
 }
 // #endregion retry
 
 // #region upload
-const uploadDemo = (demo, notify, copy) => {
-  const progress = demo.element.querySelector('progress')
-  demo.onReset(() => {
-    progress.value = 0
-  })
+const uploadDemo = (element, notify, copy, signal) => {
+  const progress = element.querySelector('progress')
+  const action = element.querySelector('[data-demo-action]')
+  const result = element.querySelector('[data-demo-result]')
+  const initial = result.textContent
+  let pending = new AbortController()
 
-  demo.onAction(async () => {
-    notify.createToaster({ richColors: true, closeButton: true })
-    demo.action.disabled = true
-    const id = demo.own(notify.toast.loading(copy.uploading))
+  action.addEventListener(
+    'click',
+    async () => {
+      notify.createToaster({ richColors: true, closeButton: true })
+      action.disabled = true
+      const id = notify.toast.loading(copy.uploading)
 
-    for (const percent of [25, 50, 75, 100]) {
-      await demo.wait(550)
-      progress.value = percent
-      demo.show(`${copy.uploading} ${percent}%`)
-      if (percent < 100) notify.toast.loading(`${copy.uploading} ${percent}%`, { id })
-    }
+      for (const percent of [25, 50, 75, 100]) {
+        if (!(await wait(550, pending.signal))) return
+        progress.value = percent
+        result.textContent = `${copy.uploading} ${percent}%`
+        if (percent < 100) notify.toast.loading(`${copy.uploading} ${percent}%`, { id })
+      }
 
-    // Passing the same id turns the loading toast into a success.
-    notify.toast.success(copy.uploaded, { id, description: 'campaign-cover.jpg' })
-    demo.show(copy.uploaded)
-    demo.action.disabled = false
-  })
+      // Passing the same id turns the loading toast into a success.
+      notify.toast.success(copy.uploaded, { id, description: 'campaign-cover.jpg' })
+      result.textContent = copy.uploaded
+      action.disabled = false
+    },
+    { signal }
+  )
+
+  element.querySelector('[data-demo-reset]').addEventListener(
+    'click',
+    () => {
+      pending.abort()
+      pending = new AbortController()
+      notify.toast.dismiss()
+      progress.value = 0
+      action.disabled = false
+      result.textContent = initial
+    },
+    { signal }
+  )
 }
 // #endregion upload
 
 // #region undo
-const undoDemo = (demo, notify, copy) => {
-  const item = demo.element.querySelector('[data-demo-item]')
-  demo.onReset(() => {
-    item.hidden = false
-  })
+const undoDemo = (element, notify, copy, signal) => {
+  const item = element.querySelector('[data-demo-item]')
+  const action = element.querySelector('[data-demo-action]')
+  const result = element.querySelector('[data-demo-result]')
+  const initial = result.textContent
 
-  demo.onAction(() => {
-    if (item.hidden) return
+  action.addEventListener(
+    'click',
+    () => {
+      if (item.hidden) return
 
-    notify.createToaster({ richColors: true, closeButton: true })
-    item.hidden = true
-    demo.show(copy.archived)
-    demo.own(
+      notify.createToaster({ richColors: true, closeButton: true })
+      item.hidden = true
+      result.textContent = copy.archived
       notify.toast(copy.archived, {
         description: copy.undoHint,
         duration: 10000,
@@ -184,78 +176,126 @@ const undoDemo = (demo, notify, copy) => {
           label: copy.undo,
           onClick: () => {
             item.hidden = false
-            demo.show(copy.restored)
-            demo.own(notify.toast.success(copy.restored))
+            result.textContent = copy.restored
+            notify.toast.success(copy.restored)
           },
         },
       })
-    )
-  })
+    },
+    { signal }
+  )
+
+  element.querySelector('[data-demo-reset]').addEventListener(
+    'click',
+    () => {
+      notify.toast.dismiss()
+      item.hidden = false
+      result.textContent = initial
+    },
+    { signal }
+  )
 }
 // #endregion undo
 
 // #region persistent
-const persistentDemo = (demo, notify, copy) => {
-  demo.onAction(() => {
-    notify.createToaster({ richColors: true, closeButton: true })
-    demo.own(
+const persistentDemo = (element, notify, copy, signal) => {
+  const action = element.querySelector('[data-demo-action]')
+  const result = element.querySelector('[data-demo-result]')
+  const initial = result.textContent
+
+  action.addEventListener(
+    'click',
+    () => {
+      notify.createToaster({ richColors: true, closeButton: true })
       notify.toast.info(copy.invitation, {
         description: copy.invitationDetails,
         duration: Infinity,
       })
-    )
-    demo.show(copy.invitationDetails)
-  })
+      result.textContent = copy.invitationDetails
+    },
+    { signal }
+  )
 
-  demo.on('[data-demo-dismiss]', () => {
-    demo.dismissAll()
-    demo.show(copy.dismissed)
-  })
+  element.querySelector('[data-demo-dismiss]').addEventListener(
+    'click',
+    () => {
+      notify.toast.dismiss()
+      result.textContent = copy.dismissed
+    },
+    { signal }
+  )
+
+  element.querySelector('[data-demo-reset]').addEventListener(
+    'click',
+    () => {
+      notify.toast.dismiss()
+      result.textContent = initial
+    },
+    { signal }
+  )
 }
 // #endregion persistent
 
 // #region custom
-const customDemo = (demo, notify, copy) => {
+const customDemo = (element, notify, copy, signal) => {
   // The card's markup lives in a <template> inside the demo.
-  const template = demo.element.querySelector('template')
+  const template = element.querySelector('template')
+  const action = element.querySelector('[data-demo-action]')
+  const result = element.querySelector('[data-demo-result]')
+  const initial = result.textContent
 
-  demo.onAction(() => {
-    notify.createToaster({ richColors: true, closeButton: true, style: { '--width': '23rem' } })
-    demo.action.disabled = true
-    let note = '' // Kept outside the factory: Notify may render the card again.
+  action.addEventListener(
+    'click',
+    () => {
+      notify.createToaster({ richColors: true, closeButton: true, style: { '--width': '23rem' } })
+      action.disabled = true
+      let note = '' // Kept outside the factory: Notify may render the card again.
 
-    const id = notify.toast.custom(
-      (container, { dismiss }) => {
-        const card = template.content.cloneNode(true)
-        const textarea = card.querySelector('textarea')
-        textarea.value = note
-        textarea.addEventListener('input', () => {
-          note = textarea.value
-        })
-        card.querySelector('[data-save-note]').addEventListener('click', () => {
-          demo.show(`${copy.noteSaved}: ${note.trim() || copy.releaseDetails}`)
-        })
-        card.querySelector('[data-close-receipt]').addEventListener('click', dismiss)
-        container.append(card)
-      },
-      {
-        duration: Infinity,
-        onDismiss: () => {
-          demo.action.disabled = false
+      notify.toast.custom(
+        (container, { dismiss }) => {
+          const card = template.content.cloneNode(true)
+          const textarea = card.querySelector('textarea')
+          textarea.value = note
+          textarea.addEventListener('input', () => {
+            note = textarea.value
+          })
+          card.querySelector('[data-save-note]').addEventListener('click', () => {
+            result.textContent = `${copy.noteSaved}: ${note.trim() || copy.releaseDetails}`
+          })
+          card.querySelector('[data-close-receipt]').addEventListener('click', dismiss)
+          container.append(card)
         },
-      }
-    )
-    demo.own(id)
-    demo.show(copy.releaseDetails)
-  })
+        {
+          duration: Infinity,
+          onDismiss: () => {
+            action.disabled = false
+          },
+        }
+      )
+      result.textContent = copy.releaseDetails
+    },
+    { signal }
+  )
+
+  element.querySelector('[data-demo-reset]').addEventListener(
+    'click',
+    () => {
+      notify.toast.dismiss()
+      action.disabled = false
+      result.textContent = initial
+    },
+    { signal }
+  )
 }
 // #endregion custom
 
 // #region position
-const positionDemo = (demo, notify, copy) => {
+const positionDemo = (element, notify, copy, signal) => {
   const [place, theme, direction] = ['position', 'theme', 'direction'].map(name =>
-    demo.element.querySelector(`[data-${name}]`)
+    element.querySelector(`[data-${name}]`)
   )
+  const result = element.querySelector('[data-demo-result]')
+  const initial = result.textContent
   // "Follow the page" sends no theme, so the toaster keeps its default.
   const preferences = () => ({
     position: place.value,
@@ -270,72 +310,103 @@ const positionDemo = (demo, notify, copy) => {
       () => {
         if (notify.toast.getToasts().length) notify.createToaster(preferences())
       },
-      { signal: demo.signal }
+      { signal }
     )
   }
 
-  demo.onAction(() => {
-    notify.createToaster({ richColors: true, closeButton: true, ...preferences() })
-    const label = place.selectedOptions[0].textContent
-    demo.own(notify.toast.success(copy.preference, { description: label }))
-    demo.show(label)
-  })
+  element.querySelector('[data-demo-action]').addEventListener(
+    'click',
+    () => {
+      notify.createToaster({ richColors: true, closeButton: true, ...preferences() })
+      const label = place.selectedOptions[0].textContent
+      notify.toast.success(copy.preference, { description: label })
+      result.textContent = label
+    },
+    { signal }
+  )
+
+  element.querySelector('[data-demo-reset]').addEventListener(
+    'click',
+    () => {
+      notify.toast.dismiss()
+      result.textContent = initial
+    },
+    { signal }
+  )
 }
 // #endregion position
 
 // #region history
-const historyDemo = (demo, notify, copy) => {
+const historyDemo = (element, notify, copy, signal) => {
+  const action = element.querySelector('[data-demo-action]')
+  const result = element.querySelector('[data-demo-result]')
+  const initial = result.textContent
+  const mine = new Set() // ids created by this demo
   let count = 0
 
-  // Active toasts leave getToasts() when dismissed; getHistory() keeps them.
+  // A dismissed toast leaves getToasts() but stays in getHistory().
   const snapshot = () => {
-    const mine = records => records.filter(record => demo.ids.has(record.id)).length
-    const active = mine(notify.toast.getToasts())
-    const history = mine(notify.toast.getHistory())
-    demo.show(`${copy.active}: ${active} · ${copy.history}: ${history}`)
+    const owned = records => records.filter(record => mine.has(record.id)).length
+    const active = owned(notify.toast.getToasts())
+    const history = owned(notify.toast.getHistory())
+    result.textContent = `${copy.active}: ${active} · ${copy.history}: ${history}`
   }
 
-  demo.onAction(() => {
-    notify.createToaster({ richColors: true, closeButton: true })
-    count += 1
-    demo.own(
+  action.addEventListener(
+    'click',
+    () => {
+      notify.createToaster({ richColors: true, closeButton: true })
+      count += 1
       // Functions are evaluated each time the toast renders.
-      notify.toast.success(() => `${copy.activity} ${count}`, {
+      const id = notify.toast.success(() => `${copy.activity} ${count}`, {
         description: () =>
           new Date().toLocaleTimeString('en', { hour: '2-digit', minute: '2-digit' }),
         onDismiss: snapshot,
       })
-    )
-    snapshot()
-  })
+      mine.add(id)
+      snapshot()
+    },
+    { signal }
+  )
 
-  demo.on('[data-demo-dismiss]', () => {
-    demo.dismissAll()
-    snapshot()
-  })
+  element.querySelector('[data-demo-dismiss]').addEventListener(
+    'click',
+    () => {
+      notify.toast.dismiss()
+      snapshot()
+    },
+    { signal }
+  )
+
+  element.querySelector('[data-demo-reset]').addEventListener(
+    'click',
+    () => {
+      notify.toast.dismiss()
+      mine.clear()
+      result.textContent = initial
+    },
+    { signal }
+  )
 }
 // #endregion history
 
 // #region decisions
-const decisionsDemo = (demo, notify, copy) => {
-  const details = demo.element.querySelector('[data-review-details]')
-  demo.onReset(() => {
-    details.hidden = true
-    details.textContent = ''
-  })
-
-  const notNow = { label: copy.later, onClick: () => demo.show(copy.deferred) }
+const decisionsDemo = (element, notify, copy, signal) => {
+  const details = element.querySelector('[data-review-details]')
+  const result = element.querySelector('[data-demo-result]')
+  const initial = result.textContent
+  const notNow = { label: copy.later, onClick: () => (result.textContent = copy.deferred) }
   let id
 
   // closeOnClick: false keeps one toast alive while its action changes.
   const join = () => {
-    demo.show(copy.joined)
+    result.textContent = copy.joined
     notify.toast.success(copy.joined, { id, duration: 6000, action: undefined, cancel: undefined })
   }
   const review = () => {
     details.hidden = false
     details.textContent = copy.reviewDetails
-    demo.show(copy.joinQuestion)
+    result.textContent = copy.joinQuestion
     notify.toast.info(copy.joinQuestion, {
       id,
       description: copy.reviewDetails,
@@ -345,25 +416,41 @@ const decisionsDemo = (demo, notify, copy) => {
     })
   }
 
-  demo.onAction(() => {
-    notify.createToaster({ richColors: true, closeButton: true })
-    id = demo.own(
-      notify.toast.info(copy.invitation, {
+  element.querySelector('[data-demo-action]').addEventListener(
+    'click',
+    () => {
+      notify.createToaster({ richColors: true, closeButton: true })
+      id = notify.toast.info(copy.invitation, {
         description: copy.reviewDetails,
         duration: Infinity,
         action: { label: copy.review, closeOnClick: false, onClick: review },
         cancel: notNow,
       })
-    )
-  })
+    },
+    { signal }
+  )
+
+  element.querySelector('[data-demo-reset]').addEventListener(
+    'click',
+    () => {
+      notify.toast.dismiss()
+      details.hidden = true
+      details.textContent = ''
+      result.textContent = initial
+    },
+    { signal }
+  )
 }
 // #endregion decisions
 
 // #region stream
-const streamDemo = (demo, notify, copy) => {
-  const feed = demo.element.querySelector('[data-event-log]')
-  const limit = demo.element.querySelector('[data-visible-limit]')
-  const expanded = demo.element.querySelector('[data-stack-expanded]')
+const streamDemo = (element, notify, copy, signal) => {
+  const feed = element.querySelector('[data-event-log]')
+  const limit = element.querySelector('[data-visible-limit]')
+  const expanded = element.querySelector('[data-stack-expanded]')
+  const action = element.querySelector('[data-demo-action]')
+  const result = element.querySelector('[data-demo-result]')
+  const initial = result.textContent
   const stack = () => ({ visibleToasts: Number(limit.value), expand: expanded.checked })
   const events = [
     [undefined, copy.normalEvent],
@@ -372,18 +459,13 @@ const streamDemo = (demo, notify, copy) => {
     ['warning', copy.warningEvent],
     ['error', copy.errorEvent],
   ]
-  let dismissedByYou = 0
+  let pending = new AbortController()
   let autoClosed = 0
-  demo.onReset(() => {
-    feed.replaceChildren()
-    dismissedByYou = 0
-    autoClosed = 0
-  })
+  let dismissedByYou = 0
 
-  const summary = () =>
-    demo.show(
-      `${copy.played}: ${feed.children.length} · ${copy.expired}: ${autoClosed} · ${copy.manual}: ${dismissedByYou}`
-    )
+  const summary = () => {
+    result.textContent = `${copy.played}: ${feed.children.length} · ${copy.expired}: ${autoClosed} · ${copy.manual}: ${dismissedByYou}`
+  }
 
   // Changing the stack updates the toasts that are already on screen.
   for (const control of [limit, expanded]) {
@@ -392,100 +474,133 @@ const streamDemo = (demo, notify, copy) => {
       () => {
         if (notify.toast.getToasts().length) notify.createToaster(stack())
       },
-      { signal: demo.signal }
+      { signal }
     )
   }
 
-  demo.onAction(async () => {
-    notify.createToaster({ richColors: true, closeButton: true, ...stack() })
-    demo.action.disabled = true
-    const run = demo.run
-    const timedOut = new Set()
+  action.addEventListener(
+    'click',
+    async () => {
+      notify.createToaster({ richColors: true, closeButton: true, ...stack() })
+      action.disabled = true
+      const run = pending
+      const timedOut = new Set()
 
-    for (const [type, message] of events) {
-      feed.append(Object.assign(document.createElement('li'), { textContent: message }))
-      const options = {
-        duration: 9000,
-        // onAutoClose runs before onDismiss when the timer ends the toast.
-        onAutoClose: toast => timedOut.add(toast.id),
-        onDismiss: toast => {
-          if (run.aborted) return
-          if (timedOut.delete(toast.id)) autoClosed += 1
-          else dismissedByYou += 1
-          summary()
-        },
+      for (const [index, [type, message]] of events.entries()) {
+        if (index > 0 && !(await wait(220, run.signal))) return
+        feed.append(Object.assign(document.createElement('li'), { textContent: message }))
+        const options = {
+          duration: 9000,
+          // onAutoClose runs before onDismiss when the timer ends the toast.
+          onAutoClose: toast => timedOut.add(toast.id),
+          onDismiss: toast => {
+            if (run !== pending) return
+            if (timedOut.delete(toast.id)) autoClosed += 1
+            else dismissedByYou += 1
+            summary()
+          },
+        }
+        if (type) notify.toast[type](message, options)
+        else notify.toast(message, options)
+        summary()
       }
-      demo.own(type ? notify.toast[type](message, options) : notify.toast(message, options))
-      summary()
-      await demo.wait(220)
-    }
-    demo.action.disabled = false
-  })
+      action.disabled = false
+    },
+    { signal }
+  )
+
+  element.querySelector('[data-demo-reset]').addEventListener(
+    'click',
+    () => {
+      pending.abort()
+      pending = new AbortController()
+      notify.toast.dismiss()
+      feed.replaceChildren()
+      autoClosed = 0
+      dismissedByYou = 0
+      action.disabled = false
+      result.textContent = initial
+    },
+    { signal }
+  )
 }
 // #endregion stream
 
 // #region task
-const taskDemo = (demo, notify, copy) => {
-  const cancel = demo.element.querySelector('[data-demo-cancel]')
-  const preview = demo.element.querySelector('[data-export-output]')
-  const outcome = demo.element.querySelector('[data-task-outcome]')
+const taskDemo = (element, notify, copy, signal) => {
+  const action = element.querySelector('[data-demo-action]')
+  const cancel = element.querySelector('[data-demo-cancel]')
+  const preview = element.querySelector('[data-export-output]')
+  const outcome = element.querySelector('[data-task-outcome]')
+  const result = element.querySelector('[data-demo-result]')
+  const initial = result.textContent
   const csv =
     'month,category,total\nOctober,Design,240\nOctober,Engineering,680\nOctober,Support,120'
-  let canceler = new AbortController()
-  demo.onReset(() => {
-    canceler.abort()
-    cancel.disabled = true
-    preview.hidden = true
-    preview.textContent = ''
-  })
+  let pending = new AbortController()
 
-  demo.on('[data-demo-cancel]', () => canceler.abort())
+  action.addEventListener(
+    'click',
+    async () => {
+      notify.createToaster({ richColors: true, closeButton: true })
+      const run = (pending = new AbortController())
+      action.disabled = true
+      cancel.disabled = false
+      preview.hidden = true
 
-  demo.onAction(async () => {
-    notify.createToaster({ richColors: true, closeButton: true })
-    const run = demo.run
-    canceler = new AbortController()
-    demo.action.disabled = true
-    cancel.disabled = false
-    preview.hidden = true
-
-    // A stand-in for a request: it fails on demand and can be canceled.
-    const request = demo.wait(2200, canceler.signal).then(() => {
-      if (outcome.value === 'error') throw new Error(copy.exportError)
-      return csv
-    })
-    const toast = notify.toast.promise(request, {
-      loading: copy.exporting,
-      success: result => ({
-        message: copy.exported,
-        description: copy.csvReady,
-        action: {
-          label: copy.viewCsv,
-          onClick: () => {
-            preview.textContent = result
-            preview.hidden = false
+      // A stand-in for a request: it fails on demand and can be canceled.
+      const request = wait(2200, run.signal).then(done => {
+        if (!done) throw new DOMException(copy.exportStopped, 'AbortError')
+        if (outcome.value === 'error') throw new Error(copy.exportError)
+        return csv
+      })
+      const toast = notify.toast.promise(request, {
+        loading: copy.exporting,
+        success: data => ({
+          message: copy.exported,
+          description: copy.csvReady,
+          action: {
+            label: copy.viewCsv,
+            onClick: () => {
+              preview.textContent = data
+              preview.hidden = false
+            },
           },
-        },
-      }),
-      error: error => ({ message: copy.exportFailed, description: error.message }),
-    })
-    demo.own(toast.id)
-    demo.show(copy.exporting)
+        }),
+        error: error => ({ message: copy.exportFailed, description: error.message }),
+      })
+      result.textContent = copy.exporting
 
-    try {
-      await toast.unwrap()
-      demo.show(copy.csvReady)
-    } catch (error) {
-      if (run.aborted) return
-      const canceled = error.name === 'AbortError'
-      demo.show(canceled ? copy.exportStopped : copy.exportFailed)
-      if (canceled) notify.toast.dismiss(toast.id)
-    }
-    if (!run.aborted) {
-      demo.action.disabled = false
+      try {
+        await toast.unwrap()
+        result.textContent = copy.csvReady
+      } catch (error) {
+        if (run !== pending) return // reset while waiting
+        const canceled = error.name === 'AbortError'
+        result.textContent = canceled ? copy.exportStopped : copy.exportFailed
+        if (canceled) notify.toast.dismiss(toast.id)
+      }
+      action.disabled = false
       cancel.disabled = true
-    }
-  })
+    },
+    { signal }
+  )
+
+  cancel.addEventListener('click', () => pending.abort(), { signal })
+
+  element.querySelector('[data-demo-reset]').addEventListener(
+    'click',
+    () => {
+      pending.abort()
+      pending = new AbortController()
+      notify.toast.dismiss()
+      action.disabled = false
+      cancel.disabled = true
+      preview.hidden = true
+      preview.textContent = ''
+      result.textContent = initial
+    },
+    { signal }
+  )
 }
 // #endregion task
 

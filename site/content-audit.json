@@ -820,11 +820,11 @@
       },
       {
         "source": "shared/lib/demo-files.ts",
-        "sha256": "398c958c0213233eebdba730b2bd55e374095eab05c250e5348aac2c57437dfa"
+        "sha256": "5a44ca170a3c239355a8ca1c4de50fb5a63d4d12a6af35a716deda21e2a12a58"
       },
       {
         "source": "shared/components/Playground.astro",
-        "sha256": "27d32ee8b098cd35bf6a2c13c119d46dee842760b16aa0ed1d5d7f09847d98f9"
+        "sha256": "68505c1109d58faf54a76f26b4421146dad7efcabc0d10d3a99c49f981720c94"
       },
       {
         "source": "shared/components/TextField.astro",

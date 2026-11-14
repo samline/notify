@@ -72,7 +72,7 @@ const Frame = framed ? DemoStudio : 'div'
   import { mountElements } from '../lib/mount-elements'
   import { browser, destroyToaster } from '@samline/notify'
   import '@samline/notify/styles.css'
-  import { createDemo, scenarios } from '../lib/demo-behavior.js'
+  import { scenarios } from '../lib/demo-behavior.js'
   import { messages } from '../i18n/translations/en/demo'
 
   // All previews share the page's one toaster. Start every configuration from
@@ -103,13 +103,20 @@ const Frame = framed ? DemoStudio : 'div'
   let previews = 0
   mountElements('package-site-demo', element => {
     previews += 1
-    const demo = createDemo(element, notify)
-    scenarios[element.dataset.preset as keyof typeof scenarios](demo, notify, messages)
-    demo.action.disabled = false
+    const lifecycle = new AbortController()
+    scenarios[element.dataset.preset as keyof typeof scenarios](
+      element,
+      notify,
+      messages,
+      lifecycle.signal
+    )
+    element.querySelector<HTMLButtonElement>('[data-demo-action]')!.disabled = false
     element.removeAttribute('inert')
     element.dataset.ready = 'true'
     return () => {
-      demo.destroy()
+      // Reset first: it cancels pending work and dismisses the preview's toasts.
+      element.querySelector<HTMLButtonElement>('[data-demo-reset]')!.click()
+      lifecycle.abort()
       element.dataset.ready = 'false'
       previews -= 1
       if (previews === 0) destroyToaster()

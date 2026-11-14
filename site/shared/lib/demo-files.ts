@@ -45,19 +45,16 @@ export const createDemoFiles = async (preset: DemoPreset = 'save', mode: DemoMod
   const scenario = region(preset)
   const used = new Set(Array.from(scenario.matchAll(/copy\.(\w+)/g), match => match[1]))
   const copy = Object.fromEntries(Object.entries(messages).filter(([key]) => used.has(key)))
+  const helper = scenario.includes('wait(') ? `\n${region('wait')}` : ''
   const script = `${setup}
 const copy = ${JSON.stringify(copy)}
 
-${scenario}
-${region('demo')}
-const demo = createDemo(document.querySelector('[data-notify-demo]'), notify)
-${preset}Demo(demo, notify, copy)
+${scenario}${helper}
+${preset}Demo(document.querySelector('[data-notify-demo]'), notify, copy)
 
+// A page that is leaving no longer needs its toaster.
 window.addEventListener('pagehide', event => {
-  if (!event.persisted) {
-    demo.destroy()
-    notify.destroyToaster()
-  }
+  if (!event.persisted) notify.destroyToaster()
 })
 `
   const documentFor = (separate: boolean) => `<!doctype html>
