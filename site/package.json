@@ -6,24 +6,19 @@
   "engines": {
     "node": ">=22.12.0"
   },
-  "workspaces": [
-    "landing",
-    "docs",
-    "shared"
-  ],
   "scripts": {
     "dev": "node scripts/assets.mjs && node scripts/dev.mjs",
-    "build": "node scripts/assets.mjs && npm run build --workspace docs && npm run build --workspace landing && node scripts/assemble.mjs && node scripts/check-site.mjs && npm run check:migration",
-    "preview": "npm run preview --workspace landing -- --host 127.0.0.1 --port 4330",
-    "check": "npm run check:docs && npm run check:integrations && node scripts/check-config.mjs && npm run check:design && npm run check --workspace landing && npm run check --workspace docs",
+    "build": "node scripts/assets.mjs && bun run --cwd docs build && bun run --cwd landing build && node scripts/assemble.mjs && node scripts/check-site.mjs && bun run check:migration",
+    "preview": "bun run --cwd landing preview --host 127.0.0.1 --port 4390",
+    "check": "bun run check:docs && bun run check:integrations && node scripts/check-config.mjs && bun run check:design && bun run --cwd landing check && bun run --cwd docs check",
     "format": "prettier --plugin prettier-plugin-astro --write .",
     "format:check": "prettier --plugin prettier-plugin-astro --check .",
     "test": "node --test tests/*.test.mjs",
     "test:browser": "playwright test",
-    "verify": "npm run check && npm run format:check && npm test && npm run test:adaptation && npm run build && npm run check:identity && npm run test:browser",
+    "verify": "bun run check && bun run format:check && bun run test && bun run test:adaptation && bun run build && bun run check:identity && bun run test:browser",
     "configure": "node scripts/configure.mjs",
     "postinstall": "node scripts/assets.mjs",
-    "check:release": "npm run check:identity && node scripts/check-release.mjs",
+    "check:release": "bun run check:identity && node scripts/check-release.mjs",
     "test:adaptation": "node scripts/test-adaptation.mjs",
     "check:design": "node scripts/check-design.mjs",
     "sync:docs": "node scripts/sync-docs.mjs",

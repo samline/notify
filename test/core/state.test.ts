@@ -68,7 +68,7 @@ describe('core/state', () => {
         description: () => {
           calls += 1
           return 'details'
-        }
+        },
       })
 
       expect(calls).toBe(1)
@@ -105,7 +105,7 @@ describe('core/state', () => {
       let publishCount = 0
       let dismissCalls = 0
       const id = ToastState.create({ message: 'once', onDismiss: () => (dismissCalls += 1) })
-      const unsubscribe = ToastState.subscribe((event) => {
+      const unsubscribe = ToastState.subscribe(event => {
         if ('dismiss' in event && event.dismiss) publishCount += 1
       })
       ToastState.dismiss(id)
@@ -146,7 +146,7 @@ describe('core/state', () => {
     it('notifies subscribers about a dismiss event', () => {
       const id = ToastState.create({ message: 'evented' })
       const events: Array<unknown> = []
-      const unsubscribe = ToastState.subscribe((event) => events.push(event))
+      const unsubscribe = ToastState.subscribe(event => events.push(event))
 
       ToastState.dismiss(id)
       expect(events).toHaveLength(1)
@@ -199,13 +199,13 @@ describe('core/state', () => {
   describe('promise', () => {
     it('emits loading + success on resolve', async () => {
       const events: ToastT[] = []
-      const unsubscribe = ToastState.subscribe((event) => {
+      const unsubscribe = ToastState.subscribe(event => {
         if ('title' in event) events.push(event as ToastT)
       })
 
       const result = ToastState.promise(Promise.resolve({ name: 'Nora' }), {
         loading: 'Loading...',
-        success: (data) => `Hi ${(data as { name: string }).name}`
+        success: data => `Hi ${(data as { name: string }).name}`,
       })
       expect(typeof result).toBe('object')
       expect(typeof (result as { unwrap: () => unknown }).unwrap).toBe('function')
@@ -214,10 +214,10 @@ describe('core/state', () => {
       await Promise.resolve()
       await Promise.resolve()
 
-      const types = events.map((event) => event.type)
+      const types = events.map(event => event.type)
       expect(types).toContain('loading')
       expect(types).toContain('success')
-      const success = events.find((event) => event.type === 'success')
+      const success = events.find(event => event.type === 'success')
       expect(success?.title).toBe('Hi Nora')
 
       unsubscribe()
@@ -225,13 +225,13 @@ describe('core/state', () => {
 
     it('emits loading + error on reject', async () => {
       const events: ToastT[] = []
-      const unsubscribe = ToastState.subscribe((event) => {
+      const unsubscribe = ToastState.subscribe(event => {
         if ('title' in event) events.push(event as ToastT)
       })
 
       ToastState.promise(Promise.reject(new Error('boom')), {
         loading: 'Loading...',
-        error: 'Could not load'
+        error: 'Could not load',
       })
 
       await Promise.resolve()
@@ -239,10 +239,10 @@ describe('core/state', () => {
       await Promise.resolve()
       await Promise.resolve()
 
-      const types = events.map((event) => event.type)
+      const types = events.map(event => event.type)
       expect(types).toContain('loading')
       expect(types).toContain('error')
-      const errorEvent = events.find((event) => event.type === 'error')
+      const errorEvent = events.find(event => event.type === 'error')
       expect(errorEvent?.title).toBe('Could not load')
 
       unsubscribe()
@@ -250,18 +250,18 @@ describe('core/state', () => {
 
     it('does not emit loading when `data.loading` is undefined', async () => {
       const events: ToastT[] = []
-      const unsubscribe = ToastState.subscribe((event) => {
+      const unsubscribe = ToastState.subscribe(event => {
         if ('title' in event) events.push(event as ToastT)
       })
 
       ToastState.promise(Promise.resolve(42), {
-        success: 'Done'
+        success: 'Done',
       })
       await Promise.resolve()
       await Promise.resolve()
       await Promise.resolve()
 
-      const types = events.map((event) => event.type)
+      const types = events.map(event => event.type)
       expect(types).not.toContain('loading')
       expect(types).toContain('success')
 
@@ -270,19 +270,19 @@ describe('core/state', () => {
 
     it('attaches `promise` to the loading toast so the renderer can set data-promise', () => {
       const events: ToastT[] = []
-      const unsubscribe = ToastState.subscribe((event) => {
+      const unsubscribe = ToastState.subscribe(event => {
         if ('title' in event) events.push(event as ToastT)
       })
 
       const p = Promise.resolve('ok')
       const result = ToastState.promise(p, {
         loading: 'Loading...',
-        success: 'Done'
+        success: 'Done',
       })
       const id = (result as { id?: string | number }).id
       expect(id).toBeDefined()
 
-      const loading = events.find((event) => event.id === id && event.type === 'loading')
+      const loading = events.find(event => event.id === id && event.type === 'loading')
       expect(loading).toBeDefined()
       // Fix 5: the legacy React build also attached the promise to
       // the toast. The vanilla refactor dropped it; we re-added it
@@ -294,7 +294,7 @@ describe('core/state', () => {
 
     it('calls the function form of `description` on error (Fix 17)', async () => {
       const events: ToastT[] = []
-      const unsubscribe = ToastState.subscribe((event) => {
+      const unsubscribe = ToastState.subscribe(event => {
         if ('title' in event) events.push(event as ToastT)
       })
 
@@ -303,7 +303,7 @@ describe('core/state', () => {
         error: 'Failed',
         // The user wants the description to be dynamic based on
         // the error. Before Fix 17 this was silently dropped.
-        description: (err) => `Caught: ${(err as Error).message}`
+        description: err => `Caught: ${(err as Error).message}`,
       })
       const id = (result as { id?: string | number }).id
       expect(id).toBeDefined()
@@ -316,7 +316,7 @@ describe('core/state', () => {
       await Promise.resolve()
       await Promise.resolve()
 
-      const errored = events.find((event) => event.id === id && event.type === 'error')
+      const errored = events.find(event => event.id === id && event.type === 'error')
       expect(errored).toBeDefined()
       expect(errored?.description).toBe('Caught: boom')
 
@@ -327,7 +327,7 @@ describe('core/state', () => {
       const result = ToastState.promise(Promise.resolve('original'), {
         success: () => {
           throw new Error('formatter failed')
-        }
+        },
       })
 
       await expect(result.unwrap()).resolves.toBe('original')
@@ -335,7 +335,7 @@ describe('core/state', () => {
 
     it('unwrap waits for an async finally callback', async () => {
       let finishFinally: (() => void) | undefined
-      const finallyPending = new Promise<void>((resolve) => {
+      const finallyPending = new Promise<void>(resolve => {
         finishFinally = resolve
       })
       let finished = false
@@ -344,7 +344,7 @@ describe('core/state', () => {
         finally: async () => {
           await finallyPending
           finished = true
-        }
+        },
       })
       const unwrapped = result.unwrap()
 
@@ -379,7 +379,7 @@ describe('core/state', () => {
     })
 
     it('stores a custom payload (callback)', () => {
-      const id = ToastState.custom((container) => {
+      const id = ToastState.custom(container => {
         container.textContent = 'via callback'
       })
       expect(typeof id).toBe('number')

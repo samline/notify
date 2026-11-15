@@ -5,8 +5,8 @@ export default defineConfig({
     environment: 'jsdom',
     environmentOptions: {
       jsdom: {
-        url: 'http://localhost/'
-      }
+        url: 'http://localhost/',
+      },
     },
     include: ['test/**/*.test.ts'],
     coverage: {
@@ -15,11 +15,11 @@ export default defineConfig({
       include: ['src/**/*.ts'],
       exclude: ['src/**/*.d.ts', 'src/index.ts', 'src/core/index.ts', 'src/core/types.ts'],
       thresholds: {
-        statements: 80,
-        branches: 65,
-        functions: 80,
-        lines: 80
-      }
-    }
-  }
+        statements: 95,
+        branches: 90,
+        functions: 95,
+        lines: 95,
+      },
+    },
+  },
 })

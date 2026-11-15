@@ -9,7 +9,7 @@ import { resetToasts } from '../../src/api/reset-toasts'
 
 const pending = () => {
   let resolve!: (value: string) => void
-  const promise = new Promise<string>((done) => {
+  const promise = new Promise<string>(done => {
     resolve = done
   })
   return { promise, resolve }
@@ -31,7 +31,7 @@ afterEach(() => {
 describe('pending promise ownership', () => {
   it.each(['dismiss', 'reset', 'replace', 'destroy'] as const)(
     'does not resurrect a toast after %s',
-    async (operation) => {
+    async operation => {
       createToaster()
       const task = pending()
       const result = toast.promise(task.promise, { loading: 'Working', success: 'Old completion' })
@@ -41,7 +41,7 @@ describe('pending promise ownership', () => {
       if (operation === 'destroy') destroyToaster()
       task.resolve('ok')
       await expect(result.unwrap()).resolves.toBe('ok')
-      expect(toast.getToasts().map((record) => record.title)).toEqual(
+      expect(toast.getToasts().map(record => record.title)).toEqual(
         operation === 'replace' ? ['New owner'] : []
       )
     }
@@ -61,7 +61,7 @@ describe('pending promise ownership', () => {
     const formatted = pending()
     const result = toast.promise(Promise.resolve('ok'), {
       loading: 'Working',
-      success: () => formatted.promise
+      success: () => formatted.promise,
     })
     await Promise.resolve()
     await Promise.resolve()
@@ -78,7 +78,7 @@ describe('pending promise ownership', () => {
       loading: 'Loading',
       success: () => {
         throw new Error('format')
-      }
+      },
     })
     await expect(broken.unwrap()).resolves.toBe('ok')
     expect(toast.getToasts()).toEqual([])
@@ -88,13 +88,13 @@ describe('pending promise ownership', () => {
       success: 'Ready',
       duration: Infinity,
       closeButton: true,
-      testId: 'result'
+      testId: 'result',
     })
     await result.unwrap()
     expect(toast.getToasts()[0]).toMatchObject({
       duration: Infinity,
       closeButton: true,
-      testId: 'result'
+      testId: 'result',
     })
   })
   it('does not publish a settled-only result after reset', async () => {
@@ -121,7 +121,7 @@ describe('renderer lifecycle', () => {
     controller.update({ duration: 1 })
     await Promise.resolve()
     vi.advanceTimersByTime(100)
-    expect(toast.getToasts().map((record) => record.id)).toEqual([id])
+    expect(toast.getToasts().map(record => record.id)).toEqual([id])
     expect(document.querySelector('[data-notify-toaster]')).toBeNull()
   })
   it('does not count hidden-document time against a newly created toast', () => {
@@ -152,7 +152,7 @@ describe('renderer lifecycle', () => {
     toast.success('Bye', {
       onDismiss: () => {
         throw new Error('consumer callback failed')
-      }
+      },
     })
     expect(() => destroyToaster()).toThrow('consumer callback failed')
     expect(getToaster()).toBeNull()
@@ -176,11 +176,11 @@ it('delivers dismissals to every record and subscriber before surfacing an error
   toast('First', {
     onDismiss: () => {
       throw new Error('callback')
-    }
+    },
   })
   toast('Second')
   const events: unknown[] = []
-  ToastState.subscribe((event) => events.push(event))
+  ToastState.subscribe(event => events.push(event))
   expect(() => destroyToaster()).toThrow('callback')
   expect(toast.getToasts()).toEqual([])
   expect(events).toHaveLength(2)
@@ -217,7 +217,7 @@ it('runs promise finally even when loading dismissal throws', async () => {
     onDismiss: () => {
       throw new Error('consumer dismissal')
     },
-    finally: finished
+    finally: finished,
   })
   await expect(pending.unwrap()).resolves.toBe('ok')
   expect(finished).toHaveBeenCalledOnce()

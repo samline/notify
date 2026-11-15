@@ -20,14 +20,14 @@ const swipe = (node: Element, amount: number) => {
   for (const [type, x] of [
     ['pointerdown', 100],
     ['pointermove', 100 + amount],
-    ['pointerup', 100 + amount]
+    ['pointerup', 100 + amount],
   ] as const) {
     node.dispatchEvent(
       Object.assign(new Event(type, { bubbles: true }), {
         button: 0,
         pointerId: 1,
         clientX: x,
-        clientY: 100
+        clientY: 100,
       })
     )
     vi.advanceTimersByTime(100)
@@ -36,7 +36,7 @@ const swipe = (node: Element, amount: number) => {
 it('applies consumer width and palette with option-owned stack geometry', () => {
   const controller = createToaster({
     gap: 16,
-    style: { '--width': '28rem', '--normal-bg': '#123456' }
+    style: { '--width': '28rem', '--normal-bg': '#123456' },
   })
   expect(controller.element.style.getPropertyValue('--width')).toBe('28rem')
   expect(controller.element.style.getPropertyValue('--gap')).toBe('16px')
@@ -49,7 +49,7 @@ it('updates swipe eligibility and direction on existing notifications after repo
   const id = toast('Keep this')
   controller.update({ position: 'top-center' })
   swipe(controller.element.querySelector('[data-notify-toast]')!, 100)
-  expect(toast.getToasts().map((t) => t.id)).toContain(id)
+  expect(toast.getToasts().map(t => t.id)).toContain(id)
   controller.update({ position: 'bottom-left' })
   swipe(controller.element.querySelector('[data-notify-toast]')!, -100)
   expect(toast.getToasts()).toEqual([])
@@ -62,7 +62,7 @@ it('keeps Delete and Backspace available to editable content inside custom notif
   input.dispatchEvent(
     new KeyboardEvent('keydown', { key: 'Backspace', bubbles: true, cancelable: true })
   )
-  expect(toast.getToasts().map((t) => t.id)).toContain(id)
+  expect(toast.getToasts().map(t => t.id)).toContain(id)
   const node = controller.element.querySelector<HTMLElement>('[data-notify-toast]')!
   node.focus()
   node.dispatchEvent(new KeyboardEvent('keydown', { key: 'Delete', bubbles: true }))
@@ -73,7 +73,7 @@ it('does not begin swipe capture from fields or nested button content', () => {
   const input = document.createElement('input')
   const id = toast.custom(input)
   swipe(input, 100)
-  expect(toast.getToasts().map((t) => t.id)).toContain(id)
+  expect(toast.getToasts().map(t => t.id)).toContain(id)
 })
 it('applies an updated duration while the document is hidden', () => {
   let hidden = true
@@ -84,7 +84,7 @@ it('applies an updated duration while the document is hidden', () => {
   hidden = false
   document.dispatchEvent(new Event('visibilitychange'))
   vi.advanceTimersByTime(1500)
-  expect(toast.getToasts().map((t) => t.id)).toContain(id)
+  expect(toast.getToasts().map(t => t.id)).toContain(id)
   vi.advanceTimersByTime(3500)
   expect(toast.getToasts()).toEqual([])
 })
@@ -127,7 +127,7 @@ it('clears swipe transforms on pointer cancellation and rejects the wrong direct
   expect(node.style.getPropertyValue('--swipe-amount-x')).toBe('0px')
   expect(node.dataset['swiped']).toBe('false')
   swipe(node, -300)
-  expect(toast.getToasts().map((t) => t.id)).toContain(id)
+  expect(toast.getToasts().map(t => t.id)).toContain(id)
 })
 
 it('releases stack interaction state after a canceled pointer gesture', () => {
@@ -141,7 +141,7 @@ it('releases stack interaction state after a canceled pointer gesture', () => {
       button: 0,
       pointerId: 1,
       clientX: 100,
-      clientY: 100
+      clientY: 100,
     })
   )
   node.dispatchEvent(new Event('pointercancel', { bubbles: true }))

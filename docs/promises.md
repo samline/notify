@@ -18,14 +18,14 @@ The input can be an already-started promise or a thunk. When `data` is supplied,
 ```ts
 const result = toast.promise(
   () =>
-    new Promise<{ name: string }>((resolve) => {
+    new Promise<{ name: string }>(resolve => {
       window.setTimeout(() => resolve({ name: 'Nora' }), 800)
     }),
   {
     loading: 'Saving profile',
-    success: (profile) => `Saved ${profile.name}`,
-    error: (reason) => (reason instanceof Error ? reason.message : 'Save failed'),
-    finally: () => console.log('Rendering finished')
+    success: profile => `Saved ${profile.name}`,
+    error: reason => (reason instanceof Error ? reason.message : 'Save failed'),
+    finally: () => console.log('Rendering finished'),
   }
 )
 
@@ -41,12 +41,12 @@ If `loading` is absent, the result's `id` is `undefined`. A defined settled valu
 ```ts
 const withLoading = toast.promise(Promise.resolve('ok'), {
   loading: 'Working',
-  success: 'Finished'
+  success: 'Finished',
 })
 // withLoading.id is present.
 
 const settledOnly = toast.promise(Promise.resolve('ok'), {
-  success: 'Finished'
+  success: 'Finished',
 })
 // settledOnly.id is undefined, even though a success toast is created.
 ```
@@ -63,20 +63,20 @@ The success callback receives the fulfilled value. The error callback receives t
 
 ```ts
 toast.promise(Promise.resolve({ name: 'Nora' }), {
-  success: async (profile) => ({
+  success: async profile => ({
     message: `Saved ${profile.name}`,
     description: 'The local copy is current.',
     duration: 6000,
     action: {
       label: 'View profile',
-      onClick: () => location.assign('/profile')
-    }
+      onClick: () => location.assign('/profile'),
+    },
   }),
-  error: (reason) => ({
+  error: reason => ({
     message: 'Save failed',
     description: reason instanceof Error ? reason.message : 'Try again later',
-    closeButton: true
-  })
+    closeButton: true,
+  }),
 })
 ```
 
@@ -108,8 +108,8 @@ Notify does not call `response.json()`, clone a response, or convert an HTTP res
 const request = toast.promise(() => fetch('/api/report'), {
   loading: 'Creating report',
   success: 'Report created',
-  error: (response) =>
-    response instanceof Response ? `Request failed: ${response.status}` : 'Request failed'
+  error: response =>
+    response instanceof Response ? `Request failed: ${response.status}` : 'Request failed',
 })
 
 const response = await request.unwrap()

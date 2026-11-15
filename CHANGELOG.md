@@ -7,6 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Dates for published releases are the UTC publication dates reported by npm. Versions
 marked as unpublished have a Git tag but are not present in the npm registry.
 
+## [5.0.0] - 2026-11-15
+
+### Breaking changes
+
+- The classic script no longer has a `default` export: use `window.Notify` (or `globalThis.Notify`). Code that read `Notify.default` must drop `.default`.
+- The browser bundle is now `dist/browser/notify.global.js`, following the family naming. `dist/browser/global.global.js` is still shipped as an identical alias, so existing CDN URLs keep working.
+- The stylesheet is now `@samline/notify/style.css` (`dist/style.css`). `@samline/notify/styles.css` and `dist/styles.css` remain as aliases of the same file.
+
+### Changed
+
+- Installs with pnpm and runs every script with Bun, with the @samline family CI, Prettier settings and size budgets for each public entry.
+- CDN examples use pinned jsDelivr URLs.
+
+### Fixed
+
+- Destroying a toaster while one of its toasts has focus returns focus to the element focused before entering the toaster, instead of dropping it on `<body>`.
+
+### Tests
+
+- Coverage thresholds raised to 90 % branches and 95 % statements, functions and lines.
+- Playwright tests of the CDN bundle in Chromium, Firefox and WebKit.
+
 ## [4.0.1] - 2026-11-05
 
 ### Fixed
@@ -377,6 +399,8 @@ Includes every change prepared for 3.2.1, which was never published.
 - Renamed the internal controller and package from Sileo to Notify.
 - Exposed `window.notify` while retaining the previous browser global as a compatibility alias.
 
+[5.0.0]: https://github.com/samline/notify/compare/v4.0.1...v5.0.0
+[4.0.1]: https://github.com/samline/notify/compare/v4.0.0...v4.0.1
 [4.0.0]: https://github.com/samline/notify/compare/v3.2.0...v4.0.0
 [3.2.0]: https://github.com/samline/notify/compare/v3.1.5...v3.2.0
 [3.1.5]: https://github.com/samline/notify/compare/v3.1.4...v3.1.5

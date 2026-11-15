@@ -8,8 +8,8 @@ import type { NotifyApi } from '../../src/browser/registry'
 // (`globalThis.Notify = ...`) re-runs against a fresh global slot.
 async function importGlobal(): Promise<NotifyApi> {
   vi.resetModules()
-  const mod = (await import('../../src/browser/global')) as unknown as { default: NotifyApi }
-  return mod.default
+  const mod = await import('../../src/browser/global')
+  return mod.Notify
 }
 
 describe('browser/global', () => {
@@ -36,12 +36,12 @@ describe('browser/global', () => {
     expect(typeof Notify.Toaster).toBe('function')
   })
 
-  it('uses one namespace for Notify, browser, default, and the global', async () => {
+  it('uses one namespace for Notify, browser and the global, without a default export', async () => {
     vi.resetModules()
     const mod = await import('../../src/browser/global')
 
     expect(mod.Notify).toBe(mod.browser)
-    expect(mod.default).toBe(mod.Notify)
+    expect('default' in mod).toBe(false)
     expect((globalThis as unknown as { Notify: NotifyApi }).Notify).toBe(mod.Notify)
   })
 
@@ -55,7 +55,7 @@ describe('browser/global', () => {
     const id = Notify.toast('Hello from Notify')
     expect(typeof id).toBe('number')
     // Give the render microtask a tick to mount the <li>.
-    await new Promise<void>((resolve) => queueMicrotask(() => resolve()))
+    await new Promise<void>(resolve => queueMicrotask(() => resolve()))
     const li = document.body.querySelector(`li[data-notify-toast]`)
     expect(li).toBeTruthy()
     expect(li?.textContent).toContain('Hello from Notify')
@@ -111,13 +111,13 @@ describe('browser/global', () => {
       set(_target, prop, value) {
         writes[String(prop)] = value
         return true
-      }
+      },
     })
     const w = globalThis as { window?: typeof window }
     const previousWindow = w.window
     Object.defineProperty(globalThis, 'window', {
       configurable: true,
-      get: () => proxy
+      get: () => proxy,
     })
     try {
       const Notify = await importGlobal()
@@ -131,7 +131,7 @@ describe('browser/global', () => {
         Object.defineProperty(globalThis, 'window', {
           configurable: true,
           value: previousWindow,
-          writable: true
+          writable: true,
         })
       }
     }

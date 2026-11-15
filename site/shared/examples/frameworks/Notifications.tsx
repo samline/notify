@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { createToaster, destroyToaster, toast } from '@samline/notify'
-import '@samline/notify/styles.css'
+import '@samline/notify/style.css'
 
 // Mount once at the application root, not once per route or button.
 export function Notifications() {

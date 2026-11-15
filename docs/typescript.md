@@ -27,7 +27,7 @@ import type {
   ToastToDismiss,
   ToastType,
   ToasterController,
-  ToasterOptions
+  ToasterOptions,
 } from '@samline/notify'
 ```
 
@@ -266,7 +266,7 @@ import {
   TOAST_LIFETIME, // 4000 milliseconds
   TOAST_WIDTH, // 356 pixels
   VIEWPORT_OFFSET, // '24px'
-  VISIBLE_TOASTS_AMOUNT // 3
+  VISIBLE_TOASTS_AMOUNT, // 3
 } from '@samline/notify'
 ```
 

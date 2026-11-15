@@ -24,7 +24,7 @@ export const Notify: NotifyApi = {
   createToaster,
   configureToaster,
   getToaster,
-  destroyToaster
+  destroyToaster,
 }
 
 // Both names intentionally reference one singleton. `Notify` is the

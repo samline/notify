@@ -2,7 +2,7 @@
   "package": {
     "name": "Notify",
     "npmName": "@samline/notify",
-    "version": "4.0.1",
+    "version": "5.0.0",
     "description": "Accessible, dependency-free toast notifications for JavaScript and TypeScript, with ESM, CommonJS, and browser builds.",
     "author": "Samuel Olvera (samline)",
     "license": "MIT",
@@ -30,7 +30,12 @@
     "accentDark": "#fbbf24"
   },
   "delivery": {
-    "cdnScript": "https://cdn.jsdelivr.net/npm/@samline/notify@4.0.0/dist/browser/global.global.js",
-    "cdnStylesheet": "https://cdn.jsdelivr.net/npm/@samline/notify@4.0.0/dist/styles.css"
+    "cdnScript": "https://cdn.jsdelivr.net/npm/@samline/notify@5.0.0/dist/browser/notify.global.js",
+    "cdnStylesheet": "https://cdn.jsdelivr.net/npm/@samline/notify@5.0.0/dist/style.css"
+  },
+  "dev": {
+    "landingPort": 4390,
+    "docsPort": 4391,
+    "testPort": 4398
   }
 }

@@ -106,7 +106,7 @@ for (const entry of map) {
     assert.equal(
       await readFile(destination, 'utf8'),
       expected,
-      entry.source + ' is out of sync; run npm run sync:docs'
+      entry.source + ' is out of sync; run bun run sync:docs'
     )
   else await writeFile(destination, expected)
 }

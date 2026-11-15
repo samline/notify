@@ -10,7 +10,7 @@ const code = (filename: string, source: string, language: 'html' | 'javascript' 
   language,
 })
 export const initialization = {
-  esm: `import { createToaster, toast } from '@samline/notify'\nimport '@samline/notify/styles.css'\n\nconst toaster = createToaster({ richColors: true })\n\ndocument.querySelector('#save').addEventListener('click', () => {\n  toast.success('Changes saved')\n})`,
+  esm: `import { createToaster, toast } from '@samline/notify'\nimport '@samline/notify/style.css'\n\nconst toaster = createToaster({ richColors: true })\n\ndocument.querySelector('#save').addEventListener('click', () => {\n  toast.success('Changes saved')\n})`,
   cdn: `// Load the CDN stylesheet and script first.\nconst notify = window.Notify\nconst toaster = notify.createToaster({ richColors: true })\n\ndocument.querySelector('#save').addEventListener('click', () => {\n  notify.toast.success('Changes saved')\n})`,
 }
 export default {
@@ -103,7 +103,7 @@ export default {
       },
       style: {
         label: 'Styles',
-        entrypoint: '@samline/notify/styles.css',
+        entrypoint: '@samline/notify/style.css',
         description:
           'The required layout, stack, color and reduced-motion styles. Import once, then add your own CSS after the package stylesheet.',
       },

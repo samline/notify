@@ -15,7 +15,7 @@ The package ships ESM, CommonJS, and browser builds. The root entrypoint is side
 The renderer writes attributes and text; the packaged stylesheet turns those into layout, transitions, and palette. Import it once, in the client entrypoint of your application.
 
 ```ts
-import '@samline/notify/styles.css'
+import '@samline/notify/style.css'
 ```
 
 Without the stylesheet the runtime still produces a semantic live list, but it has no fixed layout, no stack transitions, and no built-in button presentation.
@@ -26,7 +26,7 @@ Without the stylesheet the runtime still produces a semantic live list, but it h
 
 ```ts
 import { createToaster, toast } from '@samline/notify'
-import '@samline/notify/styles.css'
+import '@samline/notify/style.css'
 
 createToaster({ position: 'bottom-right' })
 

@@ -11,7 +11,7 @@ Use the package's public API and stylesheet. This skill describes **4.0.0**. Che
 
 ```ts
 import { createToaster, destroyToaster, toast } from '@samline/notify'
-import '@samline/notify/styles.css'
+import '@samline/notify/style.css'
 
 const toaster = createToaster({ richColors: true, closeButton: true })
 toast.success('Changes saved')

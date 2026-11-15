@@ -30,7 +30,7 @@
 
 ## Publicación 4.0.0 — 2026-11-05
 
-- `@samline/notify@4.0.0` publicado en npm (tag `latest`) y disponible en jsDelivr/unpkg; los archivos CDN coinciden con el build local. El sitio depende de `^4.0.0`.
+- `@samline/notify@4.0.1` es la última versión publicada. 5.0.0 está preparada (pnpm, `notify.global.js`, `style.css`, sin export `default`) y la publica el mantenedor con `bun run release`; después, actualizar la dependencia del sitio a `^5.0.0`.
 
 ## CI — 2026-11-05
 

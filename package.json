@@ -1,10 +1,10 @@
 {
   "name": "@samline/notify",
-  "version": "4.0.1",
+  "version": "5.0.0",
   "description": "Accessible, dependency-free toast notifications for JavaScript and TypeScript, with ESM, CommonJS, and browser builds.",
   "type": "module",
   "license": "MIT",
-  "homepage": "https://samline.github.io/notify",
+  "homepage": "https://samline.github.io/notify/",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/samline/notify.git"
@@ -23,7 +23,7 @@
     "accessible",
     "framework-agnostic"
   ],
-  "packageManager": "bun@1.3.14",
+  "packageManager": "pnpm@12.9.1",
   "publishConfig": {
     "access": "public",
     "tag": "latest"
@@ -32,7 +32,9 @@
     "node": ">=20"
   },
   "sideEffects": [
+    "./dist/browser/notify.global.js",
     "./dist/browser/global.global.js",
+    "./dist/style.css",
     "./dist/styles.css"
   ],
   "files": [
@@ -53,7 +55,9 @@
       "import": "./dist/browser/index.js",
       "require": "./dist/browser/index.cjs"
     },
-    "./styles.css": "./dist/styles.css"
+    "./style.css": "./dist/style.css",
+    "./styles.css": "./dist/style.css",
+    "./package.json": "./package.json"
   },
   "scripts": {
     "clean": "rm -rf dist coverage",
@@ -66,37 +70,42 @@
     "test:watch": "vitest",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "site:dev": "npm --prefix site run dev",
-    "site:build": "npm --prefix site run build",
-    "site:preview": "npm --prefix site run preview",
-    "site:check": "npm --prefix site run check",
-    "site:format": "npm --prefix site run format",
-    "site:format:check": "npm --prefix site run format:check",
-    "site:test": "npm --prefix site run test",
-    "site:test:browser": "npm --prefix site run test:browser",
-    "site:verify": "npm --prefix site run verify",
-    "site:configure": "npm --prefix site run configure",
-    "site:check:design": "npm --prefix site run check:design",
-    "site:check:release": "npm --prefix site run check:release",
-    "prepublishOnly": "npm run clean && npm run build && npm run typecheck && npm test && npm run test:package",
-    "test:package:browser": "node test/package-browser.mjs"
-  },
-  "overrides": {
-    "esbuild": "0.28.2",
-    "nanoid": "3.3.18",
-    "postcss": "8.5.28",
-    "vite": "7.3.7",
-    "source-map-js": "1.2.2"
+    "site:dev": "bun run --cwd site dev",
+    "site:build": "bun run --cwd site build",
+    "site:preview": "bun run --cwd site preview",
+    "site:check": "bun run --cwd site check",
+    "site:format": "bun run --cwd site format",
+    "site:format:check": "bun run --cwd site format:check",
+    "site:test": "bun run --cwd site test",
+    "site:test:browser": "bun run --cwd site test:browser",
+    "site:verify": "bun run --cwd site verify",
+    "site:configure": "bun run --cwd site configure",
+    "site:check:design": "bun run --cwd site check:design",
+    "site:check:release": "bun run --cwd site check:release",
+    "prepublishOnly": "bun run clean && bun run build && bun run typecheck && bun run test:coverage && bun run test:package",
+    "test:package:browser": "node test/package-browser.mjs",
+    "test:e2e": "playwright test",
+    "size": "node scripts/check-size.mjs",
+    "check": "bun run format:check && bun run typecheck && bun run test:coverage && bun run build && bun run size && bun run test:package && bun run test:package:browser && bun run test:e2e",
+    "release": "bun run check && pnpm publish"
   },
   "devDependencies": {
     "@playwright/test": "1.62.1",
     "@types/node": "^24.19.2",
     "@vitest/coverage-v8": "^5.0.5",
+    "esbuild": "^0.28.2",
     "jsdom": "^26.1.0",
     "prettier": "^3.9.10",
     "tsup": "^8.5.1",
     "typescript": "^5.9.3",
     "vite": "7.3.7",
     "vitest": "^5.0.5"
+  },
+  "unpkg": "./dist/browser/notify.global.js",
+  "jsdelivr": "./dist/browser/notify.global.js",
+  "size": {
+    "dist/index.js": 10500,
+    "dist/browser/index.js": 10250,
+    "dist/browser/notify.global.js": 10300
   }
 }

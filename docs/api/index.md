@@ -194,7 +194,7 @@ The shared observer instance. Its public runtime surface includes `subscribers`,
 ```ts
 import { ToastState, type ToastSubscriber } from '@samline/notify'
 
-const subscriber: ToastSubscriber = (event) => {
+const subscriber: ToastSubscriber = event => {
   console.log(event)
 }
 

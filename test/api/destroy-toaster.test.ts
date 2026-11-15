@@ -47,7 +47,7 @@ describe('api/destroy-toaster', () => {
   it('runs dismissal callbacks before unmounting', () => {
     const dismissed: Array<string | number> = []
     createToaster()
-    toast('one', { onDismiss: (entry) => dismissed.push(entry.id) })
+    toast('one', { onDismiss: entry => dismissed.push(entry.id) })
 
     destroyToaster()
 

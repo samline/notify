@@ -90,13 +90,13 @@ createToaster({
   richColors: true,
   closeButton: true,
   closeButtonAriaLabel: 'Dismiss notification',
-  hotkey: ['metaKey', 'KeyK']
+  hotkey: ['metaKey', 'KeyK'],
 })
 
 toast.info('Deployment started', {
   duration: Infinity,
   unstyled: false,
-  onClick: () => location.assign('/deployments')
+  onClick: () => location.assign('/deployments'),
 })
 ```
 

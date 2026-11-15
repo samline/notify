@@ -34,7 +34,7 @@ toast('Hello')
 ```ts
 toast('Saved', {
   type: 'success',
-  description: 'Your profile is up to date.'
+  description: 'Your profile is up to date.',
 })
 ```
 
@@ -46,8 +46,8 @@ toast('Item deleted', {
   duration: 6000,
   action: {
     label: 'Undo',
-    onClick: () => restoreItem()
-  }
+    onClick: () => restoreItem(),
+  },
 })
 ```
 
@@ -122,7 +122,7 @@ The renderer appends the element inside its div[data-custom] mount point, a dire
 ### Callback
 
 ```ts
-toast.custom((container) => {
+toast.custom(container => {
   const img = document.createElement('img')
   img.src = '/avatars/nora.png'
   img.alt = ''
@@ -187,8 +187,8 @@ declare namespace toast {
 ```ts
 toast.promise(fetchProfile(), {
   loading: 'Loading profile…',
-  success: (data) => `Hi ${data.name}`,
-  error: 'Could not load profile'
+  success: data => `Hi ${data.name}`,
+  error: 'Could not load profile',
 })
 ```
 
@@ -206,7 +206,7 @@ The loading toast appears immediately, or not at all if you omit it. Once the pr
 const { id, unwrap } = toast.promise(saveProfile(patch), {
   loading: 'Saving…',
   success: 'Saved',
-  error: 'Could not save'
+  error: 'Could not save',
 })
 
 try {
@@ -225,27 +225,27 @@ Each of `success` and `error` accepts either a `Renderable` message, a `PromiseE
 ```ts
 toast.promise(saveProfile(patch), {
   loading: 'Saving…',
-  success: (profile) => ({
+  success: profile => ({
     message: `Saved as ${profile.name}`,
     type: 'success',
     description: 'Open your profile to confirm.',
-    action: { label: 'View', onClick: () => location.assign('/profile') }
+    action: { label: 'View', onClick: () => location.assign('/profile') },
   }),
-  error: (err) => ({
+  error: err => ({
     message: 'Save failed',
     type: 'error',
-    description: err instanceof Error ? err.message : 'Try again in a moment'
-  })
+    description: err instanceof Error ? err.message : 'Try again in a moment',
+  }),
 })
 ```
 
 ### Deferred work
 
 ```ts
-toast.promise(() => fetch('/api/profile').then((r) => r.json()), {
+toast.promise(() => fetch('/api/profile').then(r => r.json()), {
   loading: 'Loading…',
-  success: (p) => p.name,
-  error: 'Failed'
+  success: p => p.name,
+  error: 'Failed',
 })
 ```
 
@@ -257,10 +257,10 @@ Drop the `loading` key to render only the settled toast:
 
 ```ts
 toast.promise(
-  fetch('/api/profile').then((r) => r.json()),
+  fetch('/api/profile').then(r => r.json()),
   {
-    success: (p) => `Loaded ${p.name}`,
-    error: 'Failed'
+    success: p => `Loaded ${p.name}`,
+    error: 'Failed',
   }
 )
 ```

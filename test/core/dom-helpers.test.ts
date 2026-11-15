@@ -8,7 +8,7 @@ import {
   createEl,
   getDefaultSwipeDirections,
   getDocumentDirection,
-  setAttrs
+  setAttrs,
 } from '../../src/core/dom-helpers'
 import { MOBILE_VIEWPORT_OFFSET, VIEWPORT_OFFSET } from '../../src/core/constants'
 
@@ -95,7 +95,7 @@ describe('core/dom-helpers', () => {
         'data-keep': 'yes',
         'data-drop': false,
         'data-null': null,
-        'data-undef': undefined
+        'data-undef': undefined,
       })
       expect(div.hasAttribute('data-keep')).toBe(true)
       expect(div.hasAttribute('data-drop')).toBe(false)

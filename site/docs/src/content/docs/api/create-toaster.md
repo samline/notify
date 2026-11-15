@@ -49,7 +49,7 @@ If a controller is already mounted, `createToaster` calls `controller.update(opt
 
 ```ts
 import { createToaster } from '@samline/notify'
-import '@samline/notify/styles.css'
+import '@samline/notify/style.css'
 
 createToaster()
 ```
@@ -62,7 +62,7 @@ The container is mounted at `bottom-right` with the `light` theme and every othe
 
 ```ts
 import { createToaster } from '@samline/notify'
-import '@samline/notify/styles.css'
+import '@samline/notify/style.css'
 
 createToaster({
   position: 'top-right',

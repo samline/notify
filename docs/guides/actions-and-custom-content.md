@@ -10,9 +10,9 @@ toast('Message archived', {
   duration: 8000,
   action: {
     label: 'Undo archive',
-    onClick: () => restoreMessage(messageId)
+    onClick: () => restoreMessage(messageId),
   },
-  cancel: { label: 'Dismiss' }
+  cancel: { label: 'Dismiss' },
 })
 ```
 
@@ -25,8 +25,8 @@ toast.error('Upload failed', {
   action: {
     label: 'Retry upload',
     closeOnClick: false,
-    onClick: () => retryUpload()
-  }
+    onClick: () => retryUpload(),
+  },
 })
 ```
 
@@ -36,7 +36,7 @@ For a persistent toast, always provide a usable dismissal or recovery path. `dis
 
 ```ts
 toast.custom(
-  (container) => {
+  container => {
     const heading = document.createElement('strong')
     heading.textContent = 'Build complete'
 

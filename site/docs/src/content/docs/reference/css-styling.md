@@ -11,10 +11,10 @@ sidebar:
 Import the packaged stylesheet once in a client entrypoint:
 
 ```ts
-import '@samline/notify/styles.css'
+import '@samline/notify/style.css'
 ```
 
-The standalone build does not bundle CSS. Load `dist/styles.css` with a `link` element instead. Without it, the renderer still creates an ordered live list, but it has no fixed layout, no stack transitions, no palette, and no built-in button presentation.
+The standalone build does not bundle CSS. Load `dist/style.css` with a `link` element instead. Without it, the renderer still creates an ordered live list, but it has no fixed layout, no stack transitions, no palette, and no built-in button presentation.
 
 <span id="importing-the-stylesheet" class="legacy-fragment" aria-hidden="true"></span>
 

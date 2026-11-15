@@ -34,7 +34,7 @@ The controller is returned with a small, focused method surface. `update()` retu
 
 ```ts
 import { createToaster, toast } from '@samline/notify'
-import '@samline/notify/styles.css'
+import '@samline/notify/style.css'
 
 const toaster = createToaster({ position: 'bottom-right', richColors: true })
 
@@ -113,7 +113,7 @@ The browser IIFE bundle ships a single global (`window.Notify`) that wraps `toas
 
 ```ts
 import { browser, Notify } from '@samline/notify'
-import '@samline/notify/styles.css'
+import '@samline/notify/style.css'
 
 browser === Notify // true
 window.MyNotify = { ...browser }

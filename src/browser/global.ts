@@ -3,7 +3,7 @@
 //
 // This file is the IIFE bundle's source: tsup compiles it with
 // `format: 'iife'` without a bundler-assigned global, producing a self-contained
-// `dist/browser/global.global.js` that can be loaded with a plain
+// `dist/browser/notify.global.js` that can be loaded with a plain
 // `<script src="..."></script>` tag.
 //
 // Behavior:
@@ -44,5 +44,4 @@ if (canUseDOM()) {
   }
 }
 
-export default Notify
 export { browser, Notify } from './registry'

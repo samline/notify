@@ -37,7 +37,7 @@ Requires Node 20+ when bundling. Runtime target is ES2020.
 Import the stylesheet once in your application entrypoint:
 
 ```ts
-import '@samline/notify/styles.css'
+import '@samline/notify/style.css'
 ```
 
 ## Quick start
@@ -46,13 +46,13 @@ Run once at your application's client root, after `document.body` exists. Keep t
 
 ```ts
 import { createToaster, destroyToaster, toast } from '@samline/notify'
-import '@samline/notify/styles.css'
+import '@samline/notify/style.css'
 
 const toaster = createToaster({
   position: 'bottom-right',
   richColors: true,
   closeButton: true,
-  theme: 'system'
+  theme: 'system',
 })
 
 toast.success('Changes saved')
@@ -81,8 +81,8 @@ Root and module imports are safe without a DOM; mounting is client-only. See the
 Choose **Package / ESM** when installing with npm, pnpm or bun and importing Notify in your application. Choose **HTML / CDN** when loading the standalone script in plain HTML, WordPress or Shopify without a bundler. Both use the same toast API. A CDN only delivers the files; you can self-host the same script and stylesheet.
 
 ```html
-<link rel="stylesheet" href="https://unpkg.com/@samline/notify@4.0.0/dist/styles.css" />
-<script src="https://unpkg.com/@samline/notify@4.0.0/dist/browser/global.global.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@samline/notify@5.0.0/dist/style.css" />
+<script src="https://cdn.jsdelivr.net/npm/@samline/notify@5.0.0/dist/browser/notify.global.js"></script>
 ```
 
 > Pin the version in production. Replace `4.0.0` with the version you ship.
@@ -125,7 +125,7 @@ Strings are rendered as text. `action` closes the toast unless `closeOnClick` is
 ```ts
 toast('Message archived', {
   action: { label: 'Undo archive', onClick: () => console.log('restore') },
-  duration: 6000
+  duration: 6000,
 })
 ```
 
@@ -154,8 +154,8 @@ See the complete [API reference](https://samline.github.io/notify/docs/reference
 | ------------------------------------------ | --------------------------------------------------------------- |
 | `@samline/notify`                          | Main API, browser registry singleton, types and constants.      |
 | `@samline/notify/browser`                  | ESM/CJS browser registry without a global side effect.          |
-| `dist/browser/global.global.js` (CDN file) | Pre-bundled IIFE that installs `window.Notify` and auto-mounts. |
-| `@samline/notify/styles.css`               | Required layout, stacking, theme and motion styles.             |
+| `dist/browser/notify.global.js` (CDN file) | Pre-bundled IIFE that installs `window.Notify` and auto-mounts. |
+| `@samline/notify/style.css`                | Required layout, stacking, theme and motion styles.             |
 
 The main entrypoint also exports `browser` and its `Notify` alias: the same `{ toast, Toaster, createToaster, configureToaster, getToaster, destroyToaster }` registry as the standalone script, without installing `window.Notify`. See [Entrypoints](https://samline.github.io/notify/docs/reference/entrypoints/).
 
@@ -172,8 +172,8 @@ async function fetchProfile(): Promise<{ name: string }> {
 
 const result = toast.promise(fetchProfile(), {
   loading: 'Loading profile…',
-  success: (profile) => `Hi ${profile.name}`,
-  error: 'Could not load profile'
+  success: profile => `Hi ${profile.name}`,
+  error: 'Could not load profile',
 })
 
 const profile = await result.unwrap()

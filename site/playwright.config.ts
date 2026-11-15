@@ -1,6 +1,8 @@
 import { defineConfig } from '@playwright/test'
+import { readFileSync } from 'node:fs'
 import { project } from './shared/lib/project.mjs'
-const requested = Number(process.env.PACKAGE_SITE_TEST_PORT ?? 4338)
+const config = JSON.parse(readFileSync(new URL('./project.config.json', import.meta.url), 'utf8'))
+const requested = Number(process.env.PACKAGE_SITE_TEST_PORT ?? config.dev?.testPort ?? 4338)
 if (!Number.isInteger(requested) || requested < 1024 || requested > 65535)
   throw new Error('PACKAGE_SITE_TEST_PORT must be an integer between 1024 and 65535')
 const origin = `http://127.0.0.1:${requested}`
@@ -23,7 +25,7 @@ export default defineConfig({
     { name: 'site', testIgnore: [/examples\.spec\.ts$/, scenarioFiles] },
   ],
   webServer: {
-    command: `npm run preview --workspace landing -- --host 127.0.0.1 --port ${requested} --ignore-lock`,
+    command: `bun run --cwd landing preview --host 127.0.0.1 --port ${requested} --ignore-lock`,
     url: origin + project.base,
     reuseExistingServer: false,
   },

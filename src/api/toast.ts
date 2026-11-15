@@ -42,5 +42,5 @@ export const toast: ToastApi = Object.assign(toastFunction, {
   promise: ToastState.promise,
   dismiss: ToastState.dismiss,
   getHistory: ToastState.getHistory,
-  getToasts: ToastState.getToasts
+  getToasts: ToastState.getToasts,
 })

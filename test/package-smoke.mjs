@@ -18,14 +18,14 @@ assert.equal(typeof browserCjs.default.toast, 'function')
 const pkg = JSON.parse(await readFile(new URL('../package.json', import.meta.url), 'utf8'))
 assert.ok(pkg.files.includes('CHANGELOG.md'), 'CHANGELOG.md must be published in the tarball')
 
-const css = await readFile(new URL('../dist/styles.css', import.meta.url), 'utf8')
+const css = await readFile(new URL('../dist/style.css', import.meta.url), 'utf8')
 assert.match(css, /\[data-notify-toaster\]/)
 
-const iife = await readFile(new URL('../dist/browser/global.global.js', import.meta.url), 'utf8')
+const iife = await readFile(new URL('../dist/browser/notify.global.js', import.meta.url), 'utf8')
 // Execute as a classic script. eval() has different top-level var semantics
 // and previously hid an IIFE namespace overwriting the public registry.
 const dom = new JSDOM(`<!doctype html><html><body><script>${iife}</script></body></html>`, {
-  runScripts: 'dangerously'
+  runScripts: 'dangerously',
 })
 assert.equal(typeof dom.window.Notify?.toast, 'function')
 assert.ok(dom.window.document.querySelector('[data-notify-toaster]'))
@@ -33,7 +33,7 @@ dom.window.Notify.destroyToaster()
 dom.window.close()
 
 const earlyDom = new JSDOM('<!doctype html><html><head></head></html>', {
-  runScripts: 'dangerously'
+  runScripts: 'dangerously',
 })
 const body = earlyDom.window.document.body
 body.remove()

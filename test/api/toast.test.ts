@@ -22,7 +22,7 @@ describe('api/toast', () => {
 
   it('toast(message, opts) stores description and type', () => {
     const id = toast('hello', { description: 'world', type: 'success' })
-    const found = toast.getToasts().find((entry) => entry.id === id)
+    const found = toast.getToasts().find(entry => entry.id === id)
     expect(found?.description).toBe('world')
     expect(found?.type).toBe('success')
   })
@@ -34,7 +34,7 @@ describe('api/toast', () => {
     toast.warning('w')
     toast.loading('l')
 
-    const titles = toast.getToasts().map((entry) => entry.type)
+    const titles = toast.getToasts().map(entry => entry.type)
     expect(titles).toEqual(
       expect.arrayContaining(['success', 'error', 'info', 'warning', 'loading'])
     )
@@ -58,13 +58,13 @@ describe('api/toast', () => {
 
   it('toast.promise returns an unwrap function and emits loading + success', async () => {
     const events: Array<{ type?: string }> = []
-    const unsubscribe = ToastState.subscribe((event) => {
+    const unsubscribe = ToastState.subscribe(event => {
       if ('type' in event) events.push(event as { type?: string })
     })
 
     const result = toast.promise(Promise.resolve(42), {
       loading: 'Loading...',
-      success: 'Done'
+      success: 'Done',
     })
     // The promise returns either `{ id, unwrap }` (when loading was emitted)
     // or `{ unwrap }` (when no loading). In both cases, `unwrap` must be present.
@@ -75,7 +75,7 @@ describe('api/toast', () => {
     await Promise.resolve()
     await Promise.resolve()
 
-    const types = events.map((event) => event.type)
+    const types = events.map(event => event.type)
     expect(types).toContain('loading')
     expect(types).toContain('success')
 

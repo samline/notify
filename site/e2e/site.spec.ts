@@ -146,8 +146,8 @@ test('copied files and complete document actually run', async ({ page, context }
   // The copied example loads the published build from the CDN. Serve the very
   // same artifacts from node_modules so the test never depends on the network.
   const assets = new Map([
-    [project.delivery.cdnScript!, '../../dist/browser/global.global.js'],
-    [project.delivery.cdnStylesheet!, '../../dist/styles.css'],
+    [project.delivery.cdnScript!, '../../dist/browser/notify.global.js'],
+    [project.delivery.cdnStylesheet!, '../../dist/style.css'],
   ])
   for (const mode of ['separate', 'complete']) {
     // Each variant runs in its own page: the example declares top-level

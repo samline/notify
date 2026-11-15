@@ -2,14 +2,14 @@ import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
 import { chromium } from '@playwright/test'
 
-const source = await readFile(new URL('../dist/browser/global.global.js', import.meta.url), 'utf8')
-const stylesheet = await readFile(new URL('../dist/styles.css', import.meta.url), 'utf8')
+const source = await readFile(new URL('../dist/browser/notify.global.js', import.meta.url), 'utf8')
+const stylesheet = await readFile(new URL('../dist/style.css', import.meta.url), 'utf8')
 const browser = await chromium.launch({ headless: true })
 try {
   for (const placement of ['body', 'head']) {
     const page = await browser.newPage()
     const errors = []
-    page.on('pageerror', (error) => errors.push(error.message))
+    page.on('pageerror', error => errors.push(error.message))
     const script = `<script>${source}</script>`
     await page.setContent(
       placement === 'head'
@@ -24,7 +24,7 @@ try {
         'createToaster',
         'destroyToaster',
         'getToaster',
-        'toast'
+        'toast',
       ].sort()
     )
     assert.equal(await page.evaluate(() => typeof window.Notify.toast), 'function')
@@ -48,7 +48,7 @@ try {
       window.Notify.toast.custom(field)
     })
     assert.equal(
-      await page.locator('[data-notify-toaster]').evaluate((node) => getComputedStyle(node).width),
+      await page.locator('[data-notify-toaster]').evaluate(node => getComputedStyle(node).width),
       '448px'
     )
     const editor = page.getByRole('textbox', { name: 'Native note editor' })
@@ -60,13 +60,13 @@ try {
       window.Notify.destroyToaster()
       const controller = window.Notify.createToaster({
         duration: Infinity,
-        position: 'bottom-right'
+        position: 'bottom-right',
       })
       window.Notify.toast('Gesture policy follows position')
       controller.update({ position: 'top-center' })
     })
     const notification = page.locator('[data-notify-toast]:not([data-removed=true])')
-    const drag = async (amount) => {
+    const drag = async amount => {
       const box = await notification.boundingBox()
       await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2)
       await page.mouse.down()
@@ -85,12 +85,12 @@ try {
           'Editor access includes workspace-content-administration-and-asset-management permissions.',
         duration: Infinity,
         action: { label: 'Join workspace', closeOnClick: false },
-        cancel: { label: 'Not now', closeOnClick: false }
+        cancel: { label: 'Not now', closeOnClick: false },
       })
     })
-    const bounds = await notification.evaluate((node) => ({
+    const bounds = await notification.evaluate(node => ({
       width: node.clientWidth,
-      content: node.scrollWidth
+      content: node.scrollWidth,
     }))
     assert.ok(
       bounds.content <= bounds.width + 1,
@@ -98,7 +98,7 @@ try {
     )
     const readingWidth = await notification
       .locator('[data-content]')
-      .evaluate((node) => node.getBoundingClientRect().width)
+      .evaluate(node => node.getBoundingClientRect().width)
     assert.ok(readingWidth >= 180, `Two-action content is squeezed into ${readingWidth}px`)
     assert.deepEqual(errors, [])
     await page.close()

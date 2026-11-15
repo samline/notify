@@ -38,7 +38,7 @@ export type {
   ToastToDismiss,
   ToastType,
   ToasterController,
-  ToasterOptions
+  ToasterOptions,
 } from './core/types'
 
 // Re-export the internal state for tests and advanced consumers
@@ -56,5 +56,5 @@ export {
   TOAST_LIFETIME,
   TOAST_WIDTH,
   VIEWPORT_OFFSET,
-  VISIBLE_TOASTS_AMOUNT
+  VISIBLE_TOASTS_AMOUNT,
 } from './core/constants'

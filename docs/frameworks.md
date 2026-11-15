@@ -9,7 +9,7 @@ Import the stylesheet once, mount the singleton from client lifecycle code, and 
 ```tsx
 import { useEffect } from 'react'
 import { createToaster, destroyToaster, toast } from '@samline/notify'
-import '@samline/notify/styles.css'
+import '@samline/notify/style.css'
 
 export function Notifications() {
   useEffect(() => {
@@ -33,7 +33,7 @@ Mount this integration once near the client root. React Strict Mode may run the 
 <script setup lang="ts">
 import { onMounted, onUnmounted } from 'vue'
 import { createToaster, destroyToaster, toast } from '@samline/notify'
-import '@samline/notify/styles.css'
+import '@samline/notify/style.css'
 
 onMounted(() => createToaster({ position: 'bottom-right' }))
 onUnmounted(() => destroyToaster())
@@ -56,7 +56,7 @@ Use a single root or layout component rather than installing one toaster per vie
 <script lang="ts">
   import { onMount } from 'svelte'
   import { createToaster, destroyToaster, toast } from '@samline/notify'
-  import '@samline/notify/styles.css'
+  import '@samline/notify/style.css'
 
   onMount(() => {
     createToaster({ position: 'bottom-right' })

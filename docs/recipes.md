@@ -98,7 +98,7 @@ Low-level `ToastState` subscriptions, injected state and direct mounts are modul
 
 ```ts
 import { createToaster, toast } from '@samline/notify'
-import '@samline/notify/styles.css'
+import '@samline/notify/style.css'
 
 createToaster({ richColors: true })
 toast.success('Notify is ready')
@@ -108,8 +108,8 @@ toast.success('Notify is ready')
 
 ```html
 <button id="save" type="button">Save</button>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@samline/notify@4.0.0/dist/styles.css" />
-<script src="https://cdn.jsdelivr.net/npm/@samline/notify@4.0.0/dist/browser/global.global.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@samline/notify@5.0.0/dist/style.css" />
+<script src="https://cdn.jsdelivr.net/npm/@samline/notify@5.0.0/dist/browser/notify.global.js"></script>
 <script>
   const notify = window.Notify
 
@@ -128,7 +128,7 @@ async function saveProfile(patch: object): Promise<{ name: string }> {
   const response = await fetch('/api/profile', {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(patch)
+    body: JSON.stringify(patch),
   })
 
   if (!response.ok) {
@@ -140,8 +140,8 @@ async function saveProfile(patch: object): Promise<{ name: string }> {
 
 toast.promise(saveProfile({ name: 'Nora' }), {
   loading: 'Saving profile…',
-  success: (profile) => `Saved as ${profile.name}`,
-  error: 'Could not save your profile'
+  success: profile => `Saved as ${profile.name}`,
+  error: 'Could not save your profile',
 })
 ```
 
@@ -157,12 +157,12 @@ toast('Item deleted', {
   duration: 6000,
   action: {
     label: 'Undo',
-    onClick: () => restoreItem(item)
+    onClick: () => restoreItem(item),
   },
   cancel: {
     label: 'Dismiss',
-    onClick: () => {}
-  }
+    onClick: () => {},
+  },
 })
 ```
 
@@ -171,7 +171,7 @@ The toast renders two trailing buttons: `cancel` first, `action` second. Both cl
 ## 4. Rich content with `toast.custom`
 
 ```ts
-toast.custom((container) => {
+toast.custom(container => {
   const heading = document.createElement('strong')
   heading.textContent = 'Build complete'
 
@@ -211,7 +211,7 @@ This is the same mechanism `toast.promise` uses internally.
 
 ```ts
 import { createToaster, getToaster } from '@samline/notify'
-import '@samline/notify/styles.css'
+import '@samline/notify/style.css'
 
 createToaster({ theme: 'light', position: 'bottom-right' })
 
@@ -228,7 +228,7 @@ document.querySelector('#theme-toggle')?.addEventListener('click', () => {
 createToaster({
   position: 'bottom-right',
   offset: 24,
-  mobileOffset: 16
+  mobileOffset: 16,
 })
 ```
 
@@ -237,7 +237,7 @@ The runtime applies the mobile offset on coarse pointers. Pass an object to cust
 ```ts
 createToaster({
   offset: { top: 24, right: 24, bottom: 24, left: 24 },
-  mobileOffset: { bottom: 80 } // account for an iOS bottom bar
+  mobileOffset: { bottom: 80 }, // account for an iOS bottom bar
 })
 ```
 
@@ -247,18 +247,18 @@ Numbers become pixels. Strings such as `'2rem'` are used verbatim.
 
 ```ts
 import { mountToaster } from '@samline/notify'
-import '@samline/notify/styles.css'
+import '@samline/notify/style.css'
 
 const errors = mountToaster(document.body, {
   position: 'top-right',
   theme: 'dark',
   richColors: true,
-  visibleToasts: 5
+  visibleToasts: 5,
 })
 
 const banners = mountToaster(document.body, {
   position: 'bottom-left',
-  duration: 6000
+  duration: 6000,
 })
 
 errors.element.dataset['notifyChannel'] = 'errors'
@@ -287,7 +287,7 @@ The runtime renders `data-testid="profile-save-success"` on the list item, so an
 ```ts
 import { toast, ToastState } from '@samline/notify'
 
-ToastState.subscribe((event) => {
+ToastState.subscribe(event => {
   if ('dismiss' in event) {
     logEvent('toast_dismissed', { id: event.id })
   } else {
@@ -307,7 +307,7 @@ createToaster({
   gap: 12,
   offset: { bottom: 24 },
   mobileOffset: { bottom: 24 },
-  style: { '--width': '24rem', '--normal-bg': '#fffdf8', '--normal-text': '#29231f' }
+  style: { '--width': '24rem', '--normal-bg': '#fffdf8', '--normal-text': '#29231f' },
 })
 ```
 
@@ -392,7 +392,7 @@ if (first?.action) first.action.label = 'Local copy'
 import { ToastState } from '@samline/notify'
 import type { ToastToDismiss } from '@samline/notify'
 
-const unsubscribe = ToastState.subscribe((event) => {
+const unsubscribe = ToastState.subscribe(event => {
   if ('dismiss' in event) {
     const dismissed: ToastToDismiss = event
     console.log('Dismissed', dismissed.id)

@@ -20,7 +20,7 @@ import type {
   ToastId,
   ToastOptions,
   ToastT,
-  ToastToDismiss
+  ToastToDismiss,
 } from './types'
 
 let toastsCounter = 1
@@ -92,7 +92,7 @@ class Observer {
     } else {
       do {
         id = toastsCounter++
-      } while (this.toasts.some((toast) => toast.id === id))
+      } while (this.toasts.some(toast => toast.id === id))
     }
 
     const dismissible = data.dismissible === undefined ? true : data.dismissible
@@ -104,7 +104,7 @@ class Observer {
       this.dismissedToasts.delete(id)
     }
 
-    const existingIndex = this.toasts.findIndex((toast) => toast.id === id)
+    const existingIndex = this.toasts.findIndex(toast => toast.id === id)
 
     if (existingIndex >= 0) {
       const existing = this.toasts[existingIndex]
@@ -116,7 +116,7 @@ class Observer {
         dismissible,
         title,
         ...(descriptionRenderable !== undefined ? { description: descriptionRenderable } : {}),
-        ...(custom !== undefined ? { custom } : {})
+        ...(custom !== undefined ? { custom } : {}),
       }
       this.toasts = this.toasts.map((toast, index) => (index === existingIndex ? merged : toast))
       this.publish(merged)
@@ -129,7 +129,7 @@ class Observer {
       dismissible,
       title,
       ...(descriptionRenderable !== undefined ? { description: descriptionRenderable } : {}),
-      ...(custom !== undefined ? { custom } : {})
+      ...(custom !== undefined ? { custom } : {}),
     }
     this.addToast(next)
     return { id, record: next }
@@ -140,7 +140,7 @@ class Observer {
       // A second dismissal of the same id, or one for an id that was never
       // created, is a no-op: lifecycle callbacks run exactly once.
       if (this.dismissedToasts.has(id)) return id
-      const record = this.toasts.find((toast) => toast.id === id)
+      const record = this.toasts.find(toast => toast.id === id)
       if (!record) return id
       this.dismissRecord(record)
       this.pruneHistory()
@@ -233,7 +233,7 @@ class Observer {
     if (!data) {
       // Nothing to render, but still return a passthrough unwrap.
       return {
-        unwrap: resolveInput
+        unwrap: resolveInput,
       }
     }
 
@@ -248,14 +248,14 @@ class Observer {
         // `promise` is part of `ToastT`; the renderer reads `toast.promise`
         // to set `data-promise='true'` on the <li> and trigger the
         // `[data-promise='true'] [data-icon] > svg` fade-in animation
-        // defined in `styles.css`. The legacy React build also included
+        // defined in `style.css`. The legacy React build also included
         // `promise` here. Without it the animation never plays (see
         // Fix 5 in the bug report).
         ...rest,
         promise,
         type: 'loading',
         message: data.loading,
-        ...(description !== undefined ? { description } : {})
+        ...(description !== undefined ? { description } : {}),
       }
       const created = this.createRecord(loadingPayload)
       id = created.id
@@ -266,7 +266,7 @@ class Observer {
       resetEpoch === epoch &&
       (id === undefined ||
         (!this.dismissedToasts.has(id) &&
-          this.toasts.find((record) => record.id === id) === ownedRecord))
+          this.toasts.find(record => record.id === id) === ownedRecord))
     const resolved = resolveInput()
 
     const state: { result: ['resolve', ToastData] | ['reject', unknown] | null } = { result: null }
@@ -314,7 +314,7 @@ class Observer {
           type,
           ...rest,
           ...(extendedMessage !== undefined ? { message: extendedMessage } : {}),
-          ...(resolvedDescription !== undefined ? { description: resolvedDescription } : {})
+          ...(resolvedDescription !== undefined ? { description: resolvedDescription } : {}),
         }
         this.create(payload)
         return
@@ -324,17 +324,17 @@ class Observer {
         ...(id !== undefined ? { id } : {}),
         type,
         message: resolvedValue as Renderable,
-        ...(resolvedDescription !== undefined ? { description: resolvedDescription } : {})
+        ...(resolvedDescription !== undefined ? { description: resolvedDescription } : {}),
       }
       this.create(payload)
     }
 
     const outcome = resolved.then(
-      (value) => ({ status: 'fulfilled' as const, value }),
+      value => ({ status: 'fulfilled' as const, value }),
       (reason: unknown) => ({ status: 'rejected' as const, reason })
     )
     const rendering = outcome
-      .then(async (result) => {
+      .then(async result => {
         if (result.status === 'rejected') {
           state.result = ['reject', result.reason]
           await handleValue(data.error, 'error')
@@ -378,8 +378,7 @@ class Observer {
     return this.create({ ...(data ?? {}), custom: content })
   }
 
-  getActiveToasts = (): ToastT[] =>
-    this.toasts.filter((toast) => !this.dismissedToasts.has(toast.id))
+  getActiveToasts = (): ToastT[] => this.toasts.filter(toast => !this.dismissedToasts.has(toast.id))
 
   getHistory = (): ToastT[] => this.toasts.map(cloneToast)
 
@@ -389,7 +388,7 @@ class Observer {
 const cloneToast = (toast: ToastT): ToastT => ({
   ...toast,
   ...(toast.action ? { action: { ...toast.action } } : {}),
-  ...(toast.cancel ? { cancel: { ...toast.cancel } } : {})
+  ...(toast.cancel ? { cancel: { ...toast.cancel } } : {}),
 })
 
 const isHttpResponse = (value: unknown): value is Response =>

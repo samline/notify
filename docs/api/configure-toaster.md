@@ -33,11 +33,11 @@ A `ToasterController`. It is the same instance on every call.
 
 ```ts
 import { configureToaster } from '@samline/notify'
-import '@samline/notify/styles.css'
+import '@samline/notify/style.css'
 
 configureToaster({
   position: 'top-right',
-  richColors: true
+  richColors: true,
 })
 
 // Update on a theme change.

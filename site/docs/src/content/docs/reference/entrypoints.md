@@ -18,15 +18,15 @@ Notify exposes separate surfaces for module consumers and script-tag consumers. 
 | CommonJS app                     | `require('@samline/notify')`                   | none                     | no                          |
 | Registry object without a global | `import { browser } from '@samline/notify'`    | none                     | no                          |
 | Browser subpath                  | `import Notify from '@samline/notify/browser'` | none                     | no                          |
-| No bundler                       | `dist/browser/global.global.js`                | installs `window.Notify` | yes, when the body is ready |
+| No bundler                       | `dist/browser/notify.global.js`                | installs `window.Notify` | yes, when the body is ready |
 
-Every visual integration also needs `@samline/notify/styles.css`, or the matching `dist/styles.css` asset.
+Every visual integration also needs `@samline/notify/style.css`, or the matching `dist/style.css` asset.
 
 ## Root entrypoint
 
 ```ts
 import { createToaster, toast } from '@samline/notify'
-import '@samline/notify/styles.css'
+import '@samline/notify/style.css'
 
 createToaster()
 toast.success('Saved')
@@ -66,8 +66,8 @@ import type { NotifyApi } from '@samline/notify/browser'
 ## Standalone build
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@samline/notify@4.0.0/dist/styles.css" />
-<script src="https://cdn.jsdelivr.net/npm/@samline/notify@4.0.0/dist/browser/global.global.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@samline/notify@5.0.0/dist/style.css" />
+<script src="https://cdn.jsdelivr.net/npm/@samline/notify@5.0.0/dist/browser/notify.global.js"></script>
 <script>
   const notify = window.Notify
   notify.toast.success('Saved')

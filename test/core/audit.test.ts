@@ -23,7 +23,7 @@ const pointer = (node: Element, type: string, x: number, y: number) =>
       button: 0,
       pointerId: 1,
       clientX: x,
-      clientY: y
+      clientY: y,
     })
   )
 
@@ -65,7 +65,7 @@ it('does not treat an aborted drag as a body click', () => {
 
 it('keeps the toast open when an action calls preventDefault()', () => {
   const controller = createToaster({ duration: Infinity })
-  toast('Keep', { action: { label: 'Stay', onClick: (event) => event.preventDefault() } })
+  toast('Keep', { action: { label: 'Stay', onClick: event => event.preventDefault() } })
   controller.element.querySelector<HTMLButtonElement>('[data-action]')!.click()
   expect(toast.getToasts()).toHaveLength(1)
 })
@@ -122,7 +122,7 @@ it('passes the resolved value to a description function on success', async () =>
   const result = toast.promise(Promise.resolve({ name: 'report.csv' }), {
     loading: 'Exporting',
     success: 'Exported',
-    description: (data) => `Saved ${(data as { name: string }).name}`
+    description: data => `Saved ${(data as { name: string }).name}`,
   })
   await result.unwrap()
   expect(toast.getToasts()[0]?.description).toBe('Saved report.csv')
@@ -132,7 +132,7 @@ it('does not treat an Error returned by a formatter as an options object', async
   createToaster()
   const result = toast.promise(Promise.reject(new Error('boom')), {
     loading: 'Working',
-    error: (error) => error as never
+    error: error => error as never,
   })
   await expect(result.unwrap()).rejects.toThrow('boom')
   expect(toast.getToasts()[0]?.type).toBe('error')

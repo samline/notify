@@ -7,8 +7,8 @@ export const notifyAliases = existsSync(source)
   ? [
       { find: /^@samline\/notify$/, replacement: fileURLToPath(source) },
       {
-        find: '@samline/notify/styles.css',
-        replacement: fileURLToPath(new URL('../../../src/styles.css', import.meta.url)),
+        find: '@samline/notify/style.css',
+        replacement: fileURLToPath(new URL('../../../src/style.css', import.meta.url)),
       },
     ]
   : []

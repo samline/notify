@@ -49,6 +49,7 @@ export function resolveProject(input = config) {
     ...input.site,
     ...input.theme,
     delivery: input.delivery,
+    dev: { landingPort: 4330, docsPort: 4331, testPort: 4338, ...input.dev },
     url: site.href,
     origin: site.origin,
     base: site.pathname,

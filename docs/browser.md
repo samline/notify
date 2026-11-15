@@ -6,7 +6,7 @@ Notify has three related browser-facing forms. They share a `NotifyApi` shape bu
 | ---------------------------------------------------------- | ------------------------ | ----------- | ------------------------------------------ |
 | `browser` from `@samline/notify`                           | no                       | no          | Bundled apps that want one registry object |
 | Default and named `browser` from `@samline/notify/browser` | no                       | no          | Dedicated bundler subpath                  |
-| `dist/browser/global.global.js`                            | yes, in a DOM            | yes, once   | Classic script-tag usage without a bundler |
+| `dist/browser/notify.global.js`                            | yes, in a DOM            | yes, once   | Classic script-tag usage without a bundler |
 
 ## The registry shape
 
@@ -29,7 +29,7 @@ interface NotifyApi {
 
 ```ts
 import { browser } from '@samline/notify'
-import '@samline/notify/styles.css'
+import '@samline/notify/style.css'
 
 browser.createToaster({ position: 'bottom-right' })
 browser.toast.success('Saved')
@@ -41,7 +41,7 @@ The root `browser` export shares the same state and singleton as the named root 
 
 ```ts
 import notify, { browser } from '@samline/notify/browser'
-import '@samline/notify/styles.css'
+import '@samline/notify/style.css'
 
 notify.createToaster()
 browser.toast.info('Both names refer to the same registry')
@@ -51,7 +51,7 @@ The subpath exports `browser` as both its default and its named export, and expo
 
 ## Standalone build
 
-The standalone file `dist/browser/global.global.js` is a built artifact, not the `@samline/notify/browser` module export. Load the stylesheet separately, then load the script.
+The standalone file `dist/browser/notify.global.js` is a built artifact, not the `@samline/notify/browser` module export. Load the stylesheet separately, then load the script.
 
 ```html
 <!doctype html>
@@ -62,24 +62,24 @@ The standalone file `dist/browser/global.global.js` is a built artifact, not the
     <title>Notify browser example</title>
     <link
       rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/@samline/notify@4.0.0/dist/styles.css"
+      href="https://cdn.jsdelivr.net/npm/@samline/notify@5.0.0/dist/style.css"
     />
   </head>
   <body>
     <button id="notify" type="button">Show notification</button>
 
-    <script src="https://cdn.jsdelivr.net/npm/@samline/notify@4.0.0/dist/browser/global.global.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@samline/notify@5.0.0/dist/browser/notify.global.js"></script>
     <script>
       const notify = window.Notify
       notify.configureToaster({ richColors: true, position: 'top-right' })
 
       document.querySelector('#notify').addEventListener('click', () => {
         notify.toast.promise(
-          () => new Promise((resolve) => window.setTimeout(() => resolve('ready'), 700)),
+          () => new Promise(resolve => window.setTimeout(() => resolve('ready'), 700)),
           {
             loading: 'Saving changes',
             success: 'Changes saved',
-            error: 'Could not save changes'
+            error: 'Could not save changes',
           }
         )
       })
@@ -128,8 +128,8 @@ The standalone build checks for a DOM before it does anything. In a runtime with
 The CDN examples use absolute URLs, so an application base path such as `/notify/` does not affect them. When self-hosting, resolve both files through your own public base:
 
 ```html
-<link rel="stylesheet" href="/my-app/vendor/notify/styles.css" />
-<script src="/my-app/vendor/notify/global.global.js"></script>
+<link rel="stylesheet" href="/my-app/vendor/notify/style.css" />
+<script src="/my-app/vendor/notify/notify.global.js"></script>
 ```
 
 Verify those URLs directly in production. A missing stylesheet leaves a semantic but visually unstyled list. A missing script leaves `window.Notify` undefined.

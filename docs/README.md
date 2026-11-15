@@ -4,13 +4,13 @@ Notify is a dependency-free toast runtime for the browser. Mount one toaster, ca
 
 ```ts
 import { createToaster, toast } from '@samline/notify'
-import '@samline/notify/styles.css'
+import '@samline/notify/style.css'
 
 createToaster({ position: 'bottom-right', richColors: true })
 
 toast.success('Profile saved', {
   description: 'Your changes are live.',
-  action: { label: 'View profile', onClick: () => location.assign('/profile') }
+  action: { label: 'View profile', onClick: () => location.assign('/profile') },
 })
 ```
 

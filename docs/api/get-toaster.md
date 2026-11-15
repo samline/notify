@@ -18,7 +18,7 @@ A `ToasterController` when one is mounted, or `null` otherwise. The reference is
 
 ```ts
 import { createToaster, getToaster } from '@samline/notify'
-import '@samline/notify/styles.css'
+import '@samline/notify/style.css'
 
 createToaster({ position: 'bottom-right' })
 
@@ -49,7 +49,7 @@ function updateTheme(theme: 'light' | 'dark') {
 ```ts
 import { getToaster } from '@samline/notify'
 
-store.subscribe((state) => {
+store.subscribe(state => {
   getToaster()?.update({ theme: state.theme, position: state.position })
 })
 ```

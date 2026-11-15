@@ -8,7 +8,7 @@ A toast is a state record observed by a mounted renderer. Keeping those two piec
 
    ```ts
    import { createToaster } from '@samline/notify'
-   import '@samline/notify/styles.css'
+   import '@samline/notify/style.css'
 
    const toaster = createToaster({ position: 'bottom-right' })
    ```

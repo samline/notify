@@ -16,7 +16,7 @@
       },
       {
         "name": "Public types and stylesheet",
-        "evidence": "src/core/types.ts and src/styles.css; checked against documented options",
+        "evidence": "src/core/types.ts and src/style.css; checked against documented options",
         "destination": "docs/src/content/docs/reference/typescript.md",
         "reviewed": true
       },
@@ -124,23 +124,23 @@
     "accentDark": "#fbbf24"
   },
   "status": "verified",
-  "packageVersion": "4.0.1",
+  "packageVersion": "5.0.0",
   "sources": [
     {
       "source": "CHANGELOG.md",
-      "sha256": "a1ae7345a74d8b47e9d40888904e57a23603a4725f82d85c742479d0f3e25c2a",
+      "sha256": "0d0f7f17b505a533036f23bfae08b3ad39a91c9fd18e8d9a210f68fd30ae994b",
       "destination": "docs/src/content.config.ts",
       "reviewed": true
     },
     {
       "source": "README.md",
-      "sha256": "1e1748b89726257a6f861e066e7e1af3261b0310f2d7d42c20bd9ee47e5c1dd2",
+      "sha256": "e932d47126b82911cb978f81ba69dfb62c65d1a3ebc1a87c9f46f4b5f43072b8",
       "destination": "landing/src/i18n/translations/en/sections.ts",
       "reviewed": true
     },
     {
       "source": "docs/README.md",
-      "sha256": "78cd476e65045046a0dbc735ac6e77a2ca2c01ee30bb2ed45f73e11450618e1b",
+      "sha256": "da83156d796a5a58819716fa062be5c3e9b75ec847d8bcc65af830db2b29754e",
       "destination": "docs/src/content/docs/index.mdx",
       "reviewed": true
     },
@@ -152,13 +152,13 @@
     },
     {
       "source": "docs/api/configure-toaster.md",
-      "sha256": "8acba901f5e0cafe3b6ceab97b576a52721fd28b0bf29cc54a1f5be5e0100c1e",
+      "sha256": "7bc5e63611ea05e4a5b4412933bb9527cdacd2f2038e4f3a2cbb911b76c3259c",
       "destination": "docs/src/content/docs/api/configure-toaster.md",
       "reviewed": true
     },
     {
       "source": "docs/api/create-toaster.md",
-      "sha256": "e99826e62590f716b1df95c3fca4935d0ad475c64efa55c9118e64dc30bfe4ba",
+      "sha256": "204df96035b80219285508822f7bbfee7669868fd0d306e2b0950640bec835dd",
       "destination": "docs/src/content/docs/api/create-toaster.md",
       "reviewed": true
     },
@@ -170,13 +170,13 @@
     },
     {
       "source": "docs/api/get-toaster.md",
-      "sha256": "555161a076e467cbb287db89fac227600da39eaa18036b220a04224703e656a9",
+      "sha256": "64f70d96cf8059966cb34174258907684bf375d1cbce3cfea800d9acd8e0f5d0",
       "destination": "docs/src/content/docs/api/get-toaster.md",
       "reviewed": true
     },
     {
       "source": "docs/api/index.md",
-      "sha256": "c59ca41b477c9cf259a89ac04f8224c6e2d6a4d73fe55dbfc55ca976b441d947",
+      "sha256": "9a1c25ed00509345180c6fbd252c7426d6ea44dd6cc9b8fef9719f0108ea52d2",
       "destination": "docs/src/content/docs/reference/api.md",
       "reviewed": true
     },
@@ -188,67 +188,67 @@
     },
     {
       "source": "docs/api/toast.md",
-      "sha256": "02e341aeecf9095fd94a038d75554331f208e62ac87a2a42d43f9ef0887bae1f",
+      "sha256": "744ca676f9952ad2426d57d6596b834833fbd4115efecedf030a02933157beb4",
       "destination": "docs/src/content/docs/api/toast.md",
       "reviewed": true
     },
     {
       "source": "docs/browser.md",
-      "sha256": "3d47a0693df2118dafccf3e09b4241a802886489a9ae0676fcbf132bf876c15b",
+      "sha256": "beaecdcabeec68bdd2f38f77f4b079254aedff645b41997f1d6050d829a26404",
       "destination": "docs/src/content/docs/reference/browser.mdx",
       "reviewed": true
     },
     {
       "source": "docs/css-styling.md",
-      "sha256": "45420cbbba1f83543e8aa1012315d9e8fbd3dcabbcfe80aea60c0d2c41720498",
+      "sha256": "7a09bf0e5fcd4f7c60992417df13c5d81f410525b611be070434d611d9f53561",
       "destination": "docs/src/content/docs/reference/css-styling.md",
       "reviewed": true
     },
     {
       "source": "docs/entrypoints.md",
-      "sha256": "f0bd1caa0da6519c6aa3dd1d1364cef1de4ecd4ddd84ccfbaafe4c8b4a80afd1",
+      "sha256": "b6b67c19363fb5f0d1e27d75a1fbcb33b17c9e5d921e35052ae1ff033f3380e8",
       "destination": "docs/src/content/docs/reference/entrypoints.md",
       "reviewed": true
     },
     {
       "source": "docs/frameworks.md",
-      "sha256": "9201ae51ed6b90e2bf2163a72dcb89acdea34e4287974ca36016a5c0d31f4168",
+      "sha256": "ad0e1b187660992d608cc7d1a01a76aac6dbbef42a0d1db54337a02c889f26a3",
       "destination": "docs/src/content/docs/guides/frameworks.mdx",
       "reviewed": true
     },
     {
       "source": "docs/getting-started.md",
-      "sha256": "2468008ee141f40c9c273c46cdbca0c4b758b8923619dcdaacf970be56c46d66",
+      "sha256": "27ea1acfaa7658305e2a64479216df20ffa2fe058722853db2330751d525c233",
       "destination": "docs/src/content/docs/reference/runtime-contract.md",
       "reviewed": true
     },
     {
       "source": "docs/options.md",
-      "sha256": "0be579fca6ebd01ad5724db91f84b7c71b7055f472ddf346e94c0e5b8ddc3345",
+      "sha256": "4058414e6e2fce7b72735df55070737857d7a74cde552acc3cb2e8dbc4fa697e",
       "destination": "docs/src/content/docs/reference/configuration.md",
       "reviewed": true
     },
     {
       "source": "docs/promises.md",
-      "sha256": "94bb89a2ecfe0962063faab38304c78e12b5c78825d09c573cead3d5e07dc25a",
+      "sha256": "853eddcca1f62bd40f0b8e0d5259adb3739218d65a9019c29086e233047ce81c",
       "destination": "docs/src/content/docs/reference/promises.md",
       "reviewed": true
     },
     {
       "source": "docs/recipes.md",
-      "sha256": "2243ac0ae758a83fa04324237c5c29a9e621ca4b21c93b0c0ae210af536608f3",
+      "sha256": "835c33b2e28307ea99a3d7c97596ae653f176071ffa564e1ff04a1ce605f6c85",
       "destination": "docs/src/content/docs/guides/examples.mdx",
       "reviewed": true
     },
     {
       "source": "docs/troubleshooting.md",
-      "sha256": "3c814ed9ada91080eb8a17d11cdb9031df90ffc473e87cb00896e39bfc4877be",
+      "sha256": "5efa9e248bbb739ea15b2f8b6ce0ea8174292048ca433bac8f420a6a125d5f44",
       "destination": "docs/src/content/docs/reference/troubleshooting.md",
       "reviewed": true
     },
     {
       "source": "docs/typescript.md",
-      "sha256": "e0e8a183f8d9a08131e8d6b382abb0c811b1a51d37de6a7fb0dc6622924de02d",
+      "sha256": "da7c98c8696f75c8438725674b2d2966aa161884856d9a322e5f0122f6ddcf78",
       "destination": "docs/src/content/docs/reference/typescript.md",
       "reviewed": true
     },
@@ -415,7 +415,7 @@
     },
     {
       "source": "package.json",
-      "sha256": "14349baf4a4bf491862266eec8390bf8634e41f15280fe98656f14434d5ac04c",
+      "sha256": "7e25f19cd7265fbd662d7d00c2d993aa598f577238cf0b04cb04f7ae1e9dbe89",
       "destination": "project.config.json",
       "reviewed": true
     },
@@ -451,7 +451,7 @@
     },
     {
       "source": "src/api/toast.ts",
-      "sha256": "8384c9e1bd7e5cfb50a99a9b6cadd8c62b2e0f6f1bc57f3826cbd9587a098ce2",
+      "sha256": "bea72cb7bbe538d146feb26be8d3906ca912c0a854152eefd8b23a3937b61e1b",
       "destination": "docs/src/content/docs/api/toast.md",
       "reviewed": true
     },
@@ -463,7 +463,7 @@
     },
     {
       "source": "src/browser/global.ts",
-      "sha256": "af0b25642fb9290ed35cfb6c83f3ada403c1d53ffcf6aba807e49a80fd9bfa17",
+      "sha256": "dd343ff97ec0721fd4c083691e2102137e08de6cb74e02cf9692db651532cae7",
       "destination": "docs/src/content/docs/reference/browser.mdx",
       "reviewed": true
     },
@@ -475,7 +475,7 @@
     },
     {
       "source": "src/browser/registry.ts",
-      "sha256": "16e1121b33348c66ca6a905852b5b86ce91b6568c707492ec6d2b3f22daac968",
+      "sha256": "b7efad67b3d49b0443bf47f3053ace5ad514f1f847bfd41896236404bafd46a0",
       "destination": "docs/src/content/docs/reference/entrypoints.md",
       "reviewed": true
     },
@@ -505,13 +505,13 @@
     },
     {
       "source": "src/core/renderer.ts",
-      "sha256": "92bb9bc8b289022c99b1047cfc1175f922394a8a145c44cfb9127e43f048b641",
+      "sha256": "410b27716d494c0b9287e00846a7b02783151776da866f923e6ea9deb43cf1a8",
       "destination": "docs/src/content/docs/guides/toast-lifecycle.mdx",
       "reviewed": true
     },
     {
       "source": "src/core/state.ts",
-      "sha256": "b9a89c9b26ef6d6955b98afaf3aafa9e7fb33a4194116727661431abf135a47b",
+      "sha256": "0e92d2fe2c56fabfe60f25ef5b6fc86fa4d978aff1de0dfead59ff9706c33bb2",
       "destination": "docs/src/content/docs/guides/toast-lifecycle.mdx",
       "reviewed": true
     },
@@ -523,31 +523,31 @@
     },
     {
       "source": "src/index.ts",
-      "sha256": "2a38c29bfa6fd8f3d2b01e2e0fb9e457be5b8a31d6b7d4910120a7d22ce4b65d",
+      "sha256": "e223628f15f3413588ce9c2f8aea1b4e9d1c16d0dcba0fb858f93d556fc3a688",
       "destination": "docs/src/content/docs/reference/api.md",
       "reviewed": true
     },
     {
-      "source": "src/styles.css",
+      "source": "src/style.css",
       "sha256": "d5843afc1196ac0ef9ae2bb3795a97d9976c024bf19e63709271f48d7a2a8b3b",
       "destination": "docs/src/content/docs/reference/css-styling.md",
       "reviewed": true
     },
     {
       "source": "docs/installation.md",
-      "sha256": "e6e004df25f692078c2c26e59691276f01c9bfea2239cdb9a0690bc3347649e0",
+      "sha256": "8ff0306da2ad362e0c833f5d105435ccb9b6b48f54ab52d13e840cc3710b418d",
       "destination": "docs/src/content/docs/getting-started.mdx",
       "reviewed": true
     },
     {
       "source": "docs/guides/toast-lifecycle.md",
-      "sha256": "4d1083ac2ba50fe73759edc7806ca936a625da1aa9dc65bc8a8a876f633b50b0",
+      "sha256": "13b6786fe398d299c391b26d01c4f6be5fd9ad07492286edc3e4e2207ea01d96",
       "destination": "docs/src/content/docs/guides/toast-lifecycle.mdx",
       "reviewed": true
     },
     {
       "source": "docs/guides/actions-and-custom-content.md",
-      "sha256": "9941c1e4e8e6061680c019ef6ba15daafb11da71c34e79d2ed14fc4e56bd371c",
+      "sha256": "2f504ce6e13db7630dd791e536812eb44e69f2d0a8ed5a73c6fe64a67855a825",
       "destination": "docs/src/content/docs/guides/actions-and-custom-content.md",
       "reviewed": true
     }
@@ -820,11 +820,11 @@
       },
       {
         "source": "shared/lib/demo-files.ts",
-        "sha256": "ff3b3d203340e084b428e34b67c9a52eba139823b785f716f2e0886cd0ac0dda"
+        "sha256": "6562f44deb621d69c06a6eca7b22dd5c73380d901acad4bed48e7668097505cb"
       },
       {
         "source": "shared/components/Playground.astro",
-        "sha256": "831f3ca89c9a03456a97aabfcb92e1e51b44bcd70215f689eb7d4bb73f75ccb4"
+        "sha256": "31d8190729a9ccb23e9e975155966c214e0975998427ebe40aee27761409b27f"
       },
       {
         "source": "shared/components/TextField.astro",

@@ -5,7 +5,7 @@ import { ToastState, resetToastState } from '../../src/core/state'
 import {
   TIME_BEFORE_UNMOUNT,
   VIEWPORT_OFFSET,
-  MOBILE_VIEWPORT_OFFSET
+  MOBILE_VIEWPORT_OFFSET,
 } from '../../src/core/constants'
 import { toast } from '../../src/api/toast'
 import type { ToasterController } from '../../src/core/types'
@@ -98,7 +98,7 @@ describe('core/renderer', () => {
     // `'true'` on a setTimeout(..., 0) so the CSS entry transition
     // actually runs. The test must wait for that flip.
     expect(li?.getAttribute('data-mounted')).toBe('false')
-    await new Promise<void>((resolve) => setTimeout(resolve, 10))
+    await new Promise<void>(resolve => setTimeout(resolve, 10))
     expect(li?.getAttribute('data-mounted')).toBe('true')
     expect(li?.textContent).toContain('hello')
   })
@@ -112,7 +112,7 @@ describe('core/renderer', () => {
 
     const nodes = root.querySelectorAll<HTMLLIElement>('li[data-notify-toast][data-id="1"]')
     expect(nodes).toHaveLength(2)
-    expect(new Set(Array.from(nodes, (node) => node.dataset['notifyKey'])).size).toBe(2)
+    expect(new Set(Array.from(nodes, node => node.dataset['notifyKey'])).size).toBe(2)
   })
 
   it('applies data-type=success for success variant', () => {
@@ -141,7 +141,7 @@ describe('core/renderer', () => {
     // data-removed goes true immediately
     expect(before?.getAttribute('data-removed')).toBe('true')
     // after TIME_BEFORE_UNMOUNT, node is removed
-    return new Promise<void>((resolve) => {
+    return new Promise<void>(resolve => {
       setTimeout(() => {
         const after = root.querySelector(`li[data-notify-toast][data-id="${id}"]`)
         expect(after).toBeNull()
@@ -180,7 +180,7 @@ describe('core/renderer', () => {
           if (prop === 'transitionDuration') return '0.4s, 0.4s, 0.4s, 0.2s'
           if (prop === 'transitionProperty') return 'transform, opacity, height, box-shadow'
           return Reflect.get(target, prop)
-        }
+        },
       })
     }) as typeof window.getComputedStyle
 
@@ -188,7 +188,7 @@ describe('core/renderer', () => {
       ToastState.dismiss(id)
       // Just past the old (200ms) cutoff — the node should STILL be
       // in the DOM because the real transition is 400ms.
-      return new Promise<void>((resolve) => {
+      return new Promise<void>(resolve => {
         setTimeout(() => {
           const stillThere = root.querySelector<HTMLLIElement>(
             `li[data-notify-toast][data-id="${id}"]`
@@ -224,7 +224,7 @@ describe('core/renderer', () => {
           if (property === 'transitionDelay') return '0s, 0s'
           if (property === 'transitionProperty') return 'transform, opacity'
           return Reflect.get(target, property)
-        }
+        },
       })
     }) as typeof window.getComputedStyle
 
@@ -300,9 +300,9 @@ describe('core/renderer', () => {
     // (newest at the front, oldest at the back). `c` is index 0
     // (front, offset 0), `b` is index 1 (offset = h(c) + 1*14),
     // `a` is index 2 (offset = h(c) + h(b) + 2*14).
-    const front = lis.find((li) => li.getAttribute('data-id') === String(c))
-    const middle = lis.find((li) => li.getAttribute('data-id') === String(b))
-    const back = lis.find((li) => li.getAttribute('data-id') === String(a))
+    const front = lis.find(li => li.getAttribute('data-id') === String(c))
+    const middle = lis.find(li => li.getAttribute('data-id') === String(b))
+    const back = lis.find(li => li.getAttribute('data-id') === String(a))
 
     const frontH = Number(front?.getBoundingClientRect().height ?? 0)
     const middleH = Number(middle?.getBoundingClientRect().height ?? 0)
@@ -325,7 +325,7 @@ describe('core/renderer', () => {
         left: 0,
         x: 0,
         y: 0,
-        toJSON() {}
+        toJSON() {},
       }
     }
 
@@ -333,13 +333,13 @@ describe('core/renderer', () => {
       controller = mountToaster(root, { expand: true, gap: 10 }, ToastState)
       const back = ToastState.create({ id: 'back', message: 'back' })
       let resolveMiddle!: (value: string) => void
-      const pendingMiddle = new Promise<string>((resolve) => {
+      const pendingMiddle = new Promise<string>(resolve => {
         resolveMiddle = resolve
       })
       const middleResult = toast.promise(pendingMiddle, {
         id: 'middle',
         loading: 'middle',
-        success: 'much taller resolved content'
+        success: 'much taller resolved content',
       })
       ToastState.create({ id: 'front', message: 'front' })
       await Promise.resolve()
@@ -372,7 +372,7 @@ describe('core/renderer', () => {
     const closeBtn = li?.querySelector<HTMLButtonElement>('[data-close-button]')
     expect(closeBtn).toBeTruthy()
     closeBtn?.click()
-    return new Promise<void>((resolve) => {
+    return new Promise<void>(resolve => {
       setTimeout(() => {
         expect(ToastState.getActiveToasts()).toHaveLength(0)
         resolve()
@@ -384,14 +384,14 @@ describe('core/renderer', () => {
     controller = mountToaster(root, {}, ToastState)
     const id = ToastState.create({
       message: 'actionable',
-      action: { label: 'Undo' }
+      action: { label: 'Undo' },
     })
     const li = root.querySelector<HTMLLIElement>(`li[data-notify-toast][data-id="${id}"]`)
     const actionBtn = li?.querySelector<HTMLButtonElement>('[data-action]')
     expect(actionBtn).toBeTruthy()
     expect(actionBtn?.textContent).toBe('Undo')
     actionBtn?.click()
-    return new Promise<void>((resolve) => {
+    return new Promise<void>(resolve => {
       setTimeout(() => {
         expect(ToastState.getActiveToasts()).toHaveLength(0)
         resolve()
@@ -409,8 +409,8 @@ describe('core/renderer', () => {
         onClick: () => {
           clicked = true
         },
-        closeOnClick: false
-      }
+        closeOnClick: false,
+      },
     })
     const li = root.querySelector<HTMLLIElement>(`li[data-notify-toast][data-id="${id}"]`)
     const actionBtn = li?.querySelector<HTMLButtonElement>('[data-action]')
@@ -453,7 +453,7 @@ describe('core/renderer', () => {
         id: 'behavior',
         message: 'old',
         duration: 40,
-        onClick: () => (oldClicks += 1)
+        onClick: () => (oldClicks += 1),
       })
       vi.advanceTimersByTime(10)
       ToastState.create({
@@ -462,7 +462,7 @@ describe('core/renderer', () => {
         duration: 1000,
         className: 'updated',
         testId: 'updated-toast',
-        onClick: () => (newClicks += 1)
+        onClick: () => (newClicks += 1),
       })
 
       const li = root.querySelector<HTMLLIElement>('li[data-id="behavior"]')
@@ -485,8 +485,8 @@ describe('core/renderer', () => {
     const resolvedPromise = Promise.resolve({ name: 'Nora' })
     const result = toast.promise(resolvedPromise, {
       loading: 'Loading...',
-      success: (data) => `Hi ${(data as { name: string }).name}`,
-      error: 'Fail'
+      success: data => `Hi ${(data as { name: string }).name}`,
+      error: 'Fail',
     })
     // The promise result is either { id, unwrap } or { unwrap }.
     const id = (result as { id?: string | number }).id
@@ -525,7 +525,7 @@ describe('core/renderer', () => {
     const result = toast.promise(rejectedPromise, {
       loading: 'Loading...',
       success: 'Done',
-      error: 'Could not load'
+      error: 'Could not load',
     })
     const id = (result as { id?: string | number }).id
     expect(id).toBeDefined()
@@ -581,7 +581,7 @@ describe('core/renderer', () => {
 
     // Trigger the queueMicrotask that measures the front toast and
     // refreshes --front-toast-height.
-    return new Promise<void>((resolve) =>
+    return new Promise<void>(resolve =>
       setTimeout(() => {
         const frontLi = root.querySelector<HTMLLIElement>(
           `li[data-notify-toast][data-id="${second}"]`
@@ -612,7 +612,7 @@ describe('core/renderer', () => {
     // the remaining toast to the front (Fix 4).
     ToastState.dismiss(second)
 
-    return new Promise<void>((resolve) =>
+    return new Promise<void>(resolve =>
       setTimeout(() => {
         const remaining = root.querySelector<HTMLLIElement>(
           `li[data-notify-toast][data-id="${first}"]`
@@ -630,7 +630,7 @@ describe('core/renderer', () => {
     const id = ToastState.create({ message: 'phased' })
     const li = root.querySelector<HTMLLIElement>(`li[data-notify-toast][data-id="${id}"]`)
     expect(li?.getAttribute('data-mounted')).toBe('false')
-    await new Promise<void>((resolve) => setTimeout(resolve, 10))
+    await new Promise<void>(resolve => setTimeout(resolve, 10))
     expect(li?.getAttribute('data-mounted')).toBe('true')
   })
 
@@ -638,7 +638,7 @@ describe('core/renderer', () => {
     controller = mountToaster(root, {}, ToastState)
     const result = toast.promise(Promise.resolve('ok'), {
       loading: 'Saving...',
-      success: 'Saved'
+      success: 'Saved',
     })
     const id = (result as { id?: string | number }).id
     expect(id).toBeDefined()
@@ -685,12 +685,12 @@ describe('core/renderer', () => {
     // Bump the toaster-wide default to 5000ms and re-apply.
     controller.update({ duration: 5000 })
 
-    return new Promise<void>((resolve) =>
+    return new Promise<void>(resolve =>
       setTimeout(() => {
         // 250ms is well past the original 100ms duration. Without the
         // fix, the toast would have auto-dismissed by now. With the
         // fix, the timer was reset to 5000ms.
-        expect(ToastState.getActiveToasts().some((t) => t.id === id)).toBe(true)
+        expect(ToastState.getActiveToasts().some(t => t.id === id)).toBe(true)
         // Clean up — dismiss so the test doesn't leak into siblings.
         ToastState.dismiss(id)
         resolve()
@@ -707,12 +707,12 @@ describe('core/renderer', () => {
     controller = mountToaster(root, { duration: 80 }, ToastState)
     const result = toast.promise(Promise.resolve('ok'), {
       loading: 'Loading...',
-      success: 'Done'
+      success: 'Done',
     })
     const id = (result as { id?: string | number }).id
     expect(id).toBeDefined()
 
-    return new Promise<void>((resolve) =>
+    return new Promise<void>(resolve =>
       setTimeout(() => {
         // After ~80ms the auto-dismiss timer should have fired
         // (regardless of when the promise resolved) and the toast
@@ -750,7 +750,7 @@ describe('core/renderer', () => {
       id: 'close-path',
       onDismiss: () => {
         closeCalls += 1
-      }
+      },
     })
     const closeLi = root.querySelector<HTMLLIElement>('li[data-id="close-path"]')
     const closeBtn = closeLi?.querySelector<HTMLButtonElement>('[data-close-button]')
@@ -763,7 +763,7 @@ describe('core/renderer', () => {
       id: 'auto-path',
       onDismiss: () => {
         autoCalls += 1
-      }
+      },
     })
 
     // Path 3: external `state.dismiss(id)` (the same call site
@@ -774,11 +774,11 @@ describe('core/renderer', () => {
       id: 'external-path',
       onDismiss: () => {
         externalCalls += 1
-      }
+      },
     })
     ToastState.dismiss('external-path')
 
-    return new Promise<void>((resolve) =>
+    return new Promise<void>(resolve =>
       setTimeout(() => {
         expect(closeCalls).toBe(1)
         expect(externalCalls).toBe(1)
@@ -843,7 +843,7 @@ describe('core/renderer', () => {
     controller = mountToaster(root, {}, ToastState)
     const result = toast.promise(Promise.resolve('ok'), {
       loading: 'Saving...',
-      success: 'Done'
+      success: 'Done',
     })
     const id = (result as { id?: string | number }).id
     expect(id).toBeDefined()
@@ -879,7 +879,7 @@ describe('core/renderer', () => {
     controller = mountToaster(root, {}, ToastState)
     const result = toast.promise(Promise.resolve('ok'), {
       loading: 'Saving...',
-      success: 'Done'
+      success: 'Done',
     })
     const id = (result as { id?: string | number }).id
     expect(id).toBeDefined()
@@ -943,7 +943,7 @@ describe('core/renderer', () => {
     const event = new KeyboardEvent('keydown', {
       key: 'Backspace',
       bubbles: true,
-      cancelable: true
+      cancelable: true,
     })
     const prevented = !document.dispatchEvent(event)
     expect(prevented).toBe(true)
@@ -972,7 +972,7 @@ describe('core/renderer', () => {
       code: 'KeyT',
       altKey: true,
       bubbles: true,
-      cancelable: true
+      cancelable: true,
     })
     document.dispatchEvent(event)
     expect(document.activeElement).toBe(li)
@@ -993,7 +993,7 @@ describe('core/renderer', () => {
       code: 'KeyT',
       altKey: true,
       bubbles: true,
-      cancelable: true
+      cancelable: true,
     })
     input.dispatchEvent(event)
     expect(document.activeElement).toBe(before)
@@ -1011,7 +1011,7 @@ describe('core/renderer', () => {
       code: 'KeyT',
       altKey: true,
       bubbles: true,
-      cancelable: true
+      cancelable: true,
     })
     document.dispatchEvent(event)
     expect(document.activeElement).toBe(before)
@@ -1032,8 +1032,8 @@ describe('core/renderer', () => {
         removeEventListener: () => {},
         addListener: () => {},
         removeListener: () => {},
-        dispatchEvent: () => false
-      })
+        dispatchEvent: () => false,
+      }),
     })
     controller = mountToaster(root, { theme: 'system' }, ToastState)
     const toaster = root.querySelector('ol[data-notify-toaster]')
@@ -1041,7 +1041,7 @@ describe('core/renderer', () => {
     Object.defineProperty(window, 'matchMedia', {
       configurable: true,
       writable: true,
-      value: original
+      value: original,
     })
   })
 
@@ -1058,8 +1058,8 @@ describe('core/renderer', () => {
         removeEventListener: () => {},
         addListener: () => {},
         removeListener: () => {},
-        dispatchEvent: () => false
-      })
+        dispatchEvent: () => false,
+      }),
     })
     controller = mountToaster(root, { theme: 'system' }, ToastState)
     const toaster = root.querySelector('ol[data-notify-toaster]')
@@ -1067,7 +1067,7 @@ describe('core/renderer', () => {
     Object.defineProperty(window, 'matchMedia', {
       configurable: true,
       writable: true,
-      value: original
+      value: original,
     })
   })
 
@@ -1083,8 +1083,8 @@ describe('core/renderer', () => {
           return dark
         },
         addEventListener: (_event: string, listener: () => void) => listeners.add(listener),
-        removeEventListener: (_event: string, listener: () => void) => listeners.delete(listener)
-      })
+        removeEventListener: (_event: string, listener: () => void) => listeners.delete(listener),
+      }),
     })
 
     try {
@@ -1092,7 +1092,7 @@ describe('core/renderer', () => {
       controller.update({ theme: 'system' })
       expect(listeners.size).toBe(1)
       dark = true
-      listeners.forEach((listener) => listener())
+      listeners.forEach(listener => listener())
       expect(controller.element.dataset['notifyTheme']).toBe('dark')
 
       controller.update({ theme: 'light' })
@@ -1102,7 +1102,7 @@ describe('core/renderer', () => {
       Object.defineProperty(window, 'matchMedia', {
         configurable: true,
         writable: true,
-        value: original
+        value: original,
       })
     }
   })
@@ -1138,7 +1138,7 @@ describe('core/renderer', () => {
       message: 'click me',
       onClick: () => {
         bodyClicks += 1
-      }
+      },
     })
     const li = root.querySelector<HTMLLIElement>(`li[data-notify-toast][data-id="${id}"]`)
     expect(li).toBeTruthy()
@@ -1177,7 +1177,7 @@ describe('core/renderer', () => {
       success: 'Done',
       onClick: () => {
         bodyClicks += 1
-      }
+      },
     })
     const id = (result as { id?: string | number }).id
     expect(id).toBeDefined()
@@ -1223,7 +1223,7 @@ describe('core/renderer', () => {
     const li = root.querySelector<HTMLLIElement>(`li[data-notify-toast][data-id="${id}"]`)
     expect(li).toBeTruthy()
 
-    return new Promise<void>((resolve) => {
+    return new Promise<void>(resolve => {
       setTimeout(() => {
         // 400ms into the toast's 1000ms lifetime — roughly 600ms
         // should remain. Pause the timer by dispatching mouseenter.
@@ -1264,7 +1264,7 @@ describe('core/renderer', () => {
     const li = root.querySelector<HTMLLIElement>(`li[data-notify-toast][data-id="${id}"]`)
     expect(li).toBeTruthy()
 
-    return new Promise<void>((resolve) => {
+    return new Promise<void>(resolve => {
       setTimeout(() => {
         // 400ms in — pause the timer.
         li?.dispatchEvent(new MouseEvent('mouseenter', { bubbles: true }))
@@ -1396,7 +1396,7 @@ describe('core/renderer', () => {
         message: 'old',
         onDismiss: () => {
           ToastState.create({ id: 'dismiss-recreate', message: 'new' })
-        }
+        },
       })
       ToastState.dismiss('dismiss-recreate')
 
@@ -1425,7 +1425,7 @@ describe('core/renderer', () => {
     ToastState.create({ message: 'back' })
     ToastState.create({ message: 'front' })
     const back = Array.from(root.querySelectorAll<HTMLLIElement>('li[data-notify-toast]')).find(
-      (node) => node.textContent === 'back'
+      node => node.textContent === 'back'
     )
     expect(controller.element.style.getPropertyValue('--gap')).toBe('30px')
     expect(back?.style.getPropertyValue('--offset')).toBe('30px')
@@ -1449,7 +1449,7 @@ describe('core/renderer', () => {
     // list drops to 1 — renderAll() should auto-collapse.
     ToastState.dismiss(b)
 
-    return new Promise<void>((resolve) => {
+    return new Promise<void>(resolve => {
       setTimeout(() => {
         expect(toaster?.getAttribute('data-lifted')).toBe('false')
         const remainingLi = root.querySelector<HTMLLIElement>(

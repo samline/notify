@@ -50,7 +50,7 @@ const cssFor = (preset: DemoPreset) => {
       text:
         preset === 'custom'
           ? 'Demo form and custom receipt. Notify supplies positioning, stacking and motion.'
-          : 'Demo form only. Toast appearance and motion come from @samline/notify/styles.css.',
+          : 'Demo form only. Toast appearance and motion come from @samline/notify/style.css.',
     })
   )
   return sheet.toString()
@@ -64,7 +64,7 @@ export const createDemoFiles = async (preset: DemoPreset = 'save', mode: DemoMod
   const css = cssFor(preset)
   const setup =
     mode === 'esm'
-      ? `import { browser as notify } from '@samline/notify'\nimport '@samline/notify/styles.css'\n`
+      ? `import { browser as notify } from '@samline/notify'\nimport '@samline/notify/style.css'\n`
       : `const notify = window.Notify\n`
   const scenario = region(preset)
   const used = new Set(Array.from(scenario.matchAll(/copy\.(\w+)/g), match => match[1]))
@@ -116,8 +116,8 @@ ${separate ? `<script${mode === 'esm' ? ' type="module"' : ''} src="./main.js"><
         code: await format(
           mode === 'esm'
             ? script.replace(
-                "import '@samline/notify/styles.css'\n",
-                "import '@samline/notify/styles.css'\nimport './style.css'\n"
+                "import '@samline/notify/style.css'\n",
+                "import '@samline/notify/style.css'\nimport './style.css'\n"
               )
             : script,
           {

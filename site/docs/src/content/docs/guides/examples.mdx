@@ -112,7 +112,7 @@ Low-level `ToastState` subscriptions, injected state and direct mounts are modul
 
 ```ts
 import { createToaster, toast } from '@samline/notify'
-import '@samline/notify/styles.css'
+import '@samline/notify/style.css'
 
 createToaster({ richColors: true })
 toast.success('Notify is ready')
@@ -122,8 +122,8 @@ toast.success('Notify is ready')
 
 ```html
 <button id="save" type="button">Save</button>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@samline/notify@4.0.0/dist/styles.css" />
-<script src="https://cdn.jsdelivr.net/npm/@samline/notify@4.0.0/dist/browser/global.global.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@samline/notify@5.0.0/dist/style.css" />
+<script src="https://cdn.jsdelivr.net/npm/@samline/notify@5.0.0/dist/browser/notify.global.js"></script>
 <script>
   const notify = window.Notify
 
@@ -239,7 +239,7 @@ This is the same mechanism `toast.promise` uses internally.
 
 ```ts
 import { createToaster, getToaster } from '@samline/notify'
-import '@samline/notify/styles.css'
+import '@samline/notify/style.css'
 
 createToaster({ theme: 'light', position: 'bottom-right' })
 
@@ -279,7 +279,7 @@ Numbers become pixels. Strings such as `'2rem'` are used verbatim.
 
 ```ts
 import { mountToaster } from '@samline/notify'
-import '@samline/notify/styles.css'
+import '@samline/notify/style.css'
 
 const errors = mountToaster(document.body, {
   position: 'top-right',

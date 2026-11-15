@@ -90,6 +90,14 @@ configured header name before a substituted sibling. The maintained policy is
 https://github.com/samline/package-landing-docs/blob/main/.agents/identity.md;
 package-specific API content and runtime publication remain separate.
 
+## pnpm migration and 5.0.0 — 2026-11-15
+
+- Installs with pnpm (`pnpm-workspace.yaml` lists `site`, `site/landing`, `site/docs`, `site/shared`); every script runs with `bun run`. `site/package.json` has no npm workspaces: its scripts call `bun run --cwd <app>`, and `scripts/test-adaptation.mjs` links each app's own `node_modules` into the isolated copy.
+- 5.0.0 breaking renames: `dist/browser/notify.global.js` (the old `global.global.js` is still built as an identical alias), `style.css` (the `styles.css` export and file stay as aliases), and no `default` export from the classic script.
+- `site/content-audit.json` records sha256 hashes of every reviewed source. After reviewing a change to them, refresh the hashes or `bun run site:check:release` fails.
+- The website's checks, the package smoke tests and the three browser projects run in `.github/workflows/site.yml`; the managed `ci.yml` only runs the family checks.
+- The site's `@samline/notify` dependency stays `^4.0.0` until 5.0.0 is published; the site builds from `src/` through `site/shared/lib/notify-runtime.mjs`.
+
 <!-- samline:family:start -->
 
 ## Family conventions (@samline)

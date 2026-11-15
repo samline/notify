@@ -50,7 +50,7 @@ npm run configure -- --package .. \
   --accent-light '#b45309' --accent-dark '#fbbf24'
 ```
 
-Identity, deployment base and the amber accent live in `project.config.json`. The amber pair is the maintainer's choice: `#b45309` on light surfaces and `#fbbf24` on dark ones, both above 4.5:1 contrast against the surfaces they are used on. The CDN entries point at the `@samline/notify@4.0.0` assets; keep them on a published version.
+Identity, deployment base and the amber accent live in `project.config.json`. The amber pair is the maintainer's choice: `#b45309` on light surfaces and `#fbbf24` on dark ones, both above 4.5:1 contrast against the surfaces they are used on. The CDN entries point at the `@samline/notify@5.0.0` assets; keep them on a published version.
 
 Re-running the importer resets the content audit, so review that diff. `npm run check:release` rejects an adaptation whose audit, theme review or capability review is unfinished.
 

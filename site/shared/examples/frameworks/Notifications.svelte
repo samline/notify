@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte'
   import { createToaster, destroyToaster, toast } from '@samline/notify'
-  import '@samline/notify/styles.css'
+  import '@samline/notify/style.css'
   onMount(() => {
     createToaster({ richColors: true, closeButton: true })
     return () => destroyToaster()

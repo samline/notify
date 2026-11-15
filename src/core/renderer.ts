@@ -29,7 +29,7 @@ import {
   getDefaultSwipeDirections,
   getDocumentDirection,
   setAttrs,
-  setInnerHTML
+  setInnerHTML,
 } from './dom-helpers'
 import { CLOSE_ICON, getIcon, getLoaderMarkup } from './icons'
 import type { ToastState } from './state'
@@ -40,7 +40,7 @@ import {
   TIME_BEFORE_UNMOUNT,
   TOAST_LIFETIME,
   TOAST_WIDTH,
-  VISIBLE_TOASTS_AMOUNT
+  VISIBLE_TOASTS_AMOUNT,
 } from './constants'
 import type {
   Position,
@@ -51,7 +51,7 @@ import type {
   ToastOptions,
   ToastT,
   ToasterController,
-  ToasterOptions
+  ToasterOptions,
 } from './types'
 
 /**
@@ -96,7 +96,7 @@ export function mountToaster(
     // disable, or an array of KeyboardEvent.code names to customize.
     // The hotkey is ignored when the user is typing in an input
     // field (see onKeyDown).
-    hotkey = ['altKey', 'KeyT']
+    hotkey = ['altKey', 'KeyT'],
   } = options
 
   let destroyed = false
@@ -134,7 +134,7 @@ export function mountToaster(
     'aria-live': 'polite',
     'aria-relevant': 'additions text',
     'aria-atomic': 'false',
-    dir: dir === 'auto' ? getDocumentDirection() : dir
+    dir: dir === 'auto' ? getDocumentDirection() : dir,
   })
 
   if (className) container.className = className
@@ -169,7 +169,7 @@ export function mountToaster(
   const pendingMeasure = new Set<HTMLLIElement>()
   const resizeObserver =
     typeof ResizeObserver === 'function'
-      ? new ResizeObserver((entries) => {
+      ? new ResizeObserver(entries => {
           for (const entry of entries) pendingMeasure.add(entry.target as HTMLLIElement)
           if (measureFrame) return
           measureFrame = requestAnimationFrame(() => {
@@ -197,7 +197,7 @@ export function mountToaster(
   // the same logic.
   const startAutoDismiss = (id: ToastT['id'], durationOverride?: number): void => {
     if (destroyed) return
-    const target = activeMatchingToasts().find((t) => t.id === id)
+    const target = activeMatchingToasts().find(t => t.id === id)
     if (!target) return
     if ((target.type ?? 'normal') === 'loading') return
     const duration = durationOverride ?? target.duration ?? currentDuration ?? TOAST_LIFETIME
@@ -214,7 +214,7 @@ export function mountToaster(
     }
     const handle = setTimeout(() => {
       timers.delete(id)
-      const live = activeMatchingToasts().find((t) => t.id === id)
+      const live = activeMatchingToasts().find(t => t.id === id)
       try {
         live?.onAutoClose?.(live)
       } finally {
@@ -452,7 +452,7 @@ export function mountToaster(
       const toastNode = active?.closest<HTMLLIElement>('[data-notify-toast]')
       const toastKey = toastNode?.dataset['notifyKey']
       if (toastNode && toastKey && container.contains(toastNode)) {
-        const target = activeMatchingToasts().find((t) => getToastKey(t.id) === toastKey)
+        const target = activeMatchingToasts().find(t => getToastKey(t.id) === toastKey)
         if (target && target.dismissible !== false) {
           // Prevent Backspace from triggering browser back-nav.
           event.preventDefault()
@@ -474,7 +474,7 @@ export function mountToaster(
         tag === 'SELECT' ||
         target?.isContentEditable === true
       if (isEditable) return
-      const matches = currentHotkey.every((key) => {
+      const matches = currentHotkey.every(key => {
         if (key === 'ctrlKey' || key === 'control') return event.ctrlKey
         if (key === 'metaKey' || key === 'meta') return event.metaKey
         if (key === 'altKey' || key === 'alt') return event.altKey
@@ -510,7 +510,7 @@ export function mountToaster(
     const next = container.querySelector<HTMLLIElement>(
       '[data-notify-toast][data-visible="true"]:not([data-removed="true"])'
     )
-    const target = next && next !== leaving ? next : returnFocusTo
+    const target = next && !leaving.contains(next) ? next : returnFocusTo
     if (target && target.isConnected) {
       try {
         target.focus({ preventScroll: true })
@@ -532,8 +532,8 @@ export function mountToaster(
   const activeMatchingToasts = (): ToastT[] => {
     const all = getActiveToasts()
     return currentToasterId
-      ? all.filter((toast) => toast.toasterId === currentToasterId)
-      : all.filter((toast) => !toast.toasterId)
+      ? all.filter(toast => toast.toasterId === currentToasterId)
+      : all.filter(toast => !toast.toasterId)
   }
 
   const measureToastHeight = (node: HTMLLIElement, id: ToastT['id']): void => {
@@ -618,7 +618,7 @@ export function mountToaster(
       // in the scaled/translated "overlap" pose and the user
       // couldn't see them. Apply `currentExpand` to every toast.
       'data-expanded': String(Boolean(expanded || currentExpand)),
-      ...(toast.testId ? { 'data-testid': toast.testId } : {})
+      ...(toast.testId ? { 'data-testid': toast.testId } : {}),
     }) as HTMLLIElement
     nodeIds.set(li, toast.id)
     resizeObserver?.observe(li)
@@ -649,7 +649,7 @@ export function mountToaster(
       invert: currentInvert,
       richColors: currentRichColors,
       closeButtonAriaLabel: currentCloseButtonAriaLabel,
-      position: currentPosition
+      position: currentPosition,
     })
     li.dataset['type'] = type
     li.dataset['dismissible'] = String(dismissible)
@@ -710,7 +710,7 @@ export function mountToaster(
         // so a toaster.update({ closeButtonAriaLabel: ... }) takes
         // effect on every subsequent render. See Fix 15.
         'aria-label': currentCloseButtonAriaLabel,
-        type: 'button'
+        type: 'button',
       })
       setInnerHTML(btn, CLOSE_ICON)
       btn.addEventListener('click', () => {
@@ -728,7 +728,7 @@ export function mountToaster(
       if (typeof toast.custom === 'function') {
         const cleanup = toast.custom(customContainer, {
           id: toast.id,
-          dismiss: () => dismissToast(toast.id)
+          dismiss: () => dismissToast(toast.id),
         })
         if (typeof cleanup === 'function') customCleanups.set(toast.id, cleanup)
       } else {
@@ -754,7 +754,7 @@ export function mountToaster(
     // 4) Content (title + description).
     const content = createEl('div', { 'data-content': '' })
     const title = createEl('div', {
-      'data-title': ''
+      'data-title': '',
     })
     const titleValue = typeof toast.title === 'function' ? toast.title() : toast.title
     if (titleValue !== null && titleValue !== undefined && titleValue !== false) {
@@ -800,12 +800,12 @@ export function mountToaster(
     const btn = createEl('button', {
       'data-button': '',
       [dataAttr]: '',
-      type: 'button'
+      type: 'button',
     })
     if (action.label !== null && action.label !== undefined && action.label !== false) {
       btn.textContent = String(action.label)
     }
-    btn.addEventListener('click', (event) => {
+    btn.addEventListener('click', event => {
       try {
         action.onClick?.(event)
       } finally {
@@ -981,7 +981,7 @@ export function mountToaster(
         setAttrs(li, {
           'data-swipe-out': 'true',
           'data-swipe-direction': direction,
-          'data-removed': 'true'
+          'data-removed': 'true',
         })
         swipeOut = true
         try {
@@ -1024,7 +1024,7 @@ export function mountToaster(
     const interaction = interactions.get(toast.id) ?? {
       hovered: li.matches(':hover'),
       focused: li.contains(document.activeElement),
-      remainingMs: null
+      remainingMs: null,
     }
     interactions.set(toast.id, interaction)
     const onMouseEnter = (): void => {
@@ -1108,7 +1108,7 @@ export function mountToaster(
       () => li.removeEventListener('focusin', onFocusIn),
       () => li.removeEventListener('focusout', onFocusOut),
       () => li.removeEventListener('click', onClick),
-      () => li.removeEventListener('keydown', onActivationKeyDown)
+      () => li.removeEventListener('keydown', onActivationKeyDown),
     ]
     cleanups.set(toast.id, teardown)
   }
@@ -1181,7 +1181,7 @@ export function mountToaster(
           invert: currentInvert,
           richColors: currentRichColors,
           closeButtonAriaLabel: currentCloseButtonAriaLabel,
-          position: currentPosition
+          position: currentPosition,
         })
         if (previousSnapshot !== newSnapshot) {
           // Tear down the old interactions first so the next bindToastInteractions
@@ -1219,7 +1219,7 @@ export function mountToaster(
             // are set imperatively. See Fix 5 in the bug report.
             'data-promise': String(Boolean(toast.promise)),
             // Keep the busy state in sync when a promise toast settles.
-            'aria-busy': String(type === 'loading')
+            'aria-busy': String(type === 'loading'),
           })
           existingNode.className = cn(toast.className)
           if (toast.testId) existingNode.dataset['testid'] = toast.testId
@@ -1284,7 +1284,7 @@ export function mountToaster(
           'data-expanded': String(Boolean(expanded || currentExpand)),
           'data-y-position': curY,
           'data-x-position': curX,
-          'data-rich-colors': String(rich)
+          'data-rich-colors': String(rich),
         })
         existingNode.style.setProperty('--index', String(index))
         existingNode.style.setProperty('--toasts-before', String(index))
@@ -1309,7 +1309,7 @@ export function mountToaster(
       if (id !== undefined) {
         releaseCustom(id)
         heights.delete(id)
-        cleanups.get(id)?.forEach((fn) => fn())
+        cleanups.get(id)?.forEach(fn => fn())
         cleanups.delete(id)
         interactions.delete(id)
         pauseAutoDismiss(id)
@@ -1390,7 +1390,7 @@ export function mountToaster(
         ? window.getComputedStyle(node)
         : null
     const parseTimes = (value: string): number[] =>
-      value.split(',').map((part) => {
+      value.split(',').map(part => {
         const match = part.trim().match(/^([\d.]+)(ms|s)$/)
         if (!match) return 0
         const n = Number(match[1])
@@ -1400,7 +1400,7 @@ export function mountToaster(
     const delays = parseTimes(computedStyle?.transitionDelay ?? '')
     const properties = (computedStyle?.transitionProperty ?? '')
       .split(',')
-      .map((property) => property.trim())
+      .map(property => property.trim())
     const transitionCount = Math.max(durations.length, delays.length, properties.length)
     let longestMs = 0
     for (let index = 0; index < transitionCount; index += 1) {
@@ -1432,7 +1432,7 @@ export function mountToaster(
     return cancel
   }
 
-  const unsubscribe = state.subscribe((event) => {
+  const unsubscribe = state.subscribe(event => {
     if ('dismiss' in event && event.dismiss) {
       // Clear the auto-dismiss timer up-front so a second dismiss
       // source (the auto-dismiss timer firing after an external
@@ -1466,7 +1466,7 @@ export function mountToaster(
           node.remove()
           releaseCustom(event.id)
           heights.delete(event.id)
-          cleanups.get(event.id)?.forEach((fn) => fn())
+          cleanups.get(event.id)?.forEach(fn => fn())
           cleanups.delete(event.id)
           interactions.delete(event.id)
           // After the dismissed <li> is gone, re-render so the remaining
@@ -1493,7 +1493,7 @@ export function mountToaster(
         setAttrs(node, {
           'data-removed': 'false',
           'data-swipe-out': 'false',
-          'data-swiping': 'false'
+          'data-swiping': 'false',
         })
       }
     }
@@ -1551,7 +1551,9 @@ export function mountToaster(
         if (next.customAriaLabel !== undefined || next.containerAriaLabel !== undefined) {
           setAttrs(container, {
             'aria-label':
-              currentOptions.customAriaLabel ?? currentOptions.containerAriaLabel ?? 'Notifications'
+              currentOptions.customAriaLabel ??
+              currentOptions.containerAriaLabel ??
+              'Notifications',
           })
         }
         applyContainerStyles(container, {
@@ -1559,7 +1561,7 @@ export function mountToaster(
           mobileOffset: currentOptions.mobileOffset,
           gap: currentGap,
           width: TOAST_WIDTH,
-          style: currentStyle
+          style: currentStyle,
         })
       }
       renderAll()
@@ -1590,7 +1592,7 @@ export function mountToaster(
       rescueFocus(container)
       resizeObserver?.disconnect()
       container.remove()
-    }
+    },
   }
 
   // Render state that was published before mounting, not only future events.
@@ -1707,14 +1709,14 @@ const getContentSnapshot = (
       ? {
           label: normalizeForSnapshot(toast.action.label as RenderableOrFactory),
           closeOnClick: toast.action.closeOnClick,
-          onClick: normalizeForSnapshot(toast.action.onClick)
+          onClick: normalizeForSnapshot(toast.action.onClick),
         }
       : null,
     cancel: toast.cancel
       ? {
           label: normalizeForSnapshot(toast.cancel.label as RenderableOrFactory),
           closeOnClick: toast.cancel.closeOnClick,
-          onClick: normalizeForSnapshot(toast.cancel.onClick)
+          onClick: normalizeForSnapshot(toast.cancel.onClick),
         }
       : null,
     custom: normalizeForSnapshot(toast.custom),
@@ -1736,7 +1738,7 @@ const getContentSnapshot = (
     unstyled: resolvedUnstyled,
     invert: resolvedInvert,
     richColors: resolvedRichColors,
-    dismissible: toast.dismissible
+    dismissible: toast.dismissible,
   })
 }
 

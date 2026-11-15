@@ -31,7 +31,7 @@ The standalone build already handles this for its own first automatic mount.
 
 ## Toasts look like a plain list
 
-Import `@samline/notify/styles.css` in a bundled client entry, or link `dist/styles.css` for the standalone build. Make sure the CSS version matches the JavaScript version, and inspect the network response for a 404 or an HTML fallback page.
+Import `@samline/notify/style.css` in a bundled client entry, or link `dist/style.css` for the standalone build. Make sure the CSS version matches the JavaScript version, and inspect the network response for a 404 or an HTML fallback page.
 
 ## Duplicate notifications or callbacks
 

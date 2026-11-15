@@ -1,22 +1,15 @@
 import { spawn } from 'node:child_process'
+import { readFileSync } from 'node:fs'
+const { dev = {} } = JSON.parse(
+  readFileSync(new URL('../project.config.json', import.meta.url), 'utf8')
+)
 const children = [
-  ['landing', '4330'],
-  ['docs', '4331'],
+  ['landing', String(dev.landingPort ?? 4330)],
+  ['docs', String(dev.docsPort ?? 4331)],
 ].map(([workspace, port]) =>
   spawn(
-    'npm',
-    [
-      'run',
-      'dev',
-      '--workspace',
-      workspace,
-      '--',
-      '--host',
-      '127.0.0.1',
-      '--port',
-      port,
-      '--ignore-lock',
-    ],
+    'bun',
+    ['run', '--cwd', workspace, 'dev', '--host', '127.0.0.1', '--port', port, '--ignore-lock'],
     { stdio: 'inherit' }
   )
 )

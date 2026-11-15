@@ -1,0 +1,75 @@
+# The website's own checks and the package smoke tests the managed CI does not
+# run (not managed by the family template). pnpm installs, Bun runs the scripts.
+name: Website
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: site-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  website:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22
+          cache: pnpm
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
+        with:
+          bun-version: 1.4.4
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm audit
+      - name: Verify package exports, contents and the classic script
+        run: |
+          bun run build
+          bun run test:package
+          pnpm --dir site exec playwright install chromium
+          bun run test:package:browser
+          pnpm pack --dry-run
+      - run: bun run site:check
+      - run: bun run site:format:check
+      - run: bun run site:test
+      - run: bun run --cwd site test:adaptation
+      - run: bun run site:build
+      - run: bun run site:check:release
+
+  # The browser suite runs as three Playwright projects split by measured
+  # time (see site/playwright.config.ts), one runner each. Chromium is
+  # installed without --with-deps: the runner already has its libraries.
+  browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        project: [files, scenarios, site]
+    name: browser (${{ matrix.project }})
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22
+          cache: pnpm
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
+        with:
+          bun-version: 1.4.4
+      - run: pnpm install --frozen-lockfile
+      # Copied CDN examples run against this checkout's own standalone build.
+      - run: bun run build
+      - run: pnpm --dir site exec playwright install chromium
+        timeout-minutes: 5
+      - run: bun run site:build
+      - run: pnpm --dir site exec playwright test --project=${{ matrix.project }}

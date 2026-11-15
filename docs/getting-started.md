@@ -24,7 +24,7 @@ The controller is returned with a small, focused method surface. `update()` retu
 
 ```ts
 import { createToaster, toast } from '@samline/notify'
-import '@samline/notify/styles.css'
+import '@samline/notify/style.css'
 
 const toaster = createToaster({ position: 'bottom-right', richColors: true })
 
@@ -103,7 +103,7 @@ The browser IIFE bundle ships a single global (`window.Notify`) that wraps `toas
 
 ```ts
 import { browser, Notify } from '@samline/notify'
-import '@samline/notify/styles.css'
+import '@samline/notify/style.css'
 
 browser === Notify // true
 window.MyNotify = { ...browser }
@@ -145,7 +145,7 @@ async function saveProfile(patch: object): Promise<{ name: string }> {
   const response = await fetch('/api/profile', {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(patch)
+    body: JSON.stringify(patch),
   })
 
   if (!response.ok) {
@@ -157,8 +157,8 @@ async function saveProfile(patch: object): Promise<{ name: string }> {
 
 toast.promise(saveProfile({ name: 'Nora' }), {
   loading: 'Saving profile…',
-  success: (profile) => `Saved as ${profile.name}`,
-  error: 'Could not save your profile'
+  success: profile => `Saved as ${profile.name}`,
+  error: 'Could not save your profile',
 })
 ```
 

@@ -1,50 +1,31 @@
-# Dependencies
+# Managed by package-landing-docs (family/templates/package). Edit there, then run node family/scripts/sync.mjs.
 node_modules/
-
-# Build output
 dist/
 coverage/
 .astro/
+.vite/
+.cache/
+*.tsbuildinfo
+*.tgz
+
+# Installs use pnpm only (pnpm-lock.yaml). Lockfiles of other package
+# managers are never committed.
+bun.lock
+bun.lockb
+package-lock.json
+yarn.lock
+
+# Browser-test output
 test-results/
 playwright-report/
+blob-report/
+playwright/.cache/
 
-# OS files
-.DS_Store
-Thumbs.db
-
-# Editor / IDE
-.idea/
-.vscode/
-*.swp
-*.swo
-
-# Logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-bun-debug.log*
-
-# Environment
+# Local environment, logs, OS metadata and per-machine agent config
 .env
-.env.local
-.env.*.local
-
-# Bun legacy binary lockfile (the modern text lockfile is `bun.lock` and IS tracked)
-bun.lockb
-
-# Auto-generated
-skills-lock.json
-# La website (site/) registra la procedencia de sus skills en un lockfile versionado.
-!site/skills-lock.json
-
-# Agent internal state (NOT versioned, solo existe en local)
-.mavis/
-
-# AGENTS.md y .agents/ SÍ se versionan (decisión 2026-07-13)
-# .local/ deprecado desde 2026-07-13 — usar .agents/ en su lugar
-scripts-tmp-*.mjs
-_tmp-*.mjs
-
-# npm pack output
-*.tgz
+.env.*
+!.env.example
+*.log
+.DS_Store
+.claude/settings.local.json
+.claude/launch.json

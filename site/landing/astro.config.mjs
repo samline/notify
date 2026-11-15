@@ -26,7 +26,10 @@ export default defineConfig({
     resolve: { alias: notifyAliases },
     plugins: [
       tailwind(),
-      developmentRedirect({ origin: 'http://127.0.0.1:4331', include: project.docsBase }),
+      developmentRedirect({
+        origin: `http://127.0.0.1:${project.dev.docsPort}`,
+        include: project.docsBase,
+      }),
     ],
     build: { assetsInlineLimit: inlineSmallStylesheets },
     define: { 'import.meta.env.BASE_URL': JSON.stringify(project.base) },

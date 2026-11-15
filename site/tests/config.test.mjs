@@ -53,8 +53,8 @@ test('CDN is optional and keeps stylesheet and standalone script separate', () =
   const delivery = resolveProject(fixture()).delivery
   assert.ok(delivery.cdnScript.startsWith('https://'))
   assert.ok(delivery.cdnStylesheet.startsWith('https://'))
-  assert.ok(delivery.cdnScript.endsWith('/dist/browser/global.global.js'))
-  assert.ok(delivery.cdnStylesheet.endsWith('/dist/styles.css'))
+  assert.ok(delivery.cdnScript.endsWith('/dist/browser/notify.global.js'))
+  assert.ok(delivery.cdnStylesheet.endsWith('/dist/style.css'))
   const candidate = fixture()
   candidate.delivery = { cdnScript: null, cdnStylesheet: null }
   assert.deepEqual(resolveProject(candidate).delivery, {

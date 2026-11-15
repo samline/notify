@@ -4,6 +4,7 @@ import { tmpdir } from 'node:os'
 import { join, basename } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { execFileSync } from 'node:child_process'
+import { existsSync } from 'node:fs'
 const root = fileURLToPath(new URL('../', import.meta.url))
 const temporary = await mkdtemp(join(tmpdir(), 'package-site-adaptation-'))
 const ignored = new Set([
@@ -20,7 +21,11 @@ try {
   // build exactly like the real repository does.
   const workspace = join(temporary, 'site')
   await cp(root, workspace, { recursive: true, filter: path => !ignored.has(basename(path)) })
-  await symlink(join(root, 'node_modules'), join(workspace, 'node_modules'), 'dir')
+  // pnpm gives every workspace package its own node_modules.
+  for (const part of ['', 'landing', 'docs', 'shared']) {
+    if (existsSync(join(root, part, 'node_modules')))
+      await symlink(join(root, part, 'node_modules'), join(workspace, part, 'node_modules'), 'dir')
+  }
   await writeFile(join(temporary, 'CHANGELOG.md'), '# Fixture changelog\n')
   await cp(join(root, '../skills'), join(temporary, 'skills'), { recursive: true })
   await cp(join(root, '../docs'), join(temporary, 'docs'), { recursive: true })
@@ -40,7 +45,7 @@ try {
   for (const base of ['/', '/tools/widget/']) {
     config.site.url = 'https://example.com' + base
     await writeFile(join(workspace, 'project.config.json'), JSON.stringify(config))
-    execFileSync('npm', ['run', 'build'], { cwd: workspace, stdio: 'pipe' })
+    execFileSync('bun', ['run', 'build'], { cwd: workspace, stdio: 'pipe' })
     for (const route of [
       'index.html',
       'examples/index.html',

@@ -170,7 +170,7 @@ for (const preset of presets) {
           expect(files.CSS).not.toMatch(new RegExp(`\\b${tag}\\b`))
       }
       if (mode === 'esm')
-        expect(files.JavaScript.indexOf('@samline/notify/styles.css')).toBeLessThan(
+        expect(files.JavaScript.indexOf('@samline/notify/style.css')).toBeLessThan(
           files.JavaScript.indexOf('./style.css')
         )
       for (const variant of ['separate', 'complete']) {
@@ -211,7 +211,7 @@ for (const preset of presets) {
                     const css =
                       args.path === './style.css'
                         ? files.CSS
-                        : await readFile(new URL('../../src/styles.css', import.meta.url), 'utf8')
+                        : await readFile(new URL('../../src/style.css', import.meta.url), 'utf8')
                     return {
                       contents: `const sheet = document.createElement('style'); sheet.textContent = ${JSON.stringify(css)}; document.head.append(sheet)`,
                       loader: 'js',
@@ -243,8 +243,8 @@ for (const preset of presets) {
             body: await readFile(
               new URL(
                 route.request().url() === project.delivery.cdnScript
-                  ? '../../dist/browser/global.global.js'
-                  : '../../dist/styles.css',
+                  ? '../../dist/browser/notify.global.js'
+                  : '../../dist/style.css',
                 import.meta.url
               )
             ),
