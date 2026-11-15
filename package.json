@@ -4,7 +4,7 @@
   "description": "Accessible, dependency-free toast notifications for JavaScript and TypeScript, with ESM, CommonJS, and browser builds.",
   "type": "module",
   "license": "MIT",
-  "homepage": "https://samline.github.io/notify/",
+  "homepage": "https://samline.github.io/notify",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/samline/notify.git"
