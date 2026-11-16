@@ -96,7 +96,7 @@ package-specific API content and runtime publication remain separate.
 - 5.0.0 breaking renames: `dist/browser/notify.global.js` (the old `global.global.js` is still built as an identical alias), `style.css` (the `styles.css` export and file stay as aliases), and no `default` export from the classic script.
 - `site/content-audit.json` records sha256 hashes of every reviewed source. After reviewing a change to them, refresh the hashes or `bun run site:check:release` fails.
 - The website's checks, the package smoke tests and the three browser projects run in `.github/workflows/site.yml`; the managed `ci.yml` only runs the family checks.
-- The site's `@samline/notify` dependency stays `^4.0.0` until 5.0.0 is published; the site builds from `src/` through `site/shared/lib/notify-runtime.mjs`.
+- The site depends on the published `@samline/notify` `^5.0.0` and `@samline/drawer` `6.0.0`, but builds the runtime from `src/` through `site/shared/lib/notify-runtime.mjs`.
 
 <!-- samline:family:start -->
 

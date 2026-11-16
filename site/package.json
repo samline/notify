@@ -28,7 +28,9 @@
     "check:identity": "node scripts/check-identity.mjs --package-root .."
   },
   "devDependencies": {
+    "@astrojs/compiler-rs": "0.5.1",
     "@playwright/test": "1.62.1",
+    "@samline/notify": "^5.0.0",
     "@types/react": "^19.3.0",
     "@vue/compiler-sfc": "^3.5.44",
     "axe-core": "^4.14.0",
@@ -37,6 +39,7 @@
     "prettier": "^3.9.10",
     "prettier-plugin-astro": "^1.1.1",
     "react": "^19.3.1",
-    "svelte": "^5.57.3"
+    "svelte": "^5.57.3",
+    "typescript": "^5.9.3"
   }
 }
