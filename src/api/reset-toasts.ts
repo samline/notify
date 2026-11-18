@@ -4,7 +4,7 @@
 
 import { resetToastState, ToastState } from '../core/state'
 
-export function resetToasts(): void {
+export const resetToasts = (): void => {
   try {
     ToastState.dismiss()
   } finally {

@@ -7,7 +7,7 @@ import { canUseDOM } from '../core/dom-helpers'
 import { clearToaster, setToaster, getToasterInstance } from './toaster-instance'
 import type { ToasterController, ToasterOptions } from '../core/types'
 
-export function createToaster(options?: ToasterOptions): ToasterController {
+export const createToaster = (options?: ToasterOptions): ToasterController => {
   if (!canUseDOM()) {
     throw new Error('createToaster() requires a DOM environment (browser)')
   }

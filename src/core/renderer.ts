@@ -62,11 +62,11 @@ import type {
  * without mutating the singleton; production callers pass the shared
  * `ToastState` from `core/state.ts`.
  */
-export function mountToaster(
+export const mountToaster = (
   root: HTMLElement,
   options: ToasterOptions = {},
   state: typeof ToastState = DefaultToastState
-): ToasterController {
+): ToasterController => {
   if (!canUseDOM()) {
     throw new Error('mountToaster() requires a DOM environment')
   }
@@ -693,8 +693,7 @@ export function mountToaster(
   }
 
   const fillToastContent = (li: HTMLLIElement, toast: ToastT): void => {
-    // Clear any prior children.
-    while (li.firstChild) li.removeChild(li.firstChild)
+    li.replaceChildren()
 
     const type = toast.type ?? 'normal'
     const closeBtn = toast.closeButton ?? currentCloseButton
@@ -1763,13 +1762,13 @@ const normalizeForSnapshot = (value: unknown): unknown => {
  * Minimal CSS.escape polyfill for older runtimes. Modern jsdom (used
  * by the test suite) and every evergreen browser expose it natively.
  */
-function cssEscape(value: string): string {
+const cssEscape = (value: string): string => {
   if (typeof CSS !== 'undefined' && typeof CSS.escape === 'function') {
     return CSS.escape(value)
   }
   return value.replace(/["\\]/g, '\\$&')
 }
 
-function getToastKey(id: ToastT['id']): string {
+const getToastKey = (id: ToastT['id']): string => {
   return `${typeof id === 'number' ? 'number' : 'string'}:${id}`
 }

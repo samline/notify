@@ -11,6 +11,7 @@ marked as unpublished have a Git tag but are not present in the npm registry.
 
 ### Changed
 
+- Internal: source uses arrow functions throughout, and clearing rendered content uses `replaceChildren()`. No API or behavior change.
 - Internal: the toast store behind `ToastState` is a closure-based object instead of a class instance, following the family rule (no classes or `this`). Its public members and behavior are unchanged; the former private helpers are no longer reachable on the object.
 
 ## [5.0.0] - 2026-11-15

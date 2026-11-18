@@ -22,7 +22,7 @@ export const CLOSE_ICON = `<svg aria-hidden="true" xmlns="http://www.w3.org/2000
  * Return the SVG markup for the given toast type, or `null` for types
  * without a built-in icon (`normal`, `action`, `default`, `loading`).
  */
-export function getIcon(type: ToastType | undefined): string | null {
+export const getIcon = (type: ToastType | undefined): string | null => {
   switch (type) {
     case 'success':
       return SUCCESS_ICON
@@ -41,7 +41,7 @@ export function getIcon(type: ToastType | undefined): string | null {
  * Twelve-bar spinner, mounted as the loading icon. Returns trusted HTML
  * (no user input); safe to inject via `innerHTML`.
  */
-export function getLoaderMarkup(): string {
+export const getLoaderMarkup = (): string => {
   const bars = Array.from({ length: 12 }, () => '<div class="notify-loading-bar"></div>').join('')
   return `<div class="notify-loading-wrapper" data-visible="true"><div class="notify-spinner">${bars}</div></div>`
 }

@@ -6,6 +6,6 @@
 import { createToaster } from './create-toaster'
 import type { ToasterController, ToasterOptions } from '../core/types'
 
-export function configureToaster(options?: ToasterOptions): ToasterController {
+export const configureToaster = (options?: ToasterOptions): ToasterController => {
   return createToaster(options)
 }

@@ -4,6 +4,6 @@
 import { getToasterInstance } from './toaster-instance'
 import type { ToasterController } from '../core/types'
 
-export function getToaster(): ToasterController | null {
+export const getToaster = (): ToasterController | null => {
   return getToasterInstance()
 }

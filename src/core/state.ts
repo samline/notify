@@ -419,7 +419,7 @@ export { ToastState }
  * Reset the singleton — used by tests and `resetToasts()` to ensure
  * each scenario starts from a clean counter and empty queues.
  */
-export function resetToastState(): void {
+export const resetToastState = (): void => {
   resetEpoch += 1
   ToastState.subscribers = []
   ToastState.toasts = []

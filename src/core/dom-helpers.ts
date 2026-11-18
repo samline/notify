@@ -8,7 +8,7 @@ import { MOBILE_VIEWPORT_OFFSET, VIEWPORT_OFFSET } from './constants'
  * Join class names, dropping falsy values. Mirrors the `cn` helper that
  * previously lived in the React renderer's `_runtime.ts`.
  */
-export function cn(...classes: Array<string | undefined | null | false>): string {
+export const cn = (...classes: Array<string | undefined | null | false>): string => {
   return classes.filter(Boolean).join(' ')
 }
 
@@ -16,7 +16,7 @@ export function cn(...classes: Array<string | undefined | null | false>): string
  * True when the runtime exposes a real `window` and `document`. Lets
  * api methods bail out cleanly during SSR / Node imports.
  */
-export function canUseDOM(): boolean {
+export const canUseDOM = (): boolean => {
   return typeof window !== 'undefined' && typeof document !== 'undefined'
 }
 
@@ -25,7 +25,7 @@ export function canUseDOM(): boolean {
  * helper: it honors an explicit `<html dir="auto|ltr|rtl">` attribute and
  * otherwise falls back to the computed CSS direction.
  */
-export function getDocumentDirection(): Direction {
+export const getDocumentDirection = (): Direction => {
   if (!canUseDOM()) return 'ltr'
 
   const dirAttribute = document.documentElement.getAttribute('dir')
@@ -48,7 +48,7 @@ export function getDocumentDirection(): Direction {
  * (e.g. `"top-right"` → `["top", "right"]`,
  * `"bottom-center"` → `["bottom"]`).
  */
-export function getDefaultSwipeDirections(position: string): SwipeDirection[] {
+export const getDefaultSwipeDirections = (position: string): SwipeDirection[] => {
   const valid: readonly string[] = ['top', 'right', 'bottom', 'left']
   return position.split('-').filter((part): part is SwipeDirection => valid.includes(part))
 }
@@ -61,10 +61,10 @@ export function getDefaultSwipeDirections(position: string): SwipeDirection[] {
  *
  * Numeric values get a `px` suffix; strings are forwarded verbatim.
  */
-export function assignOffset(
+export const assignOffset = (
   defaultOffset: Offset | undefined,
   mobileOffset: Offset | undefined
-): Record<string, string> {
+): Record<string, string> => {
   const styles: Record<string, string> = {}
 
   ;[defaultOffset, mobileOffset].forEach((offset, index) => {
@@ -103,11 +103,11 @@ export function assignOffset(
  * other valid HTML attribute) and a list of children (string, number,
  * Node, or null).
  */
-export function createEl<K extends keyof HTMLElementTagNameMap>(
+export const createEl = <K extends keyof HTMLElementTagNameMap>(
   tag: K,
   attrs?: Record<string, string | number | boolean | undefined | null>,
   children?: Array<Node | string | number | null | undefined>
-): HTMLElementTagNameMap[K] {
+): HTMLElementTagNameMap[K] => {
   const element = document.createElement(tag)
   if (attrs) setAttrs(element, attrs)
   if (children) {
@@ -127,10 +127,10 @@ export function createEl<K extends keyof HTMLElementTagNameMap>(
  * Batch `setAttribute` with boolean-aware semantics: `true` sets the
  * attribute to an empty string, `false`/`null`/`undefined` removes it.
  */
-export function setAttrs(
+export const setAttrs = (
   el: Element,
   attrs: Record<string, string | number | boolean | undefined | null>
-): void {
+): void => {
   for (const [name, raw] of Object.entries(attrs)) {
     if (raw === false || raw === null || raw === undefined) {
       el.removeAttribute(name)
@@ -149,11 +149,11 @@ export function setAttrs(
  * can stash it for `destroy()` and never have to thread the same
  * `(target, type, handler)` triple twice.
  */
-export function addListener<K extends keyof HTMLElementEventMap>(
+export const addListener = <K extends keyof HTMLElementEventMap>(
   target: EventTarget,
   type: K | string,
   handler: EventListenerOrEventListenerObject
-): () => void {
+): (() => void) => {
   target.addEventListener(type as string, handler as EventListener)
   return () => target.removeEventListener(type as string, handler as EventListener)
 }
@@ -163,6 +163,6 @@ export function addListener<K extends keyof HTMLElementEventMap>(
  * return the element. Use sparingly — only for trusted SVG strings we
  * generate ourselves (see `core/icons.ts`).
  */
-export function setInnerHTML(el: Element, html: string): void {
+export const setInnerHTML = (el: Element, html: string): void => {
   el.innerHTML = html
 }

@@ -4,7 +4,7 @@
 import { toast } from './toast'
 import { clearToaster, getToasterInstance } from './toaster-instance'
 
-export function destroyToaster(): void {
+export const destroyToaster = (): void => {
   const current = getToasterInstance()
   if (!current) return
   // Publish dismissal events while the renderer is still subscribed so
