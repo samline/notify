@@ -30,9 +30,9 @@ fn.mockImplementation(() => 'result')
 fn.mockImplementationOnce(() => 'once')
 
 // Clear/reset
-fn.mockClear() // Clear call history
-fn.mockReset() // Clear history + implementation
-fn.mockRestore() // Restore original (for spies)
+fn.mockClear()    // Clear call history
+fn.mockReset()    // Clear history + implementation
+fn.mockRestore()  // Restore original (for spies)
 ```
 
 ## Spying
@@ -57,13 +57,13 @@ vi.spyOn(obj, 'prop', 'get').mockReturnValue('value')
 ```ts
 // Hoisted to top of file
 vi.mock('./module', () => ({
-  fn: vi.fn()
+  fn: vi.fn(),
 }))
 
 // Partial mock
 vi.mock('./module', async (importOriginal) => ({
   ...(await importOriginal()),
-  specificFn: vi.fn()
+  specificFn: vi.fn(),
 }))
 
 // Spy mode - keep implementation
@@ -88,6 +88,38 @@ vi.doUnmock('./config')
 vi.unmock('./module') // Hoisted
 ```
 
+## Conditional Mocking — vi.when (v5)
+
+Argument-specific spy behaviors:
+
+```ts
+vi.when(spy)
+  .calledWith(1).thenReturn('one')
+  .calledWith(2).thenReturn('two')
+
+// then* actions: thenReturn / thenThrow / thenResolve / thenReject (+ *Once)
+// options: { times }, second arg { onUnmatched: 'throw' | 'passthrough' | fn }
+
+vi.isWhenChain(w)  // type guard for a When chain
+```
+
+See [features-mocking](features-mocking.md) for FIFO/LIFO matching and `toHaveBeenExhausted`.
+
+## Assertion Helpers — vi.defineHelper (4.1+)
+
+Wrap reusable assertion functions so failures point at the **call site**, not inside the helper:
+
+```ts
+const expectValidUser = vi.defineHelper((user: unknown) => {
+  expect(user).toHaveProperty('id')
+  expect(user).toHaveProperty('email')
+})
+
+test('returns a valid user', async () => {
+  expectValidUser(await fetchUser('alice')) // failures reported here
+})
+```
+
 ## Reset Modules
 
 ```ts
@@ -103,13 +135,20 @@ await vi.dynamicImportSettled()
 ```ts
 vi.useFakeTimers()
 
+// Choose which timers to fake (toFake and toNotFake are mutually exclusive)
+vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] })
+vi.useFakeTimers({ toNotFake: ['setInterval'] })
+
+// v5: Temporal is faked alongside Date when present on globalThis;
+// exclude it with toNotFake: ['Temporal']
+
 setTimeout(() => console.log('done'), 1000)
 
 // Advance time
 vi.advanceTimersByTime(1000)
-vi.advanceTimersByTimeAsync(1000) // For async callbacks
+vi.advanceTimersByTimeAsync(1000)  // For async callbacks
 vi.advanceTimersToNextTimer()
-vi.advanceTimersToNextFrame() // requestAnimationFrame
+vi.advanceTimersToNextFrame()      // requestAnimationFrame
 
 // Run all timers
 vi.runAllTimers()
@@ -132,9 +171,10 @@ vi.useRealTimers()
 ```ts
 vi.setSystemTime(new Date('2024-01-01'))
 expect(new Date().getFullYear()).toBe(2024)
+// v5: also drives Temporal.Now when Temporal is available
 
-vi.getMockedSystemTime() // Get mocked date
-vi.getRealSystemTime() // Get real time (ms)
+vi.getMockedSystemTime()  // Get mocked date
+vi.getRealSystemTime()    // Get real time (ms)
 ```
 
 ## Global/Env Mocking
@@ -158,7 +198,7 @@ Run code before imports:
 const mock = vi.hoisted(() => vi.fn())
 
 vi.mock('./module', () => ({
-  fn: mock // Can reference hoisted variable
+  fn: mock, // Can reference hoisted variable
 }))
 ```
 
@@ -166,16 +206,16 @@ vi.mock('./module', () => ({
 
 ```ts
 // Wait for callback to succeed
-await vi.waitFor(
-  async () => {
-    const el = document.querySelector('.loaded')
-    expect(el).toBeTruthy()
-  },
-  { timeout: 5000, interval: 100 }
-)
+await vi.waitFor(async () => {
+  const el = document.querySelector('.loaded')
+  expect(el).toBeTruthy()
+}, { timeout: 5000, interval: 100 })
 
 // Wait for truthy value
-const element = await vi.waitUntil(() => document.querySelector('.loaded'), { timeout: 5000 })
+const element = await vi.waitUntil(
+  () => document.querySelector('.loaded'),
+  { timeout: 5000 }
+)
 ```
 
 ## Mock Object
@@ -185,16 +225,16 @@ Mock all methods of an object:
 ```ts
 const original = {
   method: () => 'real',
-  nested: { fn: () => 'nested' }
+  nested: { fn: () => 'nested' },
 }
 
 const mocked = vi.mockObject(original)
-mocked.method() // undefined (mocked)
+mocked.method()  // undefined (mocked)
 mocked.method.mockReturnValue('mocked')
 
 // Spy mode
 const spied = vi.mockObject(original, { spy: true })
-spied.method() // 'real'
+spied.method()  // 'real'
 expect(spied.method).toHaveBeenCalled()
 ```
 
@@ -203,7 +243,7 @@ expect(spied.method).toHaveBeenCalled()
 ```ts
 vi.setConfig({
   testTimeout: 10_000,
-  hookTimeout: 10_000
+  hookTimeout: 10_000,
 })
 
 vi.resetConfig()
@@ -212,8 +252,8 @@ vi.resetConfig()
 ## Global Mock Management
 
 ```ts
-vi.clearAllMocks() // Clear all mock call history
-vi.resetAllMocks() // Reset + clear implementation
+vi.clearAllMocks()   // Clear all mock call history
+vi.resetAllMocks()   // Reset + clear implementation
 vi.restoreAllMocks() // Restore originals (spies)
 ```
 
@@ -239,11 +279,12 @@ vi.mocked(fn, { partial: true }).mockResolvedValue({ ok: true })
 
 - `vi.mock` is hoisted - use `vi.doMock` for dynamic mocking
 - `vi.hoisted` lets you reference variables in mock factories
-- Use `vi.spyOn` to spy on existing methods
+- Use `vi.spyOn` to spy on existing methods (v4: supports constructors)
+- Use `vi.when` for argument-specific behaviors and `vi.defineHelper` for assertion helpers
 - Fake timers require explicit setup and teardown
 - `vi.waitFor` retries until assertion passes
 
-<!--
+<!-- 
 Source references:
 - https://vitest.dev/api/vi.html
 -->
