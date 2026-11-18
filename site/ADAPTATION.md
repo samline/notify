@@ -44,7 +44,7 @@ When updating this template from Ticker, read UPSTREAM.md and compare committed 
 
 Preserve the root PageSpeed performance contract and its app/shared references in every adapted package. Record that project's own performance baseline and dated results; keep template noindex until its content audit is complete. Do not substitute Ticker scores, local checks or a queued deploy for verified live performance.
 
-The repository also includes ten upstream skills and skills-lock.json. Follow .agents/README.md to merge appropriate guides and provenance into an existing package without overwriting its agent tooling. Keep downloaded skills intact and keep the adaptation skill and PageSpeed contract current.
+Agent work skills live once, in the repository root (`../.agents/skills`, recorded in `../skills-lock.json`). Keep downloaded skills intact and keep the PageSpeed contract current.
 
 ## Adaptation review — Drawer lessons, 2026-10-19
 
@@ -54,7 +54,7 @@ A CSS fingerprint cannot validate markup, useful demos or content coverage. Pres
 
 Development and production are separate checks: two Astro compilers cannot share ambiguous /src module URLs through an HTML-only proxy. Dev article links redirect to the Docs origin, while shared docs landingHref returns Home/Examples links to their own origin; production keeps the combined same-origin artifact. Review Home → Examples → Docs → Home in the browser and inspect for compilation overlays. Do not claim “all reviewed” from existing automated checks alone.
 
-Before calling a package adaptation complete, reconcile the capability matrix, onboarding and original documentation using .agents/skills/package-site/references/content-completeness.md. A browser package may integrate with frameworks through their client lifecycle without exporting adapters: explain that boundary and test actual code instead of claiming an adapter exists. Example count follows distinct useful tasks, not a template quota. Scan nested Starlight sources, preserve corrected information and old fragments with actual destinations, then retire only the superseded application within the maintainer's authorized scope.
+Before calling a package adaptation complete, reconcile the capability matrix, onboarding and original documentation using the package-site skill's references/content-completeness.md in the template. A browser package may integrate with frameworks through their client lifecycle without exporting adapters: explain that boundary and test actual code instead of claiming an adapter exists. Example count follows distinct useful tasks, not a template quota. Scan nested Starlight sources, preserve corrected information and old fragments with actual destinations, then retire only the superseded application within the maintainer's authorized scope.
 
 ## Package API migration completeness
 

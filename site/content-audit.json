@@ -128,7 +128,7 @@
   "sources": [
     {
       "source": "CHANGELOG.md",
-      "sha256": "f71e41001e5b9120f2d2fc44c2f1c1f70528b4b42e96e7a14c6c4302975401a0",
+      "sha256": "210781d37919c4c9abe787c4613e48b16d4dee4e693c76335d795899c3d80fe1",
       "destination": "docs/src/content.config.ts",
       "reviewed": true
     },
@@ -421,31 +421,31 @@
     },
     {
       "source": "src/api/configure-toaster.ts",
-      "sha256": "1086ec1a482849b191c6abcc82719e8473e620bca5b001cb3c5a5d8d3662e727",
+      "sha256": "2262f8cbc6cbc051a21861a59cab45a910c10d4996596b4ce6f43ce313533328",
       "destination": "docs/src/content/docs/api/configure-toaster.md",
       "reviewed": true
     },
     {
       "source": "src/api/create-toaster.ts",
-      "sha256": "8ed2f4113a25b2bd1055d008146d3150fb2824c3895ac045600a4b5bb1481d5a",
+      "sha256": "de4bd6647d798ce28161b2ed230d39b967d367fadcdd263d9f9eaf929ac12cca",
       "destination": "docs/src/content/docs/api/create-toaster.md",
       "reviewed": true
     },
     {
       "source": "src/api/destroy-toaster.ts",
-      "sha256": "7882e3219ed2fd750aa90c64947ce6df0cee112b19cc7aa68cb50661f4debf65",
+      "sha256": "3d9a36d0502446928e727e952caea274c01c9d84fc510be6416d3a6d5e9e92f7",
       "destination": "docs/src/content/docs/api/destroy-toaster.md",
       "reviewed": true
     },
     {
       "source": "src/api/get-toaster.ts",
-      "sha256": "b032be979b0cbeefaa2adb4432016afd87b29eea2fa2c3791727de65cee92b6e",
+      "sha256": "97b402c405577e9e5636e0e0dfddf7a2eeeef4c86e8e392f579a5d592f4a1f2d",
       "destination": "docs/src/content/docs/api/get-toaster.md",
       "reviewed": true
     },
     {
       "source": "src/api/reset-toasts.ts",
-      "sha256": "e600d9eabefab4d51f5818134d638a502919c19ddf315b56d6d58bef674fdbae",
+      "sha256": "27bafa7ba356301e234d9197629ab1ed98e263c1cb7e6b376bb6335f73bbab02",
       "destination": "docs/src/content/docs/api/reset-toasts.md",
       "reviewed": true
     },
@@ -487,13 +487,13 @@
     },
     {
       "source": "src/core/dom-helpers.ts",
-      "sha256": "2fa1c67613d0a9f13eba550b95fdb188b8c2aa874c6a5e7e4d2f1c7b2db78052",
+      "sha256": "3fd710ff4387b9a73adbfc9fbbb4a814dab165a2d37216aafe6c91121c46af8b",
       "destination": "docs/src/content/docs/reference/api.md",
       "reviewed": true
     },
     {
       "source": "src/core/icons.ts",
-      "sha256": "6a2e482789428c6667af7d888a56bbd4ca172864cdd967019020c89a99d426bc",
+      "sha256": "894fa3d3401e9a91490fa9b88f0293758c41f9c9fb6b64f3d42da4191c2afe76",
       "destination": "docs/src/content/docs/reference/api.md",
       "reviewed": true
     },
@@ -505,13 +505,13 @@
     },
     {
       "source": "src/core/renderer.ts",
-      "sha256": "410b27716d494c0b9287e00846a7b02783151776da866f923e6ea9deb43cf1a8",
+      "sha256": "bbf7b3bea27beb4883ca2393561adcedc84b0f269bf0af9ad077d7c3d5f54014",
       "destination": "docs/src/content/docs/guides/toast-lifecycle.mdx",
       "reviewed": true
     },
     {
       "source": "src/core/state.ts",
-      "sha256": "f4a17c054e035aed082b6ab50baa9e975e70a0e7e499e74d0bd02ef1c478f634",
+      "sha256": "1549304f14bf158676985039c3a1e03d13be856cf2f0997166f75885608235c1",
       "destination": "docs/src/content/docs/guides/toast-lifecycle.mdx",
       "reviewed": true
     },

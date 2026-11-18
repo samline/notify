@@ -164,7 +164,7 @@ The capability review recorded user tasks, observable outcomes, limitations and 
 
 An accent choice must come from the maintainer or an approved brief. The importer leaves `content-audit.json.themeReview` pending; record the preference source and actual light/dark values after confirmation. `check:release` rejects missing or mismatched theme review. The default palette remains the neutral reference, not an assumed choice for every package.
 
-`check:design` protects source stylesheet fingerprints, not complete route composition or useful product demos. Replace the counter's content and controls, preserve multi-scenario Home tabs where relevant, reuse the same real preview across the site, and supply actual complete/split source for every supported loading mode. Keep generated scripts/CSS out of client translation catalogs. Review all sections beside the pinned Ticker reference and keep installation concise while preserving the full runtime reference elsewhere. See [ADAPTATION.md](ADAPTATION.md) and [the skill](.agents/skills/package-site/SKILL.md).
+`check:design` protects source stylesheet fingerprints, not complete route composition or useful product demos. Replace the counter's content and controls, preserve multi-scenario Home tabs where relevant, reuse the same real preview across the site, and supply actual complete/split source for every supported loading mode. Keep generated scripts/CSS out of client translation catalogs. Review all sections beside the pinned Ticker reference and keep installation concise while preserving the full runtime reference elsewhere. See [ADAPTATION.md](ADAPTATION.md) and [the skill](https://github.com/samline/package-landing-docs/blob/main/.agents/skills/package-site/SKILL.md).
 
 A custom semantic accent palette is shared through SiteHead; it covers cards, tabs, controls, halos and code keywords while preserving neutral contrast and reference geometry. The browser suite tests custom accents against later base-style delivery. Development redirects isolate Astro compiler module namespaces; do not replace them with an HTML-only proxy. The dev runner uses foreground child servers so both are supervised even under an agent-enabled Astro CLI.
 
@@ -186,17 +186,15 @@ The release notes are the package's own [`../CHANGELOG.md`](../CHANGELOG.md) —
 
 For agents integrating Notify, use the public [`../skills/notify/SKILL.md`](../skills/notify/SKILL.md), also served at `/skills/notify/SKILL.md`.
 
-**For website maintenance:** this workspace ships the maintained [package-site skill](.agents/skills/package-site/SKILL.md) as a local file. It carries the full adaptation and maintenance contracts for this website. No global installation is required.
+**For website maintenance:** the [package-site skill](https://github.com/samline/package-landing-docs/blob/main/.agents/skills/package-site/SKILL.md) in the template carries the full adaptation and maintenance contracts for this website.
 
 Open a session in the package root and send:
 
-> Use this skill to maintain the landing, examples and complete documentation for this package: .agents/skills/package-site/SKILL.md
-
-The skill records where the package content lives, how the audit is reconciled and which checks gate a release. It is already installed in this workspace, so no download is needed.
+> Use this skill to maintain the landing, examples and complete documentation for this package: https://github.com/samline/package-landing-docs/blob/main/.agents/skills/package-site/SKILL.md
 
 ### Agent skill inventory
 
-The repository includes the maintained package-site adaptation skill plus ten locally installed upstream skills for the detected stack. See [.agents/README.md](.agents/README.md) for sources, scope and refresh instructions; skills-lock.json records their hashes. Keep upstream files intact, apply only relevant guidance, and retain the root PageSpeed policy when adapting this package.
+Agent work skills live in the repository root (`../.agents/skills`); `../skills-lock.json` records their sources and hashes. Keep upstream files intact, apply only relevant guidance, and retain the root PageSpeed policy.
 
 ## License
 

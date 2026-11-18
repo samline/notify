@@ -11,6 +11,4 @@ brief/
 
 # Preserve downloaded skill trees and their recorded content hashes.
 .agents/skills/*
-!.agents/skills/package-site/
-skills-lock.json
 scripts/package-readme-template.md
