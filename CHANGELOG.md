@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Dates for published releases are the UTC publication dates reported by npm. Versions
 marked as unpublished have a Git tag but are not present in the npm registry.
 
+## [5.0.1] - 2026-11-17
+
+### Changed
+
+- Internal: the toast store behind `ToastState` is a closure-based object instead of a class instance, following the family rule (no classes or `this`). Its public members and behavior are unchanged; the former private helpers are no longer reachable on the object.
+
 ## [5.0.0] - 2026-11-15
 
 ### Breaking changes

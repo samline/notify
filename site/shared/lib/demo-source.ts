@@ -22,7 +22,7 @@ export const bodyFor = (preset: DemoPreset) => {
 <strong class="notify-demo-heading">${copy.heading}</strong>
 <p class="notify-demo-description">${copy.description}</p>
 ${preset === 'save' ? field(presets.save.field, `<input type="text" value="${presets.save.value}" required maxlength="60" autocomplete="name">`) : ''}
-${preset === 'undo' ? '<div class="notify-demo-item" data-demo-item><span aria-hidden="true">↗</span><span><strong>Launch checklist</strong><br>Design review · Today, 10:30</span></div>' : ''}
+${preset === 'undo' ? '<div class="notify-demo-item" data-demo-item><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg><span><strong>Launch checklist</strong><br>Design review · Today, 10:30</span></div>' : ''}
 ${preset === 'upload' ? field(fields.upload, '<progress max="100" value="0"></progress>') : ''}
 ${
   preset === 'position'

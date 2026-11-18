@@ -50,7 +50,7 @@ npm run configure -- --package .. \
   --accent-light '#b45309' --accent-dark '#fbbf24'
 ```
 
-Identity, deployment base and the amber accent live in `project.config.json`. The amber pair is the maintainer's choice: `#b45309` on light surfaces and `#fbbf24` on dark ones, both above 4.5:1 contrast against the surfaces they are used on. The CDN entries point at the `@samline/notify@5.0.0` assets; keep them on a published version.
+Identity, deployment base and the amber accent live in `project.config.json`. The amber pair is the maintainer's choice: `#b45309` on light surfaces and `#fbbf24` on dark ones, both above 4.5:1 contrast against the surfaces they are used on. The CDN entries point at the `@samline/notify@5.0.1` assets; keep them on a published version.
 
 Re-running the importer resets the content audit, so review that diff. `npm run check:release` rejects an adaptation whose audit, theme review or capability review is unfinished.
 
@@ -158,7 +158,7 @@ Docs CSS is inlined and included in HTML size. Raw Lighthouse JSON, per-run metr
 
 ### Second-pass quality review — 2026-11-04
 
-[The capability matrix and review](brief/notify-second-pass-2026-11-04.md) records user tasks, observable outcomes, limitations and reproduced fixes. Decisions, cancelable CSV output, editable custom DOM and the live stack exercise combinations of capabilities rather than filling a preset count. Live and copied integrations share one behavior source; copied files retain only their used helpers and messages. Existing historical fragments remain covered by the migration gate. The dated measurements above describe the earlier eight-scenario artifact; current measurements are recorded separately.
+The capability review recorded user tasks, observable outcomes, limitations and reproduced fixes. Decisions, cancelable CSV output, editable custom DOM and the live stack exercise combinations of capabilities rather than filling a preset count. Live and copied integrations share one behavior source; copied files retain only their used helpers and messages. Existing historical fragments remain covered by the migration gate. The dated measurements above describe the earlier eight-scenario artifact; current measurements are recorded separately.
 
 ### Adaptation quality lessons
 
@@ -230,7 +230,7 @@ The 24 final raw reports (18 cold mobile samples, three repeated and three deskt
 
 ### Controls and visual review — 2026-11-05
 
-The previous visual closure was insufficient: protected component fingerprints did not cover the example-specific form CSS. [The controls review](brief/notify-controls-audit-2026-11-05.md) records the source comparison, defects, repairs and current validation. Preserve native select semantics, reserve logical space for its decorative arrow, use pointer/text/not-allowed cursors by state, and use field surfaces and valid font tokens from the shared theme. Keep useful reading space when text is enlarged; checking outer overflow alone misses a compressed value area. Live previews and copied files share demo-source.ts and demo-styles.css. The release gate also checks the reviewed visual source hashes.
+The previous visual closure was insufficient: protected component fingerprints did not cover the example-specific form CSS. The controls review records the source comparison, defects, repairs and current validation. Preserve native select semantics, reserve logical space for its decorative arrow, use pointer/text/not-allowed cursors by state, and use field surfaces and valid font tokens from the shared theme. Keep useful reading space when text is enlarged; checking outer overflow alone misses a compressed value area. Live previews and copied files share demo-source.ts and demo-styles.css. The release gate also checks the reviewed visual source hashes.
 
 Earlier Lighthouse tables describe their dated artifacts. The latest measurements belong to the controls review; do not quote the earlier gallery score as the current result.
 

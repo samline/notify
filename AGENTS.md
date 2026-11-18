@@ -1,83 +1,43 @@
-# AGENTS
+# @samline/notify
 
-## Main Instruction
+Accessible, dependency-free toast notifications for JavaScript and TypeScript, with ESM, CommonJS, and browser builds.
 
-Before starting any task in this repository, the AI must first read `.agents/agent-index.md`.
+Package memory: decisions and lessons specific to this package. Family rules are in the block below.
 
-That file acts as the master index of the project's internal instructions and defines which other documents in `.agents/` should be reviewed based on the type of work.
+- The website lives in `site/` (Landing, Examples and Docs; `site/AGENTS.md` and `site/.agents/skills/package-site/SKILL.md` hold its rules). It never ships in the npm tarball.
 
-## Mandatory Reading Rule
+## Package lessons
 
-When starting a new conversation or a new task inside this repository, the AI must follow this order strictly:
-
-1. **Graph Query (MCP):** Whenever the agent needs to see files, the directory structure, or any element of the project, it must first use the `codebase-memory-mcp` MCP to get the information from the graph.
-2. Read `.agents/agent-index.md`.
-3. Determine the type of task.
-4. Read the additional internal documents that `.agents/agent-index.md` points to for that context.
-
----
-
-## Available Internal Documents
-
-The AI must use `.agents/agent-index.md` as the entry point to locate and review, when applicable:
-
-1. `.agents/package-replication-guide.md`
-2. `.agents/deploy-and-release-guide.md`
-3. `.agents/todo.md`
-4. `.agents/lessons.md`
-5. `.agents/new-project.md`
-
----
-
-## Interpretation Rule
-
-The files inside `.agents/` are internal instructions for the AI, not public documentation of the package.
-
-The AI must treat them as operational context of the project.
-
-> **Critical Git Note (updated 2026-07-13):** `AGENTS.md` and `.agents/` **are versioned** and appear in git. They are only excluded from the published npm tarball via `.npmignore`. The old convention of keeping them out of Git is deprecated.
-
----
-
-## Minimum Cases
-
-### General task
-
-1. Query the graph with `codebase-memory-mcp`.
-2. Read `.agents/agent-index.md`.
-3. If applicable, review `.agents/todo.md` and `.agents/lessons.md`.
-
-### New package or new scaffold
-
-1. Query the graph with `codebase-memory-mcp`.
-2. Read `.agents/agent-index.md`, `.agents/package-replication-guide.md`, `.agents/new-project.md`, `.agents/todo.md` and `.agents/lessons.md`.
-
-### Website (landing, examples and docs)
-
-1. Query the graph with `codebase-memory-mcp`.
-2. Read `.agents/agent-index.md` and `site/AGENTS.md` (plus `site/.agents/skills/package-site/SKILL.md`).
-3. The website is the private workspace in `site/`. It owns the landing page, the examples gallery and the documentation app. It never ships in the npm tarball.
-
-### Release, deploy, or publish
-
-1. Query the graph with `codebase-memory-mcp`.
-2. Read `.agents/agent-index.md`, `.agents/deploy-and-release-guide.md`, `.agents/todo.md` and `.agents/lessons.md`.
-
----
-
-## Persistence Rule
-
-If the user adds new internal rules, todos, or lessons, the AI must keep the corresponding documents inside `.agents/` updated.
-
-If during a session the AI saves context in the chat session memory and that content corresponds to an internal rule, a todo, a lesson, or an operational preference of the project, it must also persist it in the appropriate file in `.agents/` to keep coherence if the session is cleared.
-
-The AI must also preserve the current convention: `AGENTS.md` and `.agents/` are versioned in git but excluded from the published npm tarball.
-
----
-
-## Agent skills and memory location
-
-Agents, Claude included, store and read project skills and memory in `.agents/`. Skills are created and edited only in `.agents/skills/`. `.claude/skills` is a tracked relative symlink to `../.agents/skills` because Claude Code loads project skills only from `.claude/skills/`; never keep a second copy there. On Windows, clone with `git config core.symlinks true`. `.claude/` is excluded from the npm tarball through `.npmignore`, like `.agents/`.
+- Keep numeric and string toast IDs distinct internally even though `data-id` serializes both to text.
+- Timer pauses must store a deadline and subtract elapsed time before resuming.
+- `ToasterController.update()` is partial: omitted offsets, gaps, styles, and subscriptions must remain unchanged.
+- Tests for browser globals and package exports must execute built artifacts, not only TypeScript source modules.
+- CDN examples must reference an actually published version or `latest`; a package version in Git does not imply npm availability.
+- GitHub only discovers Actions workflows under the repository-root `.github/workflows`; website commands run from `site` and Pages uploads `site/landing/dist`.
+- Astro 7 documentation jobs require Node.js 22.12.0 or newer; keep CI, Pages deployment, and `site` engine metadata aligned.
+- Test standalone globals as classic scripts in a real browser: JSDOM eval can conceal a bundler namespace overwriting window.Notify.
+- Promise completion must retain record identity and reset epoch across async formatters; dismissal, reset, replacement and teardown revoke ownership.
+- Hidden and exiting toast actions must be inert; keyboard shortcuts target the front visible record.
+- Canonical docs live in docs/. Run site sync:docs after edits, check exact synchronization and historical route/fragment mappings, and execute the exact copied ESM/CDN sources.
+- A CSS fingerprint validates styles, not useful demos or complete documentation. Compare full compositions against Ticker/Drawer, review prose and exercise task outcomes and lifecycle cleanup.
+- Check visible documentation installers during delayed initialization, not only Home tabs. Render fallback panel labels inside noscript so assigning tabpanel roles does not remove a painted label and shift the first code frame. Preserve both no-JavaScript readability and protected styles.
+- For the Notify gallery, review capability → consumer task → observable outcome → copied source → lifecycle. A count of presets, export inventory, green link checks and style hashes cannot establish task depth or visual reading quality. Keep composed decisions, cancellation, results, editable custom content and stack interaction covered.
+- Responsive review must open notifications and inspect their usable text width, not only document overflow. Two actions previously reduced the message to about 60 px at 320 px despite passing overflow checks; keep the separate action row and built-browser reading-width regression.
+- Custom content factories can run again after controller updates. Each render must release its listeners; preserve draft state outside the factory and dispose render listeners on replacement, dismissal and integration teardown.
+- Accessibility audits must open notifications and expand the five semantic variants in both themes: a page without toasts cannot detect the package's contrast failures. Recipes must compile against the real types; an export inventory or an import resolved as `any` does not prove them correct.
+- In development Docs uses another base and origin. Check referenced public assets (favicon included), not only navigation links; production combines both apps under one base.
+- Previews that follow the page theme must update preferences without resending `duration`: sending it restarts the timers. A regression test must fail against the previous artifact before its green result counts; the final deadline test uses real time.
+- Fingerprints and green tests do not close a visual review: check real inputs and selects, the semantic surface, a valid font, a separate arrow with reserved padding, pointer/text/not-allowed cursors, hover, focus and disabled states. Check the usable value width at 320 px and 200% text too: a field without overflow could leave only 64 px for text. Compare the pinned Ticker/Drawer sources and review the copied files as well as the preview.
+- Lifecycle callbacks (`onDismiss`) belong in the shared state, not in renderers: a per-renderer call fires once per mounted toaster and never without one.
+- Never put an `aria-label` on a toast item: it replaces the description, actions and custom content for screen readers.
+- Home's first playground tab is the Toast types panel; e2e tests that use a scenario preset on Home must select its tab first.
+- `bun run site:check:release` compares sha256 hashes of reviewed sources recorded in `site/content-audit.json`. After reviewing edits to README.md, docs/ or shared visual sources, refresh those hashes in the same commit or CI fails.
+- Playwright `grep` also matches the project name: never name a project with a word its own `grep` filters on.
+- Copied CDN examples are tested against this checkout's `dist/`, so the CI browser jobs build the package first.
+- Never add AI co-author or "Generated with" lines to commits, tags or PRs.
+- At 320px and 200% text, a persistent custom toast can cover its underlying preview reset. Browser flows must use the card's own visible close control before clicking the page beneath it; never force the covered reset or hide the failure with retries/timeouts. Five repeated runs and the complete scenarios project verify this sequence.
+- Copied examples must read like code a visitor would write. `site/shared/lib/demo-behavior.js` holds one self-contained `<preset>Demo(element, notify, copy, signal)` function per `#region` (plus a tiny `wait` region); `demo-files.ts` copies the chosen region verbatim, so a copy has no site helper. Do not go back to a shared handler pruned by an AST transform or a helper object in the copies. Site-only concerns (page theme, baseline toaster options shared by previews, detaching a preview) live in the Playground host. Re-enable controls before any trailing wait: a disabled button cannot be focused, which left a toast focus-paused forever.
+- Copied-code disclosures show loading-mode tabs followed directly by file tabs. Keep installation and delivery explanations in the installation guide, without extra prose in the code viewer.
 
 ## Identity convention — 2026-11-06
 
@@ -114,6 +74,7 @@ This block is synced from the template that owns the family conventions ([packag
 - `bun run check` must pass: format, typecheck, unit tests with coverage thresholds, build, size budgets, e2e in Chromium, Firefox and WebKit.
 - README is the package guide and the site's source of truth; public text in English. Any public API change updates tests, README, docs, examples and `skills/<name>/SKILL.md` together.
 - Releases: Keep a Changelog entry for every user-facing change, semver, pinned CDN URLs bumped before release. Publishing is manual (`bun run release` by the maintainer); CI never publishes; no `--provenance`.
+- Public repository: no dated reports, handoff notes, transcripts or client names; private notes go in the ignored `.local/`. Site examples with state offer Reset; icons are SVG, never Unicode glyphs.
 - Never add AI attribution to commits, tags or pull requests.
 
 <!-- samline:family:end -->

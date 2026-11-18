@@ -124,17 +124,17 @@
     "accentDark": "#fbbf24"
   },
   "status": "verified",
-  "packageVersion": "5.0.0",
+  "packageVersion": "5.0.1",
   "sources": [
     {
       "source": "CHANGELOG.md",
-      "sha256": "0d0f7f17b505a533036f23bfae08b3ad39a91c9fd18e8d9a210f68fd30ae994b",
+      "sha256": "f71e41001e5b9120f2d2fc44c2f1c1f70528b4b42e96e7a14c6c4302975401a0",
       "destination": "docs/src/content.config.ts",
       "reviewed": true
     },
     {
       "source": "README.md",
-      "sha256": "e932d47126b82911cb978f81ba69dfb62c65d1a3ebc1a87c9f46f4b5f43072b8",
+      "sha256": "0d29572b361a6a29b7c0abe522ee4cd323e9aa98bc8e5aeeb7ff7307443ffd4d",
       "destination": "landing/src/i18n/translations/en/sections.ts",
       "reviewed": true
     },
@@ -194,7 +194,7 @@
     },
     {
       "source": "docs/browser.md",
-      "sha256": "beaecdcabeec68bdd2f38f77f4b079254aedff645b41997f1d6050d829a26404",
+      "sha256": "99d61089abcd9ec3d00e54719e8d4be2357eee2fd85387fb245749cb55ea9c43",
       "destination": "docs/src/content/docs/reference/browser.mdx",
       "reviewed": true
     },
@@ -206,7 +206,7 @@
     },
     {
       "source": "docs/entrypoints.md",
-      "sha256": "b6b67c19363fb5f0d1e27d75a1fbcb33b17c9e5d921e35052ae1ff033f3380e8",
+      "sha256": "469c971ad48ec8c39836cce6ec831077b42647148b63377b9f01f5041ae7c6d8",
       "destination": "docs/src/content/docs/reference/entrypoints.md",
       "reviewed": true
     },
@@ -236,7 +236,7 @@
     },
     {
       "source": "docs/recipes.md",
-      "sha256": "835c33b2e28307ea99a3d7c97596ae653f176071ffa564e1ff04a1ce605f6c85",
+      "sha256": "2b1f29499f31278ced32d484aba65f00990e1f04ae6b0fbbc36948e415bc9b9d",
       "destination": "docs/src/content/docs/guides/examples.mdx",
       "reviewed": true
     },
@@ -415,7 +415,7 @@
     },
     {
       "source": "package.json",
-      "sha256": "7e25f19cd7265fbd662d7d00c2d993aa598f577238cf0b04cb04f7ae1e9dbe89",
+      "sha256": "5597c3a9095ef0650d78acd9873139b4cbecaa5ea9a32f39083e682604764a3a",
       "destination": "project.config.json",
       "reviewed": true
     },
@@ -511,7 +511,7 @@
     },
     {
       "source": "src/core/state.ts",
-      "sha256": "0e92d2fe2c56fabfe60f25ef5b6fc86fa4d978aff1de0dfead59ff9706c33bb2",
+      "sha256": "f4a17c054e035aed082b6ab50baa9e975e70a0e7e499e74d0bd02ef1c478f634",
       "destination": "docs/src/content/docs/guides/toast-lifecycle.mdx",
       "reviewed": true
     },
@@ -799,14 +799,12 @@
   "secondPass": {
     "date": "2026-11-04",
     "status": "verified",
-    "evidence": "brief/notify-second-pass-2026-11-04.md",
     "basis": "Capability-to-task-to-result review; copied source execution, runtime regressions and visual reading quality. A preset count and style fingerprints alone are insufficient.",
     "validation": "178 package tests, 69 browser tests, 21 typed recipe/README snippets; final mobile 100/97/100 and desktop 100/100/100, local lab only."
   },
   "visualReview": {
     "date": "2026-11-05",
     "status": "verified",
-    "evidence": "brief/notify-controls-audit-2026-11-05.md",
     "scope": "Inputs, selects, arrow geometry, cursors, focus, hover, disabled states, checkbox, custom editor, copied CSS and all three routes.",
     "validation": "74 browser tests, 44 copied ESM/CDN combinations, 320/1280 and 100/200% text in both themes; minimum 60% value-reading area; manual source/reference and route review; mobile lab 100/95/100, desktop 100/100/100.",
     "sources": [
@@ -816,7 +814,7 @@
       },
       {
         "source": "shared/lib/demo-source.ts",
-        "sha256": "5b3de3a77c0c93efe173a9323a8f3901421d0fec6e1ecbe05b03769e40e05d76"
+        "sha256": "dbcdd623037f13c931e6c9348f2c4a8c5b38437a3660bfffb9e464e95f405f02"
       },
       {
         "source": "shared/lib/demo-files.ts",
@@ -842,7 +840,6 @@
   },
   "copiedCodeReview": {
     "date": "2026-11-14",
-    "scope": "Explore the code: all eleven scenarios, ESM/CDN, split and complete files in Examples and Docs.",
-    "evidence": "brief/notify-copied-code-audit-2026-11-14.md"
+    "scope": "Explore the code: all eleven scenarios, ESM/CDN, split and complete files in Examples and Docs."
   }
 }

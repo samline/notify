@@ -1,6 +1,6 @@
 // Shared mutable state for the toast runtime.
 //
-// Mirrors the legacy `state.ts` Observer pattern: a single module-level
+// Mirrors the legacy `state.ts` observer pattern with a closure: one module-level
 // instance buffers toasts, dispatches updates to subscribers, and tracks
 // which ids have been dismissed so the renderer can clean them up.
 //
@@ -45,23 +45,25 @@ export interface ToastInput extends Omit<ToastOptions, 'description'> {
 
 export type ToastSubscriber = (toast: ToastT | ToastToDismiss) => void
 
-class Observer {
-  subscribers: ToastSubscriber[] = []
-  toasts: ToastT[] = []
-  dismissedToasts: Set<ToastId> = new Set()
+const ToastState = {
+  subscribers: [] as ToastSubscriber[],
 
-  subscribe = (subscriber: ToastSubscriber): (() => void) => {
-    this.subscribers.push(subscriber)
+  toasts: [] as ToastT[],
+
+  dismissedToasts: new Set() as Set<ToastId>,
+
+  subscribe: (subscriber: ToastSubscriber): (() => void) => {
+    ToastState.subscribers.push(subscriber)
     return () => {
-      const index = this.subscribers.indexOf(subscriber)
-      if (index >= 0) this.subscribers.splice(index, 1)
+      const index = ToastState.subscribers.indexOf(subscriber)
+      if (index >= 0) ToastState.subscribers.splice(index, 1)
     }
-  }
+  },
 
-  publish = (data: ToastT | ToastToDismiss): void => {
+  publish: (data: ToastT | ToastToDismiss): void => {
     const errors: unknown[] = []
-    for (const subscriber of [...this.subscribers]) {
-      if (!this.subscribers.includes(subscriber)) continue
+    for (const subscriber of [...ToastState.subscribers]) {
+      if (!ToastState.subscribers.includes(subscriber)) continue
       try {
         subscriber(data)
       } catch (error) {
@@ -69,153 +71,66 @@ class Observer {
       }
     }
     if (errors.length) throw errors[0]
-  }
+  },
 
-  addToast = (data: ToastT): void => {
+  addToast: (data: ToastT): void => {
     // Newest at the front (index 0 = `data-front='true'`). The renderer
     // and CSS rely on index 0 being the most recently added toast — see
     // Fix 2 in the bug report. Appending (the previous behavior) made
     // the OLDEST toast the "front" one, which is backwards from the
     // legacy React/sonner contract where the newest toast is the one
     // the user just triggered.
-    this.toasts = [data, ...this.toasts]
-    this.publish(data)
-  }
+    ToastState.toasts = [data, ...ToastState.toasts]
+    ToastState.publish(data)
+  },
 
-  create = (data: ToastInput): ToastId => this.createRecord(data).id
+  create: (data: ToastInput): ToastId => createRecord(data).id,
 
-  private createRecord = (data: ToastInput): { id: ToastId; record: ToastT } => {
-    const { message, custom, description, ...rest } = data
-    let id: ToastId
-    if (typeof data.id === 'number' || (typeof data.id === 'string' && data.id.length > 0)) {
-      id = data.id
-    } else {
-      do {
-        id = toastsCounter++
-      } while (this.toasts.some(toast => toast.id === id))
-    }
-
-    const dismissible = data.dismissible === undefined ? true : data.dismissible
-    const title = typeof message === 'function' ? message() : message
-    const descriptionRenderable: Renderable | undefined =
-      typeof description === 'function' ? description() : description
-
-    if (this.dismissedToasts.has(id)) {
-      this.dismissedToasts.delete(id)
-    }
-
-    const existingIndex = this.toasts.findIndex(toast => toast.id === id)
-
-    if (existingIndex >= 0) {
-      const existing = this.toasts[existingIndex]
-      if (!existing) throw new Error('Toast record disappeared during creation')
-      const merged: ToastT = {
-        ...existing,
-        ...rest,
-        id,
-        dismissible,
-        title,
-        ...(descriptionRenderable !== undefined ? { description: descriptionRenderable } : {}),
-        ...(custom !== undefined ? { custom } : {}),
-      }
-      this.toasts = this.toasts.map((toast, index) => (index === existingIndex ? merged : toast))
-      this.publish(merged)
-      return { id, record: merged }
-    }
-
-    const next: ToastT = {
-      ...rest,
-      id,
-      dismissible,
-      title,
-      ...(descriptionRenderable !== undefined ? { description: descriptionRenderable } : {}),
-      ...(custom !== undefined ? { custom } : {}),
-    }
-    this.addToast(next)
-    return { id, record: next }
-  }
-
-  dismiss = (id?: ToastId): ToastId | undefined => {
+  dismiss: (id?: ToastId): ToastId | undefined => {
     if (id !== undefined) {
       // A second dismissal of the same id, or one for an id that was never
       // created, is a no-op: lifecycle callbacks run exactly once.
-      if (this.dismissedToasts.has(id)) return id
-      const record = this.toasts.find(toast => toast.id === id)
+      if (ToastState.dismissedToasts.has(id)) return id
+      const record = ToastState.toasts.find(toast => toast.id === id)
       if (!record) return id
-      this.dismissRecord(record)
-      this.pruneHistory()
+      dismissRecord(record)
+      pruneHistory()
     } else {
       resetEpoch += 1
       const errors: unknown[] = []
-      for (const record of [...this.toasts]) {
-        if (this.dismissedToasts.has(record.id)) continue
+      for (const record of [...ToastState.toasts]) {
+        if (ToastState.dismissedToasts.has(record.id)) continue
         try {
-          this.dismissRecord(record)
+          dismissRecord(record)
         } catch (error) {
           errors.push(error)
         }
       }
-      this.pruneHistory()
+      pruneHistory()
       if (errors.length) throw errors[0]
     }
     return id
-  }
+  },
 
-  /**
-   * Publish one dismissal and then run its `onDismiss` callback once,
-   * independently of how many toasters are mounted.
-   */
-  private dismissRecord = (record: ToastT): void => {
-    this.dismissedToasts.add(record.id)
-    try {
-      this.publish({ id: record.id, dismiss: true })
-    } finally {
-      record.onDismiss?.(record)
-    }
-  }
+  message: (message: TitleInput, data?: ToastOptions): ToastId =>
+    ToastState.create({ ...(data ?? {}), message }),
 
-  /**
-   * Keep at most `HISTORY_LIMIT` dismissed records so long-lived pages do
-   * not retain every toast (and its callbacks or custom elements) forever.
-   */
-  private pruneHistory = (): void => {
-    let dismissed = 0
-    for (const record of this.toasts) if (this.dismissedToasts.has(record.id)) dismissed += 1
-    if (dismissed <= HISTORY_LIMIT) return
-    let excess = dismissed - HISTORY_LIMIT
-    const kept: ToastT[] = []
-    // `toasts` is newest-first, so drop the oldest dismissed records.
-    for (let index = this.toasts.length - 1; index >= 0; index -= 1) {
-      const record = this.toasts[index]!
-      if (excess > 0 && this.dismissedToasts.has(record.id)) {
-        this.dismissedToasts.delete(record.id)
-        excess -= 1
-        continue
-      }
-      kept.push(record)
-    }
-    this.toasts = kept.reverse()
-  }
+  error: (message: TitleInput, data?: ToastOptions): ToastId =>
+    ToastState.create({ ...(data ?? {}), message, type: 'error' }),
 
-  message = (message: TitleInput, data?: ToastOptions): ToastId =>
-    this.create({ ...(data ?? {}), message })
+  success: (message: TitleInput, data?: ToastOptions): ToastId =>
+    ToastState.create({ ...(data ?? {}), type: 'success', message }),
 
-  error = (message: TitleInput, data?: ToastOptions): ToastId =>
-    this.create({ ...(data ?? {}), message, type: 'error' })
+  info: (message: TitleInput, data?: ToastOptions): ToastId =>
+    ToastState.create({ ...(data ?? {}), type: 'info', message }),
 
-  success = (message: TitleInput, data?: ToastOptions): ToastId =>
-    this.create({ ...(data ?? {}), type: 'success', message })
+  warning: (message: TitleInput, data?: ToastOptions): ToastId =>
+    ToastState.create({ ...(data ?? {}), type: 'warning', message }),
 
-  info = (message: TitleInput, data?: ToastOptions): ToastId =>
-    this.create({ ...(data ?? {}), type: 'info', message })
+  loading: (message: TitleInput, data?: ToastOptions): ToastId =>
+    ToastState.create({ ...(data ?? {}), type: 'loading', message }),
 
-  warning = (message: TitleInput, data?: ToastOptions): ToastId =>
-    this.create({ ...(data ?? {}), type: 'warning', message })
-
-  loading = (message: TitleInput, data?: ToastOptions): ToastId =>
-    this.create({ ...(data ?? {}), type: 'loading', message })
-
-  promise = <ToastData>(
+  promise: <ToastData>(
     promise: PromiseInput<ToastData>,
     data?: PromiseData<ToastData>
   ):
@@ -257,7 +172,7 @@ class Observer {
         message: data.loading,
         ...(description !== undefined ? { description } : {}),
       }
-      const created = this.createRecord(loadingPayload)
+      const created = createRecord(loadingPayload)
       id = created.id
       ownedRecord = created.record
     }
@@ -265,8 +180,8 @@ class Observer {
     const isCurrent = (): boolean =>
       resetEpoch === epoch &&
       (id === undefined ||
-        (!this.dismissedToasts.has(id) &&
-          this.toasts.find(record => record.id === id) === ownedRecord))
+        (!ToastState.dismissedToasts.has(id) &&
+          ToastState.toasts.find(record => record.id === id) === ownedRecord))
     const resolved = resolveInput()
 
     const state: { result: ['resolve', ToastData] | ['reject', unknown] | null } = { result: null }
@@ -316,7 +231,7 @@ class Observer {
           ...(extendedMessage !== undefined ? { message: extendedMessage } : {}),
           ...(resolvedDescription !== undefined ? { description: resolvedDescription } : {}),
         }
-        this.create(payload)
+        ToastState.create(payload)
         return
       }
       const payload: ToastInput = {
@@ -326,7 +241,7 @@ class Observer {
         message: resolvedValue as Renderable,
         ...(resolvedDescription !== undefined ? { description: resolvedDescription } : {}),
       }
-      this.create(payload)
+      ToastState.create(payload)
     }
 
     const outcome = resolved.then(
@@ -352,7 +267,8 @@ class Observer {
       .finally(async () => {
         // Omitted/failed formatters must not strand an immortal loading toast.
         try {
-          if (id !== undefined && isCurrent() && ownedRecord?.type === 'loading') this.dismiss(id)
+          if (id !== undefined && isCurrent() && ownedRecord?.type === 'loading')
+            ToastState.dismiss(id)
         } finally {
           await data.finally?.()
         }
@@ -372,17 +288,108 @@ class Observer {
     }
 
     return { id, unwrap }
+  },
+
+  custom: (content: CustomContent, data?: ToastOptions): ToastId => {
+    return ToastState.create({ ...(data ?? {}), custom: content })
+  },
+
+  getActiveToasts: (): ToastT[] =>
+    ToastState.toasts.filter(toast => !ToastState.dismissedToasts.has(toast.id)),
+
+  getHistory: (): ToastT[] => ToastState.toasts.map(cloneToast),
+
+  getToasts: (): ToastT[] => ToastState.getActiveToasts().map(cloneToast),
+}
+
+const createRecord = (data: ToastInput): { id: ToastId; record: ToastT } => {
+  const { message, custom, description, ...rest } = data
+  let id: ToastId
+  if (typeof data.id === 'number' || (typeof data.id === 'string' && data.id.length > 0)) {
+    id = data.id
+  } else {
+    do {
+      id = toastsCounter++
+    } while (ToastState.toasts.some(toast => toast.id === id))
   }
 
-  custom = (content: CustomContent, data?: ToastOptions): ToastId => {
-    return this.create({ ...(data ?? {}), custom: content })
+  const dismissible = data.dismissible === undefined ? true : data.dismissible
+  const title = typeof message === 'function' ? message() : message
+  const descriptionRenderable: Renderable | undefined =
+    typeof description === 'function' ? description() : description
+
+  if (ToastState.dismissedToasts.has(id)) {
+    ToastState.dismissedToasts.delete(id)
   }
 
-  getActiveToasts = (): ToastT[] => this.toasts.filter(toast => !this.dismissedToasts.has(toast.id))
+  const existingIndex = ToastState.toasts.findIndex(toast => toast.id === id)
 
-  getHistory = (): ToastT[] => this.toasts.map(cloneToast)
+  if (existingIndex >= 0) {
+    const existing = ToastState.toasts[existingIndex]
+    if (!existing) throw new Error('Toast record disappeared during creation')
+    const merged: ToastT = {
+      ...existing,
+      ...rest,
+      id,
+      dismissible,
+      title,
+      ...(descriptionRenderable !== undefined ? { description: descriptionRenderable } : {}),
+      ...(custom !== undefined ? { custom } : {}),
+    }
+    ToastState.toasts = ToastState.toasts.map((toast, index) =>
+      index === existingIndex ? merged : toast
+    )
+    ToastState.publish(merged)
+    return { id, record: merged }
+  }
 
-  getToasts = (): ToastT[] => this.getActiveToasts().map(cloneToast)
+  const next: ToastT = {
+    ...rest,
+    id,
+    dismissible,
+    title,
+    ...(descriptionRenderable !== undefined ? { description: descriptionRenderable } : {}),
+    ...(custom !== undefined ? { custom } : {}),
+  }
+  ToastState.addToast(next)
+  return { id, record: next }
+}
+
+/**
+ * Publish one dismissal and then run its `onDismiss` callback once,
+ * independently of how many toasters are mounted.
+ */
+const dismissRecord = (record: ToastT): void => {
+  ToastState.dismissedToasts.add(record.id)
+  try {
+    ToastState.publish({ id: record.id, dismiss: true })
+  } finally {
+    record.onDismiss?.(record)
+  }
+}
+
+/**
+ * Keep at most `HISTORY_LIMIT` dismissed records so long-lived pages do
+ * not retain every toast (and its callbacks or custom elements) forever.
+ */
+const pruneHistory = (): void => {
+  let dismissed = 0
+  for (const record of ToastState.toasts)
+    if (ToastState.dismissedToasts.has(record.id)) dismissed += 1
+  if (dismissed <= HISTORY_LIMIT) return
+  let excess = dismissed - HISTORY_LIMIT
+  const kept: ToastT[] = []
+  // `toasts` is newest-first, so drop the oldest dismissed records.
+  for (let index = ToastState.toasts.length - 1; index >= 0; index -= 1) {
+    const record = ToastState.toasts[index]!
+    if (excess > 0 && ToastState.dismissedToasts.has(record.id)) {
+      ToastState.dismissedToasts.delete(record.id)
+      excess -= 1
+      continue
+    }
+    kept.push(record)
+  }
+  ToastState.toasts = kept.reverse()
 }
 
 const cloneToast = (toast: ToastT): ToastT => ({
@@ -406,7 +413,7 @@ const isExtendedResult = (value: unknown): value is { message: Renderable } & To
   !Array.isArray(value) &&
   !(value instanceof Error)
 
-export const ToastState = new Observer()
+export { ToastState }
 
 /**
  * Reset the singleton — used by tests and `resetToasts()` to ensure

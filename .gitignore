@@ -29,3 +29,6 @@ playwright/.cache/
 .DS_Store
 .claude/settings.local.json
 .claude/launch.json
+
+# Private working notes (client migrations, drafts, reports) never leave the machine
+.local/
