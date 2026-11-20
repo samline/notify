@@ -218,7 +218,7 @@
     },
     {
       "source": "docs/getting-started.md",
-      "sha256": "27ea1acfaa7658305e2a64479216df20ffa2fe058722853db2330751d525c233",
+      "sha256": "cdea3252653acce1fe22a202c2f6665e29bcb3246864510282efdec3d9151622",
       "destination": "docs/src/content/docs/reference/runtime-contract.md",
       "reviewed": true
     },
@@ -427,7 +427,7 @@
     },
     {
       "source": "src/api/create-toaster.ts",
-      "sha256": "de4bd6647d798ce28161b2ed230d39b967d367fadcdd263d9f9eaf929ac12cca",
+      "sha256": "93b0af08d6aecbe6e7da440519d7bed983ccb0f8e5d01422bab35a326d7b9e00",
       "destination": "docs/src/content/docs/api/create-toaster.md",
       "reviewed": true
     },
@@ -463,7 +463,7 @@
     },
     {
       "source": "src/browser/global.ts",
-      "sha256": "dd343ff97ec0721fd4c083691e2102137e08de6cb74e02cf9692db651532cae7",
+      "sha256": "1f57e0731a984a6ef16aa2fe1472519eb30cabc816141bc1df860c5b4e828a05",
       "destination": "docs/src/content/docs/reference/browser.mdx",
       "reviewed": true
     },
@@ -499,7 +499,7 @@
     },
     {
       "source": "src/core/index.ts",
-      "sha256": "8a95406894a27b4de73147c9c69517a8fa4cef5c438962eaa3798555b71cb17d",
+      "sha256": "d70ad1ff43efe4b1928db6afb44ec2688d1f61e1af5342614e618833decc036b",
       "destination": "docs/src/content/docs/reference/api.md",
       "reviewed": true
     },
@@ -523,7 +523,7 @@
     },
     {
       "source": "src/index.ts",
-      "sha256": "e223628f15f3413588ce9c2f8aea1b4e9d1c16d0dcba0fb858f93d556fc3a688",
+      "sha256": "965dd6fb2b554b4bbbdc4326d5836be64b26ddfc9c4c9406c4c070b08a56e8ad",
       "destination": "docs/src/content/docs/reference/api.md",
       "reviewed": true
     },
