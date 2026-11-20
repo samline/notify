@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { mountToaster } from '../../src/core/renderer'
+import { mountToaster } from '../../src/vanilla/renderer'
 import { ToastState, resetToastState } from '../../src/core/state'
 import { TIME_BEFORE_UNMOUNT } from '../../src/core/constants'
 import { toast } from '../../src/api/toast'

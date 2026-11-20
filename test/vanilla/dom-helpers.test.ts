@@ -9,10 +9,10 @@ import {
   getDefaultSwipeDirections,
   getDocumentDirection,
   setAttrs,
-} from '../../src/core/dom-helpers'
+} from '../../src/vanilla/dom-helpers'
 import { MOBILE_VIEWPORT_OFFSET, VIEWPORT_OFFSET } from '../../src/core/constants'
 
-describe('core/dom-helpers', () => {
+describe('vanilla/dom-helpers', () => {
   describe('cn', () => {
     it('joins truthy class names', () => {
       expect(cn('a', 'b', 'c')).toBe('a b c')

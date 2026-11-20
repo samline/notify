@@ -1,8 +1,8 @@
 // Low-level DOM helpers used by the renderer and the api factories.
 // Pure: no controller state, no shared state, no framework imports.
 
-import type { Direction, Offset, SwipeDirection } from './types'
-import { MOBILE_VIEWPORT_OFFSET, VIEWPORT_OFFSET } from './constants'
+import type { Direction, Offset, SwipeDirection } from '../core/types'
+import { MOBILE_VIEWPORT_OFFSET, VIEWPORT_OFFSET } from '../core/constants'
 
 /**
  * Join class names, dropping falsy values. Mirrors the `cn` helper that

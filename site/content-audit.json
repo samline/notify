@@ -486,8 +486,8 @@
       "reviewed": true
     },
     {
-      "source": "src/core/dom-helpers.ts",
-      "sha256": "3fd710ff4387b9a73adbfc9fbbb4a814dab165a2d37216aafe6c91121c46af8b",
+      "source": "src/vanilla/dom-helpers.ts",
+      "sha256": "7767d5940ac564cad3bdf51b2ef9d36994e936e274f15a9d8c35181d7940262f",
       "destination": "docs/src/content/docs/reference/api.md",
       "reviewed": true
     },
@@ -504,8 +504,8 @@
       "reviewed": true
     },
     {
-      "source": "src/core/renderer.ts",
-      "sha256": "bbf7b3bea27beb4883ca2393561adcedc84b0f269bf0af9ad077d7c3d5f54014",
+      "source": "src/vanilla/renderer.ts",
+      "sha256": "7192badb7b55f74fc2a6c535a365f3f8179bede34dd517a0acdde6a9f2d6ada2",
       "destination": "docs/src/content/docs/guides/toast-lifecycle.mdx",
       "reviewed": true
     },

@@ -43,7 +43,8 @@ export type {
 
 // Re-export the internal state for tests and advanced consumers
 // (advanced use only — most callers should stick to `toast.*`).
-export { ToastState, resetToastState, mountToaster, HISTORY_LIMIT } from './core'
+export { ToastState, resetToastState, HISTORY_LIMIT } from './core'
+export { mountToaster } from './vanilla/renderer'
 export type { ToastInput, ToastSubscriber } from './core'
 
 // Numeric constants for consumers who want to reason about timing

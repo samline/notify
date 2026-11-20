@@ -2,7 +2,7 @@ import { afterEach, beforeEach, expect, it, vi } from 'vitest'
 import { createToaster } from '../../src/api/create-toaster'
 import { destroyToaster } from '../../src/api/destroy-toaster'
 import { toast } from '../../src/api/toast'
-import { mountToaster } from '../../src/core/renderer'
+import { mountToaster } from '../../src/vanilla/renderer'
 import { ToastState, resetToastState } from '../../src/core/state'
 
 beforeEach(() => {

@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { mountToaster } from '../../src/core/renderer'
+import { mountToaster } from '../../src/vanilla/renderer'
 import { ToastState, resetToastState } from '../../src/core/state'
 import {
   TIME_BEFORE_UNMOUNT,
@@ -10,7 +10,7 @@ import {
 import { toast } from '../../src/api/toast'
 import type { ToasterController } from '../../src/core/types'
 
-describe('core/renderer', () => {
+describe('vanilla/renderer', () => {
   let root: HTMLDivElement
   let controller: ToasterController
 

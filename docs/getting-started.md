@@ -17,7 +17,7 @@ If you want a `<script>`-only setup without a bundler, see [docs/browser.md](bro
 The runtime has three moving parts:
 
 1. **A module-level `Observer`** (`src/core/state.ts`) — keeps an array of toasts and a `Set` of dismissed ids, and notifies subscribers on every change. Consumers within the same loaded module instance share this observer; separately bundled copies have their own state.
-2. **A toaster controller** (`src/core/renderer.ts`) — produced by `createToaster()`. It builds a single `<ol data-notify-toaster>` on the page, subscribes to the `Observer`, and reconciles a `<li data-notify-toast>` per active toast id.
+2. **A toaster controller** (`src/vanilla/renderer.ts`) — produced by `createToaster()`. It builds a single `<ol data-notify-toaster>` on the page, subscribes to the `Observer`, and reconciles a `<li data-notify-toast>` per active toast id.
 3. **The `toast` factory** (`src/api/toast.ts`) — the public surface that the rest of your code talks to. `toast(message, options?)` and its variants just push entries into the `Observer`; the renderer re-renders the DOM.
 
 The controller is returned with a small, focused method surface. `update()` returns the same controller; `destroy()` returns nothing. Read `element` and `options` as properties.

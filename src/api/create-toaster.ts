@@ -2,8 +2,8 @@
 // return its controller. Idempotent: calling twice with different
 // options applies the diff via `controller.update()`.
 
-import { mountToaster } from '../core/renderer'
-import { canUseDOM } from '../core/dom-helpers'
+import { mountToaster } from '../vanilla/renderer'
+import { canUseDOM } from '../vanilla/dom-helpers'
 import { clearToaster, setToaster, getToasterInstance } from './toaster-instance'
 import type { ToasterController, ToasterOptions } from '../core/types'
 

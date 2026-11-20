@@ -31,9 +31,9 @@ import {
   setAttrs,
   setInnerHTML,
 } from './dom-helpers'
-import { CLOSE_ICON, getIcon, getLoaderMarkup } from './icons'
-import type { ToastState } from './state'
-import { ToastState as DefaultToastState } from './state'
+import { CLOSE_ICON, getIcon, getLoaderMarkup } from '../core/icons'
+import type { ToastState } from '../core/state'
+import { ToastState as DefaultToastState } from '../core/state'
 import {
   GAP,
   SWIPE_THRESHOLD,
@@ -41,7 +41,7 @@ import {
   TOAST_LIFETIME,
   TOAST_WIDTH,
   VISIBLE_TOASTS_AMOUNT,
-} from './constants'
+} from '../core/constants'
 import type {
   Position,
   RenderableOrFactory,
@@ -52,7 +52,7 @@ import type {
   ToastT,
   ToasterController,
   ToasterOptions,
-} from './types'
+} from '../core/types'
 
 /**
  * Public API of the vanilla renderer. Kept as a function (not a class)

@@ -1,10 +1,7 @@
-// Core barrel: re-exports the public core utilities and types so the
-// api factories and external consumers can pull from a single place.
+// Core barrel: the DOM-free utilities and types. DOM code lives in src/vanilla.
 
 export * from './types'
 export * from './constants'
-export * from './dom-helpers'
 export { getIcon, getLoaderMarkup, CLOSE_ICON } from './icons'
 export { ToastState, resetToastState, HISTORY_LIMIT } from './state'
 export type { ToastInput, ToastSubscriber } from './state'
-export { mountToaster } from './renderer'

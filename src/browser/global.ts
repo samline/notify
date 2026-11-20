@@ -14,7 +14,7 @@
 //     `globalThis`; just return the registry.
 
 import { Notify, type NotifyApi } from './registry'
-import { canUseDOM } from '../core/dom-helpers'
+import { canUseDOM } from '../vanilla/dom-helpers'
 
 declare global {
   interface Window {
