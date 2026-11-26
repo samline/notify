@@ -22,7 +22,7 @@ export default {
     description: 'Toast notifications for the moments that matter.',
     descriptionContinuation: 'Confirm a save, follow a promise, or offer a way back.',
     footnotes: ['Zero runtime dependencies', 'JavaScript & TypeScript', 'MIT licensed'],
-    compatibilityLabel: 'One small package. Right at home in your stack.',
+    compatibilityLabel: 'ONE SMALL SCRIPT. RIGHT AT HOME IN YOUR STACK.',
     platforms: [
       'JavaScript',
       'TypeScript',
