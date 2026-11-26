@@ -116,7 +116,7 @@ This runs configuration/contrast checks, both Astro checks, formatting, unit tes
 
 The workflows under `../.github/workflows/` validate changes and publish **one** Pages artifact. Set GitHub Pages to **GitHub Actions**, set `site.url` to the actual public root, then run the Deploy workflow. Deployment is opt-in; add a main push trigger only when the new package site is ready. Both a repository base (`/my-package/`) and a domain root (`/`) are supported; Docs always lives below the configured root at `docs/`. Never hardcode the old template base in links, search paths, metadata, tests or redirects.
 
-This repository is a private npm workspace (`private: true`) and is not intended for npm publication. When embedded in a public package, preserve its runtime-only `files` allowlist and exclude all website/tooling directories from npm. [LICENSE.md](LICENSE.md) covers the theme; bundled font licenses are under `shared/assets/fonts/` and included in the generated font-licenses directory.
+This repository is a private npm workspace (`private: true`) and is not intended for npm publication. When embedded in a public package, preserve its runtime-only `files` allowlist and exclude all website/tooling directories from npm. [LICENSE.md](../LICENSE.md) covers the theme; bundled font licenses are under `shared/assets/fonts/` and included in the generated font-licenses directory.
 
 Reviewed upstream changes and their template equivalents are recorded in [UPSTREAM.md](UPSTREAM.md). Website fonts use local WOFF2; social rendering retains separate TTF inputs. Component scripts use function setup with shared lifecycle cleanup, and code copying reads the live highlighted source. The shared build policy inlines small CSS while keeping larger styles cacheable.
 
@@ -198,7 +198,7 @@ Agent work skills live in the repository root (`../.agents/skills`); `../skills-
 
 ## License
 
-MIT — [LICENSE.md](LICENSE.md). Bundled font licenses are documented under [shared/assets/fonts/](shared/assets/fonts/).
+MIT — [LICENSE.md](../LICENSE.md). Bundled font licenses are documented under [shared/assets/fonts/](shared/assets/fonts/).
 
 ### Final measurements — 2026-11-04 (Mexico time)
 
