@@ -81,8 +81,8 @@ Root and module imports are safe without a DOM; mounting is client-only. See the
 Choose **Package / ESM** when installing with npm, pnpm or bun and importing Notify in your application. Choose **HTML / CDN** when loading the standalone script in plain HTML, WordPress or Shopify without a bundler. Both use the same toast API. A CDN only delivers the files; you can self-host the same script and stylesheet.
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@samline/notify@5.0.1/dist/style.css" />
-<script src="https://cdn.jsdelivr.net/npm/@samline/notify@5.0.1/dist/browser/notify.global.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@samline/notify@5.1.0/dist/style.css" />
+<script src="https://cdn.jsdelivr.net/npm/@samline/notify@5.1.0/dist/browser/notify.global.js"></script>
 ```
 
 > Pin the version in production. Replace `4.0.0` with the version you ship.

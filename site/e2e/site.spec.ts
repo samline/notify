@@ -336,7 +336,10 @@ test('header icon buttons stay square at 375px and the hero copy keeps its space
   await page.setViewportSize({ width: 375, height: 812 })
   for (const path of ['./', 'docs/']) {
     await page.goto(path)
-    const buttons = page.locator('header button:visible').filter({ has: page.locator('svg') })
+    const buttons = page
+      .getByRole('banner')
+      .locator('button:visible')
+      .filter({ has: page.locator('svg') })
     expect(await buttons.count()).toBeGreaterThan(0)
     for (const button of await buttons.all()) {
       const box = (await button.boundingBox())!

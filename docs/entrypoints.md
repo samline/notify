@@ -54,8 +54,8 @@ import type { NotifyApi } from '@samline/notify/browser'
 ## Standalone build
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@samline/notify@5.0.1/dist/style.css" />
-<script src="https://cdn.jsdelivr.net/npm/@samline/notify@5.0.1/dist/browser/notify.global.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@samline/notify@5.1.0/dist/style.css" />
+<script src="https://cdn.jsdelivr.net/npm/@samline/notify@5.1.0/dist/browser/notify.global.js"></script>
 <script>
   const notify = window.Notify
   notify.toast.success('Saved')

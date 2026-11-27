@@ -3,12 +3,12 @@ name: notify
 description: Integrate @samline/notify toast notifications into JavaScript, TypeScript, framework or CMS applications, including async feedback, actions, custom DOM and lifecycle cleanup.
 metadata:
   package: '@samline/notify'
-  package-version: '5.0.1'
+  package-version: '5.1.0'
 ---
 
 # Integrate Notify
 
-Use the package's public API and stylesheet. This skill describes **5.0.1**. Check the installed version; 3.x differs in global shape, `onDismiss` dispatch and custom-content DOM.
+Use the package's public API and stylesheet. This skill describes **5.1.0**. Check the installed version; 3.x differs in global shape, `onDismiss` dispatch and custom-content DOM.
 
 ## Start with one owner
 

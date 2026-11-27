@@ -124,17 +124,17 @@
     "accentDark": "#fbbf24"
   },
   "status": "verified",
-  "packageVersion": "5.0.1",
+  "packageVersion": "5.1.0",
   "sources": [
     {
       "source": "CHANGELOG.md",
-      "sha256": "1109afabd4a302d4c1017b16319d605b398a9cbd8e07047d8a1baa234579613e",
+      "sha256": "e3ce8c0fcc45d55c67e4d5e41d45718b59b25ad0e3b79a7ec4dd4055a23ed043",
       "destination": "docs/src/content.config.ts",
       "reviewed": true
     },
     {
       "source": "README.md",
-      "sha256": "0d29572b361a6a29b7c0abe522ee4cd323e9aa98bc8e5aeeb7ff7307443ffd4d",
+      "sha256": "68e1f904c5c64f21f00d3b1f992f5df392cc61a4d64e0e5584ba809705789112",
       "destination": "landing/src/i18n/translations/en/sections.ts",
       "reviewed": true
     },
@@ -194,7 +194,7 @@
     },
     {
       "source": "docs/browser.md",
-      "sha256": "99d61089abcd9ec3d00e54719e8d4be2357eee2fd85387fb245749cb55ea9c43",
+      "sha256": "0ada7055da3e0d835ccf55fc0205b23d97c4bc715efde0357610b5a0d30d6ba4",
       "destination": "docs/src/content/docs/reference/browser.mdx",
       "reviewed": true
     },
@@ -206,7 +206,7 @@
     },
     {
       "source": "docs/entrypoints.md",
-      "sha256": "469c971ad48ec8c39836cce6ec831077b42647148b63377b9f01f5041ae7c6d8",
+      "sha256": "ebf783b7e6cc83ac46b6a0067ac7677b9c388a6fbcbe302c391aef790da76fd8",
       "destination": "docs/src/content/docs/reference/entrypoints.md",
       "reviewed": true
     },
@@ -236,7 +236,7 @@
     },
     {
       "source": "docs/recipes.md",
-      "sha256": "2b1f29499f31278ced32d484aba65f00990e1f04ae6b0fbbc36948e415bc9b9d",
+      "sha256": "26cfd5be556e847f22621b1c94165b0f0c9873c2d1514e25da97a3587b4ec515",
       "destination": "docs/src/content/docs/guides/examples.mdx",
       "reviewed": true
     },
@@ -415,7 +415,7 @@
     },
     {
       "source": "package.json",
-      "sha256": "5597c3a9095ef0650d78acd9873139b4cbecaa5ea9a32f39083e682604764a3a",
+      "sha256": "0ea32eb19bd38efb1e294b806b257e6578307e527468bf41b33fb990f828d0aa",
       "destination": "project.config.json",
       "reviewed": true
     },
