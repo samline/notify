@@ -127,7 +127,7 @@ The loading markup also uses `.notify-loading-wrapper`, `.notify-spinner`, `.not
 
 ## Responsive and motion behavior
 
-At a maximum width of 600 pixels, the stylesheet makes the toaster full-width within the mobile offsets. Under `prefers-reduced-motion`, it removes the Notify transitions and animations, including the spinner animation. JavaScript auto-dismiss timing is unchanged, and DOM cleanup uses its fallback delay.
+At a maximum width of 600 pixels, the stylesheet makes the toaster full-width within the mobile offsets. Under `prefers-reduced-motion`, it removes Notify's movement (slides, stacking, height, swipe-out) and the spinner animation, and keeps a 150 ms opacity fade. JavaScript auto-dismiss timing is unchanged, and DOM cleanup uses its fallback delay.
 
 Use `duration: Infinity` or longer durations when content needs extra reading or interaction time. Reduced motion does not imply extended timing. See [Accessibility](accessibility.md).
 

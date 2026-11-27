@@ -56,7 +56,7 @@ Once a toaster is mounted, you can rely on the following behaviour:
 - **Swipe-to-dismiss works in every position** via `pointerdown` / `pointermove` / `pointerup`. Corner toasts swipe toward either of their edges; centered toasts swipe vertically. A swipe must pass 45 px, or be a fast flick of at least 10 px, so a tap never dismisses.
 - **`document.visibilitychange` pauses every active timer** while the tab is hidden, and restarts them when the tab becomes visible again.
 - **Same-id updates re-render the DOM in place.** Calling `toast.loading('A', { id: 'x' })` then `toast.success('B', { id: 'x' })` updates the existing `<li>` instead of stacking a second one. The renderer fingerprints the content and re-fills only when `type`, `title`, `description`, `action`, or `cancel` changed.
-- **`prefers-reduced-motion` is honored in CSS.** The JS still schedules timeouts but the stylesheet suppresses the animation/transition.
+- **`prefers-reduced-motion` is honored in CSS.** The JS still schedules timeouts; the stylesheet removes movement and keeps a short opacity fade.
 
 ---
 

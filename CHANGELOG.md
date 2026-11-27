@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Dates for published releases are the UTC publication dates reported by npm. Versions
 marked as unpublished have a Git tag but are not present in the npm registry.
 
+## [Unreleased]
+
+### Fixed
+
+- Keyboard focus stays visible in Windows forced colors (high contrast) mode: toasts and styled action and close buttons get a `Highlight` outline there, and action buttons a `ButtonText` border, because the `box-shadow` focus ring is removed in that mode.
+
+### Changed
+
+- Under `prefers-reduced-motion: reduce`, toasts no longer lose every transition: movement (slides, stacking, height, swipe-out) is removed and a 150 ms opacity fade stays, so toasts appear and leave without a jump. The spinner still stops, and an exiting toast is still removed after 200 ms, after the fade. The promise icon now ends visible instead of staying at `opacity: 0` when its entrance animation is off.
+- Docs: the `toast.custom` callback recipe builds its content with `createElement`, `textContent` and `replaceChildren()` instead of `innerHTML`.
+
 ## [5.0.1] - 2026-11-17
 
 ### Changed

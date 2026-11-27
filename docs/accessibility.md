@@ -57,7 +57,7 @@ Loading toasts do not auto-close, do not invoke the body `onClick`, do not swipe
 
 ## Reduced motion
 
-The packaged CSS removes Notify transitions and animations under `prefers-reduced-motion`. The loading spinner stops animating too. JavaScript timers keep their configured durations, so reduced motion does not automatically provide more reading time.
+Under `prefers-reduced-motion: reduce` the packaged CSS removes Notify's movement (slides, stacking, height changes, swipe-out) and keeps a short 150 ms opacity fade, so toasts still appear and leave without a jump. The loading spinner stops animating. JavaScript timers keep their configured durations, so reduced motion does not automatically provide more reading time.
 
 If you replace the stylesheet or use `unstyled: true`, preserve visible focus, readable contrast, responsive placement, reduced-motion handling, and pointer targets of at least 24 by 24 CSS pixels for controls.
 

@@ -129,14 +129,15 @@ toast.custom(container => {
   img.width = 32
   img.height = 32
 
-  const text = document.createElement('div')
-  text.innerHTML = `
-    <div data-title>Nora liked your post</div>
-    <div data-description>5 minutes ago</div>
-  `
+  const title = document.createElement('div')
+  title.dataset.title = ''
+  title.textContent = 'Nora liked your post'
 
-  container.appendChild(img)
-  container.appendChild(text)
+  const description = document.createElement('div')
+  description.dataset.description = ''
+  description.textContent = '5 minutes ago'
+
+  container.replaceChildren(img, title, description)
 })
 ```
 

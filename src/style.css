@@ -757,12 +757,56 @@
   }
 }
 
-@media (prefers-reduced-motion) {
-  [data-notify-toaster],
-  [data-notify-toast],
-  [data-notify-toast] > *,
-  .notify-loading-bar {
+/* Reduced motion removes movement (slides, stacking, height, swipe-out, spinner) but keeps a
+   short opacity fade so toasts still appear and leave without a jump. Final states are
+   unchanged. The renderer removes an exiting toast after 200ms, longer than this fade. */
+@media (prefers-reduced-motion: reduce) {
+  [data-notify-toaster] {
     transition: none !important;
+  }
+
+  [data-notify-toast],
+  [data-notify-toast][data-removed='true'][data-front='false'][data-swipe-out='false'][data-expanded='false'] {
+    transition:
+      opacity 150ms ease,
+      box-shadow 200ms !important;
+  }
+
+  [data-notify-toast] > * {
+    transition: opacity 150ms ease !important;
+  }
+
+  /* Swipe-out ends hidden through the fade instead of sliding away. */
+  [data-notify-toast][data-swipe-out='true'] {
     animation: none !important;
+    opacity: 0;
+  }
+
+  [data-notify-toast][data-promise='true'] [data-icon] > svg {
+    animation: none !important;
+    opacity: 1;
+    transform: none;
+  }
+
+  .notify-loading-wrapper[data-visible='false'] {
+    animation: none !important;
+    opacity: 0;
+  }
+
+  .notify-loading-bar {
+    animation: none !important;
+  }
+}
+
+@media (forced-colors: active) {
+  [data-notify-toast][data-notify-toast]:focus-visible,
+  [data-notify-toast][data-styled='true'] [data-button]:focus-visible,
+  [data-notify-toast][data-styled='true'] [data-close-button]:focus-visible {
+    outline: 2px solid Highlight;
+    outline-offset: 2px;
+  }
+
+  [data-notify-toast][data-styled='true'] [data-button] {
+    border: 1px solid ButtonText;
   }
 }
